@@ -8,13 +8,25 @@
 import MetalKit
 
 class Camera {
-    var position = Float3(0, 0, 3)
-    var target = Float3 (0, 0, 0)
+    var position = Float3(0, 0, 3) {
+        didSet {
+            updateLookatMatrix()
+        }
+    }
+    var target = Float3 (0, 0, 0) {
+        didSet {
+            updateLookatMatrix()
+        }
+    }
     lazy var lookAtMatrix: Matrix4 = Matrix4.viewMatrix(position: position, target: target, up: Camera.WorldUp)
     
     init(position: Float3, target: Float3) {
         self.position = position
         self.target = target
+    }
+    
+    private func updateLookatMatrix() {
+        lookAtMatrix = Matrix4.viewMatrix(position: position, target: target, up: Camera.WorldUp)
     }
 }
 

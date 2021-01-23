@@ -16,15 +16,22 @@ struct Vertex {
     var color: Float4
 }
 
+struct Uniforms {
+    var MVPmatrix: Matrix4
+}
+
 class HelloWorldView: MTKView {
     var commandQueue: MTLCommandQueue?
     var renderPipelineStatus: MTLRenderPipelineState?
     var vertexBuffer: MTLBuffer?
+    var uniformBuffer: MTLBuffer?
     let pixelFormat: MTLPixelFormat = .bgra8Unorm
     
     var deltaTime = 0.0
     var startTime = 0.0
     var time = 0.0
+    let P = Matrix4.perspective(fov: (MathConstants.PI.rawValue/3), aspect: 800.0/600, nearDist: 0.5, farDist: 100)
+    let cam = Camera(position: Float3(0, 0, 5), target: Float3(0, 0, 0))
     var vertices: [Vertex] = [
         Vertex(position: Float3(-0.5, -0.5, 0), color: Float4(0.17, 0.32, 0.54, 1)),
         Vertex(position: Float3(0, 0.5, 0), color: Float4(0.3, 0.5, 0.7, 1)),
@@ -77,12 +84,23 @@ class HelloWorldView: MTKView {
         vertexBuffer = device?.makeBuffer(bytes: vertices, length: MemoryLayout<Vertex>.stride*vertices.count, options: [])
     }
     
+    func updateUniformBuffer() {
+        cam.position = Float3(Float(5 * sin(time)), 1, Float(5 * cos(time)))
+        let V = cam.lookAtMatrix
+        uniformBuffer = device!.makeBuffer(length: MemoryLayout<Uniforms>.stride, options: [])
+        let PV = P*V
+        let bufferPointer = uniformBuffer?.contents()
+        var u = Uniforms(MVPmatrix: PV)
+        memcpy(bufferPointer, &u, MemoryLayout<Uniforms>.stride)
+    }
+    
     override func draw(_ dirtyRect: NSRect) {
         guard let drawable = currentDrawable, let renderPassDescriptor = currentRenderPassDescriptor, let renderPipelineStatus = renderPipelineStatus else { return }
         let commandBuffer = commandQueue?.makeCommandBuffer()
         let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         renderCommandEncoder?.setRenderPipelineState(renderPipelineStatus)
         renderCommandEncoder?.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
+        renderCommandEncoder?.setVertexBuffer(uniformBuffer, offset: 0, index: 1)
         renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: vertices.count)
         
         renderCommandEncoder?.endEncoding()

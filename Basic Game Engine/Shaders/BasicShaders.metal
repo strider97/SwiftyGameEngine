@@ -19,12 +19,13 @@ struct VertexOut {
 };
 
 struct Uniforms {
-    float4x4 MVPMatrix;
+    float4x4 mvpMatrix;
 };
 
-vertex VertexOut basicVertexShader(const VertexIn vIn [[ stage_in ]]) {
+vertex VertexOut basicVertexShader(const VertexIn vIn [[ stage_in ]], constant Uniforms &uniforms [[buffer(1)]]) {
     VertexOut p;
-    p.gl_position = float4(vIn.position, 1.0);
+    float4x4 mvpMatrix = uniforms.mvpMatrix;
+    p.gl_position = mvpMatrix * float4(vIn.position, 1.0);
     p.color = vIn.color;
     return p;
 }
