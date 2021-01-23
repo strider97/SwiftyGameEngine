@@ -7,7 +7,7 @@
 
 import Cocoa
 
-class ViewController: NSViewController {
+class GameViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
