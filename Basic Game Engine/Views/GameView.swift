@@ -13,9 +13,6 @@ class GameView: MTKView {
         device = Device.sharedDevice.device
         colorPixelFormat = Constants.pixelFormat
         delegate = SceneManager.sharedManager.currentScene
-    }
-    
-    func loadView() {
-        
+        clearColor = Colors.clearColor
     }
 }

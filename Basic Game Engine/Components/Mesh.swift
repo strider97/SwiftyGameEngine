@@ -16,7 +16,7 @@ class Mesh: Component {
         super.init()
         self.vertices = vertices
         let device = MTLDeviceObject.sharedDevice.device
-        vertexBuffer = device?.makeBuffer(bytes: vertices, length: MemoryLayout<Float3>.stride, options: [])
+        vertexBuffer = device?.makeBuffer(bytes: self.vertices, length: MemoryLayout<Vertex>.stride, options: [])
         loadDescriptor()
     }
     

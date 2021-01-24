@@ -85,7 +85,8 @@ class HelloWorldView: MTKView {
     }
     
     func updateUniformBuffer() {
-        cam.position = Float3(Float(5 * sin(time)), 1, Float(5 * cos(time)))
+        let cam = Camera()
+    //    cam.position = Float3(Float(5 * sin(time)), 1, Float(5 * cos(time)))
         let V = cam.lookAtMatrix
         uniformBuffer = device!.makeBuffer(length: MemoryLayout<Uniforms>.stride, options: [])
         let PV = P*V
@@ -95,6 +96,7 @@ class HelloWorldView: MTKView {
     }
     
     override func draw(_ dirtyRect: NSRect) {
+        updateUniformBuffer()
         guard let drawable = currentDrawable, let renderPassDescriptor = currentRenderPassDescriptor, let renderPipelineStatus = renderPipelineStatus else { return }
         let commandBuffer = commandQueue?.makeCommandBuffer()
         let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)

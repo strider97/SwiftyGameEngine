@@ -12,7 +12,7 @@ enum MathConstants: Float {
 }
 
 struct Colors {
-    static let clearColor = Float4(0.1, 0.1, 0.1, 1)
+    static let clearColor = MTLClearColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1)
 }
 
 struct Constants {

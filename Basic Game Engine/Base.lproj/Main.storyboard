@@ -706,7 +706,7 @@
         <scene sceneID="hIz-AP-VOD">
             <objects>
                 <viewController title="Game Engine" id="XfG-lQ-9wD" customClass="GameViewController" customModule="Basic_Game_Engine" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="m2S-Jp-Qdl" customClass="HelloWorldView" customModule="Basic_Game_Engine" customModuleProvider="target">
+                    <view key="view" id="m2S-Jp-Qdl" customClass="GameView" customModule="Basic_Game_Engine" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="800" height="600"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </view>

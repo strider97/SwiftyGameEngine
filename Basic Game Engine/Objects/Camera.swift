@@ -8,7 +8,7 @@
 import MetalKit
 
 class Camera {
-    var position = Float3(0, 0, 3) {
+    var position = Float3(0, 0, 5) {
         didSet {
             updateLookatMatrix()
         }
@@ -24,6 +24,8 @@ class Camera {
         self.position = position
         self.target = target
     }
+    
+    init() {}
     
     private func updateLookatMatrix() {
         lookAtMatrix = Matrix4.viewMatrix(position: position, target: target, up: Camera.WorldUp)
