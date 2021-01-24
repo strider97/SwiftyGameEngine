@@ -12,10 +12,12 @@ class MTLDeviceObject {
     let device: MTLDevice?
     var commandQueue: MTLCommandQueue?
     var library: MTLLibrary?
+    var commandBuffer: MTLCommandBuffer?
     
     private init () {
         device = MTLCreateSystemDefaultDevice()
         commandQueue = device?.makeCommandQueue()
         library = device?.makeDefaultLibrary()
+        commandBuffer = commandQueue?.makeCommandBuffer()
     }
 }

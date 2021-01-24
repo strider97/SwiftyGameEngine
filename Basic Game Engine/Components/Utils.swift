@@ -42,3 +42,29 @@ class Behaviour: Component {
     func start() {}
     func update() {}
 }
+
+enum KeyboardEvents: String, CaseIterable {
+    case forward = "w"
+    case backward = "s"
+    case left = "a"
+    case right = "d"
+    case none = ""
+    
+    static var keyStates: [KeyboardEvents: Bool] = [:]
+    
+    static func getEventForKey(_ key: String) -> KeyboardEvents{
+        return KeyboardEvents.allCases.filter {
+            $0.rawValue == key
+        }.first ?? .none
+    }
+    
+    static func pressDown(_ key: String) {
+        let event = getEventForKey(key.lowercased())
+        keyStates[event] = true
+    }
+    
+    static func pressUp(_ key: String) {
+        let event = getEventForKey(key.lowercased())
+        keyStates[event] = false
+    }
+}

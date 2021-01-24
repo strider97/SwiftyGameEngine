@@ -16,3 +16,19 @@ class GameView: MTKView {
         clearColor = Colors.clearColor
     }
 }
+
+extension GameView {
+    override var acceptsFirstResponder: Bool {
+        return true
+    }
+    
+    override func keyDown(with event: NSEvent) {
+    //    NotificationCenter.default.post(name: NSNotification.Name.keyIsPressed, object: event.characters)
+        KeyboardEvents.pressDown(event.characters ?? "")
+    }
+    
+    override func keyUp(with event: NSEvent) {
+    //    NotificationCenter.default.post(name: NSNotification.Name.keyReleased, object: event.characters)
+        KeyboardEvents.pressUp(event.characters ?? "")
+    }
+}

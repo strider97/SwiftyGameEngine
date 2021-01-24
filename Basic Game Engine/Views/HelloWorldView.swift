@@ -8,18 +8,6 @@
 import MetalKit
 import Cocoa
 
-typealias Float3 = SIMD3<Float>
-typealias Float4 = SIMD4<Float>
-
-struct Vertex {
-    var position: Float3
-    var color: Float4
-}
-
-struct Uniforms {
-    var MVPmatrix: Matrix4
-}
-
 class HelloWorldView: MTKView {
     var commandQueue: MTLCommandQueue?
     var renderPipelineStatus: MTLRenderPipelineState?
@@ -84,19 +72,8 @@ class HelloWorldView: MTKView {
         vertexBuffer = device?.makeBuffer(bytes: vertices, length: MemoryLayout<Vertex>.stride*vertices.count, options: [])
     }
     
-    func updateUniformBuffer() {
-        let cam = Camera()
-    //    cam.position = Float3(Float(5 * sin(time)), 1, Float(5 * cos(time)))
-        let V = cam.lookAtMatrix
-        uniformBuffer = device!.makeBuffer(length: MemoryLayout<Uniforms>.stride, options: [])
-        let PV = P*V
-        let bufferPointer = uniformBuffer?.contents()
-        var u = Uniforms(MVPmatrix: PV)
-        memcpy(bufferPointer, &u, MemoryLayout<Uniforms>.stride)
-    }
-    
     override func draw(_ dirtyRect: NSRect) {
-        updateUniformBuffer()
+    //    updateUniformBuffer()
         guard let drawable = currentDrawable, let renderPassDescriptor = currentRenderPassDescriptor, let renderPipelineStatus = renderPipelineStatus else { return }
         let commandBuffer = commandQueue?.makeCommandBuffer()
         let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)

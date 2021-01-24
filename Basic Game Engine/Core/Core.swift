@@ -7,6 +7,20 @@
 
 import MetalKit
 
+typealias Float3 = SIMD3<Float>
+typealias Float4 = SIMD4<Float>
+
+struct Vertex {
+    var position: Float3
+    var color: Float4
+}
+
+struct Uniforms {
+    var M: Matrix4
+    var V: Matrix4
+    var P: Matrix4
+}
+
 extension Float3 {
     var magnitude: Float {
         return sqrt((self*self).sum())

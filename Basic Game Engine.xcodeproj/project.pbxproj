@@ -28,6 +28,7 @@
 		72E3992825BCCDCF00927B17 /* RendererManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E3992725BCCDCF00927B17 /* RendererManager.swift */; };
 		72E3993025BCD28300927B17 /* SceneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E3992F25BCD28300927B17 /* SceneManager.swift */; };
 		72E3993625BCD8FB00927B17 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E3993525BCD8FB00927B17 /* Models.swift */; };
+		72E3993E25BD85E300927B17 /* GameTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E3993D25BD85E300927B17 /* GameTime.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -76,6 +77,7 @@
 		72E3992725BCCDCF00927B17 /* RendererManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RendererManager.swift; sourceTree = "<group>"; };
 		72E3992F25BCD28300927B17 /* SceneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneManager.swift; sourceTree = "<group>"; };
 		72E3993525BCD8FB00927B17 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		72E3993D25BD85E300927B17 /* GameTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTime.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -213,6 +215,7 @@
 			children = (
 				72E3992725BCCDCF00927B17 /* RendererManager.swift */,
 				72E3992F25BCD28300927B17 /* SceneManager.swift */,
+				72E3993D25BD85E300927B17 /* GameTime.swift */,
 			);
 			path = Systems;
 			sourceTree = "<group>";
@@ -366,6 +369,7 @@
 				72E398DB25BB6FB800927B17 /* HelloWorldView.swift in Sources */,
 				72E3990025BC98AA00927B17 /* Utils.swift in Sources */,
 				72E398EF25BC19EF00927B17 /* Camera.swift in Sources */,
+				72E3993E25BD85E300927B17 /* GameTime.swift in Sources */,
 				72E3992825BCCDCF00927B17 /* RendererManager.swift in Sources */,
 				72E398F525BC21E400927B17 /* Core.swift in Sources */,
 				72E398A525BB4ECA00927B17 /* AppDelegate.swift in Sources */,
