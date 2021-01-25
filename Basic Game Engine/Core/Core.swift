@@ -19,6 +19,7 @@ struct Uniforms {
     var M: Matrix4
     var V: Matrix4
     var P: Matrix4
+    var eye: Float3
 }
 
 extension Float3 {

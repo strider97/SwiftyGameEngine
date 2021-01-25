@@ -33,6 +33,9 @@ extension Transform {
     func translate(_ position: Float3) {
         modelMatrix[3] = Float4(position, modelMatrix[3][3])
     }
+    func scale(_ scale: Float3) {
+        modelMatrix = modelMatrix * Matrix4(diagonal: Float4(scale, 1))
+    }
 }
 
 class Component: NSObject {

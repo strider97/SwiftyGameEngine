@@ -12,6 +12,7 @@ struct Uniforms {
     float4x4 M;
     float4x4 V;
     float4x4 P;
+    float3 eye;
 };
 
 /*
@@ -47,8 +48,9 @@ struct VertexIn {
 
 struct VertexOut {
     float4 m_position [[position]];
-    float4 position;
-    float4 normal;
+    float3 position;
+    float3 normal;
+    float3 eye;
     float2 texCoords;
 };
 
@@ -57,12 +59,21 @@ vertex VertexOut basicVertexShader(const VertexIn vIn [[ stage_in ]], constant U
     float4x4 VM = uniforms.V*uniforms.M;
     float4x4 PVM = uniforms.P*VM;
     vOut.m_position = PVM * float4(vIn.position, 1.0);
-    vOut.normal = VM*float4(vIn.normal, 0);
-    vOut.position = VM*float4(vIn.position, 1.0);
+    vOut.normal = (uniforms.M*float4(vIn.normal, 0)).xyz;
+    vOut.position = (uniforms.M*float4(vIn.position, 1.0)).xyz;
     vOut.texCoords = vIn.texCoords;
+    vOut.eye = uniforms.eye;
     return vOut;
 }
 
-fragment half4 basicFragmentShader(VertexOut vOut [[ stage_in ]]) {
-    return half4(1);
+fragment half4 basicFragmentShader(VertexOut vOut [[ stage_in ]], texture2d<float, access::sample> baseColorTexture [[texture(0)]], sampler baseColorSampler [[sampler(0)]]) {
+    float3 color = baseColorTexture.sample(baseColorSampler, vOut.texCoords).rgb;
+    float3 lightDir = normalize(float3(-1, 1, 4));
+    float3 eyeDir = normalize(vOut.eye - vOut.position);
+    float spec = 1*pow(max(0.0, dot(normalize(lightDir + eyeDir), vOut.normal)), 32);
+    float diff = max(0.2, dot(lightDir, vOut.normal));
+    float3 outColor = color * (diff + spec);
+ //   return half4(1);
+    return half4(outColor.x, outColor.y, outColor.z, 1.0);
+ //   return half4(vOut.normal.x, vOut.normal.y, vOut.normal.z, 1.0);
 }

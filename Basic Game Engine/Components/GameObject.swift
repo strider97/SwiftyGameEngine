@@ -46,6 +46,8 @@ extension GameObject {
         renderPipelineDescriptor.vertexFunction = material.vertexShaderFunction
         renderPipelineDescriptor.fragmentFunction = material.fragmentShaderFunction
         renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
+        renderPipelineDescriptor.depthAttachmentPixelFormat = .depth32Float
+        
         do {
             try renderPipelineState = Device.sharedDevice.device?.makeRenderPipelineState(descriptor: renderPipelineDescriptor)
         } catch let error as NSError {

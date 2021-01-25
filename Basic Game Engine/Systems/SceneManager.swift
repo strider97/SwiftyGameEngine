@@ -14,9 +14,9 @@ class SceneManager {
         currentScene = Scene() {
             let helmet = GameObject(modelName: Models.helmet)
             helmet.transform.translate(Float3(2, 0, 0))
-            let helmet2 = GameObject(modelName: Models.helmet)
-            helmet2.transform.translate(Float3(-2, 0, 0))
-            return [helmet, helmet2]
+            let planet = GameObject(modelName: Models.planet)
+            planet.transform.translate(Float3(0, -0.2, 0))
+            return [planet]
         }
     }
 }
@@ -24,21 +24,30 @@ class SceneManager {
 class Scene: NSObject {
     var name = "Game Scene"
     var gameObjects: [GameObject] = []
-    let P = Matrix4.perspective(fov: (MathConstants.PI.rawValue/3), aspect: 800.0/600, nearDist: 0.5, farDist: 500)
+    let P = Matrix4.perspective(fov: (MathConstants.PI.rawValue/3), aspect: 800.0/600, nearDist: 0.01, farDist: 500)
     let timer = GameTimer.sharedTimer
     let camera = Camera(position: Float3(0, 0, 10), target: Float3(0, 0, 0))
     
-    var nodes = [Node]()
-    let textureLoader: MTKTextureLoader
     let device = Device.sharedDevice.device
+    var depthStencilState: MTLDepthStencilState?
+    var baseColorTexture: MTLTexture?
+    var samplerState: MTLSamplerState!
     
     init(_ createGameObjects: ()->[GameObject]) {
-        textureLoader = MTKTextureLoader(device: device!)
         super.init()
         gameObjects = createGameObjects()
         timer.startTime = CACurrentMediaTime()
+        depthStencilState = buildDepthStencilState(device: device!)
         
-    //    updateUniformBuffer()
+        let textureLoader = MTKTextureLoader(device: device!)
+        let options_: [MTKTextureLoader.Option : Any] = [.generateMipmaps : true, .SRGB : true]
+        baseColorTexture = try? textureLoader.newTexture(name: "planet", scaleFactor: 1.0, bundle: nil, options: options_)
+        let samplerDescriptor = MTLSamplerDescriptor()
+            samplerDescriptor.normalizedCoordinates = true
+            samplerDescriptor.minFilter = .linear
+            samplerDescriptor.magFilter = .linear
+            samplerDescriptor.mipFilter = .linear
+        self.samplerState = device?.makeSamplerState(descriptor: samplerDescriptor)!
     }
 }
 
@@ -54,13 +63,16 @@ extension Scene: MTKViewDelegate {
 
 extension Scene {
     func getUniformData(_ M: Matrix4 = Matrix4(1.0)) -> Uniforms {
-        return Uniforms(M: M, V: camera.lookAtMatrix, P: P)
+        return Uniforms(M: M, V: camera.lookAtMatrix, P: P, eye: camera.position)
     }
     
     func render(_ view: MTKView) {
         guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
         let commandBuffer = Device.sharedDevice.commandQueue?.makeCommandBuffer()
         let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
+        renderCommandEncoder?.setDepthStencilState(depthStencilState)
+        renderCommandEncoder?.setFragmentTexture(baseColorTexture, index: 0)
+        renderCommandEncoder?.setFragmentSamplerState(samplerState, index: 0)
         for gameObject in gameObjects {
             if let renderPipelineStatus = gameObject.renderPipelineState, let mesh_ = gameObject.getComponent(Mesh.self) {
                 renderCommandEncoder?.setRenderPipelineState(renderPipelineStatus)
@@ -71,8 +83,7 @@ extension Scene {
                     let vertexBuffer = mesh.vertexBuffers.first!
                     renderCommandEncoder?.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: 0)
                     for submesh in mesh.submeshes {
-                        let indexBuffer = submesh.indexBuffer
-                        renderCommandEncoder?.drawIndexedPrimitives(type: submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: indexBuffer.buffer, indexBufferOffset: indexBuffer.offset)
+                        renderCommandEncoder?.drawIndexedPrimitives(type:submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: submesh.indexBuffer.offset)
                     }
                 }
             }
@@ -81,5 +92,12 @@ extension Scene {
         guard let drawable = view.currentDrawable else { return }
         commandBuffer?.present(drawable)
         commandBuffer?.commit()
+    }
+    
+    func buildDepthStencilState(device: MTLDevice) -> MTLDepthStencilState? {
+        let depthStencilDescriptor = MTLDepthStencilDescriptor()
+        depthStencilDescriptor.depthCompareFunction = .less
+        depthStencilDescriptor.isDepthWriteEnabled = true
+        return device.makeDepthStencilState(descriptor: depthStencilDescriptor)
     }
 }

@@ -44,4 +44,7 @@ extension MeshManager {
 
 enum Models {
     static let helmet = "helmet"
+    static let legoMan = "legoMan"
+    static let teapot = "teapot2"
+    static let planet = "planet"
 }

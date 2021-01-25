@@ -12,6 +12,7 @@ class GameView: MTKView {
         super.init(coder: coder)
         device = Device.sharedDevice.device
         colorPixelFormat = Constants.pixelFormat
+        depthStencilPixelFormat = .depth32Float
         delegate = SceneManager.sharedManager.currentScene
         clearColor = Colors.clearColor
     }
