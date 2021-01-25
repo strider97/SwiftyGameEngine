@@ -12,19 +12,11 @@ class SceneManager {
     let currentScene: Scene
     private init () {
         currentScene = Scene() {
-            let mesh = Mesh(vertices: BasicModelsVertices.triangle)
-            let renderer = Renderer()
-            var gameObjects: [GameObject] = []
-            let count = 10.0
-            let sqrtCount = Float(sqrt(count))
-            for i in 0..<Int(count) {
-                let triangle = GameObject(Float3(2.0*Float(i)/sqrtCount, 2.0*Float(i%Int(sqrtCount)), 0.0) + Float3(-sqrtCount, -sqrtCount, 0))
-                triangle.addComponent(mesh)
-                triangle.addComponent(renderer)
-                triangle.createRenderPipelineState(material: renderer.material, vertexDescriptor: mesh.vertexDescriptor)
-                gameObjects.append(triangle)
-            }
-            return gameObjects
+            let helmet = GameObject(modelName: Models.helmet)
+            helmet.transform.translate(Float3(2, 0, 0))
+            let helmet2 = GameObject(modelName: Models.helmet)
+            helmet2.transform.translate(Float3(-2, 0, 0))
+            return [helmet, helmet2]
         }
     }
 }
@@ -36,10 +28,16 @@ class Scene: NSObject {
     let timer = GameTimer.sharedTimer
     let camera = Camera(position: Float3(0, 0, 10), target: Float3(0, 0, 0))
     
+    var nodes = [Node]()
+    let textureLoader: MTKTextureLoader
+    let device = Device.sharedDevice.device
+    
     init(_ createGameObjects: ()->[GameObject]) {
+        textureLoader = MTKTextureLoader(device: device!)
         super.init()
         gameObjects = createGameObjects()
         timer.startTime = CACurrentMediaTime()
+        
     //    updateUniformBuffer()
     }
 }
@@ -60,24 +58,27 @@ extension Scene {
     }
     
     func render(_ view: MTKView) {
-        guard let drawable = view.currentDrawable, let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
+        guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
         let commandBuffer = Device.sharedDevice.commandQueue?.makeCommandBuffer()
         let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         for gameObject in gameObjects {
-            if let renderPipelineStatus = gameObject.renderPipelineState, let mesh = gameObject.getComponent(Mesh.self) {
+            if let renderPipelineStatus = gameObject.renderPipelineState, let mesh_ = gameObject.getComponent(Mesh.self) {
                 renderCommandEncoder?.setRenderPipelineState(renderPipelineStatus)
-                if mesh.vertices.count*MemoryLayout<Vertex>.size < 4096 {
-                    let vertex = mesh.vertices
-                    renderCommandEncoder?.setVertexBytes(vertex, length: MemoryLayout<Vertex>.stride*vertex.count, index: 0)
-                } else {
-                    renderCommandEncoder?.setVertexBuffer(mesh.vertexBuffer, offset: 0, index: 0)
-                }
                 var u = getUniformData(gameObject.transform.modelMatrix)
                 renderCommandEncoder?.setVertexBytes(&u, length: MemoryLayout<Uniforms>.stride, index: 1)
-                renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: mesh.vertices.count)
+                
+                for mesh in mesh_.meshes {
+                    let vertexBuffer = mesh.vertexBuffers.first!
+                    renderCommandEncoder?.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: 0)
+                    for submesh in mesh.submeshes {
+                        let indexBuffer = submesh.indexBuffer
+                        renderCommandEncoder?.drawIndexedPrimitives(type: submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: indexBuffer.buffer, indexBufferOffset: indexBuffer.offset)
+                    }
+                }
             }
         }
         renderCommandEncoder?.endEncoding()
+        guard let drawable = view.currentDrawable else { return }
         commandBuffer?.present(drawable)
         commandBuffer?.commit()
     }

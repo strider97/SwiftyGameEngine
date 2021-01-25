@@ -18,6 +18,11 @@ class GameObject {
         self.transform = Transform(position)
     }
     init () {}
+    init (modelName: String) {
+        let mesh = Mesh(modelName: modelName)
+        addComponent(mesh)
+        createRenderPipelineState(material: Material(), vertexDescriptor: mesh.vertexDescriptor)
+    }
 }
 
 extension GameObject {
@@ -41,11 +46,12 @@ extension GameObject {
         renderPipelineDescriptor.vertexFunction = material.vertexShaderFunction
         renderPipelineDescriptor.fragmentFunction = material.fragmentShaderFunction
         renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
-        
         do {
             try renderPipelineState = Device.sharedDevice.device?.makeRenderPipelineState(descriptor: renderPipelineDescriptor)
         } catch let error as NSError {
             print(error)
         }
     }
+    
+    
 }

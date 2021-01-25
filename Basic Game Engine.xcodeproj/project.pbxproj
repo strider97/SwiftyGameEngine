@@ -29,6 +29,17 @@
 		72E3993025BCD28300927B17 /* SceneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E3992F25BCD28300927B17 /* SceneManager.swift */; };
 		72E3993625BCD8FB00927B17 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E3993525BCD8FB00927B17 /* Models.swift */; };
 		72E3993E25BD85E300927B17 /* GameTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E3993D25BD85E300927B17 /* GameTime.swift */; };
+		72E3995A25BE31B000927B17 /* helmet_normal.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 72E3995025BE31B000927B17 /* helmet_normal.jpg */; };
+		72E3995B25BE31B000927B17 /* loft_pmrem.ktx in Resources */ = {isa = PBXBuildFile; fileRef = 72E3995125BE31B000927B17 /* loft_pmrem.ktx */; };
+		72E3995C25BE31B000927B17 /* garage_pmrem.ktx in Resources */ = {isa = PBXBuildFile; fileRef = 72E3995225BE31B000927B17 /* garage_pmrem.ktx */; };
+		72E3995D25BE31B000927B17 /* helmet.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 72E3995325BE31B000927B17 /* helmet.mtl */; };
+		72E3995E25BE31B000927B17 /* helmet_baseColor.png in Resources */ = {isa = PBXBuildFile; fileRef = 72E3995425BE31B000927B17 /* helmet_baseColor.png */; };
+		72E3995F25BE31B000927B17 /* helmet_baseColor.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 72E3995525BE31B000927B17 /* helmet_baseColor.jpg */; };
+		72E3996025BE31B000927B17 /* helmet_metallicRoughness.png in Resources */ = {isa = PBXBuildFile; fileRef = 72E3995625BE31B000927B17 /* helmet_metallicRoughness.png */; };
+		72E3996125BE31B000927B17 /* helmet_metallic.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 72E3995725BE31B000927B17 /* helmet_metallic.jpg */; };
+		72E3996225BE31B000927B17 /* helmet_roughness.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 72E3995825BE31B000927B17 /* helmet_roughness.jpg */; };
+		72E3996325BE31B000927B17 /* helmet.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72E3995925BE31B000927B17 /* helmet.obj */; };
+		72E3996F25BEBA0800927B17 /* MeshManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E3996E25BEBA0800927B17 /* MeshManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -78,6 +89,17 @@
 		72E3992F25BCD28300927B17 /* SceneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneManager.swift; sourceTree = "<group>"; };
 		72E3993525BCD8FB00927B17 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		72E3993D25BD85E300927B17 /* GameTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTime.swift; sourceTree = "<group>"; };
+		72E3995025BE31B000927B17 /* helmet_normal.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = helmet_normal.jpg; sourceTree = "<group>"; };
+		72E3995125BE31B000927B17 /* loft_pmrem.ktx */ = {isa = PBXFileReference; lastKnownFileType = file; path = loft_pmrem.ktx; sourceTree = "<group>"; };
+		72E3995225BE31B000927B17 /* garage_pmrem.ktx */ = {isa = PBXFileReference; lastKnownFileType = file; path = garage_pmrem.ktx; sourceTree = "<group>"; };
+		72E3995325BE31B000927B17 /* helmet.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = helmet.mtl; sourceTree = "<group>"; };
+		72E3995425BE31B000927B17 /* helmet_baseColor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = helmet_baseColor.png; sourceTree = "<group>"; };
+		72E3995525BE31B000927B17 /* helmet_baseColor.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = helmet_baseColor.jpg; sourceTree = "<group>"; };
+		72E3995625BE31B000927B17 /* helmet_metallicRoughness.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = helmet_metallicRoughness.png; sourceTree = "<group>"; };
+		72E3995725BE31B000927B17 /* helmet_metallic.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = helmet_metallic.jpg; sourceTree = "<group>"; };
+		72E3995825BE31B000927B17 /* helmet_roughness.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = helmet_roughness.jpg; sourceTree = "<group>"; };
+		72E3995925BE31B000927B17 /* helmet.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = helmet.obj; sourceTree = "<group>"; };
+		72E3996E25BEBA0800927B17 /* MeshManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeshManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,6 +150,7 @@
 		72E398A325BB4ECA00927B17 /* Basic Game Engine */ = {
 			isa = PBXGroup;
 			children = (
+				72E3994F25BE316F00927B17 /* Resources */,
 				72E3993425BCD8EA00927B17 /* Libraries */,
 				72E3992625BCCDC300927B17 /* Systems */,
 				72E398FE25BC987E00927B17 /* Components */,
@@ -216,6 +239,7 @@
 				72E3992725BCCDCF00927B17 /* RendererManager.swift */,
 				72E3992F25BCD28300927B17 /* SceneManager.swift */,
 				72E3993D25BD85E300927B17 /* GameTime.swift */,
+				72E3996E25BEBA0800927B17 /* MeshManager.swift */,
 			);
 			path = Systems;
 			sourceTree = "<group>";
@@ -226,6 +250,31 @@
 				72E3993525BCD8FB00927B17 /* Models.swift */,
 			);
 			path = Libraries;
+			sourceTree = "<group>";
+		};
+		72E3994F25BE316F00927B17 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				72E3996725BE31DA00927B17 /* helmet */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		72E3996725BE31DA00927B17 /* helmet */ = {
+			isa = PBXGroup;
+			children = (
+				72E3995225BE31B000927B17 /* garage_pmrem.ktx */,
+				72E3995525BE31B000927B17 /* helmet_baseColor.jpg */,
+				72E3995425BE31B000927B17 /* helmet_baseColor.png */,
+				72E3995725BE31B000927B17 /* helmet_metallic.jpg */,
+				72E3995625BE31B000927B17 /* helmet_metallicRoughness.png */,
+				72E3995025BE31B000927B17 /* helmet_normal.jpg */,
+				72E3995825BE31B000927B17 /* helmet_roughness.jpg */,
+				72E3995125BE31B000927B17 /* loft_pmrem.ktx */,
+				72E3995325BE31B000927B17 /* helmet.mtl */,
+				72E3995925BE31B000927B17 /* helmet.obj */,
+			);
+			path = helmet;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -331,7 +380,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				72E3995E25BE31B000927B17 /* helmet_baseColor.png in Resources */,
+				72E3995B25BE31B000927B17 /* loft_pmrem.ktx in Resources */,
+				72E3996225BE31B000927B17 /* helmet_roughness.jpg in Resources */,
+				72E3995C25BE31B000927B17 /* garage_pmrem.ktx in Resources */,
+				72E3996325BE31B000927B17 /* helmet.obj in Resources */,
+				72E3995F25BE31B000927B17 /* helmet_baseColor.jpg in Resources */,
+				72E3996025BE31B000927B17 /* helmet_metallicRoughness.png in Resources */,
+				72E3996125BE31B000927B17 /* helmet_metallic.jpg in Resources */,
 				72E398AC25BB4ECB00927B17 /* Assets.xcassets in Resources */,
+				72E3995A25BE31B000927B17 /* helmet_normal.jpg in Resources */,
+				72E3995D25BE31B000927B17 /* helmet.mtl in Resources */,
 				72E398AF25BB4ECB00927B17 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -374,6 +433,7 @@
 				72E398F525BC21E400927B17 /* Core.swift in Sources */,
 				72E398A525BB4ECA00927B17 /* AppDelegate.swift in Sources */,
 				72E3991825BCBB2500927B17 /* GameView.swift in Sources */,
+				72E3996F25BEBA0800927B17 /* MeshManager.swift in Sources */,
 				72E398FA25BC432C00927B17 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
