@@ -13,6 +13,7 @@ class Mesh: Component {
     var vertexBuffer: MTLBuffer?
     var vertexDescriptor: MTLVertexDescriptor!
     var meshes: [MTKMesh] = []
+    var mdlMeshes: [MDLMesh] = []
     
     init(modelName: String) {
         super.init()
@@ -23,7 +24,8 @@ class Mesh: Component {
 
 extension Mesh {
     func loadModel(_ modelName: String, device: MTLDevice) {
-        meshes = MeshManager.meshManager.loadMesh(modelName, device: device)
+        mdlMeshes = MeshManager.meshManager.loadMesh(modelName, device: device).0
+        meshes = MeshManager.meshManager.loadMesh(modelName, device: device).1
     }
 }
 

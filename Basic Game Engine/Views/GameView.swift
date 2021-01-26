@@ -15,6 +15,12 @@ class GameView: MTKView {
         depthStencilPixelFormat = .depth32Float
         delegate = SceneManager.sharedManager.currentScene
         clearColor = Colors.clearColor
+        updateTrackingAreas()
+        addTrackingArea(NSTrackingArea(coder: coder)!)
+        let options: NSTrackingArea.Options = [.mouseEnteredAndExited, .mouseMoved, .activeInKeyWindow]
+        let trackingArea = NSTrackingArea(rect: self.bounds, options: options,
+                                          owner: self, userInfo: nil)
+        self.addTrackingArea(trackingArea)
     }
 }
 
@@ -31,5 +37,14 @@ extension GameView {
     override func keyUp(with event: NSEvent) {
     //    NotificationCenter.default.post(name: NSNotification.Name.keyReleased, object: event.characters)
         KeyboardEvents.pressUp(event.characters ?? "")
+    }
+    
+    override func mouseMoved(with event: NSEvent) {
+    //    Input.sharedInput.updateMousePosition(pos: Float2(Float(event.locationInWindow.x), Float(event.locationInWindow.y)))
+    //    NotificationCenter.default.post(name: NSNotification.Name.mouseMoved, object: nil)
+    }
+    
+    override func mouseExited(with event: NSEvent) {
+        Input.sharedInput.firstMouseInteraction = true
     }
 }

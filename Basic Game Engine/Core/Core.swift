@@ -47,6 +47,12 @@ extension Float3 {
     }
 }
 
+extension Float2 {
+    var magnitude: Float {
+        return sqrt((self*self).sum())
+    }
+}
+
 extension Matrix4 {
     static func viewMatrix (position: Float3, target: Float3, up: Float3) -> Matrix4 {
         let cam = Camera(position: position, target: target)

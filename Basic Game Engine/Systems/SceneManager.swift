@@ -12,11 +12,17 @@ class SceneManager {
     let currentScene: Scene
     private init () {
         currentScene = Scene() {
-            let helmet = GameObject(modelName: Models.helmet)
-            helmet.transform.translate(Float3(2, 0, 0))
-            let planet = GameObject(modelName: Models.planet)
-            planet.transform.translate(Float3(0, -0.2, 0))
-            return [planet]
+        //    let helmet = GameObject(modelName: Models.helmet)
+        //    helmet.transform.translate(Float3(2, 0, 0))
+            let planet = GameObject(modelName: Models.helmet)
+            planet.transform.translate(Float3(-15, 0, 0))
+            let planet2 = GameObject(modelName: Models.legoMan)
+            planet2.transform.translate(Float3(-3, 0, 0))
+            let planet3 = GameObject(modelName: Models.helmet)
+            planet3.transform.translate(Float3(3, 0, 0))
+            let planet4 = GameObject(modelName: Models.legoMan)
+            planet4.transform.translate(Float3(8, 0, 0))
+            return [planet, planet2, planet3, planet4]
         }
     }
 }
@@ -24,7 +30,7 @@ class SceneManager {
 class Scene: NSObject {
     var name = "Game Scene"
     var gameObjects: [GameObject] = []
-    let P = Matrix4.perspective(fov: (MathConstants.PI.rawValue/3), aspect: 800.0/600, nearDist: 0.01, farDist: 500)
+    let P = Matrix4.perspective(fov: (MathConstants.PI.rawValue/3), aspect: 1280.0/720, nearDist: 0.01, farDist: 500)
     let timer = GameTimer.sharedTimer
     let camera = Camera(position: Float3(0, 0, 10), target: Float3(0, 0, 0))
     
@@ -36,12 +42,12 @@ class Scene: NSObject {
     init(_ createGameObjects: ()->[GameObject]) {
         super.init()
         gameObjects = createGameObjects()
-        timer.startTime = CACurrentMediaTime()
+        timer.startTime = Float(CACurrentMediaTime())
         depthStencilState = buildDepthStencilState(device: device!)
         
         let textureLoader = MTKTextureLoader(device: device!)
         let options_: [MTKTextureLoader.Option : Any] = [.generateMipmaps : true, .SRGB : true]
-        baseColorTexture = try? textureLoader.newTexture(name: "planet", scaleFactor: 1.0, bundle: nil, options: options_)
+        baseColorTexture = try? textureLoader.newTexture(name: "legoMan", scaleFactor: 1.0, bundle: nil, options: options_)
         let samplerDescriptor = MTLSamplerDescriptor()
             samplerDescriptor.normalizedCoordinates = true
             samplerDescriptor.minFilter = .linear
@@ -58,6 +64,11 @@ extension Scene: MTKViewDelegate {
         timer.updateTime()
         render(view)
         camera.moveCam()
+        let p = view.window!.mouseLocationOutsideOfEventStream
+        if Float2(Float(p.x), Float(p.y)) != Input.sharedInput.mousePosition {
+            Input.sharedInput.updateMousePosition(pos: Float2(Float(p.x), Float(p.y)))
+            camera.rotateCam()
+        }
     }
 }
 
@@ -78,10 +89,11 @@ extension Scene {
                 renderCommandEncoder?.setRenderPipelineState(renderPipelineStatus)
                 var u = getUniformData(gameObject.transform.modelMatrix)
                 renderCommandEncoder?.setVertexBytes(&u, length: MemoryLayout<Uniforms>.stride, index: 1)
-                
+       //         print(mesh_.meshes.map{$0.name}, mesh_.mdlMeshes.map{$0.name})
                 for mesh in mesh_.meshes {
-                    let vertexBuffer = mesh.vertexBuffers.first!
-                    renderCommandEncoder?.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: 0)
+                    for (bufferIndex, vertexBuffer) in mesh.vertexBuffers.enumerated() {
+                        renderCommandEncoder?.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: bufferIndex)
+                    }
                     for submesh in mesh.submeshes {
                         renderCommandEncoder?.drawIndexedPrimitives(type:submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: submesh.indexBuffer.offset)
                     }

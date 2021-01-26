@@ -19,6 +19,9 @@ class Camera {
         }
     }
     
+    var yaw = MathConstants.PI.rawValue/2
+    var pitch: Float = 0
+    
     lazy var lookAtMatrix: Matrix4 = Matrix4.viewMatrix(position: position, target: position + front, up: Camera.WorldUp)
     
     init(position: Float3, target: Float3) {
@@ -36,6 +39,8 @@ class Camera {
     }
     
     var speed: Float = 0.2
+    var mouseSpeed: Float = 0.2
+    private var deltaMouse = Float2(0, 0)
 }
 
 extension Camera {
@@ -58,6 +63,7 @@ extension Camera {
     func registerKeyboardEvents() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyIsPressed(_:)), name: NSNotification.Name.keyIsPressed, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyReleased(_:)), name: NSNotification.Name.keyReleased, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(mouseMoved(_:)), name: NSNotification.Name.mouseMoved, object: nil)
     }
     
     @objc func keyIsPressed(_ notification: Notification) {
@@ -68,6 +74,9 @@ extension Camera {
         let _ = (notification.object as? String) ?? ""
     //    translateCam(key: key)
     }
+    @objc func mouseMoved(_ notification: Notification) {
+        rotateCam()
+    }
 }
 
 extension Camera {
@@ -77,6 +86,15 @@ extension Camera {
                 translateCam(key: keyState)
             }
         }
+    }
+    
+    func rotateCam() {
+        yaw += mouseSpeed*GameTimer.sharedTimer.deltaTime *
+        Input.sharedInput.deltaMouse.x
+        pitch -= mouseSpeed*GameTimer.sharedTimer.deltaTime *
+        Input.sharedInput.deltaMouse.y
+        pitch = max(-MathConstants.PI.rawValue/2+0.5, min(MathConstants.PI.rawValue/2-0.5, pitch))
+        direction = Float3(cos(yaw) * cos(pitch), sin(pitch), sin(yaw) * cos(pitch)).normalized;
     }
     
     private func translateCam(key: KeyboardEvents) {
@@ -97,5 +115,6 @@ extension Camera {
 
 extension NSNotification.Name {
     static let keyIsPressed = NSNotification.Name("keyIsPressed")
-    static var keyReleased = NSNotification.Name("keyReleased")
+    static let keyReleased = NSNotification.Name("keyReleased")
+    static let mouseMoved = NSNotification.Name("mouseMoved")
 }

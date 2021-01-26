@@ -46,6 +46,7 @@
 		72E3999B25BF0C9700927B17 /* teapot.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72E3999A25BF0C9700927B17 /* teapot.obj */; };
 		72E399A625BF176C00927B17 /* teapot2.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72E399A525BF176C00927B17 /* teapot2.obj */; };
 		72E399BA25BF3ECD00927B17 /* planet.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72E399B925BF3ECD00927B17 /* planet.obj */; };
+		72E399D025BF611100927B17 /* teapot.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72E399CF25BF611100927B17 /* teapot.usd */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -112,6 +113,7 @@
 		72E3999A25BF0C9700927B17 /* teapot.obj */ = {isa = PBXFileReference; lastKnownFileType = file; name = teapot.obj; path = "Basic Game Engine/Resources/teapot/teapot.obj"; sourceTree = SOURCE_ROOT; };
 		72E399A525BF176C00927B17 /* teapot2.obj */ = {isa = PBXFileReference; lastKnownFileType = file; name = teapot2.obj; path = "Basic Game Engine/Resources/teapot/teapot2.obj"; sourceTree = SOURCE_ROOT; };
 		72E399B925BF3ECD00927B17 /* planet.obj */ = {isa = PBXFileReference; lastKnownFileType = file; name = planet.obj; path = "Basic Game Engine/Resources/legoMan/planet.obj"; sourceTree = SOURCE_ROOT; };
+		72E399CF25BF611100927B17 /* teapot.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = teapot.usd; path = "Basic Game Engine/Resources/teapot/teapot.usd"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -305,6 +307,7 @@
 		72E3999925BF0C8300927B17 /* teapot_ */ = {
 			isa = PBXGroup;
 			children = (
+				72E399CF25BF611100927B17 /* teapot.usd */,
 				72E3999A25BF0C9700927B17 /* teapot.obj */,
 				72E399A525BF176C00927B17 /* teapot2.obj */,
 			);
@@ -434,6 +437,7 @@
 				72E399A625BF176C00927B17 /* teapot2.obj in Resources */,
 				72E3996125BE31B000927B17 /* helmet_metallic.jpg in Resources */,
 				72E398AC25BB4ECB00927B17 /* Assets.xcassets in Resources */,
+				72E399D025BF611100927B17 /* teapot.usd in Resources */,
 				72E3995A25BE31B000927B17 /* helmet_normal.jpg in Resources */,
 				72E399BA25BF3ECD00927B17 /* planet.obj in Resources */,
 				72E3998B25BEF35100927B17 /* legoMan.mtl in Resources */,
