@@ -12,8 +12,14 @@ class RenderManager {
     var depthStencilState: MTLDepthStencilState?
 }
 
+struct ShaderMaterial {
+    var baseColor: Float3
+}
+
 class Material {
-    
+    var baseColor = Float3(repeating: 1)
+    var roughness = 0
+    var albedo: MTLTexture?
     private let library = Device.sharedDevice.library
     var fragmentShaderFunction: MTLFunction?
     var vertexShaderFunction: MTLFunction?
@@ -25,9 +31,11 @@ class Material {
         fragmentShaderFunction = library?.makeFunction(name: fragmentShader)
         vertexShaderFunction = library?.makeFunction(name: vertexShader)
     }
-    convenience init(_ material: MDLMaterial) {
+    convenience init(_ material: MDLMaterial?) {
         self.init()
-        
+        if let material = material {
+            baseColor = material.property(with: .baseColor)?.float3Value ?? Float3(repeating: 1)
+        }
     }
 }
 

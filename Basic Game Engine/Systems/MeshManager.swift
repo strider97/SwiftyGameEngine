@@ -29,7 +29,7 @@ extension MeshManager {
         if let meshes = allMeshes[modelName] {
             return meshes
         }
-        guard let url = Bundle.main.url(forResource: modelName, withExtension: "obj") else { return ([],[]) }
+        guard let url = Bundle.main.url(forResource: modelName, withExtension: "usd") else { return ([],[]) }
         let bufferAllocator = MTKMeshBufferAllocator(device: device)
         let asset = MDLAsset(url: url, vertexDescriptor: self.vertexDescriptorMDL, bufferAllocator: bufferAllocator)
         var meshes: [MTKMesh]

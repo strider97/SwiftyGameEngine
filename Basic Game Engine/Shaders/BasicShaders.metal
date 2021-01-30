@@ -54,6 +54,10 @@ struct VertexOut {
     float2 texCoords;
 };
 
+struct Material {
+    float3 baseColor;
+};
+
 vertex VertexOut basicVertexShader(const VertexIn vIn [[ stage_in ]], constant Uniforms &uniforms [[buffer(1)]]) {
     VertexOut vOut;
     float4x4 VM = uniforms.V*uniforms.M;

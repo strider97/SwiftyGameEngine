@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		72282CCB25C17FD400C9CCF4 /* plane.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72282CCA25C17FD400C9CCF4 /* plane.obj */; };
+		722830B925C5706000C9CCF4 /* spheres.usd in Resources */ = {isa = PBXBuildFile; fileRef = 722830B825C5705F00C9CCF4 /* spheres.usd */; };
 		72E398A525BB4ECA00927B17 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E398A425BB4ECA00927B17 /* AppDelegate.swift */; };
 		72E398A725BB4ECA00927B17 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E398A625BB4ECA00927B17 /* GameViewController.swift */; };
 		72E398AA25BB4ECA00927B17 /* Basic_Game_Engine.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 72E398A825BB4ECA00927B17 /* Basic_Game_Engine.xcdatamodeld */; };
@@ -27,7 +29,6 @@
 		72E3992225BCC95500927B17 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E3992125BCC95500927B17 /* Renderer.swift */; };
 		72E3992825BCCDCF00927B17 /* RendererManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E3992725BCCDCF00927B17 /* RendererManager.swift */; };
 		72E3993025BCD28300927B17 /* SceneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E3992F25BCD28300927B17 /* SceneManager.swift */; };
-		72E3993625BCD8FB00927B17 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E3993525BCD8FB00927B17 /* Models.swift */; };
 		72E3993E25BD85E300927B17 /* GameTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E3993D25BD85E300927B17 /* GameTime.swift */; };
 		72E3995A25BE31B000927B17 /* helmet_normal.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 72E3995025BE31B000927B17 /* helmet_normal.jpg */; };
 		72E3995B25BE31B000927B17 /* loft_pmrem.ktx in Resources */ = {isa = PBXBuildFile; fileRef = 72E3995125BE31B000927B17 /* loft_pmrem.ktx */; };
@@ -67,6 +68,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		72282CCA25C17FD400C9CCF4 /* plane.obj */ = {isa = PBXFileReference; lastKnownFileType = text; name = plane.obj; path = "Basic Game Engine/Resources/teapot/plane.obj"; sourceTree = SOURCE_ROOT; };
+		722830B825C5705F00C9CCF4 /* spheres.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = spheres.usd; path = "Basic Game Engine/Resources/teapot/spheres.usd"; sourceTree = SOURCE_ROOT; };
 		72E398A125BB4ECA00927B17 /* Basic Game Engine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Basic Game Engine.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		72E398A425BB4ECA00927B17 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		72E398A625BB4ECA00927B17 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
@@ -94,7 +97,6 @@
 		72E3992125BCC95500927B17 /* Renderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
 		72E3992725BCCDCF00927B17 /* RendererManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RendererManager.swift; sourceTree = "<group>"; };
 		72E3992F25BCD28300927B17 /* SceneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneManager.swift; sourceTree = "<group>"; };
-		72E3993525BCD8FB00927B17 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		72E3993D25BD85E300927B17 /* GameTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTime.swift; sourceTree = "<group>"; };
 		72E3995025BE31B000927B17 /* helmet_normal.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = helmet_normal.jpg; sourceTree = "<group>"; };
 		72E3995125BE31B000927B17 /* loft_pmrem.ktx */ = {isa = PBXFileReference; lastKnownFileType = file; path = loft_pmrem.ktx; sourceTree = "<group>"; };
@@ -110,9 +112,9 @@
 		72E3998825BEF35100927B17 /* legoMan.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = legoMan.mtl; sourceTree = "<group>"; };
 		72E3998925BEF35100927B17 /* legoMan.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = legoMan.obj; sourceTree = "<group>"; };
 		72E3998A25BEF35100927B17 /* Face_04.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Face_04.png; sourceTree = "<group>"; };
-		72E3999A25BF0C9700927B17 /* teapot.obj */ = {isa = PBXFileReference; lastKnownFileType = file; name = teapot.obj; path = "Basic Game Engine/Resources/teapot/teapot.obj"; sourceTree = SOURCE_ROOT; };
-		72E399A525BF176C00927B17 /* teapot2.obj */ = {isa = PBXFileReference; lastKnownFileType = file; name = teapot2.obj; path = "Basic Game Engine/Resources/teapot/teapot2.obj"; sourceTree = SOURCE_ROOT; };
-		72E399B925BF3ECD00927B17 /* planet.obj */ = {isa = PBXFileReference; lastKnownFileType = file; name = planet.obj; path = "Basic Game Engine/Resources/legoMan/planet.obj"; sourceTree = SOURCE_ROOT; };
+		72E3999A25BF0C9700927B17 /* teapot.obj */ = {isa = PBXFileReference; lastKnownFileType = text; name = teapot.obj; path = "Basic Game Engine/Resources/teapot/teapot.obj"; sourceTree = SOURCE_ROOT; };
+		72E399A525BF176C00927B17 /* teapot2.obj */ = {isa = PBXFileReference; lastKnownFileType = text; name = teapot2.obj; path = "Basic Game Engine/Resources/teapot/teapot2.obj"; sourceTree = SOURCE_ROOT; };
+		72E399B925BF3ECD00927B17 /* planet.obj */ = {isa = PBXFileReference; lastKnownFileType = text; name = planet.obj; path = "Basic Game Engine/Resources/legoMan/planet.obj"; sourceTree = SOURCE_ROOT; };
 		72E399CF25BF611100927B17 /* teapot.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = teapot.usd; path = "Basic Game Engine/Resources/teapot/teapot.usd"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -261,7 +263,6 @@
 		72E3993425BCD8EA00927B17 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				72E3993525BCD8FB00927B17 /* Models.swift */,
 			);
 			path = Libraries;
 			sourceTree = "<group>";
@@ -307,6 +308,8 @@
 		72E3999925BF0C8300927B17 /* teapot_ */ = {
 			isa = PBXGroup;
 			children = (
+				722830B825C5705F00C9CCF4 /* spheres.usd */,
+				72282CCA25C17FD400C9CCF4 /* plane.obj */,
 				72E399CF25BF611100927B17 /* teapot.usd */,
 				72E3999A25BF0C9700927B17 /* teapot.obj */,
 				72E399A525BF176C00927B17 /* teapot2.obj */,
@@ -427,6 +430,7 @@
 			files = (
 				72E3999B25BF0C9700927B17 /* teapot.obj in Resources */,
 				72E3998D25BEF35100927B17 /* Face_04.png in Resources */,
+				72282CCB25C17FD400C9CCF4 /* plane.obj in Resources */,
 				72E3995E25BE31B000927B17 /* helmet_baseColor.png in Resources */,
 				72E3995B25BE31B000927B17 /* loft_pmrem.ktx in Resources */,
 				72E3996225BE31B000927B17 /* helmet_roughness.jpg in Resources */,
@@ -443,6 +447,7 @@
 				72E3998B25BEF35100927B17 /* legoMan.mtl in Resources */,
 				72E3995D25BE31B000927B17 /* helmet.mtl in Resources */,
 				72E398AF25BB4ECB00927B17 /* Main.storyboard in Resources */,
+				722830B925C5706000C9CCF4 /* spheres.usd in Resources */,
 				72E3998C25BEF35100927B17 /* legoMan.obj in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -469,7 +474,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				72E398E125BB73E700927B17 /* BasicShaders.metal in Sources */,
-				72E3993625BCD8FB00927B17 /* Models.swift in Sources */,
 				72E3990B25BC9D7B00927B17 /* Mesh.swift in Sources */,
 				72E3992225BCC95500927B17 /* Renderer.swift in Sources */,
 				72E398A725BB4ECA00927B17 /* GameViewController.swift in Sources */,

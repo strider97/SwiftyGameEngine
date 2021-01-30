@@ -8,21 +8,14 @@
 import MetalKit
 
 class SceneManager {
-    static let sharedManager = SceneManager()
     let currentScene: Scene
-    private init () {
+    init () {
         currentScene = Scene() {
         //    let helmet = GameObject(modelName: Models.helmet)
         //    helmet.transform.translate(Float3(2, 0, 0))
-            let planet = GameObject(modelName: Models.helmet)
-            planet.transform.translate(Float3(-15, 0, 0))
-            let planet2 = GameObject(modelName: Models.legoMan)
-            planet2.transform.translate(Float3(-3, 0, 0))
-            let planet3 = GameObject(modelName: Models.helmet)
-            planet3.transform.translate(Float3(3, 0, 0))
-            let planet4 = GameObject(modelName: Models.legoMan)
-            planet4.transform.translate(Float3(8, 0, 0))
-            return [planet, planet2, planet3, planet4]
+            let planet = GameObject(modelName: "teapot")
+            planet.transform.translate(Float3(0, 0, 0))
+            return [planet]
         }
     }
 }
@@ -89,12 +82,17 @@ extension Scene {
                 renderCommandEncoder?.setRenderPipelineState(renderPipelineStatus)
                 var u = getUniformData(gameObject.transform.modelMatrix)
                 renderCommandEncoder?.setVertexBytes(&u, length: MemoryLayout<Uniforms>.stride, index: 1)
+                
        //         print(mesh_.meshes.map{$0.name}, mesh_.mdlMeshes.map{$0.name})
-                for mesh in mesh_.meshes {
+                for (mesh, meshNodes) in mesh_.meshNodes {
                     for (bufferIndex, vertexBuffer) in mesh.vertexBuffers.enumerated() {
                         renderCommandEncoder?.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: bufferIndex)
                     }
-                    for submesh in mesh.submeshes {
+                    for meshNode in meshNodes {
+                        // add material through uniforms
+                        var material = ShaderMaterial(baseColor: meshNode.material.baseColor)
+                    //    renderCommandEncoder?.setVertexBytes(&material, length: MemoryLayout<Uniforms>.stride, index: 2)
+                        let submesh = meshNode.mesh
                         renderCommandEncoder?.drawIndexedPrimitives(type:submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: submesh.indexBuffer.offset)
                     }
                 }

@@ -95,6 +95,7 @@ extension Camera {
         Input.sharedInput.deltaMouse.y
         pitch = max(-MathConstants.PI.rawValue/2+0.5, min(MathConstants.PI.rawValue/2-0.5, pitch))
         direction = Float3(cos(yaw) * cos(pitch), sin(pitch), sin(yaw) * cos(pitch)).normalized;
+        print(position)
     }
     
     private func translateCam(key: KeyboardEvents) {
