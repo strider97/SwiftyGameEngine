@@ -73,7 +73,7 @@ vertex VertexOut basicVertexShader(const VertexIn vIn [[ stage_in ]], constant U
 fragment half4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], texture2d<float, access::sample> baseColorTexture [[texture(0)]], sampler baseColorSampler [[sampler(0)]]) {
 //    float3 color = baseColorTexture.sample(baseColorSampler, vOut.texCoords).rgb;
     float3 color = material.baseColor;
-    float3 lightDir = normalize(float3(-1, 1, 4));
+    float3 lightDir = normalize(float3(-1, 2, 1));
     float3 eyeDir = normalize(vOut.eye - vOut.position);
     float spec = 1*pow(max(0.0, dot(normalize(lightDir + eyeDir), vOut.normal)), 32);
     float diff = max(0.2, dot(lightDir, vOut.normal));
