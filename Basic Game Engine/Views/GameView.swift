@@ -11,6 +11,7 @@ class GameView: MTKView {
     required init(coder: NSCoder) {
         super.init(coder: coder)
         device = Device.sharedDevice.device
+        self.delegate = SceneManager.sharedManager.currentScene
         colorPixelFormat = Constants.pixelFormat
         depthStencilPixelFormat = .depth32Float
         clearColor = Colors.clearColor
@@ -20,8 +21,6 @@ class GameView: MTKView {
         let trackingArea = NSTrackingArea(rect: self.bounds, options: options,
                                           owner: self, userInfo: nil)
         self.addTrackingArea(trackingArea)
-        let sceneManager = SceneManager()
-        delegate = sceneManager.currentScene
     }
 }
 

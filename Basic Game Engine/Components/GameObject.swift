@@ -22,6 +22,7 @@ class GameObject {
         let mesh = Mesh(modelName: modelName)
         addComponent(mesh)
         createRenderPipelineState(material: Material(), vertexDescriptor: mesh.vertexDescriptor)
+        transform.rotate(angle: MathConstants.PI.rawValue/2, axis: Float3(1, 0, 0))
     }
 }
 

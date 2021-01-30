@@ -8,12 +8,13 @@
 import MetalKit
 
 class SceneManager {
+    static let sharedManager = SceneManager()
     let currentScene: Scene
     init () {
         currentScene = Scene() {
         //    let helmet = GameObject(modelName: Models.helmet)
         //    helmet.transform.translate(Float3(2, 0, 0))
-            let planet = GameObject(modelName: "teapot")
+            let planet = GameObject(modelName: "spheres")
             planet.transform.translate(Float3(0, 0, 0))
             return [planet]
         }
@@ -23,7 +24,7 @@ class SceneManager {
 class Scene: NSObject {
     var name = "Game Scene"
     var gameObjects: [GameObject] = []
-    let P = Matrix4.perspective(fov: (MathConstants.PI.rawValue/3), aspect: 1280.0/720, nearDist: 0.01, farDist: 500)
+    let P = Matrix4.perspective(fov: (MathConstants.PI.rawValue/3), aspect: 800.0/600, nearDist: 0.01, farDist: 500)
     let timer = GameTimer.sharedTimer
     let camera = Camera(position: Float3(0, 0, 10), target: Float3(0, 0, 0))
     
@@ -91,7 +92,7 @@ extension Scene {
                     for meshNode in meshNodes {
                         // add material through uniforms
                         var material = ShaderMaterial(baseColor: meshNode.material.baseColor)
-                    //    renderCommandEncoder?.setVertexBytes(&material, length: MemoryLayout<Uniforms>.stride, index: 2)
+                        renderCommandEncoder?.setFragmentBytes(&material, length: MemoryLayout<ShaderMaterial>.size, index: 0)
                         let submesh = meshNode.mesh
                         renderCommandEncoder?.drawIndexedPrimitives(type:submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: submesh.indexBuffer.offset)
                     }

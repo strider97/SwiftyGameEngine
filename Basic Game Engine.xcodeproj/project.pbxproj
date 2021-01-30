@@ -167,7 +167,6 @@
 			isa = PBXGroup;
 			children = (
 				72E3994F25BE316F00927B17 /* Resources */,
-				72E3993425BCD8EA00927B17 /* Libraries */,
 				72E3992625BCCDC300927B17 /* Systems */,
 				72E398FE25BC987E00927B17 /* Components */,
 				72E398F325BC21BC00927B17 /* Core */,
@@ -258,13 +257,6 @@
 				72E3996E25BEBA0800927B17 /* MeshManager.swift */,
 			);
 			path = Systems;
-			sourceTree = "<group>";
-		};
-		72E3993425BCD8EA00927B17 /* Libraries */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Libraries;
 			sourceTree = "<group>";
 		};
 		72E3994F25BE316F00927B17 /* Resources */ = {
