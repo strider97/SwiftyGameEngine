@@ -15,6 +15,7 @@ class GameView: MTKView {
         colorPixelFormat = Constants.pixelFormat
         depthStencilPixelFormat = .depth32Float
         clearColor = Colors.clearColor
+        
         updateTrackingAreas()
         addTrackingArea(NSTrackingArea(coder: coder)!)
         let options: NSTrackingArea.Options = [.mouseEnteredAndExited, .mouseMoved, .activeInKeyWindow]
@@ -40,7 +41,7 @@ extension GameView {
     }
     
     override func mouseMoved(with event: NSEvent) {
-    //    Input.sharedInput.updateMousePosition(pos: Float2(Float(event.locationInWindow.x), Float(event.locationInWindow.y)))
+     //   Input.sharedInput.updateMousePosition(pos: Float2(Float(event.locationInWindow.x), Float(event.locationInWindow.y)))
     //    NotificationCenter.default.post(name: NSNotification.Name.mouseMoved, object: nil)
     }
     

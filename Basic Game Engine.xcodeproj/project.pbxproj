@@ -7,8 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		720EC2EE25D7CCD300A83F1A /* Skybox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720EC2ED25D7CCD300A83F1A /* Skybox.swift */; };
+		720EC2F325D82F2500A83F1A /* SkyboxShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 720EC2F225D82F2500A83F1A /* SkyboxShader.metal */; };
+		720EC2FF25D8816B00A83F1A /* park.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 720EC2FE25D8816B00A83F1A /* park.hdr */; };
 		72282CCB25C17FD400C9CCF4 /* plane.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72282CCA25C17FD400C9CCF4 /* plane.obj */; };
 		722830B925C5706000C9CCF4 /* spheres.usd in Resources */ = {isa = PBXBuildFile; fileRef = 722830B825C5705F00C9CCF4 /* spheres.usd */; };
+		7230F99B25C60FAD00D9610A /* BasicScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7230F99A25C60FAD00D9610A /* BasicScene.swift */; };
+		7230F9A825C6B86B00D9610A /* Behaviour.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7230F9A725C6B86B00D9610A /* Behaviour.swift */; };
+		7244840C25C6F42300294331 /* SimpleScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7244840B25C6F42300294331 /* SimpleScene.swift */; };
+		729B14D125D8841A00129165 /* park.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 729B14D025D8841A00129165 /* park.jpg */; };
 		72E398A525BB4ECA00927B17 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E398A425BB4ECA00927B17 /* AppDelegate.swift */; };
 		72E398A725BB4ECA00927B17 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E398A625BB4ECA00927B17 /* GameViewController.swift */; };
 		72E398AA25BB4ECA00927B17 /* Basic_Game_Engine.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 72E398A825BB4ECA00927B17 /* Basic_Game_Engine.xcdatamodeld */; };
@@ -68,8 +75,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		720EC2ED25D7CCD300A83F1A /* Skybox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Skybox.swift; sourceTree = "<group>"; };
+		720EC2F225D82F2500A83F1A /* SkyboxShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = SkyboxShader.metal; sourceTree = "<group>"; };
+		720EC2FE25D8816B00A83F1A /* park.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = park.hdr; path = "Basic Game Engine/HDRI/park.hdr"; sourceTree = SOURCE_ROOT; };
 		72282CCA25C17FD400C9CCF4 /* plane.obj */ = {isa = PBXFileReference; lastKnownFileType = text; name = plane.obj; path = "Basic Game Engine/Resources/teapot/plane.obj"; sourceTree = SOURCE_ROOT; };
 		722830B825C5705F00C9CCF4 /* spheres.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = spheres.usd; path = "Basic Game Engine/Resources/teapot/spheres.usd"; sourceTree = SOURCE_ROOT; };
+		7230F99A25C60FAD00D9610A /* BasicScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicScene.swift; sourceTree = "<group>"; };
+		7230F9A725C6B86B00D9610A /* Behaviour.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Behaviour.swift; sourceTree = "<group>"; };
+		7244840B25C6F42300294331 /* SimpleScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleScene.swift; sourceTree = "<group>"; };
+		729B14D025D8841A00129165 /* park.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = park.jpg; path = "Basic Game Engine/HDRI/park.jpg"; sourceTree = SOURCE_ROOT; };
 		72E398A125BB4ECA00927B17 /* Basic Game Engine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Basic Game Engine.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		72E398A425BB4ECA00927B17 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		72E398A625BB4ECA00927B17 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
@@ -143,6 +157,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		720EC2FD25D8814D00A83F1A /* HDRI */ = {
+			isa = PBXGroup;
+			children = (
+				729B14D025D8841A00129165 /* park.jpg */,
+				720EC2FE25D8816B00A83F1A /* park.hdr */,
+			);
+			path = HDRI;
+			sourceTree = "<group>";
+		};
+		7230F99925C60F9200D9610A /* Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				7230F99A25C60FAD00D9610A /* BasicScene.swift */,
+				7244840B25C6F42300294331 /* SimpleScene.swift */,
+			);
+			path = Scenes;
+			sourceTree = "<group>";
+		};
 		72E3989825BB4ECA00927B17 = {
 			isa = PBXGroup;
 			children = (
@@ -166,11 +198,9 @@
 		72E398A325BB4ECA00927B17 /* Basic Game Engine */ = {
 			isa = PBXGroup;
 			children = (
+				7230F99925C60F9200D9610A /* Scenes */,
 				72E3994F25BE316F00927B17 /* Resources */,
-				72E3992625BCCDC300927B17 /* Systems */,
-				72E398FE25BC987E00927B17 /* Components */,
 				72E398F325BC21BC00927B17 /* Core */,
-				72E398E525BC131E00927B17 /* Objects */,
 				72E398DF25BB73CD00927B17 /* Shaders */,
 				72E398D625BB6EC200927B17 /* Views */,
 				72E398A425BB4ECA00927B17 /* AppDelegate.swift */,
@@ -215,24 +245,22 @@
 			isa = PBXGroup;
 			children = (
 				72E398E025BB73E700927B17 /* BasicShaders.metal */,
+				720EC2F225D82F2500A83F1A /* SkyboxShader.metal */,
 			);
 			path = Shaders;
-			sourceTree = "<group>";
-		};
-		72E398E525BC131E00927B17 /* Objects */ = {
-			isa = PBXGroup;
-			children = (
-				72E398EE25BC19EF00927B17 /* Camera.swift */,
-			);
-			path = Objects;
 			sourceTree = "<group>";
 		};
 		72E398F325BC21BC00927B17 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				72E3992625BCCDC300927B17 /* Systems */,
+				72E398FE25BC987E00927B17 /* Components */,
 				72E398F425BC21E400927B17 /* Core.swift */,
 				72E398F925BC432C00927B17 /* Constants.swift */,
 				72E3991C25BCBBB900927B17 /* RenderPipelineState.swift */,
+				72E398EE25BC19EF00927B17 /* Camera.swift */,
+				7230F9A725C6B86B00D9610A /* Behaviour.swift */,
+				720EC2ED25D7CCD300A83F1A /* Skybox.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -262,6 +290,7 @@
 		72E3994F25BE316F00927B17 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				720EC2FD25D8814D00A83F1A /* HDRI */,
 				72E399B525BF3EA200927B17 /* Planet */,
 				72E3999925BF0C8300927B17 /* teapot_ */,
 				72E3997E25BEF2C300927B17 /* legoMan */,
@@ -421,6 +450,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				72E3999B25BF0C9700927B17 /* teapot.obj in Resources */,
+				729B14D125D8841A00129165 /* park.jpg in Resources */,
 				72E3998D25BEF35100927B17 /* Face_04.png in Resources */,
 				72282CCB25C17FD400C9CCF4 /* plane.obj in Resources */,
 				72E3995E25BE31B000927B17 /* helmet_baseColor.png in Resources */,
@@ -430,6 +460,7 @@
 				72E3996325BE31B000927B17 /* helmet.obj in Resources */,
 				72E3995F25BE31B000927B17 /* helmet_baseColor.jpg in Resources */,
 				72E3996025BE31B000927B17 /* helmet_metallicRoughness.png in Resources */,
+				720EC2FF25D8816B00A83F1A /* park.hdr in Resources */,
 				72E399A625BF176C00927B17 /* teapot2.obj in Resources */,
 				72E3996125BE31B000927B17 /* helmet_metallic.jpg in Resources */,
 				72E398AC25BB4ECB00927B17 /* Assets.xcassets in Resources */,
@@ -467,22 +498,27 @@
 			files = (
 				72E398E125BB73E700927B17 /* BasicShaders.metal in Sources */,
 				72E3990B25BC9D7B00927B17 /* Mesh.swift in Sources */,
+				7244840C25C6F42300294331 /* SimpleScene.swift in Sources */,
 				72E3992225BCC95500927B17 /* Renderer.swift in Sources */,
 				72E398A725BB4ECA00927B17 /* GameViewController.swift in Sources */,
 				72E3991D25BCBBB900927B17 /* RenderPipelineState.swift in Sources */,
 				72E398E725BC135C00927B17 /* GameObject.swift in Sources */,
 				72E3993025BCD28300927B17 /* SceneManager.swift in Sources */,
 				72E398AA25BB4ECA00927B17 /* Basic_Game_Engine.xcdatamodeld in Sources */,
+				720EC2EE25D7CCD300A83F1A /* Skybox.swift in Sources */,
 				72E398DB25BB6FB800927B17 /* HelloWorldView.swift in Sources */,
 				72E3990025BC98AA00927B17 /* Utils.swift in Sources */,
 				72E398EF25BC19EF00927B17 /* Camera.swift in Sources */,
 				72E3993E25BD85E300927B17 /* GameTime.swift in Sources */,
 				72E3992825BCCDCF00927B17 /* RendererManager.swift in Sources */,
+				7230F99B25C60FAD00D9610A /* BasicScene.swift in Sources */,
+				720EC2F325D82F2500A83F1A /* SkyboxShader.metal in Sources */,
 				72E398F525BC21E400927B17 /* Core.swift in Sources */,
 				72E398A525BB4ECA00927B17 /* AppDelegate.swift in Sources */,
 				72E3991825BCBB2500927B17 /* GameView.swift in Sources */,
 				72E3996F25BEBA0800927B17 /* MeshManager.swift in Sources */,
 				72E398FA25BC432C00927B17 /* Constants.swift in Sources */,
+				7230F9A825C6B86B00D9610A /* Behaviour.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
