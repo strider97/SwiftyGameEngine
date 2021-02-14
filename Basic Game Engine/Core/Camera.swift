@@ -95,7 +95,7 @@ extension Camera {
         Input.sharedInput.deltaMouse.x
         pitch -= mouseSpeed*GameTimer.sharedTimer.deltaTime *
         Input.sharedInput.deltaMouse.y
-        pitch = max(-MathConstants.PI.rawValue/2+0.5, min(MathConstants.PI.rawValue/2-0.5, pitch))
+        pitch = max(-MathConstants.PI.rawValue/2+1.45, min(MathConstants.PI.rawValue/2-1.45, pitch))
         direction = Float3(cos(yaw) * cos(pitch), sin(pitch), sin(yaw) * cos(pitch)).normalized;
     }
     

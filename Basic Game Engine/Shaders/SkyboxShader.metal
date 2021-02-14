@@ -23,7 +23,7 @@ struct Uniforms {
     float3 eye;
 };
 
-constant float2 invAtan = float2(0.1591, 0.3183);
+constant float2 invAtan = float2(0.1591*2, 0.3183*2);
 
 float2 sampleSphericalMap(float3 dir)
 {
@@ -36,9 +36,7 @@ float2 sampleSphericalMap(float3 dir)
 
 vertex VertexOut skyboxVertexShader (const VertexIn vIn [[ stage_in ]], constant Uniforms &uniforms [[buffer(1)]]) {
     VertexOut vOut;
-    float4x4 V_ = uniforms.V;
-    V_.columns[3] = float4(0, 0, 0, V_[3][3]);
-    float4x4 PVM = uniforms.P*V_*uniforms.M;
+    float4x4 PVM = uniforms.P*uniforms.V;
     vOut.position = (PVM * vIn.position).xyww;
     vOut.textureDir = vIn.position.xyz;
     return vOut;
@@ -46,6 +44,7 @@ vertex VertexOut skyboxVertexShader (const VertexIn vIn [[ stage_in ]], constant
 
 fragment half4 skyboxFragmentShader (VertexOut vOut [[ stage_in ]], texture2d<float, access::sample> baseColorTexture [[texture(3)]], sampler baseColorSampler [[sampler(0)]]) {
     float3 skyColor = baseColorTexture.sample(baseColorSampler, sampleSphericalMap(vOut.textureDir)).rgb;
+    skyColor = pow(skyColor, float3(1.0/2.2));
     half4 color = half4(skyColor.x, skyColor.y, skyColor.z, 1);
     return color;
 }

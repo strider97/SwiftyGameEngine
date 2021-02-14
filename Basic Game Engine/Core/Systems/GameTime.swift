@@ -27,6 +27,7 @@ class Input {
     var mousePosition: Float2 = Float2(0, 0)
     var deltaMouse: Float2 = Float2(0, 0)
     var firstMouseInteraction = true
+    var mouseClicked = false
     private init () {}
     
     func updateMousePosition(pos: Float2) {
@@ -36,5 +37,9 @@ class Input {
             firstMouseInteraction = false
         }
         mousePosition = pos
+    }
+    
+    func updateMouseClicked(clicked: Bool) {
+        mouseClicked = clicked
     }
 }

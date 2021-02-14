@@ -21,9 +21,9 @@ class SceneManager {
 class Scene: NSObject {
     var name = "Game Scene"
     var gameObjects: [GameObject] = []
-    static let W:Float = 800
-    static let H:Float = 600
-    final let P = Matrix4.perspective(fov: (MathConstants.PI.rawValue/3), aspect: Scene.W/Scene.H, nearDist: 0.01, farDist: 500)
+    static let W:Float = 1280
+    static let H:Float = 720
+    final let P = Matrix4(projectionFov: (MathConstants.PI.rawValue/3), near: 0.01, far: 500, aspect: Scene.W/Scene.H)
     final let timer = GameTimer.sharedTimer
     final var camera: Camera!
     final let device = Device.sharedDevice.device
@@ -57,10 +57,10 @@ class Scene: NSObject {
     func getGameObjects() -> [GameObject] {[]}
     func addPhysics() {}
     func getCamera() -> Camera {
-       return Camera(position: Float3(0, 0, 10), target: Float3(0, 0, 0))
+        return Camera(position: Float3(0, 0, 10), target: Float3(0, 0, 0))
     }
     func getSkybox() -> Skybox {
-        return Skybox(textureName: "park")
+        return Skybox(textureName: "kiara")
     }
     func addBehaviour() {}
 }
@@ -76,7 +76,9 @@ extension Scene: MTKViewDelegate {
         if mouse.x < Scene.W && mouse.y < Scene.H && mouse.x > 0.0 && mouse.y > 0.0 {
             if mouse != Input.sharedInput.mousePosition {
                 Input.sharedInput.updateMousePosition(pos: mouse)
-                camera.rotateCam()
+                if Input.sharedInput.mouseClicked {
+                    camera.rotateCam()
+                }
             }
         }
         updateGameObjects()
@@ -87,6 +89,19 @@ extension Scene: MTKViewDelegate {
 extension Scene {
     func getUniformData(_ M: Matrix4 = Matrix4(1.0)) -> Uniforms {
         return Uniforms(M: M, V: camera.lookAtMatrix, P: P, eye: camera.position)
+    }
+    
+    func getSkyboxUniformData() -> Uniforms {
+        let M = Matrix4(1.0)
+        var v = camera.lookAtMatrix
+        v[0][3] = 0
+        v[1][3] = 0
+        v[2][3] = 0
+        v[3][3] = 1
+        v[3][0] = 0
+        v[3][1] = 0
+        v[3][2] = 0
+        return Uniforms(M: M, V: v, P: P, eye: camera.position)
     }
     
     func render(_ view: MTKView) {
@@ -138,7 +153,7 @@ extension Scene {
     func drawSkybox(renderCommandEncoder: MTLRenderCommandEncoder?) {
         renderCommandEncoder?.setDepthStencilState(skybox.depthStencilState)
         renderCommandEncoder?.setRenderPipelineState(skybox.pipelineState)
-        var u = getUniformData()
+        var u = getSkyboxUniformData()
         renderCommandEncoder?.setVertexBytes(&u, length: MemoryLayout<Uniforms>.stride, index: 1)
         renderCommandEncoder?.setVertexBuffer(skybox.mesh.vertexBuffers[0].buffer,
                                               offset: 0, index: 0)

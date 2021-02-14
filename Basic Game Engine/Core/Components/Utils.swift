@@ -111,24 +111,17 @@ extension Matrix4 {
                   Float4(t[0], t[1], t[2], 1))
     }
     
-    init(perspectiveProjectionFov fovRadians: Float, aspectRatio aspect: Float, nearZ: Float, farZ: Float) {
-        let yScale = 1 / tan(fovRadians * 0.5)
-        let xScale = yScale / aspect
-        let zRange = farZ - nearZ
-        let zScale = -(farZ + nearZ) / zRange
-        let wzScale = -2 * farZ * nearZ / zRange
-        
-        let xx = xScale
-        let yy = yScale
-        let zz = zScale
-        let zw = Float(-1)
-        let wz = wzScale
-        
-        self.init(Float4(xx,  0,  0,  0),
-                  Float4( 0, yy,  0,  0),
-                  Float4( 0,  0, zz, zw),
-                  Float4( 0,  0, wz,  1))
-    }
+    init(projectionFov fov: Float, near: Float, far: Float, aspect: Float, lhs: Bool = true) {
+        let y = 1 / tan(fov * 0.5)
+        let x = y / aspect
+        let z = lhs ? far / (far - near) : far / (near - far)
+        let X = Float4( x,  0,  0,  0)
+        let Y = Float4( 0,  y,  0,  0)
+        let Z = lhs ? Float4( 0,  0,  z, 1) : Float4( 0,  0,  z, -1)
+        let W = lhs ? Float4( 0,  0,  z * -near,  0) : Float4( 0,  0,  z * near,  0)
+        self.init()
+        columns = (X, Y, Z, W)
+      }
     
     var normalMatrix: Matrix3 {
         let upperLeft = Matrix3(self[0].xyz, self[1].xyz, self[2].xyz)

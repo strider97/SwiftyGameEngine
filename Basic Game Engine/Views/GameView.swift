@@ -40,6 +40,14 @@ extension GameView {
         KeyboardEvents.pressUp(event.characters ?? "")
     }
     
+    override func mouseDown(with event: NSEvent) {
+        Input.sharedInput.updateMouseClicked(clicked: true)
+    }
+    
+    override func mouseUp(with event: NSEvent) {
+        Input.sharedInput.updateMouseClicked(clicked: false)
+    }
+    
     override func mouseMoved(with event: NSEvent) {
      //   Input.sharedInput.updateMousePosition(pos: Float2(Float(event.locationInWindow.x), Float(event.locationInWindow.y)))
     //    NotificationCenter.default.post(name: NSNotification.Name.mouseMoved, object: nil)
