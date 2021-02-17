@@ -123,6 +123,18 @@ extension Matrix4 {
         columns = (X, Y, Z, W)
       }
     
+    init(orthoLeft left: Float, right: Float, bottom: Float, top: Float, near: Float, far: Float) {
+      let X = Float4(2 / (right - left), 0, 0, 0)
+      let Y = Float4(0, 2 / (top - bottom), 0, 0)
+      let Z = Float4(0, 0, 1 / (far - near), 0)
+      let W = Float4((left + right) / (left - right),
+                     (top + bottom) / (bottom - top),
+                     near / (near - far),
+                     1)
+      self.init()
+      columns = (X, Y, Z, W)
+    }
+    
     var normalMatrix: Matrix3 {
         let upperLeft = Matrix3(self[0].xyz, self[1].xyz, self[2].xyz)
         return upperLeft.transpose.inverse

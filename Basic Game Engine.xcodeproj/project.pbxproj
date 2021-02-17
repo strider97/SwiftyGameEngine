@@ -19,6 +19,8 @@
 		729B14DE25D8941600129165 /* ground.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 729B14DD25D8941600129165 /* ground.hdr */; };
 		729B14E325D8966000129165 /* room.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 729B14E225D8966000129165 /* room.hdr */; };
 		729B14E825D896EC00129165 /* kiara.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 729B14E725D896EC00129165 /* kiara.hdr */; };
+		729B14F625D91AFF00129165 /* garden.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 729B14F525D91AFF00129165 /* garden.hdr */; };
+		729B14FB25D91D8100129165 /* park_green.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 729B14FA25D91D8100129165 /* park_green.hdr */; };
 		72E398A525BB4ECA00927B17 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E398A425BB4ECA00927B17 /* AppDelegate.swift */; };
 		72E398A725BB4ECA00927B17 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E398A625BB4ECA00927B17 /* GameViewController.swift */; };
 		72E398AA25BB4ECA00927B17 /* Basic_Game_Engine.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 72E398A825BB4ECA00927B17 /* Basic_Game_Engine.xcdatamodeld */; };
@@ -58,6 +60,8 @@
 		72E399A625BF176C00927B17 /* teapot2.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72E399A525BF176C00927B17 /* teapot2.obj */; };
 		72E399BA25BF3ECD00927B17 /* planet.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72E399B925BF3ECD00927B17 /* planet.obj */; };
 		72E399D025BF611100927B17 /* teapot.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72E399CF25BF611100927B17 /* teapot.usd */; };
+		72ED2D8C25DC33FF00F12F90 /* Descriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72ED2D8B25DC33FF00F12F90 /* Descriptor.swift */; };
+		72ED2D9125DC61F700F12F90 /* shadowShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 72ED2D9025DC61F700F12F90 /* shadowShader.metal */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -90,6 +94,8 @@
 		729B14DD25D8941600129165 /* ground.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = ground.hdr; path = "Basic Game Engine/HDRI/ground.hdr"; sourceTree = SOURCE_ROOT; };
 		729B14E225D8966000129165 /* room.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = room.hdr; path = "Basic Game Engine/HDRI/room.hdr"; sourceTree = SOURCE_ROOT; };
 		729B14E725D896EC00129165 /* kiara.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = kiara.hdr; path = "Basic Game Engine/HDRI/kiara.hdr"; sourceTree = SOURCE_ROOT; };
+		729B14F525D91AFF00129165 /* garden.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = garden.hdr; path = "Basic Game Engine/HDRI/garden.hdr"; sourceTree = SOURCE_ROOT; };
+		729B14FA25D91D8100129165 /* park_green.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = park_green.hdr; path = "Basic Game Engine/HDRI/park_green.hdr"; sourceTree = SOURCE_ROOT; };
 		72E398A125BB4ECA00927B17 /* Basic Game Engine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Basic Game Engine.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		72E398A425BB4ECA00927B17 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		72E398A625BB4ECA00927B17 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
@@ -136,6 +142,8 @@
 		72E399A525BF176C00927B17 /* teapot2.obj */ = {isa = PBXFileReference; lastKnownFileType = text; name = teapot2.obj; path = "Basic Game Engine/Resources/teapot/teapot2.obj"; sourceTree = SOURCE_ROOT; };
 		72E399B925BF3ECD00927B17 /* planet.obj */ = {isa = PBXFileReference; lastKnownFileType = text; name = planet.obj; path = "Basic Game Engine/Resources/legoMan/planet.obj"; sourceTree = SOURCE_ROOT; };
 		72E399CF25BF611100927B17 /* teapot.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = teapot.usd; path = "Basic Game Engine/Resources/teapot/teapot.usd"; sourceTree = SOURCE_ROOT; };
+		72ED2D8B25DC33FF00F12F90 /* Descriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Descriptor.swift; sourceTree = "<group>"; };
+		72ED2D9025DC61F700F12F90 /* shadowShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = shadowShader.metal; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -166,6 +174,8 @@
 		720EC2FD25D8814D00A83F1A /* HDRI */ = {
 			isa = PBXGroup;
 			children = (
+				729B14FA25D91D8100129165 /* park_green.hdr */,
+				729B14F525D91AFF00129165 /* garden.hdr */,
 				729B14E725D896EC00129165 /* kiara.hdr */,
 				729B14E225D8966000129165 /* room.hdr */,
 				729B14DD25D8941600129165 /* ground.hdr */,
@@ -255,6 +265,7 @@
 			children = (
 				72E398E025BB73E700927B17 /* BasicShaders.metal */,
 				720EC2F225D82F2500A83F1A /* SkyboxShader.metal */,
+				72ED2D9025DC61F700F12F90 /* shadowShader.metal */,
 			);
 			path = Shaders;
 			sourceTree = "<group>";
@@ -270,6 +281,7 @@
 				72E398EE25BC19EF00927B17 /* Camera.swift */,
 				7230F9A725C6B86B00D9610A /* Behaviour.swift */,
 				720EC2ED25D7CCD300A83F1A /* Skybox.swift */,
+				72ED2D8B25DC33FF00F12F90 /* Descriptor.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -458,6 +470,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				729B14FB25D91D8100129165 /* park_green.hdr in Resources */,
 				72E3999B25BF0C9700927B17 /* teapot.obj in Resources */,
 				729B14D125D8841A00129165 /* park.jpg in Resources */,
 				72E3998D25BEF35100927B17 /* Face_04.png in Resources */,
@@ -470,6 +483,7 @@
 				72E3996225BE31B000927B17 /* helmet_roughness.jpg in Resources */,
 				72E3995C25BE31B000927B17 /* garage_pmrem.ktx in Resources */,
 				72E3996325BE31B000927B17 /* helmet.obj in Resources */,
+				729B14F625D91AFF00129165 /* garden.hdr in Resources */,
 				72E3995F25BE31B000927B17 /* helmet_baseColor.jpg in Resources */,
 				72E3996025BE31B000927B17 /* helmet_metallicRoughness.png in Resources */,
 				720EC2FF25D8816B00A83F1A /* park.hdr in Resources */,
@@ -510,6 +524,7 @@
 			files = (
 				72E398E125BB73E700927B17 /* BasicShaders.metal in Sources */,
 				72E3990B25BC9D7B00927B17 /* Mesh.swift in Sources */,
+				72ED2D8C25DC33FF00F12F90 /* Descriptor.swift in Sources */,
 				7244840C25C6F42300294331 /* SimpleScene.swift in Sources */,
 				72E3992225BCC95500927B17 /* Renderer.swift in Sources */,
 				72E398A725BB4ECA00927B17 /* GameViewController.swift in Sources */,
@@ -522,6 +537,7 @@
 				72E3990025BC98AA00927B17 /* Utils.swift in Sources */,
 				72E398EF25BC19EF00927B17 /* Camera.swift in Sources */,
 				72E3993E25BD85E300927B17 /* GameTime.swift in Sources */,
+				72ED2D9125DC61F700F12F90 /* shadowShader.metal in Sources */,
 				72E3992825BCCDCF00927B17 /* RendererManager.swift in Sources */,
 				7230F99B25C60FAD00D9610A /* BasicScene.swift in Sources */,
 				720EC2F325D82F2500A83F1A /* SkyboxShader.metal in Sources */,
