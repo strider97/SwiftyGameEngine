@@ -21,6 +21,9 @@
 		729B14E825D896EC00129165 /* kiara.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 729B14E725D896EC00129165 /* kiara.hdr */; };
 		729B14F625D91AFF00129165 /* garden.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 729B14F525D91AFF00129165 /* garden.hdr */; };
 		729B14FB25D91D8100129165 /* park_green.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 729B14FA25D91D8100129165 /* park_green.hdr */; };
+		72C1736925DED90800B75C4D /* ring.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72C1736825DED90800B75C4D /* ring.usd */; };
+		72DAC96025DDD87500DB3C50 /* plane.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72DAC95F25DDD87500DB3C50 /* plane.usd */; };
+		72DACABC25DE6AED00DB3C50 /* IrradianceMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DACABB25DE6AED00DB3C50 /* IrradianceMap.swift */; };
 		72E398A525BB4ECA00927B17 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E398A425BB4ECA00927B17 /* AppDelegate.swift */; };
 		72E398A725BB4ECA00927B17 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E398A625BB4ECA00927B17 /* GameViewController.swift */; };
 		72E398AA25BB4ECA00927B17 /* Basic_Game_Engine.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 72E398A825BB4ECA00927B17 /* Basic_Game_Engine.xcdatamodeld */; };
@@ -96,6 +99,9 @@
 		729B14E725D896EC00129165 /* kiara.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = kiara.hdr; path = "Basic Game Engine/HDRI/kiara.hdr"; sourceTree = SOURCE_ROOT; };
 		729B14F525D91AFF00129165 /* garden.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = garden.hdr; path = "Basic Game Engine/HDRI/garden.hdr"; sourceTree = SOURCE_ROOT; };
 		729B14FA25D91D8100129165 /* park_green.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = park_green.hdr; path = "Basic Game Engine/HDRI/park_green.hdr"; sourceTree = SOURCE_ROOT; };
+		72C1736825DED90800B75C4D /* ring.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = ring.usd; path = "Basic Game Engine/Resources/teapot/ring.usd"; sourceTree = SOURCE_ROOT; };
+		72DAC95F25DDD87500DB3C50 /* plane.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = plane.usd; path = "Basic Game Engine/Resources/teapot/plane.usd"; sourceTree = SOURCE_ROOT; };
+		72DACABB25DE6AED00DB3C50 /* IrradianceMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IrradianceMap.swift; sourceTree = "<group>"; };
 		72E398A125BB4ECA00927B17 /* Basic Game Engine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Basic Game Engine.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		72E398A425BB4ECA00927B17 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		72E398A625BB4ECA00927B17 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
@@ -282,6 +288,7 @@
 				7230F9A725C6B86B00D9610A /* Behaviour.swift */,
 				720EC2ED25D7CCD300A83F1A /* Skybox.swift */,
 				72ED2D8B25DC33FF00F12F90 /* Descriptor.swift */,
+				72DACABB25DE6AED00DB3C50 /* IrradianceMap.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -350,6 +357,8 @@
 		72E3999925BF0C8300927B17 /* teapot_ */ = {
 			isa = PBXGroup;
 			children = (
+				72C1736825DED90800B75C4D /* ring.usd */,
+				72DAC95F25DDD87500DB3C50 /* plane.usd */,
 				722830B825C5705F00C9CCF4 /* spheres.usd */,
 				72282CCA25C17FD400C9CCF4 /* plane.obj */,
 				72E399CF25BF611100927B17 /* teapot.usd */,
@@ -489,6 +498,8 @@
 				720EC2FF25D8816B00A83F1A /* park.hdr in Resources */,
 				72E399A625BF176C00927B17 /* teapot2.obj in Resources */,
 				72E3996125BE31B000927B17 /* helmet_metallic.jpg in Resources */,
+				72DAC96025DDD87500DB3C50 /* plane.usd in Resources */,
+				72C1736925DED90800B75C4D /* ring.usd in Resources */,
 				72E398AC25BB4ECB00927B17 /* Assets.xcassets in Resources */,
 				72E399D025BF611100927B17 /* teapot.usd in Resources */,
 				72E3995A25BE31B000927B17 /* helmet_normal.jpg in Resources */,
@@ -524,6 +535,7 @@
 			files = (
 				72E398E125BB73E700927B17 /* BasicShaders.metal in Sources */,
 				72E3990B25BC9D7B00927B17 /* Mesh.swift in Sources */,
+				72DACABC25DE6AED00DB3C50 /* IrradianceMap.swift in Sources */,
 				72ED2D8C25DC33FF00F12F90 /* Descriptor.swift in Sources */,
 				7244840C25C6F42300294331 /* SimpleScene.swift in Sources */,
 				72E3992225BCC95500927B17 /* Renderer.swift in Sources */,

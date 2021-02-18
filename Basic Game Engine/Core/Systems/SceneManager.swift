@@ -35,6 +35,7 @@ class Scene: NSObject {
     var shadowPipelineState: MTLRenderPipelineState?
     var irradianceMap = IrradianceMap()
  //   var samplerState: MTLSamplerState!
+    var firstDraw = true
     
     override init() {
         super.init()
@@ -54,7 +55,7 @@ class Scene: NSObject {
         return Camera(position: Float3(0, 0, 10), target: Float3(0, 0, 0))
     }
     func getSkybox() -> Skybox {
-        return Skybox(textureName: "park_green")
+        return Skybox(textureName: "park")
     }
     func addBehaviour() {}
 }
@@ -102,11 +103,12 @@ extension Scene {
         guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
         let commandBuffer = Device.sharedDevice.commandQueue?.makeCommandBuffer()
         
-        let irradianceMapCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: irradianceMap.renderPassDescriptor)
-        irradianceMapCommandEncoder?.setCullMode(.none)
-        drawIrradianceMap(renderCommandEncoder: irradianceMapCommandEncoder)
-        irradianceMapCommandEncoder?.endEncoding()
-        
+        if firstDraw {
+            let irradianceMapCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: irradianceMap.renderPassDescriptor)
+            irradianceMapCommandEncoder?.setCullMode(.none)
+            drawIrradianceMap(renderCommandEncoder: irradianceMapCommandEncoder)
+            irradianceMapCommandEncoder?.endEncoding()
+        }
         let shadowCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: shadowDescriptor)
         shadowCommandEncoder?.setDepthStencilState(depthStencilState)
         shadowCommandEncoder?.setCullMode(.none)
@@ -119,6 +121,8 @@ extension Scene {
         drawGameObjects(renderCommandEncoder: renderCommandEncoder)
         drawSkybox(renderCommandEncoder: renderCommandEncoder)
         renderCommandEncoder?.endEncoding()
+        
+        firstDraw = false
         guard let drawable = view.currentDrawable else { return }
         commandBuffer?.present(drawable)
         commandBuffer?.commit()
@@ -168,7 +172,7 @@ extension Scene {
         renderCommandEncoder?.setVertexBytes(&u, length: MemoryLayout<Uniforms>.stride, index: 1)
         renderCommandEncoder?.setVertexBuffer(skybox.mesh.vertexBuffers[0].buffer,
                                               offset: 0, index: 0)
-        renderCommandEncoder?.setFragmentTexture(skybox.texture, index: 3)
+        renderCommandEncoder?.setFragmentTexture(irradianceMap.texture, index: 3)
         let submesh = skybox.mesh.submeshes[0]
         renderCommandEncoder?.setFragmentSamplerState(skybox.samplerState, index: 0)
         renderCommandEncoder?.drawIndexedPrimitives(type: .triangle, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: 0)
@@ -176,11 +180,10 @@ extension Scene {
     
     func drawIrradianceMap(renderCommandEncoder: MTLRenderCommandEncoder?) {
         renderCommandEncoder?.setRenderPipelineState(irradianceMap.pipelineState)
-        renderCommandEncoder?.setVertexBuffer(skybox.mesh.vertexBuffers[0].buffer, offset: 0, index: 0)
+        renderCommandEncoder?.setVertexBuffer(irradianceMap.vertexBuffer, offset: 0, index: 0)
         renderCommandEncoder?.setFragmentTexture(skybox.texture, index: 3)
-        let submesh = skybox.mesh.submeshes[0]
         renderCommandEncoder?.setFragmentSamplerState(skybox.samplerState, index: 0)
-        renderCommandEncoder?.drawIndexedPrimitives(type: .triangle, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: 0)
+        renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: irradianceMap.vertices.count)
     }
     
     func updateGameObjects() {

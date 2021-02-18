@@ -64,7 +64,7 @@ extension Descriptor {
         descriptor.colorAttachments[0].pixelFormat = .rgba16Float;
         descriptor.vertexFunction = Device.sharedDevice.library?.makeFunction(name: "irradianceMapVertexShader")
         descriptor.fragmentFunction = Device.sharedDevice.library?.makeFunction(name: "irradianceMapFragmentShader")
-        descriptor.vertexDescriptor = MeshManager.getVertexDescriptor()
+        descriptor.vertexDescriptor = Descriptor.getSimpleVertexDescriptor()
         do {
             return try Device.sharedDevice.device!.makeRenderPipelineState(descriptor: descriptor)
         } catch let error {
@@ -85,14 +85,16 @@ let samplerDescriptor = MTLSamplerDescriptor()
 self.samplerState = device?.makeSamplerState(descriptor: samplerDescriptor)!
  */
 
-class IrradianceMap {
-    var texture: MTLTexture!
-    var renderPassDescriptor = MTLRenderPassDescriptor()
-    var pipelineState: MTLRenderPipelineState
-    
-    init() {
-        texture = Descriptor.build2DTexture(pixelFormat: .rgba16Float, size: CGSize(width: 1024, height: 1024));
-        pipelineState = Descriptor.createIrradianceMapPipelineState()
-        renderPassDescriptor.setupColorAttachment(texture)
+extension Descriptor {
+    static func getSimpleVertexDescriptor() -> MTLVertexDescriptor {
+        let vertexDescriptor = MTLVertexDescriptor()
+        vertexDescriptor.attributes[0].format = .float3
+        vertexDescriptor.attributes[0].bufferIndex = 0
+        vertexDescriptor.attributes[0].offset = 0
+        vertexDescriptor.attributes[1].format = .float4
+        vertexDescriptor.attributes[1].bufferIndex = 0
+        vertexDescriptor.attributes[1].offset = MemoryLayout<Float3>.size
+        vertexDescriptor.layouts[0].stride = MemoryLayout<Vertex>.stride
+        return vertexDescriptor
     }
 }

@@ -8,13 +8,13 @@
 import MetalKit
 
 class BasicScene: Scene {
-    var spheres: GameObject!
-    var monkey: GameObject!
+    var sphere: GameObject!
+    var ring: GameObject!
     
     override func getGameObjects() -> [GameObject] {
-        spheres = GameObject(modelName: "spheres")
-        monkey = GameObject(modelName: "teapot")
-        return [spheres, monkey]
+        sphere = GameObject(modelName: "spheres")
+        ring = GameObject(modelName: "ring")
+        return [sphere, ring]
     }
     
     override func addPhysics() {
@@ -22,7 +22,7 @@ class BasicScene: Scene {
     }
     
     override func addBehaviour() {
-        let _ = MoveInCircle(gameObject: monkey, radius: 10)
+        let _ = MoveInCircle(gameObject: sphere, radius: 10)
     }
     
     override func getCamera() -> Camera {
