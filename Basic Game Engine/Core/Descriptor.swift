@@ -39,7 +39,7 @@ extension MTLRenderPassDescriptor {
     
     func setupColorAttachment(_ texture: MTLTexture) {
         colorAttachments[0].texture = texture
-        colorAttachments[0].loadAction = .load
+        colorAttachments[0].loadAction = .clear
         colorAttachments[0].storeAction = .store
     }
 }
@@ -64,6 +64,19 @@ extension Descriptor {
         descriptor.colorAttachments[0].pixelFormat = .rgba16Float;
         descriptor.vertexFunction = Device.sharedDevice.library?.makeFunction(name: "irradianceMapVertexShader")
         descriptor.fragmentFunction = Device.sharedDevice.library?.makeFunction(name: "irradianceMapFragmentShader")
+        descriptor.vertexDescriptor = Descriptor.getSimpleVertexDescriptor()
+        do {
+            return try Device.sharedDevice.device!.makeRenderPipelineState(descriptor: descriptor)
+        } catch let error {
+            fatalError(error.localizedDescription)
+        }
+    }
+    
+    static func createDFGLUTPipelineState() -> MTLRenderPipelineState {
+        let descriptor = MTLRenderPipelineDescriptor()
+        descriptor.colorAttachments[0].pixelFormat = .rgba16Float;
+        descriptor.vertexFunction = Device.sharedDevice.library?.makeFunction(name: "DFGVertexShader")
+        descriptor.fragmentFunction = Device.sharedDevice.library?.makeFunction(name: "DFGFragmentShader")
         descriptor.vertexDescriptor = Descriptor.getSimpleVertexDescriptor()
         do {
             return try Device.sharedDevice.device!.makeRenderPipelineState(descriptor: descriptor)

@@ -34,6 +34,7 @@ class Scene: NSObject {
     var shadowDescriptor = MTLRenderPassDescriptor()
     var shadowPipelineState: MTLRenderPipelineState?
     var irradianceMap = IrradianceMap()
+    var dfgLut = DFGLut()
  //   var samplerState: MTLSamplerState!
     var firstDraw = true
     
@@ -105,10 +106,14 @@ extension Scene {
         
         if firstDraw {
             let irradianceMapCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: irradianceMap.renderPassDescriptor)
-            irradianceMapCommandEncoder?.setCullMode(.none)
             drawIrradianceMap(renderCommandEncoder: irradianceMapCommandEncoder)
             irradianceMapCommandEncoder?.endEncoding()
         }
+        
+        let dfgCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: dfgLut.renderPassDescriptor)
+        drawDFGLUT(renderCommandEncoder: dfgCommandEncoder)
+        dfgCommandEncoder?.endEncoding()
+        
         let shadowCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: shadowDescriptor)
         shadowCommandEncoder?.setDepthStencilState(depthStencilState)
         shadowCommandEncoder?.setCullMode(.none)
@@ -184,6 +189,12 @@ extension Scene {
         renderCommandEncoder?.setFragmentTexture(skybox.texture, index: 3)
         renderCommandEncoder?.setFragmentSamplerState(skybox.samplerState, index: 0)
         renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: irradianceMap.vertices.count)
+    }
+    
+    func drawDFGLUT(renderCommandEncoder: MTLRenderCommandEncoder?) {
+        renderCommandEncoder?.setRenderPipelineState(dfgLut.pipelineState)
+        renderCommandEncoder?.setVertexBuffer(dfgLut.vertexBuffer, offset: 0, index: 0)
+        renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: dfgLut.vertices.count)
     }
     
     func updateGameObjects() {

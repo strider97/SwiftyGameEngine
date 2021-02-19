@@ -141,7 +141,6 @@ fragment float4 irradianceMapFragmentShader (VertexOut vOut [[ stage_in ]], text
 
 
 //DFG LUT
-
 float G1V_Epic(float Roughness, float NoV) {
     // no hotness remapping for env BRDF as suggested by Brian Karis
     float k = Roughness * Roughness;
@@ -152,12 +151,13 @@ float G_Smith(float Roughness, float NoV, float NoL) {
     return G1V_Epic(Roughness, NoV) * G1V_Epic(Roughness, NoL);
 }
 
-float2 IntegrateBRDF( float Roughness, float NoV ) {
+float2 IntegrateBRDF( float r, float NoV ) {
+    float Roughness = r;
     float3 V;
     V.x = sqrt( 1.0f - NoV * NoV ); // sin
     V.y = 0;
     V.z = NoV; // cos
-    float3 N = V;
+    float3 N = float3(0.0f,0.0f,1.0f);
     float A = 0;
     float B = 0;
     const uint NumSamples = 1024;
@@ -178,4 +178,19 @@ float2 IntegrateBRDF( float Roughness, float NoV ) {
         }
     }
     return float2( A, B ) / NumSamples;
+}
+
+vertex VertexOut DFGVertexShader (const SimpleVertex vIn [[ stage_in ]]) {
+    VertexOut vOut;
+    vOut.pos = (float2(vIn.position.x, vIn.position.y)+1.0)/2.0;
+    vOut.position = float4(vIn.position, 1);
+    return vOut;
+}
+
+fragment float4 DFGFragmentShader (VertexOut vOut [[ stage_in ]]) {
+    float2 dfgLut = IntegrateBRDF(-vOut.pos.x, vOut.pos.y);
+    dfgLut = pow(dfgLut, float2(1.0/2.2));
+    float4 color = float4(dfgLut, 0.0, 1);
+ //   float4 color = float4(vOut.pos, 0.0, 1);
+    return color;
 }
