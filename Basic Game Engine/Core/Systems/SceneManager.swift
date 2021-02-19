@@ -108,12 +108,11 @@ extension Scene {
             let irradianceMapCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: irradianceMap.renderPassDescriptor)
             drawIrradianceMap(renderCommandEncoder: irradianceMapCommandEncoder)
             irradianceMapCommandEncoder?.endEncoding()
+        
+            let dfgCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: dfgLut.renderPassDescriptor)
+            drawDFGLUT(renderCommandEncoder: dfgCommandEncoder)
+            dfgCommandEncoder?.endEncoding()
         }
-        
-        let dfgCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: dfgLut.renderPassDescriptor)
-        drawDFGLUT(renderCommandEncoder: dfgCommandEncoder)
-        dfgCommandEncoder?.endEncoding()
-        
         let shadowCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: shadowDescriptor)
         shadowCommandEncoder?.setDepthStencilState(depthStencilState)
         shadowCommandEncoder?.setCullMode(.none)
@@ -122,6 +121,8 @@ extension Scene {
         
         let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         renderCommandEncoder?.setDepthStencilState(depthStencilState)
+        renderCommandEncoder?.setFragmentTexture(irradianceMap.texture, index: 0)
+        renderCommandEncoder?.setFragmentTexture(dfgLut.texture, index: 1)
         renderCommandEncoder?.setCullMode(.front)
         drawGameObjects(renderCommandEncoder: renderCommandEncoder)
         drawSkybox(renderCommandEncoder: renderCommandEncoder)
@@ -177,7 +178,7 @@ extension Scene {
         renderCommandEncoder?.setVertexBytes(&u, length: MemoryLayout<Uniforms>.stride, index: 1)
         renderCommandEncoder?.setVertexBuffer(skybox.mesh.vertexBuffers[0].buffer,
                                               offset: 0, index: 0)
-        renderCommandEncoder?.setFragmentTexture(irradianceMap.texture, index: 3)
+        renderCommandEncoder?.setFragmentTexture(skybox.texture, index: 3)
         let submesh = skybox.mesh.submeshes[0]
         renderCommandEncoder?.setFragmentSamplerState(skybox.samplerState, index: 0)
         renderCommandEncoder?.drawIndexedPrimitives(type: .triangle, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: 0)

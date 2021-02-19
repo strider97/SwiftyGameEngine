@@ -15,6 +15,7 @@
 		7230F99B25C60FAD00D9610A /* BasicScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7230F99A25C60FAD00D9610A /* BasicScene.swift */; };
 		7230F9A825C6B86B00D9610A /* Behaviour.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7230F9A725C6B86B00D9610A /* Behaviour.swift */; };
 		7244840C25C6F42300294331 /* SimpleScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7244840B25C6F42300294331 /* SimpleScene.swift */; };
+		7274EF4625DFDE850026C80B /* cambridge.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 7274EF4525DFDE840026C80B /* cambridge.hdr */; };
 		729B14D125D8841A00129165 /* park.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 729B14D025D8841A00129165 /* park.jpg */; };
 		729B14DE25D8941600129165 /* ground.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 729B14DD25D8941600129165 /* ground.hdr */; };
 		729B14E325D8966000129165 /* room.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 729B14E225D8966000129165 /* room.hdr */; };
@@ -93,6 +94,7 @@
 		7230F99A25C60FAD00D9610A /* BasicScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicScene.swift; sourceTree = "<group>"; };
 		7230F9A725C6B86B00D9610A /* Behaviour.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Behaviour.swift; sourceTree = "<group>"; };
 		7244840B25C6F42300294331 /* SimpleScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleScene.swift; sourceTree = "<group>"; };
+		7274EF4525DFDE840026C80B /* cambridge.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = cambridge.hdr; path = "Basic Game Engine/HDRI/cambridge.hdr"; sourceTree = SOURCE_ROOT; };
 		729B14D025D8841A00129165 /* park.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = park.jpg; path = "Basic Game Engine/HDRI/park.jpg"; sourceTree = SOURCE_ROOT; };
 		729B14DD25D8941600129165 /* ground.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = ground.hdr; path = "Basic Game Engine/HDRI/ground.hdr"; sourceTree = SOURCE_ROOT; };
 		729B14E225D8966000129165 /* room.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = room.hdr; path = "Basic Game Engine/HDRI/room.hdr"; sourceTree = SOURCE_ROOT; };
@@ -180,6 +182,7 @@
 		720EC2FD25D8814D00A83F1A /* HDRI */ = {
 			isa = PBXGroup;
 			children = (
+				7274EF4525DFDE840026C80B /* cambridge.hdr */,
 				729B14FA25D91D8100129165 /* park_green.hdr */,
 				729B14F525D91AFF00129165 /* garden.hdr */,
 				729B14E725D896EC00129165 /* kiara.hdr */,
@@ -490,6 +493,7 @@
 				729B14E825D896EC00129165 /* kiara.hdr in Resources */,
 				72E3995B25BE31B000927B17 /* loft_pmrem.ktx in Resources */,
 				72E3996225BE31B000927B17 /* helmet_roughness.jpg in Resources */,
+				7274EF4625DFDE850026C80B /* cambridge.hdr in Resources */,
 				72E3995C25BE31B000927B17 /* garage_pmrem.ktx in Resources */,
 				72E3996325BE31B000927B17 /* helmet.obj in Resources */,
 				729B14F625D91AFF00129165 /* garden.hdr in Resources */,

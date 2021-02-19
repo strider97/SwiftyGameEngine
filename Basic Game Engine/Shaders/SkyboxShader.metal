@@ -33,8 +33,7 @@ struct Uniforms {
 constant float2 invPi = float2(0.15915, 0.31831);
 constant float pi = 3.1415926;
 
-float2 sampleSphericalMap(float3 dir)
-{
+float2 sampleSphericalMap(float3 dir) {
     float3 v = normalize(dir);
     float2 uv = float2(atan(-v.z/v.x), acos(v.y));
     if (v.x < 0) {
@@ -130,7 +129,7 @@ vertex VertexOut irradianceMapVertexShader (const SimpleVertex vIn [[ stage_in ]
 fragment float4 irradianceMapFragmentShader (VertexOut vOut [[ stage_in ]], texture2d<float, access::sample> baseColorTexture [[texture(3)]], sampler baseColorSampler [[sampler(0)]]) {
     float3 textureDir = getDirectionForPoint(vOut.pos);
  //   float3 skyColor = baseColorTexture.sample(baseColorSampler, sampleSphericalMap(textureDir)).rgb;
-    float roughness = 0.5;
+    float roughness = 0.25;
     float3 skyColor = prefilterEnvMap(roughness * roughness, textureDir, baseColorTexture, baseColorSampler);
 //    skyColor = pow(skyColor, float3(1.0/2.2));
 //    skyColor = vOut.position.xyz;
@@ -188,7 +187,7 @@ vertex VertexOut DFGVertexShader (const SimpleVertex vIn [[ stage_in ]]) {
 }
 
 fragment float4 DFGFragmentShader (VertexOut vOut [[ stage_in ]]) {
-    float2 dfgLut = IntegrateBRDF(-vOut.pos.x, vOut.pos.y);
+    float2 dfgLut = IntegrateBRDF(vOut.pos.x, vOut.pos.y);
     dfgLut = pow(dfgLut, float2(1.0/2.2));
     float4 color = float4(dfgLut, 0.0, 1);
  //   float4 color = float4(vOut.pos, 0.0, 1);

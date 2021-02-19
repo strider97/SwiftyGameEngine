@@ -21,8 +21,12 @@ class BasicScene: Scene {
         
     }
     
+    override func getSkybox() -> Skybox {
+        return Skybox(textureName: "cambridge")
+    }
+    
     override func addBehaviour() {
-        let _ = MoveInCircle(gameObject: sphere, radius: 10)
+    //    let _ = MoveInCircle(gameObject: sphere, radius: 10)
     }
     
     override func getCamera() -> Camera {
