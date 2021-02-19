@@ -17,5 +17,5 @@ struct Colors {
 
 struct Constants {
     static let pixelFormat: MTLPixelFormat = .bgra8Unorm
-    
+    static let smoothNormal: String = "newNormal"
 }

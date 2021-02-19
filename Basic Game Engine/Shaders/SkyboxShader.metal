@@ -103,7 +103,7 @@ float3 prefilterEnvMap(float Roughness, float3 R, texture2d<float, access::sampl
         float NoL = saturate( dot( N, L ) );
         if( NoL > 0 ) {
         //    NoL = 1;
-            PrefilteredColor += min(10.0, baseColorTexture.sample(baseColorSampler, sampleSphericalMap(L)).rgb) * NoL;
+            PrefilteredColor += min(100.0, baseColorTexture.sample(baseColorSampler, sampleSphericalMap(L)).rgb) * NoL;
             totalWeight += NoL;
         }
     }
@@ -129,7 +129,7 @@ vertex VertexOut irradianceMapVertexShader (const SimpleVertex vIn [[ stage_in ]
 fragment float4 irradianceMapFragmentShader (VertexOut vOut [[ stage_in ]], texture2d<float, access::sample> baseColorTexture [[texture(3)]], sampler baseColorSampler [[sampler(0)]]) {
     float3 textureDir = getDirectionForPoint(vOut.pos);
  //   float3 skyColor = baseColorTexture.sample(baseColorSampler, sampleSphericalMap(textureDir)).rgb;
-    float roughness = 0.25;
+    float roughness = 0.6;
     float3 skyColor = prefilterEnvMap(roughness * roughness, textureDir, baseColorTexture, baseColorSampler);
 //    skyColor = pow(skyColor, float3(1.0/2.2));
 //    skyColor = vOut.position.xyz;

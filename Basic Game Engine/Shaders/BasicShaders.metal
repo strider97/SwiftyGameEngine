@@ -47,12 +47,14 @@ struct VertexIn {
     float3 position [[attribute(0)]];
     float3 normal [[attribute(1)]];
     float2 texCoords [[attribute(2)]];
+    float3 smoothNormal [[attribute(3)]];
 };
 
 struct VertexOut {
     float4 m_position [[position]];
     float3 position;
     float3 normal;
+    float3 smoothNormal;
     float3 eye;
     float2 texCoords;
 };
@@ -78,6 +80,7 @@ float3 approximateSpecularIBL( float3 SpecularColor , float Roughness, float3 N,
     constexpr sampler s(coord::normalized, address::repeat, filter::linear);
     float NoV = saturate( dot( N, V ) );
     float3 R = 2 * dot( V, N ) * N - V;
+//    R.y = -R.y;
     R.x = -R.x;
     R.z = -R.z;
     float3 PrefilteredColor = irradianceMap.sample(s, sampleSphericalMap_(R)).rgb;
@@ -94,22 +97,23 @@ vertex VertexOut basicVertexShader(const VertexIn vIn [[ stage_in ]], constant U
     vOut.position = (uniforms.M*float4(vIn.position, 1.0)).xyz;
     vOut.texCoords = vIn.texCoords;
     vOut.eye = uniforms.eye;
+    vOut.smoothNormal = (uniforms.M*float4(vIn.smoothNormal, 0)).xyz;
     return vOut;
 }
 
 fragment half4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], texture2d<float, access::sample> irradianceMap [[texture(0)]], texture2d<float, access::sample> DFGlut [[texture(1)]]) {
 //    float3 color = baseColorTexture.sample(baseColorSampler, vOut.texCoords).rgb;
-    float intensity = 0.6;
-    float3 color = material.baseColor;
-    float3 lightDir = normalize(float3(-1, 2, 1));
+//    float intensity = 0.6;
+//    float3 color = material.baseColor;
+//    float3 lightDir = normalize(float3(-1, 2, 1));
     float3 eyeDir = normalize(vOut.eye - vOut.position);
- //   float spec = 1.4 * pow(max(0.0, dot(normalize(lightDir + eyeDir), vOut.normal)), 32);
+//    float spec = 1.4 * pow(max(0.0, dot(normalize(lightDir + eyeDir), vOut.normal)), 32);
  //   float diff = max(0.2, dot(lightDir, vOut.normal));
     
     
  //   float3 outColor = intensity * color * (diff + spec);
-    float roughness = 0.25;
-    float3 outColor = approximateSpecularIBL(float3(0.8), roughness, vOut.normal, eyeDir, irradianceMap, DFGlut);
+    float roughness = 0.6;
+    float3 outColor = approximateSpecularIBL(float3(0.1), roughness, vOut.smoothNormal, eyeDir, irradianceMap, DFGlut);
     outColor = pow(outColor, float3(1.0/2.2));
  //   return half4(1);
     return half4(outColor.x, outColor.y, outColor.z, 1.0);
