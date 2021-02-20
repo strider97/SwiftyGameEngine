@@ -31,6 +31,12 @@ struct Uniforms {
     float3 eye;
 };
 
+struct Material {
+    float3 baseColor;
+    float roughness;
+    int mipmapCount;
+};
+
 constant float2 invPi = float2(0.15915, 0.31831);
 constant float pi = 3.1415926;
 
@@ -133,14 +139,10 @@ vertex VertexOut irradianceMapVertexShader (const SimpleVertex vIn [[ stage_in ]
     return vOut;
 }
 
-fragment float4 irradianceMapFragmentShader (VertexOut vOut [[ stage_in ]], texture2d<float, access::sample> baseColorTexture [[texture(3)]], sampler baseColorSampler [[sampler(0)]]) {
+fragment float4 irradianceMapFragmentShader (VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], texture2d<float, access::sample> baseColorTexture [[texture(3)]], sampler baseColorSampler [[sampler(0)]]) {
     float3 textureDir = getDirectionForPoint(vOut.pos);
- //   float3 skyColor = baseColorTexture.sample(baseColorSampler, sampleSphericalMap(textureDir)).rgb;
-    float roughness = 0.1;
+    float roughness = material.roughness;
     float3 skyColor = prefilterEnvMap(roughness * roughness, textureDir, baseColorTexture, baseColorSampler);
-//    skyColor = pow(skyColor, float3(1.0/2.2));
-//    skyColor = vOut.position.xyz;
-//    skyColor = textureDir;
     float4 color = min(float4(exp2(10.0)), float4(abs(skyColor.x), abs(skyColor.y), abs(skyColor.z), 1.0));
     return color;
 }

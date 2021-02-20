@@ -10,11 +10,13 @@ typealias Device = MTLDeviceObject
 
 struct ShaderMaterial {
     var baseColor: Float3
+    let roughness: Float
+    let mipmapCount: Int
 }
 
 class Material {
     var baseColor = Float3(repeating: 1)
-    var roughness = 0
+    var roughness: Float = 0
     var albedo: MTLTexture?
     private let library = Device.sharedDevice.library
     var fragmentShaderFunction: MTLFunction?
@@ -31,6 +33,7 @@ class Material {
         self.init()
         if let material = material {
             baseColor = material.property(with: .baseColor)?.float3Value ?? Float3(repeating: 1)
+            roughness = material.property(with: .roughness)?.floatValue ?? Float(0.1)
         }
     }
 }
