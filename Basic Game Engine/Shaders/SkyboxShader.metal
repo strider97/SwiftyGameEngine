@@ -21,6 +21,7 @@ struct VertexOut {
     float4 position [[position]];
     float3 textureDir;
     float2 pos;
+    float2 color;
 };
 
 struct Uniforms {
@@ -73,21 +74,27 @@ float2 Hammersley(uint i, float numSamples) {
     return float2(i / numSamples, bits / exp2(32.0));
 }
 
-float3 ImportanceSampleGGX( float2 Xi, float Roughness, float3 N )
+float3 ImportanceSampleGGX(float2 Xi, float3 N, float roughness)
 {
-    float a = Roughness * Roughness;
-    float Phi = 2 * pi * Xi.x;
-    float CosTheta = sqrt( (1 - Xi.y) / ( 1 + (a*a - 1) * Xi.y ) );
-    float SinTheta = sqrt( 1 - CosTheta * CosTheta );
+    float a = roughness*roughness;
+    
+    float phi = 2.0 * pi * Xi.x;
+    float cosTheta = sqrt((1.0 - Xi.y) / (1.0 + (a*a - 1.0) * Xi.y));
+    float sinTheta = sqrt(1.0 - cosTheta*cosTheta);
+    
+    // from spherical coordinates to cartesian coordinates - halfway vector
     float3 H;
-    H.x = SinTheta * cos( Phi );
-    H.y = SinTheta * sin( Phi );
-    H.z = CosTheta;
-    float3 UpVector = abs(N.z) < 0.999 ? float3(0,0,1) : float3(1,0,0);
-    float3 TangentX = normalize( cross( UpVector, N ) );
-    float3 TangentY = cross( N, TangentX );
-    // Tangent to world space
-    return TangentX * H.x + TangentY * H.y + N * H.z;
+    H.x = cos(phi) * sinTheta;
+    H.y = sin(phi) * sinTheta;
+    H.z = cosTheta;
+    
+    // from tangent-space H vector to world-space sample vector
+    float3 up          = abs(N.z) < 0.999 ? float3(0.0, 0.0, 1.0) : float3(1.0, 0.0, 0.0);
+    float3 tangent   = normalize(cross(up, N));
+    float3 bitangent = cross(N, tangent);
+    
+    float3 sampleVec = tangent * H.x + bitangent * H.y + N * H.z;
+    return normalize(sampleVec);
 }
 
 float3 prefilterEnvMap(float Roughness, float3 R, texture2d<float, access::sample> baseColorTexture [[texture(3)]], sampler baseColorSampler [[sampler(0)]]) {
@@ -98,7 +105,7 @@ float3 prefilterEnvMap(float Roughness, float3 R, texture2d<float, access::sampl
     const uint numSamples = 4096;
     for( uint i = 0; i < numSamples; i++ ){
         float2 Xi = Hammersley(i, numSamples);
-        float3 H = ImportanceSampleGGX( Xi, Roughness, N );
+        float3 H = ImportanceSampleGGX( Xi, N, Roughness );
         float3 L = 2 * dot( V, H ) * H - V;
         float NoL = saturate( dot( N, L ) );
         if( NoL > 0 ) {
@@ -129,7 +136,7 @@ vertex VertexOut irradianceMapVertexShader (const SimpleVertex vIn [[ stage_in ]
 fragment float4 irradianceMapFragmentShader (VertexOut vOut [[ stage_in ]], texture2d<float, access::sample> baseColorTexture [[texture(3)]], sampler baseColorSampler [[sampler(0)]]) {
     float3 textureDir = getDirectionForPoint(vOut.pos);
  //   float3 skyColor = baseColorTexture.sample(baseColorSampler, sampleSphericalMap(textureDir)).rgb;
-    float roughness = 0.4;
+    float roughness = 0.1;
     float3 skyColor = prefilterEnvMap(roughness * roughness, textureDir, baseColorTexture, baseColorSampler);
 //    skyColor = pow(skyColor, float3(1.0/2.2));
 //    skyColor = vOut.position.xyz;
@@ -150,46 +157,80 @@ float G_Smith(float Roughness, float NoV, float NoL) {
     return G1V_Epic(Roughness, NoV) * G1V_Epic(Roughness, NoL);
 }
 
+float GeometrySchlickGGX(float NdotV, float roughness)
+{
+    // note that we use a different k for IBL
+    float a = roughness;
+    float k = (a * a) / 2.0;
+
+    float nom   = NdotV;
+    float denom = NdotV * (1.0 - k) + k;
+
+    return nom / denom;
+}
+// ----------------------------------------------------------------------------
+float GeometrySmith(float3 N, float3 V, float3 L, float roughness)
+{
+    float NdotV = max(dot(N, V), 0.0);
+    float NdotL = max(dot(N, L), 0.0);
+    float ggx2 = GeometrySchlickGGX(NdotV, roughness);
+    float ggx1 = GeometrySchlickGGX(NdotL, roughness);
+
+    return ggx1 * ggx2;
+}
+
 float2 IntegrateBRDF( float r, float NoV ) {
-    float Roughness = r;
     float3 V;
-    V.x = sqrt( 1.0f - NoV * NoV ); // sin
-    V.y = 0;
-    V.z = NoV; // cos
-    float3 N = float3(0.0f,0.0f,1.0f);
-    float A = 0;
-    float B = 0;
-    const uint NumSamples = 1024;
-    for( uint i = 0; i < NumSamples; i++ )
+    float roughness = r;
+    V.x = sqrt(1.0 - NoV*NoV);
+    V.y = 0.0;
+    V.z = NoV;
+
+    float A = 0.0;
+    float B = 0.0;
+
+    float3 N = float3(0.0, 0.0, 1.0);
+    
+    const uint SAMPLE_COUNT = 1024u;
+    for(uint i = 0u; i < SAMPLE_COUNT; ++i)
     {
-        float2 Xi = Hammersley( i, NumSamples );
-        float3 H = ImportanceSampleGGX( Xi, Roughness, N);
-        float3 L = 2 * dot( V, H ) * H - V;
-        float NoL = saturate( L.z );
-        float NoH = saturate( H.z );
-        float VoH = saturate( dot( V, H ) );
-        if( NoL > 0 ) {
-            float G = G_Smith( Roughness, NoV, NoL);
-            float G_Vis = G * VoH / (NoH * NoV);
-            float Fc = pow( 1 - VoH, 5 );
-            A += (1 - Fc) * G_Vis;
+        // generates a sample vector that's biased towards the
+        // preferred alignment direction (importance sampling).
+        float2 Xi = Hammersley(i, SAMPLE_COUNT);
+        float3 H = ImportanceSampleGGX(Xi, N, roughness);
+        float3 L = normalize(2.0 * dot(V, H) * H - V);
+
+        float NdotL = max(L.z, 0.0);
+        float NdotH = max(H.z, 0.0);
+        float VdotH = max(dot(V, H), 0.0);
+
+        if(NdotL > 0.0)
+        {
+            float G = GeometrySmith(N, V, L, roughness);
+            float G_Vis = (G * VdotH) / (NdotH * NoV);
+            float Fc = pow(1.0 - VdotH, 5.0);
+
+            A += (1.0 - Fc) * G_Vis;
             B += Fc * G_Vis;
         }
     }
-    return float2( A, B ) / NumSamples;
+    A /= float(SAMPLE_COUNT);
+    B /= float(SAMPLE_COUNT);
+    return float2(A, B);
 }
 
 vertex VertexOut DFGVertexShader (const SimpleVertex vIn [[ stage_in ]]) {
     VertexOut vOut;
     vOut.pos = (float2(vIn.position.x, vIn.position.y)+1.0)/2.0;
     vOut.position = float4(vIn.position, 1);
+    vOut.color = vIn.color.xy;
     return vOut;
 }
 
 fragment float4 DFGFragmentShader (VertexOut vOut [[ stage_in ]]) {
-    float2 dfgLut = IntegrateBRDF(vOut.pos.x, vOut.pos.y);
-    dfgLut = pow(dfgLut, float2(1.0/2.2));
+    float2 dfgLut = IntegrateBRDF(vOut.color.x, vOut.color.y);
+//    dfgLut = pow(dfgLut, float2(1.0/2.2));
     float4 color = float4(dfgLut, 0.0, 1);
- //   float4 color = float4(vOut.pos, 0.0, 1);
+//     color = float4(vOut.color, 0.0, 1);
     return color;
 }

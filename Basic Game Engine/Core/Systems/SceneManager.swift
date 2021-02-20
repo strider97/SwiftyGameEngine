@@ -108,7 +108,11 @@ extension Scene {
             let irradianceMapCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: irradianceMap.renderPassDescriptor)
             drawIrradianceMap(renderCommandEncoder: irradianceMapCommandEncoder)
             irradianceMapCommandEncoder?.endEncoding()
-        
+            
+            let blitEncoder = commandBuffer?.makeBlitCommandEncoder()
+            blitEncoder?.generateMipmaps(for: irradianceMap.texture)
+            blitEncoder?.endEncoding()
+            
             let dfgCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: dfgLut.renderPassDescriptor)
             drawDFGLUT(renderCommandEncoder: dfgCommandEncoder)
             dfgCommandEncoder?.endEncoding()
