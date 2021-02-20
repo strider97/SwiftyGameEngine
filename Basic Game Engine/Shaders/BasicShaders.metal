@@ -112,7 +112,7 @@ fragment half4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mater
     
     
  //   float3 outColor = intensity * color * (diff + spec);
-    float roughness = 0.6;
+    float roughness = 0.4;
     float3 outColor = approximateSpecularIBL(float3(0.1), roughness, vOut.smoothNormal, eyeDir, irradianceMap, DFGlut);
     outColor = pow(outColor, float3(1.0/2.2));
  //   return half4(1);

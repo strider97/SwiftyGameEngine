@@ -8,9 +8,9 @@
 import MetalKit
 
 class Descriptor {
-    static func build2DTexture(pixelFormat: MTLPixelFormat, size: CGSize, label: String = "texture") -> MTLTexture {
+    static func build2DTexture(pixelFormat: MTLPixelFormat, size: CGSize, label: String = "texture", mipmapped: Bool = false) -> MTLTexture {
         let device = Device.sharedDevice.device!
-        let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat, width: Int(size.width), height: Int(size.height), mipmapped: false)
+        let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat, width: Int(size.width), height: Int(size.height), mipmapped: mipmapped)
         descriptor.usage = [.shaderRead, .renderTarget]
         descriptor.storageMode = .private
         guard let texture = device.makeTexture(descriptor: descriptor) else { fatalError("Could not make texture") }

@@ -25,7 +25,7 @@ class IrradianceMap {
         let device = Device.sharedDevice.device!
         vertexBuffer = device.makeBuffer(bytes: vertices, length: MemoryLayout<Vertex>.stride*vertices.count, options: [])!
         
-        texture = Descriptor.build2DTexture(pixelFormat: .rgba16Float, size: CGSize(width: 2048, height: 1024));
+        texture = Descriptor.build2DTexture(pixelFormat: .rgba16Float, size: CGSize(width: 2048, height: 1024), mipmapped: true);
         pipelineState = Descriptor.createIrradianceMapPipelineState()
         renderPassDescriptor.setupColorAttachment(texture)
     }
