@@ -39,16 +39,17 @@ struct Material {
 };
 
 constant float2 invPi = float2(0.15915, 0.31831);
-constant float pi = 3.1415926;
+constant float PI = 3.1415926;
+constexpr sampler s(filter::linear);
 
 float2 sampleSphericalMap(float3 dir) {
     float3 v = normalize(dir);
     float2 uv = float2(atan(-v.z/v.x), acos(v.y));
     if (v.x < 0) {
-        uv.x += pi;
+        uv.x += PI;
     }
     if (v.x >= 0 && -v.z < 0) {
-        uv.x += 2*pi;
+        uv.x += 2*PI;
     }
     uv *= invPi;
     return uv;
@@ -64,6 +65,7 @@ vertex VertexOut skyboxVertexShader (const VertexIn vIn [[ stage_in ]], constant
 
 fragment half4 skyboxFragmentShader (VertexOut vOut [[ stage_in ]], texture2d<float, access::sample> baseColorTexture [[texture(3)]], sampler baseColorSampler [[sampler(0)]]) {
     float3 skyColor = baseColorTexture.sample(baseColorSampler, sampleSphericalMap(vOut.textureDir)).rgb;
+    skyColor = skyColor / (skyColor + float3(1.0));
     skyColor = pow(skyColor, float3(1.0/2.2));
     half4 color = half4(skyColor.x, skyColor.y, skyColor.z, 1);
     return color;
@@ -85,7 +87,7 @@ float3 ImportanceSampleGGX(float2 Xi, float3 N, float roughness)
 {
     float a = roughness*roughness;
     
-    float phi = 2.0 * pi * Xi.x;
+    float phi = 2.0 * PI * Xi.x;
     float cosTheta = sqrt((1.0 - Xi.y) / (1.0 + (a*a - 1.0) * Xi.y));
     float sinTheta = sqrt(1.0 - cosTheta*cosTheta);
     
@@ -127,20 +129,20 @@ float3 prefilterEnvMap(float Roughness, float3 R, texture2d<float, access::sampl
 
 float3 getDirectionForPoint(float2 point) {
     float2 p = (point + 1.0)/2.0;
-    float theta = p.x * 2.0 * pi;
-    float phi = p.y * pi;
+    float theta = p.x * 2.0 * PI;
+    float phi = p.y * PI;
     float3 dir = float3(-sin(phi)*cos(theta), cos(phi), sin(phi)*sin(theta));
     return dir;
 }
 
-vertex VertexOut irradianceMapVertexShader (const SimpleVertex vIn [[ stage_in ]]) {
+vertex VertexOut preFilterEnvMapVertexShader (const SimpleVertex vIn [[ stage_in ]]) {
     VertexOut vOut;
     vOut.pos = float2(vIn.position.x, -vIn.position.y);
     vOut.position = float4(vIn.position, 1);
     return vOut;
 }
 
-fragment float4 irradianceMapFragmentShader (VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], texture2d<float, access::sample> baseColorTexture [[texture(3)]], sampler baseColorSampler [[sampler(0)]]) {
+fragment float4 preFilterEnvMapFragmentShader (VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], texture2d<float, access::sample> baseColorTexture [[texture(3)]], sampler baseColorSampler [[sampler(0)]]) {
     float3 textureDir = getDirectionForPoint(vOut.pos);
     float roughness = material.roughness;
     float3 skyColor = prefilterEnvMap(roughness * roughness, textureDir, baseColorTexture, baseColorSampler);
@@ -236,4 +238,47 @@ fragment float4 DFGFragmentShader (VertexOut vOut [[ stage_in ]]) {
     float4 color = float4(dfgLut, 0.0, 1);
 //     color = float4(vOut.color, 0.0, 1);
     return color;
+}
+
+//_____________________________________________________
+
+float3 irradianceMap (float3 N, texture2d<float, access::sample> envMapTexture [[texture(3)]]) {
+    float3 irradiance = float3(0.0);
+        
+        // tangent space calculation from origin point
+    float3 up    = float3(0.0, 1.0, 0.0);
+    float3 right = cross(up, N);
+    up = cross(N, right);
+       
+    float sampleDelta = 0.025;
+    float nrSamples = 0.0f;
+    for(float phi = 0.0; phi < 2.0 * PI; phi += sampleDelta)
+    {
+        for(float theta = 0.0; theta < 0.5 * PI; theta += sampleDelta)
+        {
+            // spherical to cartesian (in tangent space)
+            float3 tangentSample = float3(sin(theta) * cos(phi),  sin(theta) * sin(phi), cos(theta));
+            // tangent space to world
+            float3 sampleVec = tangentSample.x * right + tangentSample.y * up + tangentSample.z * N;
+
+            irradiance += min(100, envMapTexture.sample(s, sampleSphericalMap(sampleVec))).rgb * cos(theta) * sin(theta);
+            nrSamples++;
+        }
+    }
+    irradiance = PI * irradiance * (1.0 / float(nrSamples));
+    return irradiance;
+}
+
+vertex VertexOut irradianceMapVertexShader (const SimpleVertex vIn [[ stage_in ]]) {
+    VertexOut vOut;
+    vOut.pos = float2(vIn.position.x, -vIn.position.y);
+    vOut.position = float4(vIn.position, 1);
+    vOut.color = vIn.color.xy;
+    return vOut;
+}
+
+fragment float4 irradianceMapFragmentShader (VertexOut vOut [[ stage_in ]], texture2d<float, access::sample> envMapTexture [[texture(3)]], sampler baseColorSampler [[sampler(0)]]) {
+    float3 textureDir = getDirectionForPoint(vOut.pos);
+    float3 color = irradianceMap(textureDir, envMapTexture);
+    return float4(color, 1);
 }

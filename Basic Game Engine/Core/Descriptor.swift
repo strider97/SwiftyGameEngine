@@ -59,11 +59,11 @@ extension Descriptor {
         }
     }
     
-    static func createIrradianceMapPipelineState() -> MTLRenderPipelineState {
+    static func createPreFilterEnvMapPipelineState() -> MTLRenderPipelineState {
         let descriptor = MTLRenderPipelineDescriptor()
         descriptor.colorAttachments[0].pixelFormat = .rgba16Float;
-        descriptor.vertexFunction = Device.sharedDevice.library?.makeFunction(name: "irradianceMapVertexShader")
-        descriptor.fragmentFunction = Device.sharedDevice.library?.makeFunction(name: "irradianceMapFragmentShader")
+        descriptor.vertexFunction = Device.sharedDevice.library?.makeFunction(name: "preFilterEnvMapVertexShader")
+        descriptor.fragmentFunction = Device.sharedDevice.library?.makeFunction(name: "preFilterEnvMapFragmentShader")
         descriptor.vertexDescriptor = Descriptor.getSimpleVertexDescriptor()
         do {
             return try Device.sharedDevice.device!.makeRenderPipelineState(descriptor: descriptor)
@@ -77,6 +77,19 @@ extension Descriptor {
         descriptor.colorAttachments[0].pixelFormat = .rgba16Float;
         descriptor.vertexFunction = Device.sharedDevice.library?.makeFunction(name: "DFGVertexShader")
         descriptor.fragmentFunction = Device.sharedDevice.library?.makeFunction(name: "DFGFragmentShader")
+        descriptor.vertexDescriptor = Descriptor.getSimpleVertexDescriptor()
+        do {
+            return try Device.sharedDevice.device!.makeRenderPipelineState(descriptor: descriptor)
+        } catch let error {
+            fatalError(error.localizedDescription)
+        }
+    }
+    
+    static func createIrradianceMapPipelineState() -> MTLRenderPipelineState {
+        let descriptor = MTLRenderPipelineDescriptor()
+        descriptor.colorAttachments[0].pixelFormat = .rgba16Float;
+        descriptor.vertexFunction = Device.sharedDevice.library?.makeFunction(name: "irradianceMapVertexShader")
+        descriptor.fragmentFunction = Device.sharedDevice.library?.makeFunction(name: "irradianceMapFragmentShader")
         descriptor.vertexDescriptor = Descriptor.getSimpleVertexDescriptor()
         do {
             return try Device.sharedDevice.device!.makeRenderPipelineState(descriptor: descriptor)

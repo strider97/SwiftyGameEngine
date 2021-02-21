@@ -22,7 +22,7 @@ class BasicScene: Scene {
     }
     
     override func getSkybox() -> Skybox {
-        return Skybox(textureName: "ground")
+        return Skybox(textureName: "park")
     }
     
     override func addBehaviour() {

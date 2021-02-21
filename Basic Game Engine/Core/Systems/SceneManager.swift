@@ -33,8 +33,9 @@ class Scene: NSObject {
     var shadowTexture: MTLTexture!
     var shadowDescriptor = MTLRenderPassDescriptor()
     var shadowPipelineState: MTLRenderPipelineState?
-    var irradianceMap = IrradianceMap()
+    var preFilterEnvMap = PrefilterEnvMap()
     var dfgLut = DFGLut()
+    var irradianceMap = IrradianceMap()
  //   var samplerState: MTLSamplerState!
     var firstDraw = true
     
@@ -106,22 +107,26 @@ extension Scene {
         
         // Generate irradiance maps and DFG lut if first draw
         if firstDraw {
-            for i in 0..<irradianceMap.mipMapCount {
-                let mipmapEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: irradianceMap.renderPassDescriptors[i])
-                drawIrradianceMap(renderCommandEncoder: mipmapEncoder, roughness: Float(i)/Float(irradianceMap.mipMapCount))
+            for i in 0..<preFilterEnvMap.mipMapCount {
+                let mipmapEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: preFilterEnvMap.renderPassDescriptors[i])
+                drawPrefilterEnvMap(renderCommandEncoder: mipmapEncoder, roughness: Float(i)/Float(preFilterEnvMap.mipMapCount))
                 mipmapEncoder?.endEncoding()
             }
             
             let blitCopyEncoder = commandBuffer?.makeBlitCommandEncoder()
-            blitCopyEncoder?.generateMipmaps(for: irradianceMap.texture)
-            for i in 0..<irradianceMap.mipMapCount {
-                blitCopyEncoder?.copy(from: irradianceMap.mipMaps[i], sourceSlice: 0, sourceLevel: 0, to: irradianceMap.texture, destinationSlice: 0, destinationLevel: i, sliceCount: 1, levelCount: 1)
+            blitCopyEncoder?.generateMipmaps(for: preFilterEnvMap.texture)
+            for i in 0..<preFilterEnvMap.mipMapCount {
+                blitCopyEncoder?.copy(from: preFilterEnvMap.mipMaps[i], sourceSlice: 0, sourceLevel: 0, to: preFilterEnvMap.texture, destinationSlice: 0, destinationLevel: i, sliceCount: 1, levelCount: 1)
             }
             blitCopyEncoder?.endEncoding()
             
             let dfgCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: dfgLut.renderPassDescriptor)
             drawDFGLUT(renderCommandEncoder: dfgCommandEncoder)
             dfgCommandEncoder?.endEncoding()
+            
+            let irradianceMapCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: irradianceMap.renderPassDescriptor)
+            drawIrradianceMap(renderCommandEncoder: irradianceMapCommandEncoder)
+            irradianceMapCommandEncoder?.endEncoding()
         }
         
         let shadowCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: shadowDescriptor)
@@ -132,8 +137,9 @@ extension Scene {
         
         let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         renderCommandEncoder?.setDepthStencilState(depthStencilState)
-        renderCommandEncoder?.setFragmentTexture(irradianceMap.texture, index: 0)
+        renderCommandEncoder?.setFragmentTexture(preFilterEnvMap.texture, index: 0)
         renderCommandEncoder?.setFragmentTexture(dfgLut.texture, index: 1)
+        renderCommandEncoder?.setFragmentTexture(irradianceMap.texture, index: 2)
         renderCommandEncoder?.setCullMode(.front)
         drawGameObjects(renderCommandEncoder: renderCommandEncoder)
         drawSkybox(renderCommandEncoder: renderCommandEncoder)
@@ -172,7 +178,7 @@ extension Scene {
                     }
                     for meshNode in meshNodes {
                         // add material through uniforms
-                        var material = ShaderMaterial(baseColor: meshNode.material.baseColor, roughness: meshNode.material.roughness, metallic: meshNode.material.metallic, mipmapCount: irradianceMap.mipMapCount)
+                        var material = ShaderMaterial(baseColor: meshNode.material.baseColor, roughness: meshNode.material.roughness, metallic: meshNode.material.metallic, mipmapCount: preFilterEnvMap.mipMapCount)
                         renderCommandEncoder?.setFragmentBytes(&material, length: MemoryLayout<ShaderMaterial>.size, index: 0)
                         let submesh = meshNode.mesh
                         renderCommandEncoder?.drawIndexedPrimitives(type:submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: submesh.indexBuffer.offset)
@@ -195,20 +201,28 @@ extension Scene {
         renderCommandEncoder?.drawIndexedPrimitives(type: .triangle, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: 0)
     }
     
-    func drawIrradianceMap(renderCommandEncoder: MTLRenderCommandEncoder?, roughness: Float = 0) {
-        renderCommandEncoder?.setRenderPipelineState(irradianceMap.pipelineState)
-        renderCommandEncoder?.setVertexBuffer(irradianceMap.vertexBuffer, offset: 0, index: 0)
-        var material = ShaderMaterial(baseColor: Float3(repeating: 0), roughness: max(Float(0.0001), roughness), metallic: 0.1, mipmapCount: irradianceMap.mipMapCount)
+    func drawPrefilterEnvMap(renderCommandEncoder: MTLRenderCommandEncoder?, roughness: Float = 0) {
+        renderCommandEncoder?.setRenderPipelineState(preFilterEnvMap.pipelineState)
+        renderCommandEncoder?.setVertexBuffer(preFilterEnvMap.vertexBuffer, offset: 0, index: 0)
+        var material = ShaderMaterial(baseColor: Float3(repeating: 0), roughness: max(Float(0.0001), roughness), metallic: 0.1, mipmapCount: preFilterEnvMap.mipMapCount)
         renderCommandEncoder?.setFragmentBytes(&material, length: MemoryLayout<ShaderMaterial>.size, index: 0)
         renderCommandEncoder?.setFragmentTexture(skybox.texture, index: 3)
         renderCommandEncoder?.setFragmentSamplerState(skybox.samplerState, index: 0)
-        renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: irradianceMap.vertices.count)
+        renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: preFilterEnvMap.vertices.count)
     }
     
     func drawDFGLUT(renderCommandEncoder: MTLRenderCommandEncoder?) {
         renderCommandEncoder?.setRenderPipelineState(dfgLut.pipelineState)
         renderCommandEncoder?.setVertexBuffer(dfgLut.vertexBuffer, offset: 0, index: 0)
         renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: dfgLut.vertices.count)
+    }
+    
+    func drawIrradianceMap(renderCommandEncoder: MTLRenderCommandEncoder?) {
+        renderCommandEncoder?.setRenderPipelineState(irradianceMap.pipelineState)
+        renderCommandEncoder?.setVertexBuffer(irradianceMap.vertexBuffer, offset: 0, index: 0)
+        renderCommandEncoder?.setFragmentTexture(skybox.texture, index: 3)
+        renderCommandEncoder?.setFragmentSamplerState(skybox.samplerState, index: 0)
+        renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: irradianceMap.vertices.count)
     }
     
     func updateGameObjects() {
