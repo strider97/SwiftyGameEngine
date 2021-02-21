@@ -43,6 +43,8 @@ fragment half4 basicFragmentShader(VertexOut vOut [[ stage_in ]]) {
 constant float2 invPi = float2(0.15915, 0.31831);
 constant float pi = 3.1415926;
 
+constexpr sampler s(coord::normalized, address::repeat, filter::linear, mip_filter::linear);
+
 struct VertexIn {
     float3 position [[attribute(0)]];
     float3 normal [[attribute(1)]];
@@ -62,6 +64,7 @@ struct VertexOut {
 struct Material {
     float3 baseColor;
     float roughness;
+    float metallic;
     int mipmapCount;
 };
 
@@ -83,7 +86,6 @@ float3 fresnelSchlickRoughness(float cosTheta, float3 F0, float roughness) {
 }
 
 float3 approximateSpecularIBL( float3 SpecularColor , float Roughness, int mipmapCount, float3 N, float3 V, texture2d<float, access::sample> irradianceMap [[texture(0)]], texture2d<float, access::sample> DFGlut [[texture(1)]]) {
-    constexpr sampler s(coord::normalized, address::repeat, filter::linear, mip_filter::linear);
     float NoV = saturate( dot( N, V ) );
     float3 R = 2 * dot( V, N ) * N - V;
 //    R.y = -R.y;
@@ -108,25 +110,32 @@ vertex VertexOut basicVertexShader(const VertexIn vIn [[ stage_in ]], constant U
 }
 
 fragment half4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], texture2d<float, access::sample> irradianceMap [[texture(0)]], texture2d<float, access::sample> DFGlut [[texture(1)]]) {
-//    float3 color = baseColorTexture.sample(baseColorSampler, vOut.texCoords).rgb;
-//    float intensity = 0.6;
-//    float3 color = material.baseColor;
-//    float3 lightDir = normalize(float3(-1, 2, 1));
+    
+    float3 albedo = material.baseColor;
+    float metallic = material.metallic;
+    float roughness = material.roughness;
     float3 eyeDir = normalize(vOut.eye - vOut.position);
-//    float spec = 1.4 * pow(max(0.0, dot(normalize(lightDir + eyeDir), vOut.normal)), 32);
- //   float diff = max(0.2, dot(lightDir, vOut.normal));
     
+    float3 F0 = float3(0.04);
+    F0 = mix(F0, albedo, metallic);
+    float3 F = fresnelSchlickRoughness(max(dot(vOut.smoothNormal, eyeDir), 0.0), F0, roughness);
+    float3 kS = F;
+    float3 kD = float3(1.0) - kS;
+    kD *= 1.0 - metallic;
     
- //   float3 outColor = intensity * color * (diff + spec);
-    float roughness = sqrt(material.roughness);
-    float3 f0 = 0.8;
-    float3 F = fresnelSchlickRoughness(max(dot(vOut.smoothNormal, eyeDir), 0.0), f0, roughness);
-    float3 baseColor = material.baseColor;
-    float3 outColor = approximateSpecularIBL(F, roughness, material.mipmapCount, vOut.smoothNormal, eyeDir, irradianceMap, DFGlut) * baseColor;
+    float3 N = vOut.smoothNormal;
+    float3 V = eyeDir;
+    float3 R = 2 * dot(V, N) * N - V;
+    R.x = -R.x;
+    R.z = -R.z;
+    float3 irradiance = irradianceMap.sample(s, sampleSphericalMap_(R), level(5)).rgb;
+    float3 diffuse = 1 * albedo;
+    float3 specular = approximateSpecularIBL(F, roughness, material.mipmapCount, N, V, irradianceMap, DFGlut);
+    
+    float3 outColor =  kD * diffuse + specular;
     outColor = pow(outColor, float3(1.0/2.2));
- //   return half4(1);
+//    outColor = metallic;
     return half4(outColor.x, outColor.y, outColor.z, 1.0);
- //   return half4(vOut.normal.x, vOut.normal.y, vOut.normal.z, 1.0);
 }
 
 

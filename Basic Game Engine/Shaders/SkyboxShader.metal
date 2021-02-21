@@ -34,6 +34,7 @@ struct Uniforms {
 struct Material {
     float3 baseColor;
     float roughness;
+    float metallic;
     int mipmapCount;
 };
 

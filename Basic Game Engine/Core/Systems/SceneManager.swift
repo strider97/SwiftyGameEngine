@@ -104,12 +104,8 @@ extension Scene {
         guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
         let commandBuffer = Device.sharedDevice.commandQueue?.makeCommandBuffer()
         
+        // Generate irradiance maps and DFG lut if first draw
         if firstDraw {
-            /*
-            let irradianceMapCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: irradianceMap.renderPassDescriptor)
-            drawIrradianceMap(renderCommandEncoder: irradianceMapCommandEncoder)
-            irradianceMapCommandEncoder?.endEncoding()
-            */
             for i in 0..<irradianceMap.mipMapCount {
                 let mipmapEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: irradianceMap.renderPassDescriptors[i])
                 drawIrradianceMap(renderCommandEncoder: mipmapEncoder, roughness: Float(i)/Float(irradianceMap.mipMapCount))
@@ -176,7 +172,7 @@ extension Scene {
                     }
                     for meshNode in meshNodes {
                         // add material through uniforms
-                        var material = ShaderMaterial(baseColor: meshNode.material.baseColor, roughness: meshNode.material.roughness, mipmapCount: irradianceMap.mipMapCount)
+                        var material = ShaderMaterial(baseColor: meshNode.material.baseColor, roughness: meshNode.material.roughness, metallic: meshNode.material.metallic, mipmapCount: irradianceMap.mipMapCount)
                         renderCommandEncoder?.setFragmentBytes(&material, length: MemoryLayout<ShaderMaterial>.size, index: 0)
                         let submesh = meshNode.mesh
                         renderCommandEncoder?.drawIndexedPrimitives(type:submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: submesh.indexBuffer.offset)
@@ -202,7 +198,7 @@ extension Scene {
     func drawIrradianceMap(renderCommandEncoder: MTLRenderCommandEncoder?, roughness: Float = 0) {
         renderCommandEncoder?.setRenderPipelineState(irradianceMap.pipelineState)
         renderCommandEncoder?.setVertexBuffer(irradianceMap.vertexBuffer, offset: 0, index: 0)
-        var material = ShaderMaterial(baseColor: Float3(repeating: 0), roughness: max(Float(0.0001), roughness), mipmapCount: irradianceMap.mipMapCount)
+        var material = ShaderMaterial(baseColor: Float3(repeating: 0), roughness: max(Float(0.0001), roughness), metallic: 0.1, mipmapCount: irradianceMap.mipMapCount)
         renderCommandEncoder?.setFragmentBytes(&material, length: MemoryLayout<ShaderMaterial>.size, index: 0)
         renderCommandEncoder?.setFragmentTexture(skybox.texture, index: 3)
         renderCommandEncoder?.setFragmentSamplerState(skybox.samplerState, index: 0)
