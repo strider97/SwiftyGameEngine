@@ -36,7 +36,7 @@ class PrefilterEnvMap {
     var pipelineState: MTLRenderPipelineState
     let vertexBuffer: MTLBuffer
     private let w = 2048
-    private let minMipmapWidth = 64
+    private let minMipmapWidth = 32
     var vertices: [Vertex] = [
         Vertex(position: Float3(-1, -1, 0), color: Float4(0.0, 0.0, 0.0, 1)),
         Vertex(position: Float3(-1, 1, 0), color: Float4(0.0, 1.0, 0.0, 1)),

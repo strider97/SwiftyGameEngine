@@ -145,7 +145,7 @@ vertex VertexOut preFilterEnvMapVertexShader (const SimpleVertex vIn [[ stage_in
 fragment float4 preFilterEnvMapFragmentShader (VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], texture2d<float, access::sample> baseColorTexture [[texture(3)]], sampler baseColorSampler [[sampler(0)]]) {
     float3 textureDir = getDirectionForPoint(vOut.pos);
     float roughness = material.roughness;
-    float3 skyColor = prefilterEnvMap(roughness * roughness, textureDir, baseColorTexture, baseColorSampler);
+    float3 skyColor = prefilterEnvMap(roughness, textureDir, baseColorTexture, baseColorSampler);
     float4 color = min(float4(exp2(10.0)), float4(abs(skyColor.x), abs(skyColor.y), abs(skyColor.z), 1.0));
     return color;
 }

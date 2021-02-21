@@ -10,6 +10,7 @@
 		720EC2EE25D7CCD300A83F1A /* Skybox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720EC2ED25D7CCD300A83F1A /* Skybox.swift */; };
 		720EC2F325D82F2500A83F1A /* SkyboxShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 720EC2F225D82F2500A83F1A /* SkyboxShader.metal */; };
 		720EC2FF25D8816B00A83F1A /* park.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 720EC2FE25D8816B00A83F1A /* park.hdr */; };
+		721F5B4025E2A7920000EA4C /* sphere.usd in Resources */ = {isa = PBXBuildFile; fileRef = 721F5B3F25E2A7920000EA4C /* sphere.usd */; };
 		72282CCB25C17FD400C9CCF4 /* plane.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72282CCA25C17FD400C9CCF4 /* plane.obj */; };
 		722830B925C5706000C9CCF4 /* spheres.usd in Resources */ = {isa = PBXBuildFile; fileRef = 722830B825C5705F00C9CCF4 /* spheres.usd */; };
 		7230F99B25C60FAD00D9610A /* BasicScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7230F99A25C60FAD00D9610A /* BasicScene.swift */; };
@@ -90,6 +91,7 @@
 		720EC2ED25D7CCD300A83F1A /* Skybox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Skybox.swift; sourceTree = "<group>"; };
 		720EC2F225D82F2500A83F1A /* SkyboxShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = SkyboxShader.metal; sourceTree = "<group>"; };
 		720EC2FE25D8816B00A83F1A /* park.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = park.hdr; path = "Basic Game Engine/HDRI/park.hdr"; sourceTree = SOURCE_ROOT; };
+		721F5B3F25E2A7920000EA4C /* sphere.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = sphere.usd; path = "Basic Game Engine/Resources/teapot/sphere.usd"; sourceTree = SOURCE_ROOT; };
 		72282CCA25C17FD400C9CCF4 /* plane.obj */ = {isa = PBXFileReference; lastKnownFileType = text; name = plane.obj; path = "Basic Game Engine/Resources/teapot/plane.obj"; sourceTree = SOURCE_ROOT; };
 		722830B825C5705F00C9CCF4 /* spheres.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = spheres.usd; path = "Basic Game Engine/Resources/teapot/spheres.usd"; sourceTree = SOURCE_ROOT; };
 		7230F99A25C60FAD00D9610A /* BasicScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicScene.swift; sourceTree = "<group>"; };
@@ -326,7 +328,7 @@
 			children = (
 				720EC2FD25D8814D00A83F1A /* HDRI */,
 				72E399B525BF3EA200927B17 /* Planet */,
-				72E3999925BF0C8300927B17 /* teapot_ */,
+				72E3999925BF0C8300927B17 /* models */,
 				72E3997E25BEF2C300927B17 /* legoMan */,
 				72E3996725BE31DA00927B17 /* helmet */,
 			);
@@ -360,9 +362,10 @@
 			path = legoMan;
 			sourceTree = "<group>";
 		};
-		72E3999925BF0C8300927B17 /* teapot_ */ = {
+		72E3999925BF0C8300927B17 /* models */ = {
 			isa = PBXGroup;
 			children = (
+				721F5B3F25E2A7920000EA4C /* sphere.usd */,
 				72C1736825DED90800B75C4D /* ring.usd */,
 				72DAC95F25DDD87500DB3C50 /* plane.usd */,
 				722830B825C5705F00C9CCF4 /* spheres.usd */,
@@ -371,7 +374,7 @@
 				72E3999A25BF0C9700927B17 /* teapot.obj */,
 				72E399A525BF176C00927B17 /* teapot2.obj */,
 			);
-			path = teapot_;
+			path = models;
 			sourceTree = "<group>";
 		};
 		72E399B525BF3EA200927B17 /* Planet */ = {
@@ -512,6 +515,7 @@
 				72E3995A25BE31B000927B17 /* helmet_normal.jpg in Resources */,
 				7274EF4B25E03DD40026C80B /* cliff.hdr in Resources */,
 				72E399BA25BF3ECD00927B17 /* planet.obj in Resources */,
+				721F5B4025E2A7920000EA4C /* sphere.usd in Resources */,
 				72E3998B25BEF35100927B17 /* legoMan.mtl in Resources */,
 				72E3995D25BE31B000927B17 /* helmet.mtl in Resources */,
 				72E398AF25BB4ECB00927B17 /* Main.storyboard in Resources */,
