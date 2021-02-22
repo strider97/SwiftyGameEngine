@@ -119,7 +119,7 @@ fragment half4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mater
     float3 N = vOut.smoothNormal;
     float3 V = eyeDir;
     float3 F0 = float3(0.04);
-    F0 = mix(F0, albedo, metallic);
+    F0 = mix(F0, albedo, 1.0*metallic);
     float3 F = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
     float3 kS = F;
     float3 kD = float3(1.0) - kS;

@@ -63,11 +63,11 @@ vertex VertexOut skyboxVertexShader (const VertexIn vIn [[ stage_in ]], constant
     return vOut;
 }
 
-fragment half4 skyboxFragmentShader (VertexOut vOut [[ stage_in ]], texture2d<float, access::sample> baseColorTexture [[texture(3)]], sampler baseColorSampler [[sampler(0)]]) {
+fragment float4 skyboxFragmentShader (VertexOut vOut [[ stage_in ]], texture2d<float, access::sample> baseColorTexture [[texture(3)]], sampler baseColorSampler [[sampler(0)]]) {
     float3 skyColor = baseColorTexture.sample(baseColorSampler, sampleSphericalMap(vOut.textureDir)).rgb;
     skyColor = skyColor / (skyColor + float3(1.0));
     skyColor = pow(skyColor, float3(1.0/2.2));
-    half4 color = half4(skyColor.x, skyColor.y, skyColor.z, 1);
+    float4 color = min(1.0, float4(skyColor.x, skyColor.y, skyColor.z, 1));
     return color;
 }
 
@@ -106,20 +106,72 @@ float3 ImportanceSampleGGX(float2 Xi, float3 N, float roughness)
     return normalize(sampleVec);
 }
 
+float NormalDistributionGGX(float NdotH, float roughness) {
+    float a2        = roughness * roughness;
+    float NdotH2    = NdotH * NdotH;
+    
+    float nom       = a2;
+    float denom     = (NdotH2 * (a2 - 1.0) + 1.0);
+    denom           = PI * denom * denom;
+    
+    return nom / denom;
+}
+
+float3 prefilterEnvMap_(float Roughness, float3 R, texture2d<float, access::sample> baseColorTexture [[texture(3)]], sampler baseColorSampler [[sampler(0)]]) {
+    float3 N = R;
+    float3 V = R;
+    
+    const uint kSampleCount = 4096;
+    
+    float roughness2        = Roughness * Roughness;
+    float totalWeight       = 0.0;
+    float3 totalIrradiance    = float3(0.0);
+    
+    for (uint i = 0; i < kSampleCount; ++i) {
+        float2 Xi = Hammersley(i, kSampleCount);
+        float3 H  = ImportanceSampleGGX(Xi, N, Roughness);
+        // Reflect H to actually sample in light direction
+        float3 L  = normalize(2.0 * dot(V, H) * H - V);
+        
+        float NdotL = max(dot(N, L), 0.0);
+        float NdotH = max(dot(N, H), 0.0);
+        float HdotV = max(dot(H, V), 0.0);
+        
+        if (NdotL > 0.0) {
+            // Fixing bright dots on convoluted map by sampling a mip level of the environment map based on the integral's PDF and roughness:
+            // https://chetanjags.wordpress.com/2015/08/26/image-based-lighting/
+            
+            float D             = NormalDistributionGGX(NdotH, roughness2);
+            float pdf           = (D * NdotH / (4.0 * HdotV)) + 0.0001; // Propability density function
+            
+            float resolution    = baseColorTexture.get_width(); // Resolution of source cubemap (per face)
+            float saTexel       = 4.0 * PI / (6.0 * resolution * resolution);
+            float saSample      = 1.0 / (float(kSampleCount) * pdf + 0.0001);
+            
+            float mipLevel      = Roughness == 0.0 ? 0.0 : 0.5 * log2(saSample / saTexel);
+            
+            totalIrradiance     += baseColorTexture.sample(baseColorSampler, sampleSphericalMap(L), level(mipLevel)).rgb * NdotL;
+            totalWeight         += NdotL;
+        }
+    }
+    return totalIrradiance / totalWeight;
+}
+
+
 float3 prefilterEnvMap(float Roughness, float3 R, texture2d<float, access::sample> baseColorTexture [[texture(3)]], sampler baseColorSampler [[sampler(0)]]) {
     float3 N = R;
     float3 V = R;
     float totalWeight = 0.00001;
     float3 PrefilteredColor = 0;
-    const uint numSamples = 4096;
-    for( uint i = 0; i < numSamples; i++ ){
+    const int numSamples = 4096;
+    for( int i = 0; i < numSamples; i++ ){
         float2 Xi = Hammersley(i, numSamples);
         float3 H = ImportanceSampleGGX( Xi, N, Roughness );
         float3 L = 2 * dot( V, H ) * H - V;
         float NoL = saturate( dot( N, L ) );
         if( NoL > 0 ) {
         //    NoL = 1;
-            PrefilteredColor += min(100.0, baseColorTexture.sample(baseColorSampler, sampleSphericalMap(L)).rgb) * NoL;
+            PrefilteredColor += clamp(baseColorTexture.sample(baseColorSampler, sampleSphericalMap(L)).rgb, 0.0, 100.0) * NoL;
             totalWeight += NoL;
         }
     }
@@ -145,8 +197,11 @@ vertex VertexOut preFilterEnvMapVertexShader (const SimpleVertex vIn [[ stage_in
 fragment float4 preFilterEnvMapFragmentShader (VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], texture2d<float, access::sample> baseColorTexture [[texture(3)]], sampler baseColorSampler [[sampler(0)]]) {
     float3 textureDir = getDirectionForPoint(vOut.pos);
     float roughness = material.roughness;
-    float3 skyColor = prefilterEnvMap(roughness, textureDir, baseColorTexture, baseColorSampler);
-    float4 color = min(float4(exp2(10.0)), float4(abs(skyColor.x), abs(skyColor.y), abs(skyColor.z), 1.0));
+    float3 skyColor = prefilterEnvMap_(roughness, textureDir, baseColorTexture, baseColorSampler);
+//    skyColor = skyColor / (skyColor + float3(1.0));
+//    skyColor = pow(skyColor, float3(1.0/2.2));
+    float4 color = float4(skyColor.x, skyColor.y, skyColor.z, 1.0);
+    
     return color;
 }
 
@@ -184,44 +239,41 @@ float GeometrySmith(float3 N, float3 V, float3 L, float roughness)
     return ggx1 * ggx2;
 }
 
-float2 IntegrateBRDF( float r, float NoV ) {
+float2 IntegrateBRDF( float NdotV, float roughness ) {
     float3 V;
-    float roughness = r;
-    V.x = sqrt(1.0 - NoV*NoV);
+    V.x = sqrt(1.0 - NdotV * NdotV);
     V.y = 0.0;
-    V.z = NoV;
-
-    float A = 0.0;
-    float B = 0.0;
-
+    V.z = NdotV;
+    
+    float scale = 0.0;
+    float bias = 0.0;
+    
     float3 N = float3(0.0, 0.0, 1.0);
     
-    const uint SAMPLE_COUNT = 1024u;
-    for(uint i = 0u; i < SAMPLE_COUNT; ++i)
+    const uint kSampleCount = 1024;
+    
+    for(uint i = 0; i < kSampleCount; ++i)
     {
-        // generates a sample vector that's biased towards the
-        // preferred alignment direction (importance sampling).
-        float2 Xi = Hammersley(i, SAMPLE_COUNT);
-        float3 H = ImportanceSampleGGX(Xi, N, roughness);
-        float3 L = normalize(2.0 * dot(V, H) * H - V);
-
+        float2 Xi = Hammersley(i, kSampleCount);
+        float3 H  = ImportanceSampleGGX(Xi, N, roughness);
+        float3 L  = normalize(2.0 * dot(V, H) * H - V);
+        
         float NdotL = max(L.z, 0.0);
         float NdotH = max(H.z, 0.0);
         float VdotH = max(dot(V, H), 0.0);
-
+        
         if(NdotL > 0.0)
         {
             float G = GeometrySmith(N, V, L, roughness);
-            float G_Vis = (G * VdotH) / (NdotH * NoV);
+            float G_Vis = (G * VdotH) / (NdotH * NdotV);
             float Fc = pow(1.0 - VdotH, 5.0);
-
-            A += (1.0 - Fc) * G_Vis;
-            B += Fc * G_Vis;
+            
+            scale += (1.0 - Fc) * G_Vis;
+            bias += Fc * G_Vis;
         }
     }
-    A /= float(SAMPLE_COUNT);
-    B /= float(SAMPLE_COUNT);
-    return float2(A, B);
+
+    return float2(scale, bias) / kSampleCount;
 }
 
 vertex VertexOut DFGVertexShader (const SimpleVertex vIn [[ stage_in ]]) {
@@ -250,7 +302,7 @@ float3 irradianceMap (float3 N, texture2d<float, access::sample> envMapTexture [
     float3 right = cross(up, N);
     up = cross(N, right);
        
-    float sampleDelta = 0.025;
+    float sampleDelta = 0.01;
     float nrSamples = 0.0f;
     for(float phi = 0.0; phi < 2.0 * PI; phi += sampleDelta)
     {
@@ -261,7 +313,7 @@ float3 irradianceMap (float3 N, texture2d<float, access::sample> envMapTexture [
             // tangent space to world
             float3 sampleVec = tangentSample.x * right + tangentSample.y * up + tangentSample.z * N;
 
-            irradiance += min(100, envMapTexture.sample(s, sampleSphericalMap(sampleVec))).rgb * cos(theta) * sin(theta);
+            irradiance += clamp(envMapTexture.sample(s, sampleSphericalMap(sampleVec)), 0.0, 100.0).rgb * cos(theta) * sin(theta);
             nrSamples++;
         }
     }

@@ -107,6 +107,11 @@ extension Scene {
         
         // Generate irradiance maps and DFG lut if first draw
         if firstDraw {
+            let blitEncoder = commandBuffer?.makeBlitCommandEncoder()
+            blitEncoder?.copy(from: skybox.texture!, sourceSlice: 0, sourceLevel: 0, to: skybox.mipmappedTexture, destinationSlice: 0, destinationLevel: 0, sliceCount: 1, levelCount: 1)
+            blitEncoder?.generateMipmaps(for: skybox.mipmappedTexture)
+            blitEncoder?.endEncoding()
+            
             for i in 0..<preFilterEnvMap.mipMapCount {
                 let mipmapEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: preFilterEnvMap.renderPassDescriptors[i])
                 drawPrefilterEnvMap(renderCommandEncoder: mipmapEncoder, roughness: Float(i)/Float(preFilterEnvMap.mipMapCount))
@@ -204,9 +209,9 @@ extension Scene {
     func drawPrefilterEnvMap(renderCommandEncoder: MTLRenderCommandEncoder?, roughness: Float = 0) {
         renderCommandEncoder?.setRenderPipelineState(preFilterEnvMap.pipelineState)
         renderCommandEncoder?.setVertexBuffer(preFilterEnvMap.vertexBuffer, offset: 0, index: 0)
-        var material = ShaderMaterial(baseColor: Float3(repeating: 0), roughness: max(Float(0.0001), roughness), metallic: 0.1, mipmapCount: preFilterEnvMap.mipMapCount)
+        var material = ShaderMaterial(baseColor: Float3(repeating: 0), roughness: roughness, metallic: 0.1, mipmapCount: preFilterEnvMap.mipMapCount)
         renderCommandEncoder?.setFragmentBytes(&material, length: MemoryLayout<ShaderMaterial>.size, index: 0)
-        renderCommandEncoder?.setFragmentTexture(skybox.texture, index: 3)
+        renderCommandEncoder?.setFragmentTexture(skybox.mipmappedTexture, index: 3)
         renderCommandEncoder?.setFragmentSamplerState(skybox.samplerState, index: 0)
         renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: preFilterEnvMap.vertices.count)
     }

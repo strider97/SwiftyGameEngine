@@ -110,9 +110,9 @@ extension Camera {
         case KeyboardEvents.left:
             position -= right * speed * GameTimer.sharedTimer.deltaTime
         case KeyboardEvents.up:
-            position += up * speed * GameTimer.sharedTimer.deltaTime
+            position += Camera.WorldUp * speed * GameTimer.sharedTimer.deltaTime
         case KeyboardEvents.down:
-            position -= up * speed * GameTimer.sharedTimer.deltaTime
+            position -= Camera.WorldUp * speed * GameTimer.sharedTimer.deltaTime
         default:
             return
         }

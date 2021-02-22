@@ -11,6 +11,7 @@ class Skybox {
 
     let mesh: MTKMesh
     var texture: MTLTexture?
+    var mipmappedTexture: MTLTexture
     let pipelineState: MTLRenderPipelineState
     let depthStencilState: MTLDepthStencilState?
     var samplerState: MTLSamplerState?
@@ -26,6 +27,7 @@ class Skybox {
         }
         pipelineState = Self.buildPipelineState(vertexDescriptor: cube.vertexDescriptor)
         depthStencilState = Self.buildDepthStencilState()
+        /*
         let sky = MDLSkyCubeTexture(name: nil,
                 channelEncoding: MDLTextureChannelEncoding.uInt8,
                 textureDimensions: [Int32(160), Int32(160)],
@@ -40,8 +42,10 @@ class Skybox {
             fatalError("failed to create skybox texture")
           }
      //   texture = Self.createSkycubeTexture(name: textureName)
+        */
         texture = Self.loadHDR(name: textureName)
         samplerState = Self.createSamplerState()
+        mipmappedTexture = Descriptor.build2DTexture(pixelFormat: .rgba16Float, size: CGSize(width: texture!.width, height: texture!.height), label: "skyboxMipmapped", mipmapped: true)
     }
     
     private static func buildPipelineState(vertexDescriptor: MDLVertexDescriptor) -> MTLRenderPipelineState {

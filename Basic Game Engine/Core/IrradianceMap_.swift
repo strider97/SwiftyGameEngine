@@ -12,6 +12,7 @@ class IrradianceMap {
     var renderPassDescriptor = MTLRenderPassDescriptor()
     var pipelineState: MTLRenderPipelineState
     let vertexBuffer: MTLBuffer
+    let w = 128
     var vertices: [Vertex] = [
         Vertex(position: Float3(-1, -1, 0), color: Float4(0.0, 0.0, 0.0, 1)),
         Vertex(position: Float3(-1, 1, 0), color: Float4(0.0, 1.0, 0.0, 1)),
@@ -24,7 +25,7 @@ class IrradianceMap {
     init() {
         let device = Device.sharedDevice.device!
         vertexBuffer = device.makeBuffer(bytes: vertices, length: MemoryLayout<Vertex>.stride*vertices.count, options: [])!
-        texture = Descriptor.build2DTexture(pixelFormat: .rgba16Float, size: CGSize(width: 256, height: 128));
+        texture = Descriptor.build2DTexture(pixelFormat: .rgba16Float, size: CGSize(width: w, height: w/2), label: "irradianceMap");
         pipelineState = Descriptor.createIrradianceMapPipelineState()
         renderPassDescriptor.setupColorAttachment(texture)
     }
