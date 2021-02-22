@@ -11,6 +11,7 @@
 		720EC2F325D82F2500A83F1A /* SkyboxShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 720EC2F225D82F2500A83F1A /* SkyboxShader.metal */; };
 		720EC2FF25D8816B00A83F1A /* park.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 720EC2FE25D8816B00A83F1A /* park.hdr */; };
 		721F5B4025E2A7920000EA4C /* sphere.usd in Resources */ = {isa = PBXBuildFile; fileRef = 721F5B3F25E2A7920000EA4C /* sphere.usd */; };
+		721F5B5625E2DC5A0000EA4C /* cloudy.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 721F5B5525E2DC5A0000EA4C /* cloudy.hdr */; };
 		72282CCB25C17FD400C9CCF4 /* plane.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72282CCA25C17FD400C9CCF4 /* plane.obj */; };
 		722830B925C5706000C9CCF4 /* spheres.usd in Resources */ = {isa = PBXBuildFile; fileRef = 722830B825C5705F00C9CCF4 /* spheres.usd */; };
 		7230F99B25C60FAD00D9610A /* BasicScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7230F99A25C60FAD00D9610A /* BasicScene.swift */; };
@@ -92,6 +93,7 @@
 		720EC2F225D82F2500A83F1A /* SkyboxShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = SkyboxShader.metal; sourceTree = "<group>"; };
 		720EC2FE25D8816B00A83F1A /* park.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = park.hdr; path = "Basic Game Engine/HDRI/park.hdr"; sourceTree = SOURCE_ROOT; };
 		721F5B3F25E2A7920000EA4C /* sphere.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = sphere.usd; path = "Basic Game Engine/Resources/teapot/sphere.usd"; sourceTree = SOURCE_ROOT; };
+		721F5B5525E2DC5A0000EA4C /* cloudy.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = cloudy.hdr; path = "Basic Game Engine/HDRI/cloudy.hdr"; sourceTree = SOURCE_ROOT; };
 		72282CCA25C17FD400C9CCF4 /* plane.obj */ = {isa = PBXFileReference; lastKnownFileType = text; name = plane.obj; path = "Basic Game Engine/Resources/teapot/plane.obj"; sourceTree = SOURCE_ROOT; };
 		722830B825C5705F00C9CCF4 /* spheres.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = spheres.usd; path = "Basic Game Engine/Resources/teapot/spheres.usd"; sourceTree = SOURCE_ROOT; };
 		7230F99A25C60FAD00D9610A /* BasicScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicScene.swift; sourceTree = "<group>"; };
@@ -186,6 +188,7 @@
 		720EC2FD25D8814D00A83F1A /* HDRI */ = {
 			isa = PBXGroup;
 			children = (
+				721F5B5525E2DC5A0000EA4C /* cloudy.hdr */,
 				7274EF4A25E03DD40026C80B /* cliff.hdr */,
 				7274EF4525DFDE840026C80B /* cambridge.hdr */,
 				729B14FA25D91D8100129165 /* park_green.hdr */,
@@ -504,6 +507,7 @@
 				72E3996325BE31B000927B17 /* helmet.obj in Resources */,
 				729B14F625D91AFF00129165 /* garden.hdr in Resources */,
 				72E3995F25BE31B000927B17 /* helmet_baseColor.jpg in Resources */,
+				721F5B5625E2DC5A0000EA4C /* cloudy.hdr in Resources */,
 				72E3996025BE31B000927B17 /* helmet_metallicRoughness.png in Resources */,
 				720EC2FF25D8816B00A83F1A /* park.hdr in Resources */,
 				72E399A625BF176C00927B17 /* teapot2.obj in Resources */,

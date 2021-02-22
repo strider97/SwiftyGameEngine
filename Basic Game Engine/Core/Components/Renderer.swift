@@ -18,7 +18,11 @@ struct ShaderMaterial {
 class Material {
     var baseColor = Float3(repeating: 1)
     var roughness: Float = 0
-    var metallic: Float = 0.8
+    var metallic: Float = 0.8 {
+        didSet {
+            metallic = max(0.001, metallic)
+        }
+    }
     var albedo: MTLTexture?
     private let library = Device.sharedDevice.library
     var fragmentShaderFunction: MTLFunction?

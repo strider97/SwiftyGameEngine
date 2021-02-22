@@ -57,6 +57,8 @@ enum KeyboardEvents: String, CaseIterable {
     case backward = "s"
     case left = "a"
     case right = "d"
+    case down = "k"
+    case up = "i"
     case none = ""
     
     static var keyStates: [KeyboardEvents: Bool] = [:]
