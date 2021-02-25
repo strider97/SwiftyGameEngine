@@ -101,18 +101,18 @@ extension Camera {
     
     private func translateCam(key: KeyboardEvents) {
         switch key {
-        case KeyboardEvents.forward:
+        case .forward:
             position += front * speed * GameTimer.sharedTimer.deltaTime
-        case KeyboardEvents.backward:
+        case .backward:
             position -= front * speed * GameTimer.sharedTimer.deltaTime
-        case KeyboardEvents.right:
+        case .right:
             position += right * speed * GameTimer.sharedTimer.deltaTime
-        case KeyboardEvents.left:
+        case .left:
             position -= right * speed * GameTimer.sharedTimer.deltaTime
-        case KeyboardEvents.up:
-            position += Camera.WorldUp * speed * GameTimer.sharedTimer.deltaTime
-        case KeyboardEvents.down:
-            position -= Camera.WorldUp * speed * GameTimer.sharedTimer.deltaTime
+        case .up:
+            position += Camera.WorldUp * speed * GameTimer.sharedTimer.deltaTime * 0.6
+        case .down:
+            position -= Camera.WorldUp * speed * GameTimer.sharedTimer.deltaTime * 0.6
         default:
             return
         }

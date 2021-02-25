@@ -44,6 +44,9 @@ constant float2 invPi = float2(0.15915, 0.31831);
 constant float pi = 3.1415926;
 
 constexpr sampler s(coord::normalized, address::repeat, filter::linear, mip_filter::linear);
+constant float gamma     = 2.2;
+constant float exposure  = 1.0;
+constant float pureWhite = 1.0;
 
 struct VertexIn {
     float3 position [[attribute(0)]];
@@ -92,8 +95,13 @@ float3 approximateSpecularIBL( float3 SpecularColor , float Roughness, int mipma
     R.x = -R.x;
     R.z = -R.z;
     float3 PrefilteredColor = preFilterEnvMap.sample(s, sampleSphericalMap_(R), level(Roughness * 6)).rgb;
-    float2 EnvBRDF = DFGlut.sample(s, float2(Roughness, NoV)).rg;
+    float2 EnvBRDF = DFGlut.sample(s, float2(NoV, Roughness)).rg;
     return PrefilteredColor * ( SpecularColor * EnvBRDF.x + EnvBRDF.y );
+}
+
+float3 fresnelSchlick(float3 F0, float cosTheta)
+{
+    return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
 }
 
 vertex VertexOut basicVertexShader(const VertexIn vIn [[ stage_in ]], constant Uniforms &uniforms [[buffer(1)]]) {
@@ -109,7 +117,7 @@ vertex VertexOut basicVertexShader(const VertexIn vIn [[ stage_in ]], constant U
     return vOut;
 }
 
-fragment half4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], texture2d<float, access::sample> preFilterEnvMap [[texture(0)]], texture2d<float, access::sample> DFGlut [[texture(1)]], texture2d<float, access::sample> irradianceMap [[texture(2)]]) {
+fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], texture2d<float, access::sample> preFilterEnvMap [[texture(0)]], texture2d<float, access::sample> DFGlut [[texture(1)]], texture2d<float, access::sample> irradianceMap [[texture(2)]]) {
     
     float3 albedo = material.baseColor;
     float metallic = material.metallic;
@@ -131,12 +139,19 @@ fragment half4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mater
     float3 diffuse = irradiance * albedo;
     float3 specular = approximateSpecularIBL(F, roughness, material.mipmapCount, N, V, preFilterEnvMap, DFGlut);
     
-    float3 outColor =  kD * diffuse + specular;
-    outColor = outColor / (outColor + float3(1.0));
-    outColor = pow(outColor, float3(1.0/2.2));
- //   outColor = irradiance;
-//    outColor = metallic;
-    return half4(outColor.x, outColor.y, outColor.z, 1.0);
+    float3 color =  kD * diffuse + specular;
+    color = color / (color + float3(1.0));
+    color = pow(color, float3(1.0/2.2));
+    return float4(color, 1.0);
+    
+    float luminance = dot(color, float3(0.2126, 0.7152, 0.0722));
+    float mappedLuminance = (luminance * (1.0 + luminance/(pureWhite*pureWhite))) / (1.0 + luminance);
+
+    // Scale color by ratio of average luminances.
+    float3 mappedColor = (mappedLuminance / luminance) * color;
+
+    // Gamma correction.
+    return float4(pow(mappedColor, 1.0/gamma), 1.0);
 }
 
 
@@ -153,10 +168,10 @@ fragment half4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mater
      float3 eyeDir = normalize(vOut.eye - vOut.position);
      float spec = 1.4 * pow(max(0.0, dot(normalize(lightDir + eyeDir), vOut.normal)), 32);
      float diff = max(0.2, dot(lightDir, vOut.normal));
-     float3 outColor = intensity * color * (diff + spec);
-     outColor = pow(outColor, float3(1.0/2.2));
+     float3 color = intensity * color * (diff + spec);
+     color = pow(color, float3(1.0/2.2));
   //   return half4(1);
-     return half4(outColor.x, outColor.y, outColor.z, 1.0);
+     return half4(color.x, color.y, color.z, 1.0);
   //   return half4(vOut.normal.x, vOut.normal.y, vOut.normal.z, 1.0);
  }
 

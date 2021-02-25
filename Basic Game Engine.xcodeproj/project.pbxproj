@@ -10,6 +10,8 @@
 		720EC2EE25D7CCD300A83F1A /* Skybox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720EC2ED25D7CCD300A83F1A /* Skybox.swift */; };
 		720EC2F325D82F2500A83F1A /* SkyboxShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 720EC2F225D82F2500A83F1A /* SkyboxShader.metal */; };
 		720EC2FF25D8816B00A83F1A /* park.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 720EC2FE25D8816B00A83F1A /* park.hdr */; };
+		72164FBD25E859C700511342 /* studio.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 72164FBC25E859C700511342 /* studio.hdr */; };
+		72164FC225E860AD00511342 /* heli.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72164FC125E860AD00511342 /* heli.usd */; };
 		721F5B4025E2A7920000EA4C /* sphere.usd in Resources */ = {isa = PBXBuildFile; fileRef = 721F5B3F25E2A7920000EA4C /* sphere.usd */; };
 		721F5B5625E2DC5A0000EA4C /* cloudy.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 721F5B5525E2DC5A0000EA4C /* cloudy.hdr */; };
 		72282CCB25C17FD400C9CCF4 /* plane.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72282CCA25C17FD400C9CCF4 /* plane.obj */; };
@@ -29,6 +31,12 @@
 		72DAC96025DDD87500DB3C50 /* plane.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72DAC95F25DDD87500DB3C50 /* plane.usd */; };
 		72DACABC25DE6AED00DB3C50 /* IrradianceMap_.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DACABB25DE6AED00DB3C50 /* IrradianceMap_.swift */; };
 		72E0476925E45B2A00E48A54 /* shield.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72E0476825E45B2A00E48A54 /* shield.usd */; };
+		72E0476E25E59B1200E48A54 /* mug.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72E0476D25E59B1200E48A54 /* mug.usd */; };
+		72E0477325E5A71200E48A54 /* robotArm.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72E0477225E5A71200E48A54 /* robotArm.usd */; };
+		72E0477825E6F9AB00E48A54 /* car.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72E0477725E6F9AB00E48A54 /* car.usd */; };
+		72E0477D25E7020F00E48A54 /* carLowPoly.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72E0477C25E7020F00E48A54 /* carLowPoly.usd */; };
+		72E0478225E7069100E48A54 /* f1.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72E0478125E7069100E48A54 /* f1.usd */; };
+		72E0478725E7089800E48A54 /* weapons.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72E0478625E7089800E48A54 /* weapons.usd */; };
 		72E398A525BB4ECA00927B17 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E398A425BB4ECA00927B17 /* AppDelegate.swift */; };
 		72E398A725BB4ECA00927B17 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E398A625BB4ECA00927B17 /* GameViewController.swift */; };
 		72E398AA25BB4ECA00927B17 /* Basic_Game_Engine.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 72E398A825BB4ECA00927B17 /* Basic_Game_Engine.xcdatamodeld */; };
@@ -93,6 +101,8 @@
 		720EC2ED25D7CCD300A83F1A /* Skybox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Skybox.swift; sourceTree = "<group>"; };
 		720EC2F225D82F2500A83F1A /* SkyboxShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = SkyboxShader.metal; sourceTree = "<group>"; };
 		720EC2FE25D8816B00A83F1A /* park.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = park.hdr; path = "Basic Game Engine/HDRI/park.hdr"; sourceTree = SOURCE_ROOT; };
+		72164FBC25E859C700511342 /* studio.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = studio.hdr; path = "Basic Game Engine/HDRI/studio.hdr"; sourceTree = SOURCE_ROOT; };
+		72164FC125E860AD00511342 /* heli.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = heli.usd; path = "Basic Game Engine/Resources/teapot/heli.usd"; sourceTree = SOURCE_ROOT; };
 		721F5B3F25E2A7920000EA4C /* sphere.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = sphere.usd; path = "Basic Game Engine/Resources/teapot/sphere.usd"; sourceTree = SOURCE_ROOT; };
 		721F5B5525E2DC5A0000EA4C /* cloudy.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = cloudy.hdr; path = "Basic Game Engine/HDRI/cloudy.hdr"; sourceTree = SOURCE_ROOT; };
 		72282CCA25C17FD400C9CCF4 /* plane.obj */ = {isa = PBXFileReference; lastKnownFileType = text; name = plane.obj; path = "Basic Game Engine/Resources/teapot/plane.obj"; sourceTree = SOURCE_ROOT; };
@@ -112,6 +122,12 @@
 		72DAC95F25DDD87500DB3C50 /* plane.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = plane.usd; path = "Basic Game Engine/Resources/teapot/plane.usd"; sourceTree = SOURCE_ROOT; };
 		72DACABB25DE6AED00DB3C50 /* IrradianceMap_.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IrradianceMap_.swift; sourceTree = "<group>"; };
 		72E0476825E45B2A00E48A54 /* shield.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = shield.usd; path = "Basic Game Engine/Resources/teapot/shield.usd"; sourceTree = SOURCE_ROOT; };
+		72E0476D25E59B1200E48A54 /* mug.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = mug.usd; path = "Basic Game Engine/Resources/teapot/mug.usd"; sourceTree = SOURCE_ROOT; };
+		72E0477225E5A71200E48A54 /* robotArm.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = robotArm.usd; path = "Basic Game Engine/Resources/teapot/robotArm.usd"; sourceTree = SOURCE_ROOT; };
+		72E0477725E6F9AB00E48A54 /* car.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = car.usd; path = "Basic Game Engine/Resources/teapot/car.usd"; sourceTree = SOURCE_ROOT; };
+		72E0477C25E7020F00E48A54 /* carLowPoly.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = carLowPoly.usd; path = "Basic Game Engine/Resources/teapot/carLowPoly.usd"; sourceTree = SOURCE_ROOT; };
+		72E0478125E7069100E48A54 /* f1.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = f1.usd; path = "Basic Game Engine/Resources/teapot/f1.usd"; sourceTree = SOURCE_ROOT; };
+		72E0478625E7089800E48A54 /* weapons.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = weapons.usd; path = "Basic Game Engine/Resources/teapot/weapons.usd"; sourceTree = SOURCE_ROOT; };
 		72E398A125BB4ECA00927B17 /* Basic Game Engine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Basic Game Engine.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		72E398A425BB4ECA00927B17 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		72E398A625BB4ECA00927B17 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
@@ -190,6 +206,7 @@
 		720EC2FD25D8814D00A83F1A /* HDRI */ = {
 			isa = PBXGroup;
 			children = (
+				72164FBC25E859C700511342 /* studio.hdr */,
 				721F5B5525E2DC5A0000EA4C /* cloudy.hdr */,
 				7274EF4A25E03DD40026C80B /* cliff.hdr */,
 				7274EF4525DFDE840026C80B /* cambridge.hdr */,
@@ -370,6 +387,13 @@
 		72E3999925BF0C8300927B17 /* models */ = {
 			isa = PBXGroup;
 			children = (
+				72164FC125E860AD00511342 /* heli.usd */,
+				72E0478625E7089800E48A54 /* weapons.usd */,
+				72E0478125E7069100E48A54 /* f1.usd */,
+				72E0477C25E7020F00E48A54 /* carLowPoly.usd */,
+				72E0477725E6F9AB00E48A54 /* car.usd */,
+				72E0477225E5A71200E48A54 /* robotArm.usd */,
+				72E0476D25E59B1200E48A54 /* mug.usd */,
 				72E0476825E45B2A00E48A54 /* shield.usd */,
 				721F5B3F25E2A7920000EA4C /* sphere.usd */,
 				72C1736825DED90800B75C4D /* ring.usd */,
@@ -498,6 +522,7 @@
 				72E3999B25BF0C9700927B17 /* teapot.obj in Resources */,
 				729B14D125D8841A00129165 /* park.jpg in Resources */,
 				72E3998D25BEF35100927B17 /* Face_04.png in Resources */,
+				72164FBD25E859C700511342 /* studio.hdr in Resources */,
 				72282CCB25C17FD400C9CCF4 /* plane.obj in Resources */,
 				729B14E325D8966000129165 /* room.hdr in Resources */,
 				72E3995E25BE31B000927B17 /* helmet_baseColor.png in Resources */,
@@ -505,10 +530,13 @@
 				729B14E825D896EC00129165 /* kiara.hdr in Resources */,
 				72E3995B25BE31B000927B17 /* loft_pmrem.ktx in Resources */,
 				72E3996225BE31B000927B17 /* helmet_roughness.jpg in Resources */,
+				72E0477325E5A71200E48A54 /* robotArm.usd in Resources */,
 				7274EF4625DFDE850026C80B /* cambridge.hdr in Resources */,
 				72E3995C25BE31B000927B17 /* garage_pmrem.ktx in Resources */,
 				72E3996325BE31B000927B17 /* helmet.obj in Resources */,
+				72E0478225E7069100E48A54 /* f1.usd in Resources */,
 				729B14F625D91AFF00129165 /* garden.hdr in Resources */,
+				72E0477D25E7020F00E48A54 /* carLowPoly.usd in Resources */,
 				72E3995F25BE31B000927B17 /* helmet_baseColor.jpg in Resources */,
 				721F5B5625E2DC5A0000EA4C /* cloudy.hdr in Resources */,
 				72E3996025BE31B000927B17 /* helmet_metallicRoughness.png in Resources */,
@@ -524,11 +552,15 @@
 				7274EF4B25E03DD40026C80B /* cliff.hdr in Resources */,
 				72E399BA25BF3ECD00927B17 /* planet.obj in Resources */,
 				721F5B4025E2A7920000EA4C /* sphere.usd in Resources */,
+				72E0476E25E59B1200E48A54 /* mug.usd in Resources */,
+				72E0478725E7089800E48A54 /* weapons.usd in Resources */,
+				72164FC225E860AD00511342 /* heli.usd in Resources */,
 				72E3998B25BEF35100927B17 /* legoMan.mtl in Resources */,
 				72E3995D25BE31B000927B17 /* helmet.mtl in Resources */,
 				72E398AF25BB4ECB00927B17 /* Main.storyboard in Resources */,
 				722830B925C5706000C9CCF4 /* spheres.usd in Resources */,
 				72E3998C25BEF35100927B17 /* legoMan.obj in Resources */,
+				72E0477825E6F9AB00E48A54 /* car.usd in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

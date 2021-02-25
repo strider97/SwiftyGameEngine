@@ -11,7 +11,7 @@ class SceneManager {
     static let sharedManager = SceneManager()
     var currentScene: Scene!
     init () {
-        currentScene = BasicScene()
+        currentScene = SimpleScene()
     }
     func loadScene(scene: Scene) {
         currentScene = scene
@@ -132,6 +132,10 @@ extension Scene {
             let irradianceMapCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: irradianceMap.renderPassDescriptor)
             drawIrradianceMap(renderCommandEncoder: irradianceMapCommandEncoder)
             irradianceMapCommandEncoder?.endEncoding()
+            
+        //    let textureLoader = MTKTextureLoader(device: device!)
+        //    let options_: [MTKTextureLoader.Option : Any] = [.SRGB : false]
+        //    dfgLut.texture = try! textureLoader.newTexture(name: "dfglut", scaleFactor: 1.0, bundle: nil, options: options_)
         }
         
         let shadowCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: shadowDescriptor)

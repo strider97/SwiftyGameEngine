@@ -28,7 +28,7 @@ extension MeshManager {
         let bufferAllocator = MTKMeshBufferAllocator(device: device)
         let asset = MDLAsset(url: url, vertexDescriptor: nil, bufferAllocator: bufferAllocator)
         for sourceMesh in asset.childObjects(of: MDLMesh.self) as! [MDLMesh] {
-            sourceMesh.addNormals(withAttributeNamed: Constants.smoothNormal, creaseThreshold: 0.8)
+            sourceMesh.addNormals(withAttributeNamed: Constants.smoothNormal, creaseThreshold: 0.7)
             sourceMesh.vertexDescriptor = Self.getMDLVertexDescriptor()
         }
         var meshes: [MTKMesh]

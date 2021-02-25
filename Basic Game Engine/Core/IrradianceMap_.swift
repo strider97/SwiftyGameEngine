@@ -90,7 +90,7 @@ class DFGLut {
     init() {
         let device = Device.sharedDevice.device!
         vertexBuffer = device.makeBuffer(bytes: vertices, length: MemoryLayout<Vertex>.stride*vertices.count, options: [])!
-        texture = Descriptor.build2DTexture(pixelFormat: .rgba16Float, size: CGSize(width: 1024, height: 1024));
+        texture = Descriptor.build2DTexture(pixelFormat: .rgba16Float, size: CGSize(width: 512, height: 512));
         pipelineState = Descriptor.createDFGLUTPipelineState()
         renderPassDescriptor.setupColorAttachment(texture)
     }

@@ -8,19 +8,30 @@
 import MetalKit
 
 class SimpleScene: Scene {
-    var spheres2: GameObject!
-    
     override func getGameObjects() -> [GameObject] {
-        spheres2 = GameObject(modelName: "teapot")
-        return [spheres2]
+        let model = GameObject(modelName: "heli")
+        let mesh = model.getComponent(Mesh.self)!
+        for (_, meshNodes) in mesh.meshNodes {
+            for meshNode in meshNodes {
+                let material = meshNode.material
+                material.roughness *= material.roughness
+            //    material.metallic = 0.0
+            //    material.baseColor = Float3(1.0, 1.0, 0.7)
+            }
+        }
+        return [model]
     }
     
     override func addPhysics() {
         
     }
     
+    override func getSkybox() -> Skybox {
+        return Skybox(textureName: "park")
+    }
+    
     override func addBehaviour() {
-        let _ = Move(gameObject: spheres2, speed: 4)
+    //    let _ = MoveInCircle(gameObject: sphere, radius: 10)
     }
     
     override func getCamera() -> Camera {

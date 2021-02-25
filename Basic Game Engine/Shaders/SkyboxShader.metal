@@ -121,7 +121,7 @@ float3 prefilterEnvMap_(float Roughness, float3 R, texture2d<float, access::samp
     float3 N = R;
     float3 V = R;
     
-    const uint kSampleCount = 4096;
+    const uint kSampleCount = 1024;
     
     float roughness2        = Roughness * Roughness;
     float totalWeight       = 0.0;
@@ -163,7 +163,7 @@ float3 prefilterEnvMap(float Roughness, float3 R, texture2d<float, access::sampl
     float3 V = R;
     float totalWeight = 0.00001;
     float3 PrefilteredColor = 0;
-    const int numSamples = 4096;
+    const int numSamples = 1024;
     for( int i = 0; i < numSamples; i++ ){
         float2 Xi = Hammersley(i, numSamples);
         float3 H = ImportanceSampleGGX( Xi, N, Roughness );
@@ -171,7 +171,7 @@ float3 prefilterEnvMap(float Roughness, float3 R, texture2d<float, access::sampl
         float NoL = saturate( dot( N, L ) );
         if( NoL > 0 ) {
         //    NoL = 1;
-            PrefilteredColor += clamp(baseColorTexture.sample(baseColorSampler, sampleSphericalMap(L)).rgb, 0.0, 100.0) * NoL;
+            PrefilteredColor += clamp(baseColorTexture.sample(baseColorSampler, sampleSphericalMap(L)).rgb, 0.0, 1000.0) * NoL;
             totalWeight += NoL;
         }
     }
