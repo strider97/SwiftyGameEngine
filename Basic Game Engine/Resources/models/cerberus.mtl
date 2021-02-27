@@ -1,0 +1,15 @@
+# Blender MTL File: 'cerberus.blend'
+# Material Count: 1
+
+newmtl 08_-_Default.001
+Ns 18.000005
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd Cerberus_A.tga
+map_roughness Cerberus_R.tga
+map_metallic Cerberus_M.tga

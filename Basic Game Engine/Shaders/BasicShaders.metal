@@ -15,6 +15,15 @@ struct Uniforms {
     float3 eye;
 };
 
+enum {
+    textureIndexPreFilterEnvMap,
+    textureIndexDFGlut,
+    textureIndexirradianceMap,
+    textureIndexBaseColor,
+    textureIndexMetallic,
+    textureIndexRoughness
+};
+
 /*
 struct VertexIn {
     float3 position [[ attribute(0) ]];
@@ -111,17 +120,20 @@ vertex VertexOut basicVertexShader(const VertexIn vIn [[ stage_in ]], constant U
     vOut.m_position = PVM * float4(vIn.position, 1.0);
     vOut.normal = (uniforms.M*float4(vIn.normal, 0)).xyz;
     vOut.position = (uniforms.M*float4(vIn.position, 1.0)).xyz;
-    vOut.texCoords = vIn.texCoords;
+    vOut.texCoords = float2(vIn.texCoords.x, 1 - vIn.texCoords.y);
     vOut.eye = uniforms.eye;
     vOut.smoothNormal = (uniforms.M*float4(vIn.smoothNormal, 0)).xyz;
     return vOut;
 }
 
-fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], texture2d<float, access::sample> preFilterEnvMap [[texture(0)]], texture2d<float, access::sample> DFGlut [[texture(1)]], texture2d<float, access::sample> irradianceMap [[texture(2)]]) {
+fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], texture2d<float, access::sample> preFilterEnvMap [[texture(textureIndexPreFilterEnvMap)]], texture2d<float, access::sample> DFGlut [[texture(textureIndexDFGlut)]], texture2d<float, access::sample> irradianceMap [[texture(textureIndexirradianceMap)]], texture2d<float, access::sample> baseColor [[texture(textureIndexBaseColor)]], texture2d<float, access::sample> roughnessMap [[texture(textureIndexRoughness)]], texture2d<float, access::sample> metallicMap [[texture(textureIndexMetallic)]]) {
     
     float3 albedo = material.baseColor;
+    albedo *= pow(baseColor.sample(s, vOut.texCoords).rgb, 2.2);
     float metallic = material.metallic;
+    metallic *= metallicMap.sample(s, vOut.texCoords).r;
     float roughness = material.roughness;
+    roughness *= roughnessMap.sample(s, vOut.texCoords).r;
     float3 eyeDir = normalize(vOut.eye - vOut.position);
     
     float3 N = vOut.smoothNormal;
@@ -144,14 +156,14 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     color = pow(color, float3(1.0/2.2));
     return float4(color, 1.0);
     
-    float luminance = dot(color, float3(0.2126, 0.7152, 0.0722));
-    float mappedLuminance = (luminance * (1.0 + luminance/(pureWhite*pureWhite))) / (1.0 + luminance);
-
-    // Scale color by ratio of average luminances.
-    float3 mappedColor = (mappedLuminance / luminance) * color;
-
-    // Gamma correction.
-    return float4(pow(mappedColor, 1.0/gamma), 1.0);
+//    float luminance = dot(color, float3(0.2126, 0.7152, 0.0722));
+//    float mappedLuminance = (luminance * (1.0 + luminance/(pureWhite*pureWhite))) / (1.0 + luminance);
+//
+//    // Scale color by ratio of average luminances.
+//    float3 mappedColor = (mappedLuminance / luminance) * color;
+//
+//    // Gamma correction.
+//    return float4(pow(mappedColor, 1.0/gamma), 1.0);
 }
 
 

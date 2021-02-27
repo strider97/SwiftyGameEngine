@@ -146,10 +146,10 @@ extension Scene {
         
         let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         renderCommandEncoder?.setDepthStencilState(depthStencilState)
-        renderCommandEncoder?.setFragmentTexture(preFilterEnvMap.texture, index: 0)
-        renderCommandEncoder?.setFragmentTexture(dfgLut.texture, index: 1)
-        renderCommandEncoder?.setFragmentTexture(irradianceMap.texture, index: 2)
-        renderCommandEncoder?.setCullMode(.front)
+        renderCommandEncoder?.setFragmentTexture(preFilterEnvMap.texture, index: TextureIndex.preFilterEnvMap.rawValue)
+        renderCommandEncoder?.setFragmentTexture(dfgLut.texture, index: TextureIndex.DFGlut.rawValue)
+        renderCommandEncoder?.setFragmentTexture(irradianceMap.texture, index: TextureIndex.irradianceMap.rawValue)
+        renderCommandEncoder?.setCullMode(.none)
         drawGameObjects(renderCommandEncoder: renderCommandEncoder)
         drawSkybox(renderCommandEncoder: renderCommandEncoder)
         renderCommandEncoder?.endEncoding()
@@ -187,8 +187,12 @@ extension Scene {
                     }
                     for meshNode in meshNodes {
                         // add material through uniforms
-                        var material = ShaderMaterial(baseColor: meshNode.material.baseColor, roughness: meshNode.material.roughness, metallic: meshNode.material.metallic, mipmapCount: preFilterEnvMap.mipMapCount)
+                        let mat = meshNode.material
+                        var material = ShaderMaterial(baseColor: mat.baseColor, roughness: mat.roughness, metallic: mat.metallic, mipmapCount: preFilterEnvMap.mipMapCount)
                         renderCommandEncoder?.setFragmentBytes(&material, length: MemoryLayout<ShaderMaterial>.size, index: 0)
+                        renderCommandEncoder?.setFragmentTexture(mat.textureSet.baseColor, index: TextureIndex.baseColor.rawValue)
+                        renderCommandEncoder?.setFragmentTexture(mat.textureSet.roughness, index: TextureIndex.roughness.rawValue)
+                        renderCommandEncoder?.setFragmentTexture(mat.textureSet.metallic, index: TextureIndex.metallic.rawValue)
                         let submesh = meshNode.mesh
                         renderCommandEncoder?.drawIndexedPrimitives(type:submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: submesh.indexBuffer.offset)
                     }

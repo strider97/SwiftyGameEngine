@@ -24,9 +24,10 @@ extension MeshManager {
         if let meshes = allMeshes[modelName] {
             return meshes
         }
-        guard let url = Bundle.main.url(forResource: modelName, withExtension: "usd") else { return ([],[]) }
+        guard let url = Bundle.main.url(forResource: modelName, withExtension: "obj") else { return ([],[]) }
         let bufferAllocator = MTKMeshBufferAllocator(device: device)
         let asset = MDLAsset(url: url, vertexDescriptor: nil, bufferAllocator: bufferAllocator)
+        asset.loadTextures()
         for sourceMesh in asset.childObjects(of: MDLMesh.self) as! [MDLMesh] {
             sourceMesh.addNormals(withAttributeNamed: Constants.smoothNormal, creaseThreshold: 0.7)
             sourceMesh.vertexDescriptor = Self.getMDLVertexDescriptor()

@@ -39,7 +39,7 @@ extension Transform {
     }
     
     func rotate(angle: Float, axis: Float3) {
-        rotation = rotation*Quat(angle: angle, axis: axis)
+        rotation = Quat(angle: angle, axis: axis)
         modelMatrix *= Matrix4(rotation)
     }
 }

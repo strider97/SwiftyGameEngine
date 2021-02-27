@@ -28,11 +28,12 @@ extension Mesh {
         mdlMeshes = MeshManager.meshManager.loadMesh(modelName, device: device).0
         meshes = MeshManager.meshManager.loadMesh(modelName, device: device).1
         assert(mdlMeshes.count == meshes.count)
+        let textureLoader = MTKTextureLoader(device: device)
         for i in 0..<meshes.count {
             var meshNodeArray: [MeshNode] = []
             let mdlSubmeshes = mdlMeshes[i].submeshes as! [MDLSubmesh]
             for (index, submesh) in meshes[i].submeshes.enumerated() {
-                let meshNode = MeshNode(submesh: submesh, material: mdlSubmeshes[index].material)
+                let meshNode = MeshNode(submesh: submesh, material: mdlSubmeshes[index].material, textureLoader: textureLoader)
                 meshNodeArray.append(meshNode)
             }
             meshNodes.append((meshes[i], meshNodeArray))
@@ -45,9 +46,9 @@ class MeshNode {
     var mesh: MTKSubmesh
     var modelMatrix: Matrix4
     
-    init(submesh: MTKSubmesh, material: MDLMaterial?) {
+    init(submesh: MTKSubmesh, material: MDLMaterial?, textureLoader: MTKTextureLoader) {
         mesh = submesh
-        self.material = Material(material)
+        self.material = Material(material, textureLoader)
         modelMatrix = Matrix4(1)
     }
 }

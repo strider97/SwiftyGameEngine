@@ -54,3 +54,18 @@ class MoveInCircle: Behaviour {
         gameObject.transform.position = Float3(radius*sin(time), 0, 0)
     }
 }
+
+class RotateZ: Behaviour {
+    var speed: Float = 0
+    init(gameObject: GameObject, speed: Float) {
+        super.init(gameObject: gameObject)
+        self.speed = speed
+    }
+    override func start() {
+        
+    }
+    override func update() {
+        let deltaTime = GameTimer.sharedTimer.deltaTime
+        gameObject.transform.rotate(angle: speed * deltaTime, axis: Float3(0, 0, 1))
+    }
+}

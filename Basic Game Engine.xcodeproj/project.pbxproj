@@ -12,6 +12,27 @@
 		720EC2FF25D8816B00A83F1A /* park.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 720EC2FE25D8816B00A83F1A /* park.hdr */; };
 		72164FBD25E859C700511342 /* studio.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 72164FBC25E859C700511342 /* studio.hdr */; };
 		72164FC225E860AD00511342 /* heli.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72164FC125E860AD00511342 /* heli.usd */; };
+		72164FC725E8CD6400511342 /* heliBlades.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72164FC625E8CD6400511342 /* heliBlades.usd */; };
+		72164FCD25E99CCE00511342 /* f1.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 72164FCB25E99CCE00511342 /* f1.mtl */; };
+		72164FCE25E99CCE00511342 /* f1.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72164FCC25E99CCE00511342 /* f1.obj */; };
+		72164FD425EA21B600511342 /* formula1_DefaultMaterial_Specular.png in Resources */ = {isa = PBXBuildFile; fileRef = 72164FD225EA21B600511342 /* formula1_DefaultMaterial_Specular.png */; };
+		72164FD525EA21B600511342 /* formula1_DefaultMaterial_Diffuse.png in Resources */ = {isa = PBXBuildFile; fileRef = 72164FD325EA21B600511342 /* formula1_DefaultMaterial_Diffuse.png */; };
+		72164FDE25EA45D700511342 /* helmet.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 72164FDC25EA45D700511342 /* helmet.mtl */; };
+		72164FDF25EA45D700511342 /* helmet.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72164FDD25EA45D700511342 /* helmet.obj */; };
+		72164FE425EA45ED00511342 /* helmet_baseColor.png in Resources */ = {isa = PBXBuildFile; fileRef = 72164FE325EA45ED00511342 /* helmet_baseColor.png */; };
+		72164FEA25EA48C000511342 /* helmet_metallic.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 72164FE825EA48C000511342 /* helmet_metallic.jpg */; };
+		72164FEB25EA48C000511342 /* helmet_roughness.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 72164FE925EA48C000511342 /* helmet_roughness.jpg */; };
+		72164FF325EA55F500511342 /* cerberus.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 72164FF125EA55F500511342 /* cerberus.mtl */; };
+		72164FF425EA55F500511342 /* cerberus.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72164FF225EA55F500511342 /* cerberus.obj */; };
+		72164FFC25EA561000511342 /* Cerberus_R.tga in Resources */ = {isa = PBXBuildFile; fileRef = 72164FF825EA561000511342 /* Cerberus_R.tga */; };
+		72164FFD25EA561000511342 /* Cerberus_N.tga in Resources */ = {isa = PBXBuildFile; fileRef = 72164FF925EA561000511342 /* Cerberus_N.tga */; };
+		72164FFE25EA561000511342 /* Cerberus_M.tga in Resources */ = {isa = PBXBuildFile; fileRef = 72164FFA25EA561000511342 /* Cerberus_M.tga */; };
+		72164FFF25EA561000511342 /* Cerberus_A.tga in Resources */ = {isa = PBXBuildFile; fileRef = 72164FFB25EA561000511342 /* Cerberus_A.tga */; };
+		7216500925EA60CB00511342 /* bookWaterfall.obj in Resources */ = {isa = PBXBuildFile; fileRef = 7216500725EA60CB00511342 /* bookWaterfall.obj */; };
+		7216500A25EA60CB00511342 /* bookWaterfall.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 7216500825EA60CB00511342 /* bookWaterfall.mtl */; };
+		7216501125EA611200511342 /* text_glow.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7216500E25EA611200511342 /* text_glow.jpg */; };
+		7216501225EA611200511342 /* texture.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7216500F25EA611200511342 /* texture.jpg */; };
+		7216501325EA611200511342 /* text_alpha.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7216501025EA611200511342 /* text_alpha.jpg */; };
 		721F5B4025E2A7920000EA4C /* sphere.usd in Resources */ = {isa = PBXBuildFile; fileRef = 721F5B3F25E2A7920000EA4C /* sphere.usd */; };
 		721F5B5625E2DC5A0000EA4C /* cloudy.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 721F5B5525E2DC5A0000EA4C /* cloudy.hdr */; };
 		72282CCB25C17FD400C9CCF4 /* plane.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72282CCA25C17FD400C9CCF4 /* plane.obj */; };
@@ -58,16 +79,6 @@
 		72E3992825BCCDCF00927B17 /* RendererManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E3992725BCCDCF00927B17 /* RendererManager.swift */; };
 		72E3993025BCD28300927B17 /* SceneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E3992F25BCD28300927B17 /* SceneManager.swift */; };
 		72E3993E25BD85E300927B17 /* GameTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E3993D25BD85E300927B17 /* GameTime.swift */; };
-		72E3995A25BE31B000927B17 /* helmet_normal.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 72E3995025BE31B000927B17 /* helmet_normal.jpg */; };
-		72E3995B25BE31B000927B17 /* loft_pmrem.ktx in Resources */ = {isa = PBXBuildFile; fileRef = 72E3995125BE31B000927B17 /* loft_pmrem.ktx */; };
-		72E3995C25BE31B000927B17 /* garage_pmrem.ktx in Resources */ = {isa = PBXBuildFile; fileRef = 72E3995225BE31B000927B17 /* garage_pmrem.ktx */; };
-		72E3995D25BE31B000927B17 /* helmet.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 72E3995325BE31B000927B17 /* helmet.mtl */; };
-		72E3995E25BE31B000927B17 /* helmet_baseColor.png in Resources */ = {isa = PBXBuildFile; fileRef = 72E3995425BE31B000927B17 /* helmet_baseColor.png */; };
-		72E3995F25BE31B000927B17 /* helmet_baseColor.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 72E3995525BE31B000927B17 /* helmet_baseColor.jpg */; };
-		72E3996025BE31B000927B17 /* helmet_metallicRoughness.png in Resources */ = {isa = PBXBuildFile; fileRef = 72E3995625BE31B000927B17 /* helmet_metallicRoughness.png */; };
-		72E3996125BE31B000927B17 /* helmet_metallic.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 72E3995725BE31B000927B17 /* helmet_metallic.jpg */; };
-		72E3996225BE31B000927B17 /* helmet_roughness.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 72E3995825BE31B000927B17 /* helmet_roughness.jpg */; };
-		72E3996325BE31B000927B17 /* helmet.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72E3995925BE31B000927B17 /* helmet.obj */; };
 		72E3996F25BEBA0800927B17 /* MeshManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E3996E25BEBA0800927B17 /* MeshManager.swift */; };
 		72E3998B25BEF35100927B17 /* legoMan.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 72E3998825BEF35100927B17 /* legoMan.mtl */; };
 		72E3998C25BEF35100927B17 /* legoMan.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72E3998925BEF35100927B17 /* legoMan.obj */; };
@@ -103,6 +114,27 @@
 		720EC2FE25D8816B00A83F1A /* park.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = park.hdr; path = "Basic Game Engine/HDRI/park.hdr"; sourceTree = SOURCE_ROOT; };
 		72164FBC25E859C700511342 /* studio.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = studio.hdr; path = "Basic Game Engine/HDRI/studio.hdr"; sourceTree = SOURCE_ROOT; };
 		72164FC125E860AD00511342 /* heli.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = heli.usd; path = "Basic Game Engine/Resources/teapot/heli.usd"; sourceTree = SOURCE_ROOT; };
+		72164FC625E8CD6400511342 /* heliBlades.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = heliBlades.usd; path = "Basic Game Engine/Resources/teapot/heliBlades.usd"; sourceTree = SOURCE_ROOT; };
+		72164FCB25E99CCE00511342 /* f1.mtl */ = {isa = PBXFileReference; lastKnownFileType = file; name = f1.mtl; path = "Basic Game Engine/Resources/teapot/f1.mtl"; sourceTree = SOURCE_ROOT; };
+		72164FCC25E99CCE00511342 /* f1.obj */ = {isa = PBXFileReference; lastKnownFileType = file; name = f1.obj; path = "Basic Game Engine/Resources/teapot/f1.obj"; sourceTree = SOURCE_ROOT; };
+		72164FD225EA21B600511342 /* formula1_DefaultMaterial_Specular.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = formula1_DefaultMaterial_Specular.png; path = "../../../../Downloads/formula 1/Substance SpecGloss/Right ones/formula1_DefaultMaterial_Specular.png"; sourceTree = "<group>"; };
+		72164FD325EA21B600511342 /* formula1_DefaultMaterial_Diffuse.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = formula1_DefaultMaterial_Diffuse.png; path = "../../../../Downloads/formula 1/Substance SpecGloss/Right ones/formula1_DefaultMaterial_Diffuse.png"; sourceTree = "<group>"; };
+		72164FDC25EA45D700511342 /* helmet.mtl */ = {isa = PBXFileReference; lastKnownFileType = file; name = helmet.mtl; path = "Basic Game Engine/Resources/teapot/helmet.mtl"; sourceTree = SOURCE_ROOT; };
+		72164FDD25EA45D700511342 /* helmet.obj */ = {isa = PBXFileReference; lastKnownFileType = file; name = helmet.obj; path = "Basic Game Engine/Resources/teapot/helmet.obj"; sourceTree = SOURCE_ROOT; };
+		72164FE325EA45ED00511342 /* helmet_baseColor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = helmet_baseColor.png; path = "Basic Game Engine/Resources/helmet/helmet_baseColor.png"; sourceTree = SOURCE_ROOT; };
+		72164FE825EA48C000511342 /* helmet_metallic.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = helmet_metallic.jpg; path = "Basic Game Engine/Resources/helmet/helmet_metallic.jpg"; sourceTree = SOURCE_ROOT; };
+		72164FE925EA48C000511342 /* helmet_roughness.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = helmet_roughness.jpg; path = "Basic Game Engine/Resources/helmet/helmet_roughness.jpg"; sourceTree = SOURCE_ROOT; };
+		72164FF125EA55F500511342 /* cerberus.mtl */ = {isa = PBXFileReference; lastKnownFileType = file; name = cerberus.mtl; path = "Basic Game Engine/Resources/models/cerberus.mtl"; sourceTree = SOURCE_ROOT; };
+		72164FF225EA55F500511342 /* cerberus.obj */ = {isa = PBXFileReference; lastKnownFileType = file; name = cerberus.obj; path = "Basic Game Engine/Resources/models/cerberus.obj"; sourceTree = SOURCE_ROOT; };
+		72164FF825EA561000511342 /* Cerberus_R.tga */ = {isa = PBXFileReference; lastKnownFileType = file; name = Cerberus_R.tga; path = ../../../../Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_R.tga; sourceTree = "<group>"; };
+		72164FF925EA561000511342 /* Cerberus_N.tga */ = {isa = PBXFileReference; lastKnownFileType = file; name = Cerberus_N.tga; path = ../../../../Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_N.tga; sourceTree = "<group>"; };
+		72164FFA25EA561000511342 /* Cerberus_M.tga */ = {isa = PBXFileReference; lastKnownFileType = file; name = Cerberus_M.tga; path = ../../../../Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_M.tga; sourceTree = "<group>"; };
+		72164FFB25EA561000511342 /* Cerberus_A.tga */ = {isa = PBXFileReference; lastKnownFileType = file; name = Cerberus_A.tga; path = ../../../../Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_A.tga; sourceTree = "<group>"; };
+		7216500725EA60CB00511342 /* bookWaterfall.obj */ = {isa = PBXFileReference; lastKnownFileType = file; name = bookWaterfall.obj; path = "Basic Game Engine/Resources/models/bookWaterfall.obj"; sourceTree = SOURCE_ROOT; };
+		7216500825EA60CB00511342 /* bookWaterfall.mtl */ = {isa = PBXFileReference; lastKnownFileType = file; name = bookWaterfall.mtl; path = "Basic Game Engine/Resources/models/bookWaterfall.mtl"; sourceTree = SOURCE_ROOT; };
+		7216500E25EA611200511342 /* text_glow.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = text_glow.jpg; path = "../../../../Downloads/medieval-fantasy-book/textures/text_glow.jpg"; sourceTree = "<group>"; };
+		7216500F25EA611200511342 /* texture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = texture.jpg; path = "../../../../Downloads/medieval-fantasy-book/textures/texture.jpg"; sourceTree = "<group>"; };
+		7216501025EA611200511342 /* text_alpha.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = text_alpha.jpg; path = "../../../../Downloads/medieval-fantasy-book/textures/text_alpha.jpg"; sourceTree = "<group>"; };
 		721F5B3F25E2A7920000EA4C /* sphere.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = sphere.usd; path = "Basic Game Engine/Resources/teapot/sphere.usd"; sourceTree = SOURCE_ROOT; };
 		721F5B5525E2DC5A0000EA4C /* cloudy.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = cloudy.hdr; path = "Basic Game Engine/HDRI/cloudy.hdr"; sourceTree = SOURCE_ROOT; };
 		72282CCA25C17FD400C9CCF4 /* plane.obj */ = {isa = PBXFileReference; lastKnownFileType = text; name = plane.obj; path = "Basic Game Engine/Resources/teapot/plane.obj"; sourceTree = SOURCE_ROOT; };
@@ -156,16 +188,6 @@
 		72E3992725BCCDCF00927B17 /* RendererManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RendererManager.swift; sourceTree = "<group>"; };
 		72E3992F25BCD28300927B17 /* SceneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneManager.swift; sourceTree = "<group>"; };
 		72E3993D25BD85E300927B17 /* GameTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTime.swift; sourceTree = "<group>"; };
-		72E3995025BE31B000927B17 /* helmet_normal.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = helmet_normal.jpg; sourceTree = "<group>"; };
-		72E3995125BE31B000927B17 /* loft_pmrem.ktx */ = {isa = PBXFileReference; lastKnownFileType = file; path = loft_pmrem.ktx; sourceTree = "<group>"; };
-		72E3995225BE31B000927B17 /* garage_pmrem.ktx */ = {isa = PBXFileReference; lastKnownFileType = file; path = garage_pmrem.ktx; sourceTree = "<group>"; };
-		72E3995325BE31B000927B17 /* helmet.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = helmet.mtl; sourceTree = "<group>"; };
-		72E3995425BE31B000927B17 /* helmet_baseColor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = helmet_baseColor.png; sourceTree = "<group>"; };
-		72E3995525BE31B000927B17 /* helmet_baseColor.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = helmet_baseColor.jpg; sourceTree = "<group>"; };
-		72E3995625BE31B000927B17 /* helmet_metallicRoughness.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = helmet_metallicRoughness.png; sourceTree = "<group>"; };
-		72E3995725BE31B000927B17 /* helmet_metallic.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = helmet_metallic.jpg; sourceTree = "<group>"; };
-		72E3995825BE31B000927B17 /* helmet_roughness.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = helmet_roughness.jpg; sourceTree = "<group>"; };
-		72E3995925BE31B000927B17 /* helmet.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = helmet.obj; sourceTree = "<group>"; };
 		72E3996E25BEBA0800927B17 /* MeshManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeshManager.swift; sourceTree = "<group>"; };
 		72E3998825BEF35100927B17 /* legoMan.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = legoMan.mtl; sourceTree = "<group>"; };
 		72E3998925BEF35100927B17 /* legoMan.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = legoMan.obj; sourceTree = "<group>"; };
@@ -219,6 +241,31 @@
 				720EC2FE25D8816B00A83F1A /* park.hdr */,
 			);
 			path = HDRI;
+			sourceTree = "<group>";
+		};
+		72164FF025EA55C900511342 /* cerberus */ = {
+			isa = PBXGroup;
+			children = (
+				72164FFB25EA561000511342 /* Cerberus_A.tga */,
+				72164FFA25EA561000511342 /* Cerberus_M.tga */,
+				72164FF925EA561000511342 /* Cerberus_N.tga */,
+				72164FF825EA561000511342 /* Cerberus_R.tga */,
+				72164FF125EA55F500511342 /* cerberus.mtl */,
+				72164FF225EA55F500511342 /* cerberus.obj */,
+			);
+			path = cerberus;
+			sourceTree = "<group>";
+		};
+		7216500325EA602300511342 /* bookVillage */ = {
+			isa = PBXGroup;
+			children = (
+				7216501025EA611200511342 /* text_alpha.jpg */,
+				7216500E25EA611200511342 /* text_glow.jpg */,
+				7216500F25EA611200511342 /* texture.jpg */,
+				7216500825EA60CB00511342 /* bookWaterfall.mtl */,
+				7216500725EA60CB00511342 /* bookWaterfall.obj */,
+			);
+			path = bookVillage;
 			sourceTree = "<group>";
 		};
 		7230F99925C60F9200D9610A /* Scenes */ = {
@@ -348,30 +395,14 @@
 		72E3994F25BE316F00927B17 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				7216500325EA602300511342 /* bookVillage */,
+				72164FF025EA55C900511342 /* cerberus */,
 				720EC2FD25D8814D00A83F1A /* HDRI */,
 				72E399B525BF3EA200927B17 /* Planet */,
 				72E3999925BF0C8300927B17 /* models */,
 				72E3997E25BEF2C300927B17 /* legoMan */,
-				72E3996725BE31DA00927B17 /* helmet */,
 			);
 			path = Resources;
-			sourceTree = "<group>";
-		};
-		72E3996725BE31DA00927B17 /* helmet */ = {
-			isa = PBXGroup;
-			children = (
-				72E3995225BE31B000927B17 /* garage_pmrem.ktx */,
-				72E3995525BE31B000927B17 /* helmet_baseColor.jpg */,
-				72E3995425BE31B000927B17 /* helmet_baseColor.png */,
-				72E3995725BE31B000927B17 /* helmet_metallic.jpg */,
-				72E3995625BE31B000927B17 /* helmet_metallicRoughness.png */,
-				72E3995025BE31B000927B17 /* helmet_normal.jpg */,
-				72E3995825BE31B000927B17 /* helmet_roughness.jpg */,
-				72E3995125BE31B000927B17 /* loft_pmrem.ktx */,
-				72E3995325BE31B000927B17 /* helmet.mtl */,
-				72E3995925BE31B000927B17 /* helmet.obj */,
-			);
-			path = helmet;
 			sourceTree = "<group>";
 		};
 		72E3997E25BEF2C300927B17 /* legoMan */ = {
@@ -387,6 +418,16 @@
 		72E3999925BF0C8300927B17 /* models */ = {
 			isa = PBXGroup;
 			children = (
+				72164FE825EA48C000511342 /* helmet_metallic.jpg */,
+				72164FE925EA48C000511342 /* helmet_roughness.jpg */,
+				72164FE325EA45ED00511342 /* helmet_baseColor.png */,
+				72164FDC25EA45D700511342 /* helmet.mtl */,
+				72164FDD25EA45D700511342 /* helmet.obj */,
+				72164FD325EA21B600511342 /* formula1_DefaultMaterial_Diffuse.png */,
+				72164FD225EA21B600511342 /* formula1_DefaultMaterial_Specular.png */,
+				72164FCB25E99CCE00511342 /* f1.mtl */,
+				72164FCC25E99CCE00511342 /* f1.obj */,
+				72164FC625E8CD6400511342 /* heliBlades.usd */,
 				72164FC125E860AD00511342 /* heli.usd */,
 				72E0478625E7089800E48A54 /* weapons.usd */,
 				72E0478125E7069100E48A54 /* f1.usd */,
@@ -519,48 +560,59 @@
 			buildActionMask = 2147483647;
 			files = (
 				729B14FB25D91D8100129165 /* park_green.hdr in Resources */,
+				7216501125EA611200511342 /* text_glow.jpg in Resources */,
+				7216500925EA60CB00511342 /* bookWaterfall.obj in Resources */,
 				72E3999B25BF0C9700927B17 /* teapot.obj in Resources */,
+				72164FDF25EA45D700511342 /* helmet.obj in Resources */,
 				729B14D125D8841A00129165 /* park.jpg in Resources */,
 				72E3998D25BEF35100927B17 /* Face_04.png in Resources */,
 				72164FBD25E859C700511342 /* studio.hdr in Resources */,
 				72282CCB25C17FD400C9CCF4 /* plane.obj in Resources */,
 				729B14E325D8966000129165 /* room.hdr in Resources */,
-				72E3995E25BE31B000927B17 /* helmet_baseColor.png in Resources */,
+				72164FCE25E99CCE00511342 /* f1.obj in Resources */,
 				729B14DE25D8941600129165 /* ground.hdr in Resources */,
+				72164FC725E8CD6400511342 /* heliBlades.usd in Resources */,
+				72164FFD25EA561000511342 /* Cerberus_N.tga in Resources */,
+				72164FCD25E99CCE00511342 /* f1.mtl in Resources */,
 				729B14E825D896EC00129165 /* kiara.hdr in Resources */,
-				72E3995B25BE31B000927B17 /* loft_pmrem.ktx in Resources */,
-				72E3996225BE31B000927B17 /* helmet_roughness.jpg in Resources */,
 				72E0477325E5A71200E48A54 /* robotArm.usd in Resources */,
+				72164FFE25EA561000511342 /* Cerberus_M.tga in Resources */,
 				7274EF4625DFDE850026C80B /* cambridge.hdr in Resources */,
-				72E3995C25BE31B000927B17 /* garage_pmrem.ktx in Resources */,
-				72E3996325BE31B000927B17 /* helmet.obj in Resources */,
 				72E0478225E7069100E48A54 /* f1.usd in Resources */,
+				7216501225EA611200511342 /* texture.jpg in Resources */,
 				729B14F625D91AFF00129165 /* garden.hdr in Resources */,
 				72E0477D25E7020F00E48A54 /* carLowPoly.usd in Resources */,
-				72E3995F25BE31B000927B17 /* helmet_baseColor.jpg in Resources */,
+				72164FF325EA55F500511342 /* cerberus.mtl in Resources */,
+				72164FD525EA21B600511342 /* formula1_DefaultMaterial_Diffuse.png in Resources */,
+				72164FEA25EA48C000511342 /* helmet_metallic.jpg in Resources */,
 				721F5B5625E2DC5A0000EA4C /* cloudy.hdr in Resources */,
-				72E3996025BE31B000927B17 /* helmet_metallicRoughness.png in Resources */,
+				7216501325EA611200511342 /* text_alpha.jpg in Resources */,
+				72164FFF25EA561000511342 /* Cerberus_A.tga in Resources */,
+				72164FE425EA45ED00511342 /* helmet_baseColor.png in Resources */,
 				720EC2FF25D8816B00A83F1A /* park.hdr in Resources */,
+				7216500A25EA60CB00511342 /* bookWaterfall.mtl in Resources */,
 				72E399A625BF176C00927B17 /* teapot2.obj in Resources */,
-				72E3996125BE31B000927B17 /* helmet_metallic.jpg in Resources */,
 				72DAC96025DDD87500DB3C50 /* plane.usd in Resources */,
 				72C1736925DED90800B75C4D /* ring.usd in Resources */,
 				72E398AC25BB4ECB00927B17 /* Assets.xcassets in Resources */,
+				72164FFC25EA561000511342 /* Cerberus_R.tga in Resources */,
 				72E399D025BF611100927B17 /* teapot.usd in Resources */,
 				72E0476925E45B2A00E48A54 /* shield.usd in Resources */,
-				72E3995A25BE31B000927B17 /* helmet_normal.jpg in Resources */,
+				72164FD425EA21B600511342 /* formula1_DefaultMaterial_Specular.png in Resources */,
 				7274EF4B25E03DD40026C80B /* cliff.hdr in Resources */,
 				72E399BA25BF3ECD00927B17 /* planet.obj in Resources */,
 				721F5B4025E2A7920000EA4C /* sphere.usd in Resources */,
 				72E0476E25E59B1200E48A54 /* mug.usd in Resources */,
+				72164FDE25EA45D700511342 /* helmet.mtl in Resources */,
 				72E0478725E7089800E48A54 /* weapons.usd in Resources */,
 				72164FC225E860AD00511342 /* heli.usd in Resources */,
+				72164FF425EA55F500511342 /* cerberus.obj in Resources */,
 				72E3998B25BEF35100927B17 /* legoMan.mtl in Resources */,
-				72E3995D25BE31B000927B17 /* helmet.mtl in Resources */,
 				72E398AF25BB4ECB00927B17 /* Main.storyboard in Resources */,
 				722830B925C5706000C9CCF4 /* spheres.usd in Resources */,
 				72E3998C25BEF35100927B17 /* legoMan.obj in Resources */,
 				72E0477825E6F9AB00E48A54 /* car.usd in Resources */,
+				72164FEB25EA48C000511342 /* helmet_roughness.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
