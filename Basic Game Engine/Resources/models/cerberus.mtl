@@ -13,3 +13,4 @@ illum 1
 map_Kd Cerberus_A.tga
 map_roughness Cerberus_R.tga
 map_metallic Cerberus_M.tga
+map_tangentSpaceNormal Cerberus_N.tga

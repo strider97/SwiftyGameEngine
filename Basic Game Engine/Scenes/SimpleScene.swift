@@ -31,7 +31,7 @@ class SimpleScene: Scene {
     }
     
     override func getSkybox() -> Skybox {
-        return Skybox(textureName: "studio")
+        return Skybox(textureName: "room")
     }
     
     override func addBehaviour() {

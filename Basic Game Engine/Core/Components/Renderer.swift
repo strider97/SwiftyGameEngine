@@ -22,6 +22,7 @@ enum TextureIndex: Int {
     case baseColor
     case metallic
     case roughness
+    case normalMap
 }
 
 class Material {
@@ -60,6 +61,7 @@ class TextureSet {
     var baseColor: MTLTexture!
     var metallic: MTLTexture!
     var roughness: MTLTexture!
+    var normalMap: MTLTexture!
 //    var normal: MTLTexture?
 //    var emissive: MTLTexture?
     static let defaultTexture = getDefautTexture()
@@ -90,7 +92,7 @@ class TextureSet {
         baseColor = texture(for: .baseColor, in: sourceMaterial, textureLoader: textureLoader) ?? Self.defaultTexture
         metallic = texture(for: .metallic, in: sourceMaterial, textureLoader: textureLoader) ?? Self.defaultTexture
         roughness = texture(for: .roughness, in: sourceMaterial, textureLoader: textureLoader) ?? Self.defaultTexture
-    //    normal = texture(for: .tangentSpaceNormal, in: sourceMaterial, textureLoader: textureLoader)
+        normalMap = texture(for: .tangentSpaceNormal, in: sourceMaterial, textureLoader: textureLoader)!
     //    emissive = texture(for: .emission, in: sourceMaterial, textureLoader: textureLoader)
     }
     

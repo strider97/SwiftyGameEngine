@@ -21,41 +21,14 @@ enum {
     textureIndexirradianceMap,
     textureIndexBaseColor,
     textureIndexMetallic,
-    textureIndexRoughness
+    textureIndexRoughness,
+    normalMap
 };
-
-/*
-struct VertexIn {
-    float3 position [[ attribute(0) ]];
-    float4 color [[ attribute(1) ]];
-};
-
-struct VertexOut {
-    float4 gl_position [[position]];
-    float4 color;
-};
-
-vertex VertexOut basicVertexShader(const VertexIn vIn [[ stage_in ]], constant Uniforms &uniforms [[buffer(1)]]) {
-    VertexOut p;
-    float4x4 mvpMatrix = uniforms.P*uniforms.V*uniforms.M;
-    p.gl_position = mvpMatrix * float4(vIn.position, 1.0);
-    p.color = vIn.color;
-    return p;
-}
-
-fragment half4 basicFragmentShader(VertexOut vOut [[ stage_in ]]) {
-    float4 color = vOut.color;
-    return half4(color.r, color.g, color.b, color.a);
-}
-*/
 
 constant float2 invPi = float2(0.15915, 0.31831);
 constant float pi = 3.1415926;
 
 constexpr sampler s(coord::normalized, address::repeat, filter::linear, mip_filter::linear);
-constant float gamma     = 2.2;
-constant float exposure  = 1.0;
-constant float pureWhite = 1.0;
 
 struct VertexIn {
     float3 position [[attribute(0)]];
@@ -93,6 +66,20 @@ float2 sampleSphericalMap_(float3 dir) {
     return uv;
 }
 
+float3 getNormalFromMap(float3 worldPos, float3 normal, float2 texCoords, float3 tangentNormal) {
+    float3 Q1  = dfdx(worldPos);
+    float3 Q2  = dfdy(worldPos);
+    float2 st1 = dfdx(texCoords);
+    float2 st2 = dfdy(texCoords);
+
+    float3 N   = normalize(normal);
+    float3 T  = normalize(Q1 * st2.y - Q2 * st1.y);
+    float3 B  = -normalize(cross(N, T));
+    float3x3 TBN = float3x3(T, B, N);
+
+    return normalize(TBN * tangentNormal);
+}
+
 float3 fresnelSchlickRoughness(float cosTheta, float3 F0, float roughness) {
     return F0 + (max(float3(1.0 - roughness), F0) - F0) * pow(max(1.0 - cosTheta, 0.0), 5.0);
 }
@@ -126,7 +113,7 @@ vertex VertexOut basicVertexShader(const VertexIn vIn [[ stage_in ]], constant U
     return vOut;
 }
 
-fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], texture2d<float, access::sample> preFilterEnvMap [[texture(textureIndexPreFilterEnvMap)]], texture2d<float, access::sample> DFGlut [[texture(textureIndexDFGlut)]], texture2d<float, access::sample> irradianceMap [[texture(textureIndexirradianceMap)]], texture2d<float, access::sample> baseColor [[texture(textureIndexBaseColor)]], texture2d<float, access::sample> roughnessMap [[texture(textureIndexRoughness)]], texture2d<float, access::sample> metallicMap [[texture(textureIndexMetallic)]]) {
+fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], texture2d<float, access::sample> preFilterEnvMap [[texture(textureIndexPreFilterEnvMap)]], texture2d<float, access::sample> DFGlut [[texture(textureIndexDFGlut)]], texture2d<float, access::sample> irradianceMap [[texture(textureIndexirradianceMap)]], texture2d<float, access::sample> baseColor [[texture(textureIndexBaseColor)]], texture2d<float, access::sample> roughnessMap [[texture(textureIndexRoughness)]], texture2d<float, access::sample> metallicMap [[texture(textureIndexMetallic)]], texture2d<float, access::sample> normalMap [[texture(normalMap)]]) {
     
     float3 albedo = material.baseColor;
     albedo *= pow(baseColor.sample(s, vOut.texCoords).rgb, 2.2);
@@ -136,7 +123,10 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     roughness *= roughnessMap.sample(s, vOut.texCoords).r;
     float3 eyeDir = normalize(vOut.eye - vOut.position);
     
-    float3 N = vOut.smoothNormal;
+    float3 smoothN = vOut.smoothNormal;
+    float3 tangentNormal = normalMap.sample(s, vOut.texCoords).xyz * 2.0 - 1.0;
+    float3 N = getNormalFromMap(vOut.m_position.xyz, smoothN, vOut.texCoords, tangentNormal);
+    
     float3 V = eyeDir;
     float3 F0 = float3(0.04);
     F0 = mix(F0, albedo, 1.0*metallic);
@@ -155,36 +145,4 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     color = color / (color + float3(1.0));
     color = pow(color, float3(1.0/2.2));
     return float4(color, 1.0);
-    
-//    float luminance = dot(color, float3(0.2126, 0.7152, 0.0722));
-//    float mappedLuminance = (luminance * (1.0 + luminance/(pureWhite*pureWhite))) / (1.0 + luminance);
-//
-//    // Scale color by ratio of average luminances.
-//    float3 mappedColor = (mappedLuminance / luminance) * color;
-//
-//    // Gamma correction.
-//    return float4(pow(mappedColor, 1.0/gamma), 1.0);
 }
-
-
-
-
-
-
-/*
- fragment half4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], texture2d<float, access::sample> baseColorTexture [[texture(0)]], sampler baseColorSampler [[sampler(0)]]) {
- //    float3 color = baseColorTexture.sample(baseColorSampler, vOut.texCoords).rgb;
-     float intensity = 0.6;
-     float3 color = material.baseColor;
-     float3 lightDir = normalize(float3(-1, 2, 1));
-     float3 eyeDir = normalize(vOut.eye - vOut.position);
-     float spec = 1.4 * pow(max(0.0, dot(normalize(lightDir + eyeDir), vOut.normal)), 32);
-     float diff = max(0.2, dot(lightDir, vOut.normal));
-     float3 color = intensity * color * (diff + spec);
-     color = pow(color, float3(1.0/2.2));
-  //   return half4(1);
-     return half4(color.x, color.y, color.z, 1.0);
-  //   return half4(vOut.normal.x, vOut.normal.y, vOut.normal.z, 1.0);
- }
-
- */
