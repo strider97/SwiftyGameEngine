@@ -194,6 +194,7 @@ extension Scene {
                         renderCommandEncoder?.setFragmentTexture(mat.textureSet.roughness, index: TextureIndex.roughness.rawValue)
                         renderCommandEncoder?.setFragmentTexture(mat.textureSet.metallic, index: TextureIndex.metallic.rawValue)
                         renderCommandEncoder?.setFragmentTexture(mat.textureSet.normalMap, index: TextureIndex.normalMap.rawValue)
+                        renderCommandEncoder?.setFragmentTexture(mat.textureSet.ao, index: TextureIndex.ao.rawValue)
                         let submesh = meshNode.mesh
                         renderCommandEncoder?.drawIndexedPrimitives(type:submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: submesh.indexBuffer.offset)
                     }

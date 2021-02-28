@@ -10,9 +10,10 @@ import MetalKit
 class SimpleScene: Scene {
     
     var blades: GameObject!
+    var model: GameObject!
     
     override func getGameObjects() -> [GameObject] {
-        let model = GameObject(modelName: "cerberus")
+        model = GameObject(modelName: "cylinder")
     //    blades = GameObject(modelName: "heliBlades")
         let mesh = model.getComponent(Mesh.self)!
         for (_, meshNodes) in mesh.meshNodes {
@@ -31,12 +32,12 @@ class SimpleScene: Scene {
     }
     
     override func getSkybox() -> Skybox {
-        return Skybox(textureName: "room")
+        return Skybox(textureName: "music_hall")
     }
     
     override func addBehaviour() {
-    //    let _ = MoveInCircle(gameObject: blades, radius: 10)
-    //    let _ = RotateZ(gameObject: blades, speed: 5)
+    //    let _ = MoveInCircle(gameObject: model, radius: 10)
+        let _ = RotateZ(gameObject: model, speed: 0.1)
     }
     
     override func getCamera() -> Camera {

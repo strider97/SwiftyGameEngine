@@ -1,0 +1,47 @@
+# Blender MTL File: 'None'
+# Material Count: 3
+
+newmtl Material.001
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd bricks_0013_base_color_4k.jpg
+map_roughness bricks_0013_roughness_4k.jpg
+map_metallic old_plankawdds_02_specs_2k.jpg
+map_tangentSpaceNormal bricks_0013_normal_4k.jpg
+map_ao bricks_0013_ao_4k.jpg
+
+newmtl Material.003
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd vbikfjt_2K_Albedo.jpg
+map_roughness vbikfjt_2K_Roughness.jpg
+map_metallic old_planks_02_specs_2k.jpg
+map_tangentSpaceNormal vbikfjt_2K_Normal.jpg
+map_ao vbikfjt_2K_AO.jpg
+
+newmtl Material.004
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd uh1lafuv_2K_Albedo.jpg
+map_roughness uh1lafuv_2K_Roughness.jpg
+map_metallic old_planks_02_specs_2k.jpg
+map_tangentSpaceNormal uh1lafuv_2K_Normal.jpg
+map_ao uh1lafuv_2K_AO.jpg

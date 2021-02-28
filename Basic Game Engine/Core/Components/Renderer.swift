@@ -23,6 +23,7 @@ enum TextureIndex: Int {
     case metallic
     case roughness
     case normalMap
+    case ao
 }
 
 class Material {
@@ -62,9 +63,11 @@ class TextureSet {
     var metallic: MTLTexture!
     var roughness: MTLTexture!
     var normalMap: MTLTexture!
+    var ao: MTLTexture!
 //    var normal: MTLTexture?
 //    var emissive: MTLTexture?
     static let defaultTexture = getDefautTexture()
+    static let defaultAOTexture = getDefautAOTexture()
     
     func texture(for semantic: MDLMaterialSemantic, in material: MDLMaterial, textureLoader: MTKTextureLoader) -> MTLTexture? {
         guard let materialProperty = material.property(with: semantic) else { return nil }
@@ -93,10 +96,24 @@ class TextureSet {
         metallic = texture(for: .metallic, in: sourceMaterial, textureLoader: textureLoader) ?? Self.defaultTexture
         roughness = texture(for: .roughness, in: sourceMaterial, textureLoader: textureLoader) ?? Self.defaultTexture
         normalMap = texture(for: .tangentSpaceNormal, in: sourceMaterial, textureLoader: textureLoader)!
+        ao = texture(for: .ambientOcclusion, in: sourceMaterial, textureLoader: textureLoader) ?? Self.defaultAOTexture
     //    emissive = texture(for: .emission, in: sourceMaterial, textureLoader: textureLoader)
     }
     
     static func getDefautTexture() -> MTLTexture {
+        let bounds = MTLRegionMake2D(0, 0, 1, 1)
+        let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm,
+                                                                  width: bounds.size.width,
+                                                                  height: bounds.size.height,
+                                                                  mipmapped: false)
+        descriptor.usage = .shaderRead
+        let defaultTexture = Device.sharedDevice.device!.makeTexture(descriptor: descriptor)!
+        let defaultColor: [UInt8] = [ 1, 1, 1, 255 ]
+        defaultTexture.replace(region: bounds, mipmapLevel: 0, withBytes: defaultColor, bytesPerRow: 4)
+        return defaultTexture
+    }
+    
+    static func getDefautAOTexture() -> MTLTexture {
         let bounds = MTLRegionMake2D(0, 0, 1, 1)
         let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm,
                                                                   width: bounds.size.width,

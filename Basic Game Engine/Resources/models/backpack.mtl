@@ -1,0 +1,58 @@
+# Blender MTL File: 'None'
+# Material Count: 4
+
+newmtl daizi
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd daizi_baseColor.jpeg
+map_roughness daizi_metallicRoughness.png
+map_metallic daizi_metallicRoughness.png
+map_tangentSpaceNormal daizi_normal.jpeg
+
+newmtl kouzi
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd kouzi_baseColor.jpeg
+map_roughness kouzi_metallicRoughness.png
+map_metallic kouzi_metallicRoughness.png
+map_tangentSpaceNormal kouzi_normal.jpeg
+
+newmtl material
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd material_baseColor.png
+map_roughness material_metallicRoughness.png
+map_metallic material_metallicRoughness.png
+map_tangentSpaceNormal material_normal.png
+
+newmtl material_3
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd material_3_baseColor.jpeg
+map_roughness material_3_metallicRoughness.png
+map_metallic material_3_metallicRoughness.png
+map_tangentSpaceNormal material_3_normal.png

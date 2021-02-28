@@ -22,7 +22,8 @@ enum {
     textureIndexBaseColor,
     textureIndexMetallic,
     textureIndexRoughness,
-    normalMap
+    normalMap,
+    ao
 };
 
 constant float2 invPi = float2(0.15915, 0.31831);
@@ -113,10 +114,10 @@ vertex VertexOut basicVertexShader(const VertexIn vIn [[ stage_in ]], constant U
     return vOut;
 }
 
-fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], texture2d<float, access::sample> preFilterEnvMap [[texture(textureIndexPreFilterEnvMap)]], texture2d<float, access::sample> DFGlut [[texture(textureIndexDFGlut)]], texture2d<float, access::sample> irradianceMap [[texture(textureIndexirradianceMap)]], texture2d<float, access::sample> baseColor [[texture(textureIndexBaseColor)]], texture2d<float, access::sample> roughnessMap [[texture(textureIndexRoughness)]], texture2d<float, access::sample> metallicMap [[texture(textureIndexMetallic)]], texture2d<float, access::sample> normalMap [[texture(normalMap)]]) {
+fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], texture2d<float, access::sample> preFilterEnvMap [[texture(textureIndexPreFilterEnvMap)]], texture2d<float, access::sample> DFGlut [[texture(textureIndexDFGlut)]], texture2d<float, access::sample> irradianceMap [[texture(textureIndexirradianceMap)]], texture2d<float, access::sample> baseColor [[texture(textureIndexBaseColor)]], texture2d<float, access::sample> roughnessMap [[texture(textureIndexRoughness)]], texture2d<float, access::sample> metallicMap [[texture(textureIndexMetallic)]], texture2d<float, access::sample> normalMap [[texture(normalMap)]], texture2d<float, access::sample> aoTexture [[texture(ao)]]) {
     
     float3 albedo = material.baseColor;
-    albedo *= pow(baseColor.sample(s, vOut.texCoords).rgb, 2.2);
+    albedo *= pow(baseColor.sample(s, vOut.texCoords).rgb, 3.0);
     float metallic = material.metallic;
     metallic *= metallicMap.sample(s, vOut.texCoords).r;
     float roughness = material.roughness;
@@ -137,11 +138,12 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     float3 R = N;
     R.x = -R.x;
     R.z = -R.z;
+    float ao = aoTexture.sample(s, vOut.texCoords).r;
     float3 irradiance = irradianceMap.sample(s, sampleSphericalMap_(R)).rgb;
     float3 diffuse = irradiance * albedo;
     float3 specular = approximateSpecularIBL(F, roughness, material.mipmapCount, N, V, preFilterEnvMap, DFGlut);
     
-    float3 color =  kD * diffuse + specular;
+    float3 color =  (kD * diffuse + specular) * 1;
     color = color / (color + float3(1.0));
     color = pow(color, float3(1.0/2.2));
     return float4(color, 1.0);

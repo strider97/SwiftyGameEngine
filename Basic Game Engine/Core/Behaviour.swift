@@ -66,6 +66,6 @@ class RotateZ: Behaviour {
     }
     override func update() {
         let deltaTime = GameTimer.sharedTimer.deltaTime
-        gameObject.transform.rotate(angle: speed * deltaTime, axis: Float3(0, 0, 1))
+        gameObject.transform.rotate(angle: speed * deltaTime, axis: Float3(0, 1, 0))
     }
 }
