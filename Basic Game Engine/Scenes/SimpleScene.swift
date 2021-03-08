@@ -13,7 +13,7 @@ class SimpleScene: Scene {
     var model: GameObject!
     
     override func getGameObjects() -> [GameObject] {
-        model = GameObject(modelName: "cylinder")
+        model = GameObject(modelName: "cerberus")
     //    blades = GameObject(modelName: "heliBlades")
         let mesh = model.getComponent(Mesh.self)!
         for (_, meshNodes) in mesh.meshNodes {

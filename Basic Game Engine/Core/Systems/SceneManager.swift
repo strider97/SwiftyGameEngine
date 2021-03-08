@@ -38,6 +38,9 @@ class Scene: NSObject {
     var irradianceMap = IrradianceMap()
  //   var samplerState: MTLSamplerState!
     var firstDraw = true
+    private var exposure: Float = 0.5
+    lazy var ltcMat = Skybox.loadHDR(name: "ltc_mat")
+    lazy var ltcMag = Skybox.loadHDR(name: "ltc_amp")
     
     override init() {
         super.init()
@@ -85,7 +88,7 @@ extension Scene: MTKViewDelegate {
 
 extension Scene {
     func getUniformData(_ M: Matrix4 = Matrix4(1.0)) -> Uniforms {
-        return Uniforms(M: M, V: camera.lookAtMatrix, P: P, eye: camera.position)
+        return Uniforms(M: M, V: camera.lookAtMatrix, P: P, eye: camera.position, exposure: exposure)
     }
     
     func getSkyboxUniformData() -> Uniforms {
@@ -245,6 +248,12 @@ extension Scene {
             for behaviour in gameObject.behaviours {
                 behaviour.update()
             }
+        }
+        if KeyboardEvents.keyStates[.incExposure] ?? false {
+            exposure += 0.8 * Float(GameTimer.sharedTimer.deltaTime)
+        }
+        if KeyboardEvents.keyStates[.decExposure] ?? false {
+            exposure -= 0.8 * Float(GameTimer.sharedTimer.deltaTime)
         }
     }
 }

@@ -17,11 +17,12 @@ class BasicScene: Scene {
     //    return [sphere, ring]
         var teapots: [GameObject] = []
         let nums = 8
-        let scale: Float = 2
+        let scale: Float = 3
         for i in 0..<nums {
             for j in 0..<nums {
-                let teapot = GameObject(modelName: "sphere")
+                let teapot = GameObject(modelName: "planet")
                 teapot.transform.translate(-Float(nums)/2 * Float3(scale, scale, 0.0) + Float3(Float(j)*scale, Float(i)*scale, 0))
+                teapot.transform.scale(Float3(repeating: 0.20))
                 let mesh = teapot.getComponent(Mesh.self)!
                 for (_, meshNodes) in mesh.meshNodes {
                     for meshNode in meshNodes {
@@ -43,7 +44,7 @@ class BasicScene: Scene {
     }
     
     override func getSkybox() -> Skybox {
-        return Skybox(textureName: "studio")
+        return Skybox(textureName: "room")
     }
     
     override func addBehaviour() {

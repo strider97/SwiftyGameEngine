@@ -152,6 +152,74 @@
 		721651A725EBB37F00511342 /* 01-Default_normal.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 721651A225EBB37F00511342 /* 01-Default_normal.jpg */; };
 		721651B025EBB3AC00511342 /* microscope.obj in Resources */ = {isa = PBXBuildFile; fileRef = 721651AE25EBB3AC00511342 /* microscope.obj */; };
 		721651B125EBB3AC00511342 /* microscope.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 721651AF25EBB3AC00511342 /* microscope.mtl */; };
+		721651BA25ED56CC00511342 /* Winter Girl.obj in Resources */ = {isa = PBXBuildFile; fileRef = 721651B825ED56CC00511342 /* Winter Girl.obj */; };
+		721651BB25ED56CC00511342 /* Winter Girl.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 721651B925ED56CC00511342 /* Winter Girl.mtl */; };
+		721651F025ED571E00511342 /* Luggage_Roughness.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651C025ED571D00511342 /* Luggage_Roughness.jpeg */; };
+		721651F125ED571E00511342 /* Arm_BaseColor.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651C125ED571D00511342 /* Arm_BaseColor.jpeg */; };
+		721651F225ED571E00511342 /* Coat_Fur_BaseColor.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651C225ED571D00511342 /* Coat_Fur_BaseColor.jpeg */; };
+		721651F325ED571E00511342 /* Tools_Roughness.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651C325ED571D00511342 /* Tools_Roughness.jpeg */; };
+		721651F425ED571E00511342 /* Accessoires_BaseColor.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651C425ED571D00511342 /* Accessoires_BaseColor.jpeg */; };
+		721651F525ED571E00511342 /* Coat_Normal.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651C525ED571D00511342 /* Coat_Normal.jpeg */; };
+		721651F625ED571E00511342 /* Chest_Normal.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651C625ED571D00511342 /* Chest_Normal.jpeg */; };
+		721651F725ED571E00511342 /* Hair_BaseColor.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651C725ED571D00511342 /* Hair_BaseColor.jpeg */; };
+		721651F825ED571E00511342 /* Chest_BaseColor.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651C825ED571D00511342 /* Chest_BaseColor.jpeg */; };
+		721651F925ED571E00511342 /* Shoes_BaseColor.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651C925ED571D00511342 /* Shoes_BaseColor.jpeg */; };
+		721651FA25ED571E00511342 /* Trousers_skirt_Metallic.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651CA25ED571D00511342 /* Trousers_skirt_Metallic.jpeg */; };
+		721651FB25ED571E00511342 /* Hair_Normal.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651CB25ED571D00511342 /* Hair_Normal.jpeg */; };
+		721651FC25ED571E00511342 /* Head_Opacity.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651CC25ED571D00511342 /* Head_Opacity.jpeg */; };
+		721651FD25ED571E00511342 /* Tools_Metallic.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651CD25ED571D00511342 /* Tools_Metallic.jpeg */; };
+		721651FE25ED571E00511342 /* internal_ground_ao_texture.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651CE25ED571D00511342 /* internal_ground_ao_texture.jpeg */; };
+		721651FF25ED571E00511342 /* Trousers_skirt_Roughness.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651CF25ED571D00511342 /* Trousers_skirt_Roughness.jpeg */; };
+		7216520025ED571E00511342 /* Accessoires_Normal.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651D025ED571D00511342 /* Accessoires_Normal.jpeg */; };
+		7216520125ED571E00511342 /* Arm_Normal.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651D125ED571D00511342 /* Arm_Normal.jpeg */; };
+		7216520225ED571E00511342 /* Arm_Metallic.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651D225ED571D00511342 /* Arm_Metallic.jpeg */; };
+		7216520325ED571E00511342 /* Coat_BaseColor.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651D325ED571D00511342 /* Coat_BaseColor.jpeg */; };
+		7216520425ED571E00511342 /* Hair_Opacity.png in Resources */ = {isa = PBXBuildFile; fileRef = 721651D425ED571D00511342 /* Hair_Opacity.png */; };
+		7216520525ED571E00511342 /* Arm_Roughness.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651D525ED571D00511342 /* Arm_Roughness.jpeg */; };
+		7216520625ED571E00511342 /* Head_withpaint_Normal.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651D625ED571D00511342 /* Head_withpaint_Normal.jpeg */; };
+		7216520725ED571E00511342 /* Hair_Roughness.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651D725ED571D00511342 /* Hair_Roughness.jpeg */; };
+		7216520825ED571E00511342 /* Trousers_skirt_BaseColor.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651D825ED571E00511342 /* Trousers_skirt_BaseColor.jpeg */; };
+		7216520925ED571E00511342 /* Shoes_Roughness.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651D925ED571E00511342 /* Shoes_Roughness.jpeg */; };
+		7216520A25ED571E00511342 /* Coat_Roughness.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651DA25ED571E00511342 /* Coat_Roughness.jpeg */; };
+		7216520B25ED571E00511342 /* Accessoires_Metallic.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651DB25ED571E00511342 /* Accessoires_Metallic.jpeg */; };
+		7216520C25ED571E00511342 /* Accessoires_Roughness.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651DC25ED571E00511342 /* Accessoires_Roughness.jpeg */; };
+		7216520D25ED571E00511342 /* Trousers_skirt_Normal.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651DD25ED571E00511342 /* Trousers_skirt_Normal.jpeg */; };
+		7216520E25ED571E00511342 /* Tools_BaseColor.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651DE25ED571E00511342 /* Tools_BaseColor.jpeg */; };
+		7216520F25ED571E00511342 /* Luggage_BaseColor.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651DF25ED571E00511342 /* Luggage_BaseColor.jpeg */; };
+		7216521025ED571E00511342 /* Mask_Normal.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 721651E025ED571E00511342 /* Mask_Normal.jpg */; };
+		7216521125ED571E00511342 /* Shoes_Normal.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651E125ED571E00511342 /* Shoes_Normal.jpeg */; };
+		7216521225ED571E00511342 /* Head_Roughness.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651E225ED571E00511342 /* Head_Roughness.jpeg */; };
+		7216521325ED571E00511342 /* Head_withpaint_BaseColor.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651E325ED571E00511342 /* Head_withpaint_BaseColor.jpeg */; };
+		7216521425ED571E00511342 /* Shoes_Metallic.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651E425ED571E00511342 /* Shoes_Metallic.jpeg */; };
+		7216521525ED571E00511342 /* Tools_Normal.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651E525ED571E00511342 /* Tools_Normal.jpeg */; };
+		7216521625ED571E00511342 /* Coat_Metallic.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651E625ED571E00511342 /* Coat_Metallic.jpeg */; };
+		7216521725ED571E00511342 /* Luggage_Metallic.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651E725ED571E00511342 /* Luggage_Metallic.jpeg */; };
+		7216521825ED571E00511342 /* Coat_Fur_Roughness.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651E825ED571E00511342 /* Coat_Fur_Roughness.jpeg */; };
+		7216521925ED571E00511342 /* Mask_BaseColor.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651E925ED571E00511342 /* Mask_BaseColor.jpeg */; };
+		7216521A25ED571E00511342 /* Mask_Metallic.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 721651EA25ED571E00511342 /* Mask_Metallic.jpg */; };
+		7216521B25ED571E00511342 /* Mask_Roughness.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 721651EB25ED571E00511342 /* Mask_Roughness.jpg */; };
+		7216521C25ED571E00511342 /* Chest_Metallic.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651EC25ED571E00511342 /* Chest_Metallic.jpeg */; };
+		7216521D25ED571E00511342 /* Chest_Roughness.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651ED25ED571E00511342 /* Chest_Roughness.jpeg */; };
+		7216521E25ED571E00511342 /* Coat_Fur_Opacity.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 721651EE25ED571E00511342 /* Coat_Fur_Opacity.jpg */; };
+		7216521F25ED571E00511342 /* Luggage_Normal.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 721651EF25ED571E00511342 /* Luggage_Normal.jpeg */; };
+		7216522525ED637800511342 /* wavingchibirobot.obj in Resources */ = {isa = PBXBuildFile; fileRef = 7216522325ED637800511342 /* wavingchibirobot.obj */; };
+		7216522625ED637800511342 /* wavingchibirobot.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 7216522425ED637800511342 /* wavingchibirobot.mtl */; };
+		7216523025ED63B000511342 /* Bot_Gloss.png in Resources */ = {isa = PBXBuildFile; fileRef = 7216522B25ED63B000511342 /* Bot_Gloss.png */; };
+		7216523125ED63B000511342 /* Bot_Normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 7216522C25ED63B000511342 /* Bot_Normal.png */; };
+		7216523225ED63B000511342 /* Bot_Albedo.png in Resources */ = {isa = PBXBuildFile; fileRef = 7216522D25ED63B000511342 /* Bot_Albedo.png */; };
+		7216523325ED63B000511342 /* Bot_Specular.png in Resources */ = {isa = PBXBuildFile; fileRef = 7216522E25ED63B000511342 /* Bot_Specular.png */; };
+		7216523425ED63B000511342 /* Bot_Emissive_Blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 7216522F25ED63B000511342 /* Bot_Emissive_Blue.png */; };
+		7216524125ED653600511342 /* Low_Mech2_Normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 7216523925ED653600511342 /* Low_Mech2_Normal.png */; };
+		7216524225ED653600511342 /* Low_Mech1_Roughness.png in Resources */ = {isa = PBXBuildFile; fileRef = 7216523A25ED653600511342 /* Low_Mech1_Roughness.png */; };
+		7216524325ED653600511342 /* Low_Mech2_Metallic.png in Resources */ = {isa = PBXBuildFile; fileRef = 7216523B25ED653600511342 /* Low_Mech2_Metallic.png */; };
+		7216524425ED653600511342 /* Low_Mech1_BaseColor.png in Resources */ = {isa = PBXBuildFile; fileRef = 7216523C25ED653600511342 /* Low_Mech1_BaseColor.png */; };
+		7216524525ED653600511342 /* Low_Mech1_Normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 7216523D25ED653600511342 /* Low_Mech1_Normal.png */; };
+		7216524625ED653600511342 /* Low_Mech1_Metallic.png in Resources */ = {isa = PBXBuildFile; fileRef = 7216523E25ED653600511342 /* Low_Mech1_Metallic.png */; };
+		7216524725ED653600511342 /* Low_Mech2_BaseColor.png in Resources */ = {isa = PBXBuildFile; fileRef = 7216523F25ED653600511342 /* Low_Mech2_BaseColor.png */; };
+		7216524825ED653600511342 /* Low_Mech2_Roughness.png in Resources */ = {isa = PBXBuildFile; fileRef = 7216524025ED653600511342 /* Low_Mech2_Roughness.png */; };
+		7216524E25ED655000511342 /* Low.obj in Resources */ = {isa = PBXBuildFile; fileRef = 7216524C25ED655000511342 /* Low.obj */; };
+		7216524F25ED655000511342 /* Low.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 7216524D25ED655000511342 /* Low.mtl */; };
+		7216525725EDABA400511342 /* helmet_normal.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7216525625EDABA400511342 /* helmet_normal.jpg */; };
 		721F5B4025E2A7920000EA4C /* sphere.usd in Resources */ = {isa = PBXBuildFile; fileRef = 721F5B3F25E2A7920000EA4C /* sphere.usd */; };
 		721F5B5625E2DC5A0000EA4C /* cloudy.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 721F5B5525E2DC5A0000EA4C /* cloudy.hdr */; };
 		72282CCB25C17FD400C9CCF4 /* plane.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72282CCA25C17FD400C9CCF4 /* plane.obj */; };
@@ -168,6 +236,9 @@
 		729B14F625D91AFF00129165 /* garden.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 729B14F525D91AFF00129165 /* garden.hdr */; };
 		729B14FB25D91D8100129165 /* park_green.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 729B14FA25D91D8100129165 /* park_green.hdr */; };
 		72C1736925DED90800B75C4D /* ring.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72C1736825DED90800B75C4D /* ring.usd */; };
+		72D1449425F53ED80047A93D /* brdfFitShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 72D1449325F53ED80047A93D /* brdfFitShader.metal */; };
+		72D1451625F6BFD00047A93D /* ltc_amp.dds in Resources */ = {isa = PBXBuildFile; fileRef = 72D1451425F6BFD00047A93D /* ltc_amp.dds */; };
+		72D1451725F6BFD00047A93D /* ltc_mat.dds in Resources */ = {isa = PBXBuildFile; fileRef = 72D1451525F6BFD00047A93D /* ltc_mat.dds */; };
 		72DAC96025DDD87500DB3C50 /* plane.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72DAC95F25DDD87500DB3C50 /* plane.usd */; };
 		72DACABC25DE6AED00DB3C50 /* IrradianceMap_.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DACABB25DE6AED00DB3C50 /* IrradianceMap_.swift */; };
 		72E0476925E45B2A00E48A54 /* shield.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72E0476825E45B2A00E48A54 /* shield.usd */; };
@@ -202,7 +273,6 @@
 		72E3998B25BEF35100927B17 /* legoMan.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 72E3998825BEF35100927B17 /* legoMan.mtl */; };
 		72E3998C25BEF35100927B17 /* legoMan.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72E3998925BEF35100927B17 /* legoMan.obj */; };
 		72E3998D25BEF35100927B17 /* Face_04.png in Resources */ = {isa = PBXBuildFile; fileRef = 72E3998A25BEF35100927B17 /* Face_04.png */; };
-		72E3999B25BF0C9700927B17 /* teapot.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72E3999A25BF0C9700927B17 /* teapot.obj */; };
 		72E399A625BF176C00927B17 /* teapot2.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72E399A525BF176C00927B17 /* teapot2.obj */; };
 		72E399BA25BF3ECD00927B17 /* planet.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72E399B925BF3ECD00927B17 /* planet.obj */; };
 		72E399D025BF611100927B17 /* teapot.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72E399CF25BF611100927B17 /* teapot.usd */; };
@@ -234,23 +304,23 @@
 		72164FBC25E859C700511342 /* studio.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = studio.hdr; path = "Basic Game Engine/HDRI/studio.hdr"; sourceTree = SOURCE_ROOT; };
 		72164FC125E860AD00511342 /* heli.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = heli.usd; path = "Basic Game Engine/Resources/teapot/heli.usd"; sourceTree = SOURCE_ROOT; };
 		72164FC625E8CD6400511342 /* heliBlades.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = heliBlades.usd; path = "Basic Game Engine/Resources/teapot/heliBlades.usd"; sourceTree = SOURCE_ROOT; };
-		72164FCB25E99CCE00511342 /* f1.mtl */ = {isa = PBXFileReference; lastKnownFileType = file; name = f1.mtl; path = "Basic Game Engine/Resources/teapot/f1.mtl"; sourceTree = SOURCE_ROOT; };
-		72164FCC25E99CCE00511342 /* f1.obj */ = {isa = PBXFileReference; lastKnownFileType = file; name = f1.obj; path = "Basic Game Engine/Resources/teapot/f1.obj"; sourceTree = SOURCE_ROOT; };
+		72164FCB25E99CCE00511342 /* f1.mtl */ = {isa = PBXFileReference; lastKnownFileType = text; name = f1.mtl; path = "Basic Game Engine/Resources/teapot/f1.mtl"; sourceTree = SOURCE_ROOT; };
+		72164FCC25E99CCE00511342 /* f1.obj */ = {isa = PBXFileReference; lastKnownFileType = text; name = f1.obj; path = "Basic Game Engine/Resources/teapot/f1.obj"; sourceTree = SOURCE_ROOT; };
 		72164FD225EA21B600511342 /* formula1_DefaultMaterial_Specular.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = formula1_DefaultMaterial_Specular.png; path = "../../../../Downloads/formula 1/Substance SpecGloss/Right ones/formula1_DefaultMaterial_Specular.png"; sourceTree = "<group>"; };
 		72164FD325EA21B600511342 /* formula1_DefaultMaterial_Diffuse.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = formula1_DefaultMaterial_Diffuse.png; path = "../../../../Downloads/formula 1/Substance SpecGloss/Right ones/formula1_DefaultMaterial_Diffuse.png"; sourceTree = "<group>"; };
-		72164FDC25EA45D700511342 /* helmet.mtl */ = {isa = PBXFileReference; lastKnownFileType = file; name = helmet.mtl; path = "Basic Game Engine/Resources/teapot/helmet.mtl"; sourceTree = SOURCE_ROOT; };
-		72164FDD25EA45D700511342 /* helmet.obj */ = {isa = PBXFileReference; lastKnownFileType = file; name = helmet.obj; path = "Basic Game Engine/Resources/teapot/helmet.obj"; sourceTree = SOURCE_ROOT; };
+		72164FDC25EA45D700511342 /* helmet.mtl */ = {isa = PBXFileReference; lastKnownFileType = text; name = helmet.mtl; path = "Basic Game Engine/Resources/teapot/helmet.mtl"; sourceTree = SOURCE_ROOT; };
+		72164FDD25EA45D700511342 /* helmet.obj */ = {isa = PBXFileReference; lastKnownFileType = text; name = helmet.obj; path = "Basic Game Engine/Resources/teapot/helmet.obj"; sourceTree = SOURCE_ROOT; };
 		72164FE325EA45ED00511342 /* helmet_baseColor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = helmet_baseColor.png; path = "Basic Game Engine/Resources/helmet/helmet_baseColor.png"; sourceTree = SOURCE_ROOT; };
 		72164FE825EA48C000511342 /* helmet_metallic.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = helmet_metallic.jpg; path = "Basic Game Engine/Resources/helmet/helmet_metallic.jpg"; sourceTree = SOURCE_ROOT; };
 		72164FE925EA48C000511342 /* helmet_roughness.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = helmet_roughness.jpg; path = "Basic Game Engine/Resources/helmet/helmet_roughness.jpg"; sourceTree = SOURCE_ROOT; };
-		72164FF125EA55F500511342 /* cerberus.mtl */ = {isa = PBXFileReference; lastKnownFileType = file; name = cerberus.mtl; path = "Basic Game Engine/Resources/models/cerberus.mtl"; sourceTree = SOURCE_ROOT; };
-		72164FF225EA55F500511342 /* cerberus.obj */ = {isa = PBXFileReference; lastKnownFileType = file; name = cerberus.obj; path = "Basic Game Engine/Resources/models/cerberus.obj"; sourceTree = SOURCE_ROOT; };
+		72164FF125EA55F500511342 /* cerberus.mtl */ = {isa = PBXFileReference; lastKnownFileType = text; name = cerberus.mtl; path = "Basic Game Engine/Resources/models/cerberus.mtl"; sourceTree = SOURCE_ROOT; };
+		72164FF225EA55F500511342 /* cerberus.obj */ = {isa = PBXFileReference; lastKnownFileType = text; name = cerberus.obj; path = "Basic Game Engine/Resources/models/cerberus.obj"; sourceTree = SOURCE_ROOT; };
 		72164FF825EA561000511342 /* Cerberus_R.tga */ = {isa = PBXFileReference; lastKnownFileType = file; name = Cerberus_R.tga; path = ../../../../Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_R.tga; sourceTree = "<group>"; };
 		72164FF925EA561000511342 /* Cerberus_N.tga */ = {isa = PBXFileReference; lastKnownFileType = file; name = Cerberus_N.tga; path = ../../../../Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_N.tga; sourceTree = "<group>"; };
 		72164FFA25EA561000511342 /* Cerberus_M.tga */ = {isa = PBXFileReference; lastKnownFileType = file; name = Cerberus_M.tga; path = ../../../../Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_M.tga; sourceTree = "<group>"; };
 		72164FFB25EA561000511342 /* Cerberus_A.tga */ = {isa = PBXFileReference; lastKnownFileType = file; name = Cerberus_A.tga; path = ../../../../Downloads/Cerberus_by_Andrew_Maximov/Textures/Cerberus_A.tga; sourceTree = "<group>"; };
-		7216500725EA60CB00511342 /* bookWaterfall.obj */ = {isa = PBXFileReference; lastKnownFileType = file; name = bookWaterfall.obj; path = "Basic Game Engine/Resources/models/bookWaterfall.obj"; sourceTree = SOURCE_ROOT; };
-		7216500825EA60CB00511342 /* bookWaterfall.mtl */ = {isa = PBXFileReference; lastKnownFileType = file; name = bookWaterfall.mtl; path = "Basic Game Engine/Resources/models/bookWaterfall.mtl"; sourceTree = SOURCE_ROOT; };
+		7216500725EA60CB00511342 /* bookWaterfall.obj */ = {isa = PBXFileReference; lastKnownFileType = text; name = bookWaterfall.obj; path = "Basic Game Engine/Resources/models/bookWaterfall.obj"; sourceTree = SOURCE_ROOT; };
+		7216500825EA60CB00511342 /* bookWaterfall.mtl */ = {isa = PBXFileReference; lastKnownFileType = text; name = bookWaterfall.mtl; path = "Basic Game Engine/Resources/models/bookWaterfall.mtl"; sourceTree = SOURCE_ROOT; };
 		7216500E25EA611200511342 /* text_glow.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = text_glow.jpg; path = "../../../../Downloads/medieval-fantasy-book/textures/text_glow.jpg"; sourceTree = "<group>"; };
 		7216500F25EA611200511342 /* texture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = texture.jpg; path = "../../../../Downloads/medieval-fantasy-book/textures/texture.jpg"; sourceTree = "<group>"; };
 		7216501025EA611200511342 /* text_alpha.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = text_alpha.jpg; path = "../../../../Downloads/medieval-fantasy-book/textures/text_alpha.jpg"; sourceTree = "<group>"; };
@@ -274,8 +344,8 @@
 		7216504C25EAE3C300511342 /* old_planks_02_disp_2k.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = old_planks_02_disp_2k.png; path = ../../../../../Downloads/old_planks_02_2k_png/old_planks_02_disp_2k.png; sourceTree = "<group>"; };
 		7216504D25EAE3C300511342 /* old_planks_02_nor_2k.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = old_planks_02_nor_2k.png; path = ../../../../../Downloads/old_planks_02_2k_png/old_planks_02_nor_2k.png; sourceTree = "<group>"; };
 		7216504E25EAE3C300511342 /* old_planks_02_diff_2k.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = old_planks_02_diff_2k.png; path = ../../../../../Downloads/old_planks_02_2k_png/old_planks_02_diff_2k.png; sourceTree = "<group>"; };
-		7216505925EAE45D00511342 /* cylinder.mtl */ = {isa = PBXFileReference; lastKnownFileType = file; name = cylinder.mtl; path = "Basic Game Engine/Resources/models/cylinder.mtl"; sourceTree = SOURCE_ROOT; };
-		7216505A25EAE45D00511342 /* cylinder.obj */ = {isa = PBXFileReference; lastKnownFileType = file; name = cylinder.obj; path = "Basic Game Engine/Resources/models/cylinder.obj"; sourceTree = SOURCE_ROOT; };
+		7216505925EAE45D00511342 /* cylinder.mtl */ = {isa = PBXFileReference; lastKnownFileType = text; name = cylinder.mtl; path = "Basic Game Engine/Resources/models/cylinder.mtl"; sourceTree = SOURCE_ROOT; };
+		7216505A25EAE45D00511342 /* cylinder.obj */ = {isa = PBXFileReference; lastKnownFileType = text; name = cylinder.obj; path = "Basic Game Engine/Resources/models/cylinder.obj"; sourceTree = SOURCE_ROOT; };
 		7216506025EAE59800511342 /* cylinderSome.mtl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = cylinderSome.mtl.swift; sourceTree = "<group>"; };
 		7216506625EAE70E00511342 /* green_rough_planks_ao_2k.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = green_rough_planks_ao_2k.png; path = ../../../../../Downloads/green_rough_planks_2k_png/green_rough_planks_ao_2k.png; sourceTree = "<group>"; };
 		7216506725EAE70E00511342 /* green_rough_planks_bump_2k.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = green_rough_planks_bump_2k.png; path = ../../../../../Downloads/green_rough_planks_2k_png/green_rough_planks_bump_2k.png; sourceTree = "<group>"; };
@@ -371,8 +441,76 @@
 		721651A025EBB37F00511342 /* 01-Default_metallic.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "01-Default_metallic.jpg"; path = "../../../../Downloads/pbr-vintage-microscope/source/model/textures/01-Default_metallic.jpg"; sourceTree = "<group>"; };
 		721651A125EBB37F00511342 /* 01-Default_albedo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "01-Default_albedo.jpg"; path = "../../../../Downloads/pbr-vintage-microscope/source/model/textures/01-Default_albedo.jpg"; sourceTree = "<group>"; };
 		721651A225EBB37F00511342 /* 01-Default_normal.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "01-Default_normal.jpg"; path = "../../../../Downloads/pbr-vintage-microscope/source/model/textures/01-Default_normal.jpg"; sourceTree = "<group>"; };
-		721651AE25EBB3AC00511342 /* microscope.obj */ = {isa = PBXFileReference; lastKnownFileType = file; name = microscope.obj; path = "Basic Game Engine/Resources/models/microscope.obj"; sourceTree = SOURCE_ROOT; };
-		721651AF25EBB3AC00511342 /* microscope.mtl */ = {isa = PBXFileReference; lastKnownFileType = file; name = microscope.mtl; path = "Basic Game Engine/Resources/models/microscope.mtl"; sourceTree = SOURCE_ROOT; };
+		721651AE25EBB3AC00511342 /* microscope.obj */ = {isa = PBXFileReference; lastKnownFileType = text; name = microscope.obj; path = "Basic Game Engine/Resources/models/microscope.obj"; sourceTree = SOURCE_ROOT; };
+		721651AF25EBB3AC00511342 /* microscope.mtl */ = {isa = PBXFileReference; lastKnownFileType = text; name = microscope.mtl; path = "Basic Game Engine/Resources/models/microscope.mtl"; sourceTree = SOURCE_ROOT; };
+		721651B825ED56CC00511342 /* Winter Girl.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "Winter Girl.obj"; path = "../../../../Downloads/winter-girl/source/Winter Girl/Winter Girl.obj"; sourceTree = "<group>"; };
+		721651B925ED56CC00511342 /* Winter Girl.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "Winter Girl.mtl"; path = "../../../../Downloads/winter-girl/source/Winter Girl/Winter Girl.mtl"; sourceTree = "<group>"; };
+		721651C025ED571D00511342 /* Luggage_Roughness.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Luggage_Roughness.jpeg; path = "../../../../../Downloads/winter-girl/textures/Luggage_Roughness.jpeg"; sourceTree = "<group>"; };
+		721651C125ED571D00511342 /* Arm_BaseColor.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Arm_BaseColor.jpeg; path = "../../../../../Downloads/winter-girl/textures/Arm_BaseColor.jpeg"; sourceTree = "<group>"; };
+		721651C225ED571D00511342 /* Coat_Fur_BaseColor.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Coat_Fur_BaseColor.jpeg; path = "../../../../../Downloads/winter-girl/textures/Coat_Fur_BaseColor.jpeg"; sourceTree = "<group>"; };
+		721651C325ED571D00511342 /* Tools_Roughness.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Tools_Roughness.jpeg; path = "../../../../../Downloads/winter-girl/textures/Tools_Roughness.jpeg"; sourceTree = "<group>"; };
+		721651C425ED571D00511342 /* Accessoires_BaseColor.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Accessoires_BaseColor.jpeg; path = "../../../../../Downloads/winter-girl/textures/Accessoires_BaseColor.jpeg"; sourceTree = "<group>"; };
+		721651C525ED571D00511342 /* Coat_Normal.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Coat_Normal.jpeg; path = "../../../../../Downloads/winter-girl/textures/Coat_Normal.jpeg"; sourceTree = "<group>"; };
+		721651C625ED571D00511342 /* Chest_Normal.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Chest_Normal.jpeg; path = "../../../../../Downloads/winter-girl/textures/Chest_Normal.jpeg"; sourceTree = "<group>"; };
+		721651C725ED571D00511342 /* Hair_BaseColor.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Hair_BaseColor.jpeg; path = "../../../../../Downloads/winter-girl/textures/Hair_BaseColor.jpeg"; sourceTree = "<group>"; };
+		721651C825ED571D00511342 /* Chest_BaseColor.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Chest_BaseColor.jpeg; path = "../../../../../Downloads/winter-girl/textures/Chest_BaseColor.jpeg"; sourceTree = "<group>"; };
+		721651C925ED571D00511342 /* Shoes_BaseColor.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Shoes_BaseColor.jpeg; path = "../../../../../Downloads/winter-girl/textures/Shoes_BaseColor.jpeg"; sourceTree = "<group>"; };
+		721651CA25ED571D00511342 /* Trousers_skirt_Metallic.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Trousers_skirt_Metallic.jpeg; path = "../../../../../Downloads/winter-girl/textures/Trousers_skirt_Metallic.jpeg"; sourceTree = "<group>"; };
+		721651CB25ED571D00511342 /* Hair_Normal.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Hair_Normal.jpeg; path = "../../../../../Downloads/winter-girl/textures/Hair_Normal.jpeg"; sourceTree = "<group>"; };
+		721651CC25ED571D00511342 /* Head_Opacity.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Head_Opacity.jpeg; path = "../../../../../Downloads/winter-girl/textures/Head_Opacity.jpeg"; sourceTree = "<group>"; };
+		721651CD25ED571D00511342 /* Tools_Metallic.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Tools_Metallic.jpeg; path = "../../../../../Downloads/winter-girl/textures/Tools_Metallic.jpeg"; sourceTree = "<group>"; };
+		721651CE25ED571D00511342 /* internal_ground_ao_texture.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = internal_ground_ao_texture.jpeg; path = "../../../../../Downloads/winter-girl/textures/internal_ground_ao_texture.jpeg"; sourceTree = "<group>"; };
+		721651CF25ED571D00511342 /* Trousers_skirt_Roughness.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Trousers_skirt_Roughness.jpeg; path = "../../../../../Downloads/winter-girl/textures/Trousers_skirt_Roughness.jpeg"; sourceTree = "<group>"; };
+		721651D025ED571D00511342 /* Accessoires_Normal.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Accessoires_Normal.jpeg; path = "../../../../../Downloads/winter-girl/textures/Accessoires_Normal.jpeg"; sourceTree = "<group>"; };
+		721651D125ED571D00511342 /* Arm_Normal.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Arm_Normal.jpeg; path = "../../../../../Downloads/winter-girl/textures/Arm_Normal.jpeg"; sourceTree = "<group>"; };
+		721651D225ED571D00511342 /* Arm_Metallic.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Arm_Metallic.jpeg; path = "../../../../../Downloads/winter-girl/textures/Arm_Metallic.jpeg"; sourceTree = "<group>"; };
+		721651D325ED571D00511342 /* Coat_BaseColor.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Coat_BaseColor.jpeg; path = "../../../../../Downloads/winter-girl/textures/Coat_BaseColor.jpeg"; sourceTree = "<group>"; };
+		721651D425ED571D00511342 /* Hair_Opacity.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Hair_Opacity.png; path = "../../../../../Downloads/winter-girl/textures/Hair_Opacity.png"; sourceTree = "<group>"; };
+		721651D525ED571D00511342 /* Arm_Roughness.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Arm_Roughness.jpeg; path = "../../../../../Downloads/winter-girl/textures/Arm_Roughness.jpeg"; sourceTree = "<group>"; };
+		721651D625ED571D00511342 /* Head_withpaint_Normal.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Head_withpaint_Normal.jpeg; path = "../../../../../Downloads/winter-girl/textures/Head_withpaint_Normal.jpeg"; sourceTree = "<group>"; };
+		721651D725ED571D00511342 /* Hair_Roughness.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Hair_Roughness.jpeg; path = "../../../../../Downloads/winter-girl/textures/Hair_Roughness.jpeg"; sourceTree = "<group>"; };
+		721651D825ED571E00511342 /* Trousers_skirt_BaseColor.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Trousers_skirt_BaseColor.jpeg; path = "../../../../../Downloads/winter-girl/textures/Trousers_skirt_BaseColor.jpeg"; sourceTree = "<group>"; };
+		721651D925ED571E00511342 /* Shoes_Roughness.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Shoes_Roughness.jpeg; path = "../../../../../Downloads/winter-girl/textures/Shoes_Roughness.jpeg"; sourceTree = "<group>"; };
+		721651DA25ED571E00511342 /* Coat_Roughness.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Coat_Roughness.jpeg; path = "../../../../../Downloads/winter-girl/textures/Coat_Roughness.jpeg"; sourceTree = "<group>"; };
+		721651DB25ED571E00511342 /* Accessoires_Metallic.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Accessoires_Metallic.jpeg; path = "../../../../../Downloads/winter-girl/textures/Accessoires_Metallic.jpeg"; sourceTree = "<group>"; };
+		721651DC25ED571E00511342 /* Accessoires_Roughness.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Accessoires_Roughness.jpeg; path = "../../../../../Downloads/winter-girl/textures/Accessoires_Roughness.jpeg"; sourceTree = "<group>"; };
+		721651DD25ED571E00511342 /* Trousers_skirt_Normal.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Trousers_skirt_Normal.jpeg; path = "../../../../../Downloads/winter-girl/textures/Trousers_skirt_Normal.jpeg"; sourceTree = "<group>"; };
+		721651DE25ED571E00511342 /* Tools_BaseColor.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Tools_BaseColor.jpeg; path = "../../../../../Downloads/winter-girl/textures/Tools_BaseColor.jpeg"; sourceTree = "<group>"; };
+		721651DF25ED571E00511342 /* Luggage_BaseColor.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Luggage_BaseColor.jpeg; path = "../../../../../Downloads/winter-girl/textures/Luggage_BaseColor.jpeg"; sourceTree = "<group>"; };
+		721651E025ED571E00511342 /* Mask_Normal.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Mask_Normal.jpg; path = "../../../../../Downloads/winter-girl/textures/Mask_Normal.jpg"; sourceTree = "<group>"; };
+		721651E125ED571E00511342 /* Shoes_Normal.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Shoes_Normal.jpeg; path = "../../../../../Downloads/winter-girl/textures/Shoes_Normal.jpeg"; sourceTree = "<group>"; };
+		721651E225ED571E00511342 /* Head_Roughness.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Head_Roughness.jpeg; path = "../../../../../Downloads/winter-girl/textures/Head_Roughness.jpeg"; sourceTree = "<group>"; };
+		721651E325ED571E00511342 /* Head_withpaint_BaseColor.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Head_withpaint_BaseColor.jpeg; path = "../../../../../Downloads/winter-girl/textures/Head_withpaint_BaseColor.jpeg"; sourceTree = "<group>"; };
+		721651E425ED571E00511342 /* Shoes_Metallic.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Shoes_Metallic.jpeg; path = "../../../../../Downloads/winter-girl/textures/Shoes_Metallic.jpeg"; sourceTree = "<group>"; };
+		721651E525ED571E00511342 /* Tools_Normal.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Tools_Normal.jpeg; path = "../../../../../Downloads/winter-girl/textures/Tools_Normal.jpeg"; sourceTree = "<group>"; };
+		721651E625ED571E00511342 /* Coat_Metallic.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Coat_Metallic.jpeg; path = "../../../../../Downloads/winter-girl/textures/Coat_Metallic.jpeg"; sourceTree = "<group>"; };
+		721651E725ED571E00511342 /* Luggage_Metallic.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Luggage_Metallic.jpeg; path = "../../../../../Downloads/winter-girl/textures/Luggage_Metallic.jpeg"; sourceTree = "<group>"; };
+		721651E825ED571E00511342 /* Coat_Fur_Roughness.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Coat_Fur_Roughness.jpeg; path = "../../../../../Downloads/winter-girl/textures/Coat_Fur_Roughness.jpeg"; sourceTree = "<group>"; };
+		721651E925ED571E00511342 /* Mask_BaseColor.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Mask_BaseColor.jpeg; path = "../../../../../Downloads/winter-girl/textures/Mask_BaseColor.jpeg"; sourceTree = "<group>"; };
+		721651EA25ED571E00511342 /* Mask_Metallic.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Mask_Metallic.jpg; path = "../../../../../Downloads/winter-girl/textures/Mask_Metallic.jpg"; sourceTree = "<group>"; };
+		721651EB25ED571E00511342 /* Mask_Roughness.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Mask_Roughness.jpg; path = "../../../../../Downloads/winter-girl/textures/Mask_Roughness.jpg"; sourceTree = "<group>"; };
+		721651EC25ED571E00511342 /* Chest_Metallic.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Chest_Metallic.jpeg; path = "../../../../../Downloads/winter-girl/textures/Chest_Metallic.jpeg"; sourceTree = "<group>"; };
+		721651ED25ED571E00511342 /* Chest_Roughness.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Chest_Roughness.jpeg; path = "../../../../../Downloads/winter-girl/textures/Chest_Roughness.jpeg"; sourceTree = "<group>"; };
+		721651EE25ED571E00511342 /* Coat_Fur_Opacity.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Coat_Fur_Opacity.jpg; path = "../../../../../Downloads/winter-girl/textures/Coat_Fur_Opacity.jpg"; sourceTree = "<group>"; };
+		721651EF25ED571E00511342 /* Luggage_Normal.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Luggage_Normal.jpeg; path = "../../../../../Downloads/winter-girl/textures/Luggage_Normal.jpeg"; sourceTree = "<group>"; };
+		7216522325ED637800511342 /* wavingchibirobot.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = wavingchibirobot.obj; path = "../../../../Downloads/pbr-chbi-09/source/wavingchibirobot.obj"; sourceTree = "<group>"; };
+		7216522425ED637800511342 /* wavingchibirobot.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = wavingchibirobot.mtl; path = "../../../../Downloads/pbr-chbi-09/source/wavingchibirobot.mtl"; sourceTree = "<group>"; };
+		7216522B25ED63B000511342 /* Bot_Gloss.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Bot_Gloss.png; path = "../../../../../Downloads/pbr-chbi-09/textures/Bot_Gloss.png"; sourceTree = "<group>"; };
+		7216522C25ED63B000511342 /* Bot_Normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Bot_Normal.png; path = "../../../../../Downloads/pbr-chbi-09/textures/Bot_Normal.png"; sourceTree = "<group>"; };
+		7216522D25ED63B000511342 /* Bot_Albedo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Bot_Albedo.png; path = "../../../../../Downloads/pbr-chbi-09/textures/Bot_Albedo.png"; sourceTree = "<group>"; };
+		7216522E25ED63B000511342 /* Bot_Specular.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Bot_Specular.png; path = "../../../../../Downloads/pbr-chbi-09/textures/Bot_Specular.png"; sourceTree = "<group>"; };
+		7216522F25ED63B000511342 /* Bot_Emissive_Blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Bot_Emissive_Blue.png; path = "../../../../../Downloads/pbr-chbi-09/textures/Bot_Emissive_Blue.png"; sourceTree = "<group>"; };
+		7216523925ED653600511342 /* Low_Mech2_Normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Low_Mech2_Normal.png; path = "../../../../../Downloads/pbr-mech-practice/textures/Low_Mech2_Normal.png"; sourceTree = "<group>"; };
+		7216523A25ED653600511342 /* Low_Mech1_Roughness.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Low_Mech1_Roughness.png; path = "../../../../../Downloads/pbr-mech-practice/textures/Low_Mech1_Roughness.png"; sourceTree = "<group>"; };
+		7216523B25ED653600511342 /* Low_Mech2_Metallic.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Low_Mech2_Metallic.png; path = "../../../../../Downloads/pbr-mech-practice/textures/Low_Mech2_Metallic.png"; sourceTree = "<group>"; };
+		7216523C25ED653600511342 /* Low_Mech1_BaseColor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Low_Mech1_BaseColor.png; path = "../../../../../Downloads/pbr-mech-practice/textures/Low_Mech1_BaseColor.png"; sourceTree = "<group>"; };
+		7216523D25ED653600511342 /* Low_Mech1_Normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Low_Mech1_Normal.png; path = "../../../../../Downloads/pbr-mech-practice/textures/Low_Mech1_Normal.png"; sourceTree = "<group>"; };
+		7216523E25ED653600511342 /* Low_Mech1_Metallic.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Low_Mech1_Metallic.png; path = "../../../../../Downloads/pbr-mech-practice/textures/Low_Mech1_Metallic.png"; sourceTree = "<group>"; };
+		7216523F25ED653600511342 /* Low_Mech2_BaseColor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Low_Mech2_BaseColor.png; path = "../../../../../Downloads/pbr-mech-practice/textures/Low_Mech2_BaseColor.png"; sourceTree = "<group>"; };
+		7216524025ED653600511342 /* Low_Mech2_Roughness.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Low_Mech2_Roughness.png; path = "../../../../../Downloads/pbr-mech-practice/textures/Low_Mech2_Roughness.png"; sourceTree = "<group>"; };
+		7216524C25ED655000511342 /* Low.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Low.obj; path = "../../../../Downloads/pbr-mech-practice/source/Low.obj"; sourceTree = "<group>"; };
+		7216524D25ED655000511342 /* Low.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Low.mtl; path = "../../../../Downloads/pbr-mech-practice/source/Low.mtl"; sourceTree = "<group>"; };
+		7216525625EDABA400511342 /* helmet_normal.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = helmet_normal.jpg; path = "../../../../Downloads/modelio-materials-master/Shared/Resources/helmet_normal.jpg"; sourceTree = "<group>"; };
 		721F5B3F25E2A7920000EA4C /* sphere.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = sphere.usd; path = "Basic Game Engine/Resources/teapot/sphere.usd"; sourceTree = SOURCE_ROOT; };
 		721F5B5525E2DC5A0000EA4C /* cloudy.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = cloudy.hdr; path = "Basic Game Engine/HDRI/cloudy.hdr"; sourceTree = SOURCE_ROOT; };
 		72282CCA25C17FD400C9CCF4 /* plane.obj */ = {isa = PBXFileReference; lastKnownFileType = text; name = plane.obj; path = "Basic Game Engine/Resources/teapot/plane.obj"; sourceTree = SOURCE_ROOT; };
@@ -389,6 +527,9 @@
 		729B14F525D91AFF00129165 /* garden.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = garden.hdr; path = "Basic Game Engine/HDRI/garden.hdr"; sourceTree = SOURCE_ROOT; };
 		729B14FA25D91D8100129165 /* park_green.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = park_green.hdr; path = "Basic Game Engine/HDRI/park_green.hdr"; sourceTree = SOURCE_ROOT; };
 		72C1736825DED90800B75C4D /* ring.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = ring.usd; path = "Basic Game Engine/Resources/teapot/ring.usd"; sourceTree = SOURCE_ROOT; };
+		72D1449325F53ED80047A93D /* brdfFitShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = brdfFitShader.metal; sourceTree = "<group>"; };
+		72D1451425F6BFD00047A93D /* ltc_amp.dds */ = {isa = PBXFileReference; lastKnownFileType = file; name = ltc_amp.dds; path = ../../../../../Downloads/fit/results/ltc_amp.dds; sourceTree = "<group>"; };
+		72D1451525F6BFD00047A93D /* ltc_mat.dds */ = {isa = PBXFileReference; lastKnownFileType = file; name = ltc_mat.dds; path = ../../../../../Downloads/fit/results/ltc_mat.dds; sourceTree = "<group>"; };
 		72DAC95F25DDD87500DB3C50 /* plane.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = plane.usd; path = "Basic Game Engine/Resources/teapot/plane.usd"; sourceTree = SOURCE_ROOT; };
 		72DACABB25DE6AED00DB3C50 /* IrradianceMap_.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IrradianceMap_.swift; sourceTree = "<group>"; };
 		72E0476825E45B2A00E48A54 /* shield.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = shield.usd; path = "Basic Game Engine/Resources/teapot/shield.usd"; sourceTree = SOURCE_ROOT; };
@@ -430,7 +571,6 @@
 		72E3998825BEF35100927B17 /* legoMan.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = legoMan.mtl; sourceTree = "<group>"; };
 		72E3998925BEF35100927B17 /* legoMan.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = legoMan.obj; sourceTree = "<group>"; };
 		72E3998A25BEF35100927B17 /* Face_04.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Face_04.png; sourceTree = "<group>"; };
-		72E3999A25BF0C9700927B17 /* teapot.obj */ = {isa = PBXFileReference; lastKnownFileType = text; name = teapot.obj; path = "Basic Game Engine/Resources/teapot/teapot.obj"; sourceTree = SOURCE_ROOT; };
 		72E399A525BF176C00927B17 /* teapot2.obj */ = {isa = PBXFileReference; lastKnownFileType = text; name = teapot2.obj; path = "Basic Game Engine/Resources/teapot/teapot2.obj"; sourceTree = SOURCE_ROOT; };
 		72E399B925BF3ECD00927B17 /* planet.obj */ = {isa = PBXFileReference; lastKnownFileType = text; name = planet.obj; path = "Basic Game Engine/Resources/legoMan/planet.obj"; sourceTree = SOURCE_ROOT; };
 		72E399CF25BF611100927B17 /* teapot.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = teapot.usd; path = "Basic Game Engine/Resources/teapot/teapot.usd"; sourceTree = SOURCE_ROOT; };
@@ -513,6 +653,10 @@
 		7216504725EAE35500511342 /* Textures */ = {
 			isa = PBXGroup;
 			children = (
+				72D1451325F6BFB20047A93D /* ltc */,
+				7216523825ED652600511342 /* mech */,
+				7216522A25ED639500511342 /* chbi_robot */,
+				721651BF25ED56DA00511342 /* winter girl */,
 				7216518425EBAF3A00511342 /* paintedSteel */,
 				7216517825EBAC3400511342 /* moroccan */,
 				7216516C25EBAA0300511342 /* mosaic */,
@@ -777,6 +921,88 @@
 			path = microscope;
 			sourceTree = "<group>";
 		};
+		721651BF25ED56DA00511342 /* winter girl */ = {
+			isa = PBXGroup;
+			children = (
+				721651C425ED571D00511342 /* Accessoires_BaseColor.jpeg */,
+				721651DB25ED571E00511342 /* Accessoires_Metallic.jpeg */,
+				721651D025ED571D00511342 /* Accessoires_Normal.jpeg */,
+				721651DC25ED571E00511342 /* Accessoires_Roughness.jpeg */,
+				721651C125ED571D00511342 /* Arm_BaseColor.jpeg */,
+				721651D225ED571D00511342 /* Arm_Metallic.jpeg */,
+				721651D125ED571D00511342 /* Arm_Normal.jpeg */,
+				721651D525ED571D00511342 /* Arm_Roughness.jpeg */,
+				721651C825ED571D00511342 /* Chest_BaseColor.jpeg */,
+				721651EC25ED571E00511342 /* Chest_Metallic.jpeg */,
+				721651C625ED571D00511342 /* Chest_Normal.jpeg */,
+				721651ED25ED571E00511342 /* Chest_Roughness.jpeg */,
+				721651D325ED571D00511342 /* Coat_BaseColor.jpeg */,
+				721651C225ED571D00511342 /* Coat_Fur_BaseColor.jpeg */,
+				721651EE25ED571E00511342 /* Coat_Fur_Opacity.jpg */,
+				721651E825ED571E00511342 /* Coat_Fur_Roughness.jpeg */,
+				721651E625ED571E00511342 /* Coat_Metallic.jpeg */,
+				721651C525ED571D00511342 /* Coat_Normal.jpeg */,
+				721651DA25ED571E00511342 /* Coat_Roughness.jpeg */,
+				721651C725ED571D00511342 /* Hair_BaseColor.jpeg */,
+				721651CB25ED571D00511342 /* Hair_Normal.jpeg */,
+				721651D425ED571D00511342 /* Hair_Opacity.png */,
+				721651D725ED571D00511342 /* Hair_Roughness.jpeg */,
+				721651CC25ED571D00511342 /* Head_Opacity.jpeg */,
+				721651E225ED571E00511342 /* Head_Roughness.jpeg */,
+				721651E325ED571E00511342 /* Head_withpaint_BaseColor.jpeg */,
+				721651D625ED571D00511342 /* Head_withpaint_Normal.jpeg */,
+				721651CE25ED571D00511342 /* internal_ground_ao_texture.jpeg */,
+				721651DF25ED571E00511342 /* Luggage_BaseColor.jpeg */,
+				721651E725ED571E00511342 /* Luggage_Metallic.jpeg */,
+				721651EF25ED571E00511342 /* Luggage_Normal.jpeg */,
+				721651C025ED571D00511342 /* Luggage_Roughness.jpeg */,
+				721651E925ED571E00511342 /* Mask_BaseColor.jpeg */,
+				721651EA25ED571E00511342 /* Mask_Metallic.jpg */,
+				721651E025ED571E00511342 /* Mask_Normal.jpg */,
+				721651EB25ED571E00511342 /* Mask_Roughness.jpg */,
+				721651C925ED571D00511342 /* Shoes_BaseColor.jpeg */,
+				721651E425ED571E00511342 /* Shoes_Metallic.jpeg */,
+				721651E125ED571E00511342 /* Shoes_Normal.jpeg */,
+				721651D925ED571E00511342 /* Shoes_Roughness.jpeg */,
+				721651DE25ED571E00511342 /* Tools_BaseColor.jpeg */,
+				721651CD25ED571D00511342 /* Tools_Metallic.jpeg */,
+				721651E525ED571E00511342 /* Tools_Normal.jpeg */,
+				721651C325ED571D00511342 /* Tools_Roughness.jpeg */,
+				721651D825ED571E00511342 /* Trousers_skirt_BaseColor.jpeg */,
+				721651CA25ED571D00511342 /* Trousers_skirt_Metallic.jpeg */,
+				721651DD25ED571E00511342 /* Trousers_skirt_Normal.jpeg */,
+				721651CF25ED571D00511342 /* Trousers_skirt_Roughness.jpeg */,
+			);
+			path = "winter girl";
+			sourceTree = "<group>";
+		};
+		7216522A25ED639500511342 /* chbi_robot */ = {
+			isa = PBXGroup;
+			children = (
+				7216522D25ED63B000511342 /* Bot_Albedo.png */,
+				7216522F25ED63B000511342 /* Bot_Emissive_Blue.png */,
+				7216522B25ED63B000511342 /* Bot_Gloss.png */,
+				7216522C25ED63B000511342 /* Bot_Normal.png */,
+				7216522E25ED63B000511342 /* Bot_Specular.png */,
+			);
+			path = chbi_robot;
+			sourceTree = "<group>";
+		};
+		7216523825ED652600511342 /* mech */ = {
+			isa = PBXGroup;
+			children = (
+				7216523C25ED653600511342 /* Low_Mech1_BaseColor.png */,
+				7216523E25ED653600511342 /* Low_Mech1_Metallic.png */,
+				7216523D25ED653600511342 /* Low_Mech1_Normal.png */,
+				7216523A25ED653600511342 /* Low_Mech1_Roughness.png */,
+				7216523F25ED653600511342 /* Low_Mech2_BaseColor.png */,
+				7216523B25ED653600511342 /* Low_Mech2_Metallic.png */,
+				7216523925ED653600511342 /* Low_Mech2_Normal.png */,
+				7216524025ED653600511342 /* Low_Mech2_Roughness.png */,
+			);
+			path = mech;
+			sourceTree = "<group>";
+		};
 		7230F99925C60F9200D9610A /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
@@ -784,6 +1010,15 @@
 				7244840B25C6F42300294331 /* SimpleScene.swift */,
 			);
 			path = Scenes;
+			sourceTree = "<group>";
+		};
+		72D1451325F6BFB20047A93D /* ltc */ = {
+			isa = PBXGroup;
+			children = (
+				72D1451425F6BFD00047A93D /* ltc_amp.dds */,
+				72D1451525F6BFD00047A93D /* ltc_mat.dds */,
+			);
+			path = ltc;
 			sourceTree = "<group>";
 		};
 		72E3989825BB4ECA00927B17 = {
@@ -858,6 +1093,7 @@
 				72E398E025BB73E700927B17 /* BasicShaders.metal */,
 				720EC2F225D82F2500A83F1A /* SkyboxShader.metal */,
 				72ED2D9025DC61F700F12F90 /* shadowShader.metal */,
+				72D1449325F53ED80047A93D /* brdfFitShader.metal */,
 			);
 			path = Shaders;
 			sourceTree = "<group>";
@@ -929,6 +1165,13 @@
 		72E3999925BF0C8300927B17 /* models */ = {
 			isa = PBXGroup;
 			children = (
+				7216525625EDABA400511342 /* helmet_normal.jpg */,
+				7216524D25ED655000511342 /* Low.mtl */,
+				7216524C25ED655000511342 /* Low.obj */,
+				7216522425ED637800511342 /* wavingchibirobot.mtl */,
+				7216522325ED637800511342 /* wavingchibirobot.obj */,
+				721651B925ED56CC00511342 /* Winter Girl.mtl */,
+				721651B825ED56CC00511342 /* Winter Girl.obj */,
 				7216502625EA877200511342 /* daizi_baseColor.jpeg */,
 				7216502425EA877200511342 /* daizi_metallicRoughness.png */,
 				7216502925EA877300511342 /* daizi_normal.jpeg */,
@@ -967,7 +1210,6 @@
 				722830B825C5705F00C9CCF4 /* spheres.usd */,
 				72282CCA25C17FD400C9CCF4 /* plane.obj */,
 				72E399CF25BF611100927B17 /* teapot.usd */,
-				72E3999A25BF0C9700927B17 /* teapot.obj */,
 				72E399A525BF176C00927B17 /* teapot2.obj */,
 			);
 			path = models;
@@ -1086,39 +1328,57 @@
 			files = (
 				729B14FB25D91D8100129165 /* park_green.hdr in Resources */,
 				7216501125EA611200511342 /* text_glow.jpg in Resources */,
+				7216523325ED63B000511342 /* Bot_Specular.png in Resources */,
 				721650F125EAFC9100511342 /* uk0ocizfw_2K_Roughness.jpg in Resources */,
 				7216514B25EBA48800511342 /* ucsjfain_2K_Albedo.jpg in Resources */,
 				721650CF25EAF75C00511342 /* ub1gfbwew_2K_Albedo.jpg in Resources */,
 				7216512B25EB083700511342 /* tkdicbgew_4K_Normal.jpg in Resources */,
 				7216507125EAE70E00511342 /* green_rough_planks_spec_2k.png in Resources */,
+				7216525725EDABA400511342 /* helmet_normal.jpg in Resources */,
 				7216512C25EB083700511342 /* tkdicbgew_4K_AO.jpg in Resources */,
 				7216503125EA877300511342 /* material_metallicRoughness.png in Resources */,
+				7216520D25ED571E00511342 /* Trousers_skirt_Normal.jpeg in Resources */,
 				721650FC25EAFD8400511342 /* uk0ocizfw_4K_Normal.jpg in Resources */,
 				7216515A25EBA5DB00511342 /* bricks_0013_ao_4k.jpg in Resources */,
+				7216520125ED571E00511342 /* Arm_Normal.jpeg in Resources */,
 				7216500925EA60CB00511342 /* bookWaterfall.obj in Resources */,
+				7216520C25ED571E00511342 /* Accessoires_Roughness.jpeg in Resources */,
+				7216521825ED571E00511342 /* Coat_Fur_Roughness.jpeg in Resources */,
 				721651A425EBB37F00511342 /* 01-Default_AO.jpg in Resources */,
 				721650F325EAFC9100511342 /* uk0ocizfw_2K_AO.jpg in Resources */,
+				7216522525ED637800511342 /* wavingchibirobot.obj in Resources */,
+				721651BA25ED56CC00511342 /* Winter Girl.obj in Resources */,
+				7216521525ED571E00511342 /* Tools_Normal.jpeg in Resources */,
 				7216514E25EBA48800511342 /* ucsjfain_2K_Normal.jpg in Resources */,
 				721650D025EAF75C00511342 /* ub1gfbwew_2K_Roughness.jpg in Resources */,
-				72E3999B25BF0C9700927B17 /* teapot.obj in Resources */,
+				721651F725ED571E00511342 /* Hair_BaseColor.jpeg in Resources */,
 				7216515825EBA5DB00511342 /* bricks_0013_base_color_4k.jpg in Resources */,
 				72164FDF25EA45D700511342 /* helmet.obj in Resources */,
+				7216521625ED571E00511342 /* Coat_Metallic.jpeg in Resources */,
 				729B14D125D8841A00129165 /* park.jpg in Resources */,
 				7216517125EBAA2600511342 /* tiles_0015_roughness_4k.jpg in Resources */,
+				7216523125ED63B000511342 /* Bot_Normal.png in Resources */,
 				7216517425EBAA2600511342 /* tiles_0015_basecolor_4k.jpg in Resources */,
 				72E3998D25BEF35100927B17 /* Face_04.png in Resources */,
 				72164FBD25E859C700511342 /* studio.hdr in Resources */,
 				72282CCB25C17FD400C9CCF4 /* plane.obj in Resources */,
+				7216523025ED63B000511342 /* Bot_Gloss.png in Resources */,
+				721651F825ED571E00511342 /* Chest_BaseColor.jpeg in Resources */,
+				7216521125ED571E00511342 /* Shoes_Normal.jpeg in Resources */,
+				721651F325ED571E00511342 /* Tools_Roughness.jpeg in Resources */,
 				729B14E325D8966000129165 /* room.hdr in Resources */,
 				72164FCE25E99CCE00511342 /* f1.obj in Resources */,
 				729B14DE25D8941600129165 /* ground.hdr in Resources */,
 				721651B025EBB3AC00511342 /* microscope.obj in Resources */,
 				721650DB25EAF9A000511342 /* vcwlfcgv_4K_AO.jpg in Resources */,
 				72164FC725E8CD6400511342 /* heliBlades.usd in Resources */,
+				7216521325ED571E00511342 /* Head_withpaint_BaseColor.jpeg in Resources */,
+				7216521225ED571E00511342 /* Head_Roughness.jpeg in Resources */,
 				72164FFD25EA561000511342 /* Cerberus_N.tga in Resources */,
 				7216503525EA877300511342 /* daizi_normal.jpeg in Resources */,
 				7216509925EAE9A900511342 /* floor_tiles_06_AO_2k.png in Resources */,
 				721650DD25EAF9A000511342 /* vcwlfcgv_4K_Normal.jpg in Resources */,
+				721651F225ED571E00511342 /* Coat_Fur_BaseColor.jpeg in Resources */,
 				72164FCD25E99CCE00511342 /* f1.mtl in Resources */,
 				729B14E825D896EC00129165 /* kiara.hdr in Resources */,
 				7216509725EAE9A900511342 /* floor_tiles_06_disp_2k.png in Resources */,
@@ -1130,11 +1390,15 @@
 				7216504F25EAE3C300511342 /* old_planks_02_rough_2k.png in Resources */,
 				72164FFE25EA561000511342 /* Cerberus_M.tga in Resources */,
 				721650FB25EAFD8400511342 /* uk0ocizfw_4K_Roughness.jpg in Resources */,
+				7216520825ED571E00511342 /* Trousers_skirt_BaseColor.jpeg in Resources */,
 				7216503725EA877300511342 /* material_3_metallicRoughness.png in Resources */,
 				7216508225EAE81200511342 /* denim_fabric_rough_ao_2k.png in Resources */,
+				7216524325ED653600511342 /* Low_Mech2_Metallic.png in Resources */,
+				7216522625ED637800511342 /* wavingchibirobot.mtl in Resources */,
 				7216509A25EAE9A900511342 /* floor_tiles_06_diff_2k.png in Resources */,
 				7274EF4625DFDE850026C80B /* cambridge.hdr in Resources */,
 				7216511325EB02A700511342 /* gym.hdr in Resources */,
+				7216521725ED571E00511342 /* Luggage_Metallic.jpeg in Resources */,
 				72E0478225E7069100E48A54 /* f1.usd in Resources */,
 				7216507025EAE70E00511342 /* green_rough_planks_disp_2k.png in Resources */,
 				7216501225EA611200511342 /* texture.jpg in Resources */,
@@ -1146,20 +1410,29 @@
 				72E0477D25E7020F00E48A54 /* carLowPoly.usd in Resources */,
 				7216514D25EBA48800511342 /* ucsjfain_2K_Roughness.jpg in Resources */,
 				7216517325EBAA2600511342 /* tiles_0015_ao_4k.jpg in Resources */,
+				721651FF25ED571E00511342 /* Trousers_skirt_Roughness.jpeg in Resources */,
 				7216501D25EA859A00511342 /* backpack.mtl in Resources */,
 				721650F025EAFC9100511342 /* uk0ocizfw_2K_Normal.jpg in Resources */,
 				7216508025EAE81200511342 /* denim_fabric_nor_2k.png in Resources */,
+				7216521B25ED571E00511342 /* Mask_Roughness.jpg in Resources */,
+				7216520625ED571E00511342 /* Head_withpaint_Normal.jpeg in Resources */,
 				7216507F25EAE81200511342 /* denim_fabric_ao_2k.png in Resources */,
+				7216521925ED571E00511342 /* Mask_BaseColor.jpeg in Resources */,
+				7216524525ED653600511342 /* Low_Mech1_Normal.png in Resources */,
 				72164FF325EA55F500511342 /* cerberus.mtl in Resources */,
 				7216508325EAE81200511342 /* denim_fabric_diff_2k.png in Resources */,
 				721650C225EAF31600511342 /* schvfgwp_4K_Metalness.jpg in Resources */,
 				7216505B25EAE45D00511342 /* cylinder.mtl in Resources */,
 				7216503225EA877300511342 /* daizi_baseColor.jpeg in Resources */,
 				7216502D25EA877300511342 /* kouzi_baseColor.jpeg in Resources */,
+				721651F025ED571E00511342 /* Luggage_Roughness.jpeg in Resources */,
 				7216511F25EB043B00511342 /* ukmmbb3fw_4K_Normal.jpg in Resources */,
 				72164FD525EA21B600511342 /* formula1_DefaultMaterial_Diffuse.png in Resources */,
+				7216520025ED571E00511342 /* Accessoires_Normal.jpeg in Resources */,
+				7216521025ED571E00511342 /* Mask_Normal.jpg in Resources */,
 				7216517225EBAA2600511342 /* tiles_0015_normal_4k.jpg in Resources */,
 				7216508125EAE81200511342 /* denim_fabric_rough_2k.png in Resources */,
+				7216523225ED63B000511342 /* Bot_Albedo.png in Resources */,
 				7216506D25EAE70E00511342 /* green_rough_planks_ao_2k.png in Resources */,
 				721650C525EAF31600511342 /* schvfgwp_4K_Normal.jpg in Resources */,
 				72164FEA25EA48C000511342 /* helmet_metallic.jpg in Resources */,
@@ -1169,6 +1442,7 @@
 				72164FFF25EA561000511342 /* Cerberus_A.tga in Resources */,
 				721650DE25EAF9A000511342 /* vcwlfcgv_4K_Metalness.jpg in Resources */,
 				721651A325EBB37F00511342 /* 01-Default_roughness.jpg in Resources */,
+				7216521D25ED571E00511342 /* Chest_Roughness.jpeg in Resources */,
 				72164FE425EA45ED00511342 /* helmet_baseColor.png in Resources */,
 				720EC2FF25D8816B00A83F1A /* park.hdr in Resources */,
 				7216509B25EAE9A900511342 /* floor_tiles_06_rough_2k.png in Resources */,
@@ -1180,23 +1454,33 @@
 				721650A325EAEBA300511342 /* vbikfjt_2K_Normal.jpg in Resources */,
 				7216500A25EA60CB00511342 /* bookWaterfall.mtl in Resources */,
 				7216503025EA877300511342 /* daizi_metallicRoughness.png in Resources */,
+				721651FB25ED571E00511342 /* Hair_Normal.jpeg in Resources */,
 				72E399A625BF176C00927B17 /* teapot2.obj in Resources */,
 				7216503425EA877300511342 /* kouzi_metallicRoughness.png in Resources */,
 				721650FE25EAFD8400511342 /* uk0ocizfw_4K_AO.jpg in Resources */,
 				721651A525EBB37F00511342 /* 01-Default_metallic.jpg in Resources */,
 				72DAC96025DDD87500DB3C50 /* plane.usd in Resources */,
 				721650A525EAEBA300511342 /* vbikfjt_2K_Roughness.jpg in Resources */,
+				721651FA25ED571E00511342 /* Trousers_skirt_Metallic.jpeg in Resources */,
 				7216509825EAE9A900511342 /* floor_tiles_06_spec_2k.png in Resources */,
 				7216513325EB08F000511342 /* music_hall.hdr in Resources */,
 				72C1736925DED90800B75C4D /* ring.usd in Resources */,
 				72E398AC25BB4ECB00927B17 /* Assets.xcassets in Resources */,
+				7216520925ED571E00511342 /* Shoes_Roughness.jpeg in Resources */,
 				721650DC25EAF9A000511342 /* vcwlfcgv_4K_Roughness.jpg in Resources */,
+				7216520A25ED571E00511342 /* Coat_Roughness.jpeg in Resources */,
+				721651F525ED571E00511342 /* Coat_Normal.jpeg in Resources */,
 				7216518C25EBAF5C00511342 /* sefmegyc_4K_Roughness.jpg in Resources */,
+				7216521E25ED571E00511342 /* Coat_Fur_Opacity.jpg in Resources */,
 				7216514125EB9EA500511342 /* vbwkdallw_4K_Albedo.jpg in Resources */,
+				7216524425ED653600511342 /* Low_Mech1_BaseColor.png in Resources */,
+				7216521425ED571E00511342 /* Shoes_Metallic.jpeg in Resources */,
 				7216505425EAE3C300511342 /* old_planks_02_diff_2k.png in Resources */,
 				72164FFC25EA561000511342 /* Cerberus_R.tga in Resources */,
 				7216515725EBA5DB00511342 /* bricks_0013_normal_4k.jpg in Resources */,
+				7216524125ED653600511342 /* Low_Mech2_Normal.png in Resources */,
 				721650B425EAF09500511342 /* uh1lafuv_2K_AO.jpg in Resources */,
+				7216520725ED571E00511342 /* Hair_Roughness.jpeg in Resources */,
 				721651A625EBB37F00511342 /* 01-Default_albedo.jpg in Resources */,
 				7216513F25EB9EA500511342 /* vbwkdallw_4K_Roughness.jpg in Resources */,
 				7216505C25EAE45D00511342 /* cylinder.obj in Resources */,
@@ -1206,13 +1490,22 @@
 				7216501C25EA859A00511342 /* backpack.obj in Resources */,
 				7216518025EBAC5B00511342 /* Tiles_Moroccan_001_basecolor.jpg in Resources */,
 				7216512225EB043B00511342 /* ukmmbb3fw_4K_Roughness.jpg in Resources */,
+				72D1451625F6BFD00047A93D /* ltc_amp.dds in Resources */,
 				7216503825EA877300511342 /* material_normal.png in Resources */,
+				7216521F25ED571E00511342 /* Luggage_Normal.jpeg in Resources */,
 				721650B925EAF25600511342 /* vbikfjt_2K_AO.jpg in Resources */,
+				7216524725ED653600511342 /* Low_Mech2_BaseColor.png in Resources */,
 				7216512125EB043B00511342 /* ukmmbb3fw_4K_Albedo.jpg in Resources */,
+				7216520325ED571E00511342 /* Coat_BaseColor.jpeg in Resources */,
+				7216524E25ED655000511342 /* Low.obj in Resources */,
 				721651B125EBB3AC00511342 /* microscope.mtl in Resources */,
 				7216517D25EBAC5B00511342 /* Tiles_Moroccan_001_roughness.jpg in Resources */,
+				7216524225ED653600511342 /* Low_Mech1_Roughness.png in Resources */,
+				7216521A25ED571E00511342 /* Mask_Metallic.jpg in Resources */,
 				72E0476925E45B2A00E48A54 /* shield.usd in Resources */,
 				72164FD425EA21B600511342 /* formula1_DefaultMaterial_Specular.png in Resources */,
+				7216520B25ED571E00511342 /* Accessoires_Metallic.jpeg in Resources */,
+				7216524625ED653600511342 /* Low_Mech1_Metallic.png in Resources */,
 				7274EF4B25E03DD40026C80B /* cliff.hdr in Resources */,
 				72E399BA25BF3ECD00927B17 /* planet.obj in Resources */,
 				721F5B4025E2A7920000EA4C /* sphere.usd in Resources */,
@@ -1222,7 +1515,10 @@
 				7216518B25EBAF5C00511342 /* sefmegyc_4K_Metalness.jpg in Resources */,
 				7216502E25EA877300511342 /* material_3_normal.png in Resources */,
 				7216517E25EBAC5B00511342 /* Tiles_Moroccan_001_normal.jpg in Resources */,
+				7216520525ED571E00511342 /* Arm_Roughness.jpeg in Resources */,
+				721651BB25ED56CC00511342 /* Winter Girl.mtl in Resources */,
 				72164FDE25EA45D700511342 /* helmet.mtl in Resources */,
+				721651F925ED571E00511342 /* Shoes_BaseColor.jpeg in Resources */,
 				721650AF25EAEE7500511342 /* uh1lafuv_2K_Roughness.jpg in Resources */,
 				7216512E25EB083700511342 /* tkdicbgew_4K_Albedo.jpg in Resources */,
 				7216507225EAE70E00511342 /* green_rough_planks_diff_2k.png in Resources */,
@@ -1232,30 +1528,45 @@
 				72164FC225E860AD00511342 /* heli.usd in Resources */,
 				7216518925EBAF5C00511342 /* sefmegyc_4K_Normal.jpg in Resources */,
 				7216515925EBA5DB00511342 /* bricks_0013_roughness_4k.jpg in Resources */,
+				7216521C25ED571E00511342 /* Chest_Metallic.jpeg in Resources */,
 				7216505325EAE3C300511342 /* old_planks_02_nor_2k.png in Resources */,
 				721650DF25EAF9A000511342 /* vcwlfcgv_4K_Albedo.jpg in Resources */,
 				7216505225EAE3C300511342 /* old_planks_02_disp_2k.png in Resources */,
 				72164FF425EA55F500511342 /* cerberus.obj in Resources */,
+				721651FE25ED571E00511342 /* internal_ground_ao_texture.jpeg in Resources */,
 				721650A425EAEBA300511342 /* vbikfjt_2K_Albedo.jpg in Resources */,
 				7216503625EA877300511342 /* material_3_baseColor.jpeg in Resources */,
 				7216514025EB9EA500511342 /* vbwkdallw_4K_AO.jpg in Resources */,
+				721651FD25ED571E00511342 /* Tools_Metallic.jpeg in Resources */,
 				7216510B25EB019100511342 /* fireplace.hdr in Resources */,
 				721650AE25EAEE7500511342 /* uh1lafuv_2K_Normal.jpg in Resources */,
 				7216518A25EBAF5C00511342 /* sefmegyc_4K_Albedo.jpg in Resources */,
 				721651A725EBB37F00511342 /* 01-Default_normal.jpg in Resources */,
+				7216520225ED571E00511342 /* Arm_Metallic.jpeg in Resources */,
 				7216509625EAE9A900511342 /* floor_tiles_06_nor_2k.png in Resources */,
 				72E3998B25BEF35100927B17 /* legoMan.mtl in Resources */,
+				7216520425ED571E00511342 /* Hair_Opacity.png in Resources */,
 				7216512025EB043B00511342 /* ukmmbb3fw_4K_AO.jpg in Resources */,
 				721650AD25EAEE7500511342 /* uh1lafuv_2K_Albedo.jpg in Resources */,
 				7216516725EBA8B900511342 /* fabric_0017_ao_4k.jpg in Resources */,
 				72E398AF25BB4ECB00927B17 /* Main.storyboard in Resources */,
 				722830B925C5706000C9CCF4 /* spheres.usd in Resources */,
+				721651F625ED571E00511342 /* Chest_Normal.jpeg in Resources */,
+				721651FC25ED571E00511342 /* Head_Opacity.jpeg in Resources */,
+				72D1451725F6BFD00047A93D /* ltc_mat.dds in Resources */,
+				7216524F25ED655000511342 /* Low.mtl in Resources */,
 				7216506F25EAE70E00511342 /* green_rough_planks_rough_2k.png in Resources */,
+				7216520E25ED571E00511342 /* Tools_BaseColor.jpeg in Resources */,
 				72E3998C25BEF35100927B17 /* legoMan.obj in Resources */,
 				721650C325EAF31600511342 /* schvfgwp_4K_Albedo.jpg in Resources */,
+				7216523425ED63B000511342 /* Bot_Emissive_Blue.png in Resources */,
 				72E0477825E6F9AB00E48A54 /* car.usd in Resources */,
+				7216520F25ED571E00511342 /* Luggage_BaseColor.jpeg in Resources */,
 				7216507325EAE70E00511342 /* green_rough_planks_nor_2k.png in Resources */,
+				7216524825ED653600511342 /* Low_Mech2_Roughness.png in Resources */,
 				72164FEB25EA48C000511342 /* helmet_roughness.jpg in Resources */,
+				721651F125ED571E00511342 /* Arm_BaseColor.jpeg in Resources */,
+				721651F425ED571E00511342 /* Accessoires_BaseColor.jpeg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1291,6 +1602,7 @@
 				72E398E725BC135C00927B17 /* GameObject.swift in Sources */,
 				72E3993025BCD28300927B17 /* SceneManager.swift in Sources */,
 				72E398AA25BB4ECA00927B17 /* Basic_Game_Engine.xcdatamodeld in Sources */,
+				72D1449425F53ED80047A93D /* brdfFitShader.metal in Sources */,
 				720EC2EE25D7CCD300A83F1A /* Skybox.swift in Sources */,
 				72E398DB25BB6FB800927B17 /* HelloWorldView.swift in Sources */,
 				72E3990025BC98AA00927B17 /* Utils.swift in Sources */,

@@ -96,8 +96,8 @@ class Skybox {
         return device?.makeSamplerState(descriptor: samplerDescriptor)
     }
     
-    static func loadHDR(name: String) -> MTLTexture? {
-        let url = Bundle.main.url(forResource: name, withExtension: "hdr")!
+    static func loadHDR(name: String, fileExtension: String = "hdr") -> MTLTexture? {
+        let url = Bundle.main.url(forResource: name, withExtension: fileExtension)!
         let device = Device.sharedDevice.device!
         let cfURLString = url.path as CFString
         guard let cfURL = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, cfURLString, CFURLPathStyle.cfurlposixPathStyle, false) else {

@@ -13,6 +13,7 @@ struct Uniforms {
     float4x4 V;
     float4x4 P;
     float3 eye;
+    float exposure;
 };
 
 enum {
@@ -45,6 +46,7 @@ struct VertexOut {
     float3 smoothNormal;
     float3 eye;
     float2 texCoords;
+    float exposure;
 };
 
 struct Material {
@@ -111,6 +113,7 @@ vertex VertexOut basicVertexShader(const VertexIn vIn [[ stage_in ]], constant U
     vOut.texCoords = float2(vIn.texCoords.x, 1 - vIn.texCoords.y);
     vOut.eye = uniforms.eye;
     vOut.smoothNormal = (uniforms.M*float4(vIn.smoothNormal, 0)).xyz;
+    vOut.exposure = uniforms.exposure;
     return vOut;
 }
 
@@ -119,15 +122,15 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     float3 albedo = material.baseColor;
     albedo *= pow(baseColor.sample(s, vOut.texCoords).rgb, 3.0);
     float metallic = material.metallic;
-    metallic *= metallicMap.sample(s, vOut.texCoords).r;
+    metallic *= pow(metallicMap.sample(s, vOut.texCoords).b, 1.0);
     float roughness = material.roughness;
-    roughness *= roughnessMap.sample(s, vOut.texCoords).r;
+    roughness *= pow(roughnessMap.sample(s, vOut.texCoords).g, 1.0);
     float3 eyeDir = normalize(vOut.eye - vOut.position);
     
     float3 smoothN = vOut.smoothNormal;
     float3 tangentNormal = normalMap.sample(s, vOut.texCoords).xyz * 2.0 - 1.0;
     float3 N = getNormalFromMap(vOut.m_position.xyz, smoothN, vOut.texCoords, tangentNormal);
-    
+//    float3 N = smoothN;
     float3 V = eyeDir;
     float3 F0 = float3(0.04);
     F0 = mix(F0, albedo, 1.0*metallic);
@@ -143,8 +146,11 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     float3 diffuse = irradiance * albedo;
     float3 specular = approximateSpecularIBL(F, roughness, material.mipmapCount, N, V, preFilterEnvMap, DFGlut);
     
-    float3 color =  (kD * diffuse + specular) * 1;
-    color = color / (color + float3(1.0));
+    float3 color =  (kD * diffuse + specular) * ao;
+    
+    float exposure = max(0.01, vOut.exposure);
+  //  color = color / (color + float3(1.0));
+    color = 1 - exp(-color * exposure);
     color = pow(color, float3(1.0/2.2));
     return float4(color, 1.0);
 }

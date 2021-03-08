@@ -26,7 +26,7 @@ class GameObject {
         addComponent(mesh)
         createRenderPipelineState(material: Material(), vertexDescriptor: mesh.vertexDescriptor)
         transform.scale(Float3(repeating: 3))
-    //    transform.rotate(angle: -MathConstants.PI.rawValue/2, axis: Float3(1, 0, 0))
+        transform.rotate(angle: -MathConstants.PI.rawValue/2, axis: Float3(0, 0, 1))
     }
 }
 
