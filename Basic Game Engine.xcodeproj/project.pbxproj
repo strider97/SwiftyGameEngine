@@ -227,6 +227,10 @@
 		7230F99B25C60FAD00D9610A /* BasicScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7230F99A25C60FAD00D9610A /* BasicScene.swift */; };
 		7230F9A825C6B86B00D9610A /* Behaviour.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7230F9A725C6B86B00D9610A /* Behaviour.swift */; };
 		7244840C25C6F42300294331 /* SimpleScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7244840B25C6F42300294331 /* SimpleScene.swift */; };
+		725D993225F8065F00404C74 /* ltc_mat.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 725D993125F8065F00404C74 /* ltc_mat.tiff */; };
+		7274A87625F80D5D00F716AF /* ltc_mat2.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 7274A87525F80D5D00F716AF /* ltc_mat2.tiff */; };
+		7274A87B25F8104D00F716AF /* ltc_mat2.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 7274A87A25F8104D00F716AF /* ltc_mat2.hdr */; };
+		7274A88025F81A9600F716AF /* night.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 7274A87F25F81A9600F716AF /* night.hdr */; };
 		7274EF4625DFDE850026C80B /* cambridge.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 7274EF4525DFDE840026C80B /* cambridge.hdr */; };
 		7274EF4B25E03DD40026C80B /* cliff.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 7274EF4A25E03DD40026C80B /* cliff.hdr */; };
 		729B14D125D8841A00129165 /* park.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 729B14D025D8841A00129165 /* park.jpg */; };
@@ -237,8 +241,6 @@
 		729B14FB25D91D8100129165 /* park_green.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 729B14FA25D91D8100129165 /* park_green.hdr */; };
 		72C1736925DED90800B75C4D /* ring.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72C1736825DED90800B75C4D /* ring.usd */; };
 		72D1449425F53ED80047A93D /* brdfFitShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 72D1449325F53ED80047A93D /* brdfFitShader.metal */; };
-		72D1451625F6BFD00047A93D /* ltc_amp.dds in Resources */ = {isa = PBXBuildFile; fileRef = 72D1451425F6BFD00047A93D /* ltc_amp.dds */; };
-		72D1451725F6BFD00047A93D /* ltc_mat.dds in Resources */ = {isa = PBXBuildFile; fileRef = 72D1451525F6BFD00047A93D /* ltc_mat.dds */; };
 		72DAC96025DDD87500DB3C50 /* plane.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72DAC95F25DDD87500DB3C50 /* plane.usd */; };
 		72DACABC25DE6AED00DB3C50 /* IrradianceMap_.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DACABB25DE6AED00DB3C50 /* IrradianceMap_.swift */; };
 		72E0476925E45B2A00E48A54 /* shield.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72E0476825E45B2A00E48A54 /* shield.usd */; };
@@ -278,6 +280,8 @@
 		72E399D025BF611100927B17 /* teapot.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72E399CF25BF611100927B17 /* teapot.usd */; };
 		72ED2D8C25DC33FF00F12F90 /* Descriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72ED2D8B25DC33FF00F12F90 /* Descriptor.swift */; };
 		72ED2D9125DC61F700F12F90 /* shadowShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 72ED2D9025DC61F700F12F90 /* shadowShader.metal */; };
+		72FB906225F7A771008D71C5 /* ltc_mat.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 72FB906025F7A771008D71C5 /* ltc_mat.hdr */; };
+		72FB906325F7A771008D71C5 /* ltc_mag.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 72FB906125F7A771008D71C5 /* ltc_mag.hdr */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -518,6 +522,10 @@
 		7230F99A25C60FAD00D9610A /* BasicScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicScene.swift; sourceTree = "<group>"; };
 		7230F9A725C6B86B00D9610A /* Behaviour.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Behaviour.swift; sourceTree = "<group>"; };
 		7244840B25C6F42300294331 /* SimpleScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleScene.swift; sourceTree = "<group>"; };
+		725D993125F8065F00404C74 /* ltc_mat.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ltc_mat.tiff; path = ../../../../../Downloads/fit/results/sampleFileCode/ltc_mat.tiff; sourceTree = "<group>"; };
+		7274A87525F80D5D00F716AF /* ltc_mat2.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ltc_mat2.tiff; path = ../../../../../Downloads/fit/results/sampleFileCode/ltc_mat2.tiff; sourceTree = "<group>"; };
+		7274A87A25F8104D00F716AF /* ltc_mat2.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = ltc_mat2.hdr; path = ../../../../../Downloads/fit/results/sampleFileCode/ltc_mat2.hdr; sourceTree = "<group>"; };
+		7274A87F25F81A9600F716AF /* night.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = night.hdr; path = ../../../../Downloads/night.hdr; sourceTree = "<group>"; };
 		7274EF4525DFDE840026C80B /* cambridge.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = cambridge.hdr; path = "Basic Game Engine/HDRI/cambridge.hdr"; sourceTree = SOURCE_ROOT; };
 		7274EF4A25E03DD40026C80B /* cliff.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = cliff.hdr; path = "Basic Game Engine/HDRI/cliff.hdr"; sourceTree = SOURCE_ROOT; };
 		729B14D025D8841A00129165 /* park.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = park.jpg; path = "Basic Game Engine/HDRI/park.jpg"; sourceTree = SOURCE_ROOT; };
@@ -528,8 +536,6 @@
 		729B14FA25D91D8100129165 /* park_green.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = park_green.hdr; path = "Basic Game Engine/HDRI/park_green.hdr"; sourceTree = SOURCE_ROOT; };
 		72C1736825DED90800B75C4D /* ring.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = ring.usd; path = "Basic Game Engine/Resources/teapot/ring.usd"; sourceTree = SOURCE_ROOT; };
 		72D1449325F53ED80047A93D /* brdfFitShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = brdfFitShader.metal; sourceTree = "<group>"; };
-		72D1451425F6BFD00047A93D /* ltc_amp.dds */ = {isa = PBXFileReference; lastKnownFileType = file; name = ltc_amp.dds; path = ../../../../../Downloads/fit/results/ltc_amp.dds; sourceTree = "<group>"; };
-		72D1451525F6BFD00047A93D /* ltc_mat.dds */ = {isa = PBXFileReference; lastKnownFileType = file; name = ltc_mat.dds; path = ../../../../../Downloads/fit/results/ltc_mat.dds; sourceTree = "<group>"; };
 		72DAC95F25DDD87500DB3C50 /* plane.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = plane.usd; path = "Basic Game Engine/Resources/teapot/plane.usd"; sourceTree = SOURCE_ROOT; };
 		72DACABB25DE6AED00DB3C50 /* IrradianceMap_.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IrradianceMap_.swift; sourceTree = "<group>"; };
 		72E0476825E45B2A00E48A54 /* shield.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = shield.usd; path = "Basic Game Engine/Resources/teapot/shield.usd"; sourceTree = SOURCE_ROOT; };
@@ -576,6 +582,8 @@
 		72E399CF25BF611100927B17 /* teapot.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = teapot.usd; path = "Basic Game Engine/Resources/teapot/teapot.usd"; sourceTree = SOURCE_ROOT; };
 		72ED2D8B25DC33FF00F12F90 /* Descriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Descriptor.swift; sourceTree = "<group>"; };
 		72ED2D9025DC61F700F12F90 /* shadowShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = shadowShader.metal; sourceTree = "<group>"; };
+		72FB906025F7A771008D71C5 /* ltc_mat.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = ltc_mat.hdr; path = ../../../../../Downloads/fit/results/sampleFileCode/ltc_mat.hdr; sourceTree = "<group>"; };
+		72FB906125F7A771008D71C5 /* ltc_mag.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = ltc_mag.hdr; path = ../../../../../Downloads/fit/results/sampleFileCode/ltc_mag.hdr; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -606,6 +614,7 @@
 		720EC2FD25D8814D00A83F1A /* HDRI */ = {
 			isa = PBXGroup;
 			children = (
+				7274A87F25F81A9600F716AF /* night.hdr */,
 				7216513225EB08F000511342 /* music_hall.hdr */,
 				7216511225EB02A700511342 /* gym.hdr */,
 				7216510A25EB019100511342 /* fireplace.hdr */,
@@ -1015,8 +1024,11 @@
 		72D1451325F6BFB20047A93D /* ltc */ = {
 			isa = PBXGroup;
 			children = (
-				72D1451425F6BFD00047A93D /* ltc_amp.dds */,
-				72D1451525F6BFD00047A93D /* ltc_mat.dds */,
+				7274A87A25F8104D00F716AF /* ltc_mat2.hdr */,
+				7274A87525F80D5D00F716AF /* ltc_mat2.tiff */,
+				725D993125F8065F00404C74 /* ltc_mat.tiff */,
+				72FB906125F7A771008D71C5 /* ltc_mag.hdr */,
+				72FB906025F7A771008D71C5 /* ltc_mat.hdr */,
 			);
 			path = ltc;
 			sourceTree = "<group>";
@@ -1337,6 +1349,7 @@
 				7216525725EDABA400511342 /* helmet_normal.jpg in Resources */,
 				7216512C25EB083700511342 /* tkdicbgew_4K_AO.jpg in Resources */,
 				7216503125EA877300511342 /* material_metallicRoughness.png in Resources */,
+				72FB906225F7A771008D71C5 /* ltc_mat.hdr in Resources */,
 				7216520D25ED571E00511342 /* Trousers_skirt_Normal.jpeg in Resources */,
 				721650FC25EAFD8400511342 /* uk0ocizfw_4K_Normal.jpg in Resources */,
 				7216515A25EBA5DB00511342 /* bricks_0013_ao_4k.jpg in Resources */,
@@ -1347,6 +1360,7 @@
 				721651A425EBB37F00511342 /* 01-Default_AO.jpg in Resources */,
 				721650F325EAFC9100511342 /* uk0ocizfw_2K_AO.jpg in Resources */,
 				7216522525ED637800511342 /* wavingchibirobot.obj in Resources */,
+				7274A87625F80D5D00F716AF /* ltc_mat2.tiff in Resources */,
 				721651BA25ED56CC00511342 /* Winter Girl.obj in Resources */,
 				7216521525ED571E00511342 /* Tools_Normal.jpeg in Resources */,
 				7216514E25EBA48800511342 /* ucsjfain_2K_Normal.jpg in Resources */,
@@ -1378,6 +1392,7 @@
 				7216503525EA877300511342 /* daizi_normal.jpeg in Resources */,
 				7216509925EAE9A900511342 /* floor_tiles_06_AO_2k.png in Resources */,
 				721650DD25EAF9A000511342 /* vcwlfcgv_4K_Normal.jpg in Resources */,
+				7274A88025F81A9600F716AF /* night.hdr in Resources */,
 				721651F225ED571E00511342 /* Coat_Fur_BaseColor.jpeg in Resources */,
 				72164FCD25E99CCE00511342 /* f1.mtl in Resources */,
 				729B14E825D896EC00129165 /* kiara.hdr in Resources */,
@@ -1402,6 +1417,7 @@
 				72E0478225E7069100E48A54 /* f1.usd in Resources */,
 				7216507025EAE70E00511342 /* green_rough_planks_disp_2k.png in Resources */,
 				7216501225EA611200511342 /* texture.jpg in Resources */,
+				725D993225F8065F00404C74 /* ltc_mat.tiff in Resources */,
 				729B14F625D91AFF00129165 /* garden.hdr in Resources */,
 				721650CE25EAF75C00511342 /* ub1gfbwew_2K_AO.jpg in Resources */,
 				721650F225EAFC9100511342 /* uk0ocizfw_2K_Albedo.jpg in Resources */,
@@ -1490,7 +1506,6 @@
 				7216501C25EA859A00511342 /* backpack.obj in Resources */,
 				7216518025EBAC5B00511342 /* Tiles_Moroccan_001_basecolor.jpg in Resources */,
 				7216512225EB043B00511342 /* ukmmbb3fw_4K_Roughness.jpg in Resources */,
-				72D1451625F6BFD00047A93D /* ltc_amp.dds in Resources */,
 				7216503825EA877300511342 /* material_normal.png in Resources */,
 				7216521F25ED571E00511342 /* Luggage_Normal.jpeg in Resources */,
 				721650B925EAF25600511342 /* vbikfjt_2K_AO.jpg in Resources */,
@@ -1553,7 +1568,6 @@
 				722830B925C5706000C9CCF4 /* spheres.usd in Resources */,
 				721651F625ED571E00511342 /* Chest_Normal.jpeg in Resources */,
 				721651FC25ED571E00511342 /* Head_Opacity.jpeg in Resources */,
-				72D1451725F6BFD00047A93D /* ltc_mat.dds in Resources */,
 				7216524F25ED655000511342 /* Low.mtl in Resources */,
 				7216506F25EAE70E00511342 /* green_rough_planks_rough_2k.png in Resources */,
 				7216520E25ED571E00511342 /* Tools_BaseColor.jpeg in Resources */,
@@ -1567,6 +1581,8 @@
 				72164FEB25EA48C000511342 /* helmet_roughness.jpg in Resources */,
 				721651F125ED571E00511342 /* Arm_BaseColor.jpeg in Resources */,
 				721651F425ED571E00511342 /* Accessoires_BaseColor.jpeg in Resources */,
+				7274A87B25F8104D00F716AF /* ltc_mat2.hdr in Resources */,
+				72FB906325F7A771008D71C5 /* ltc_mag.hdr in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

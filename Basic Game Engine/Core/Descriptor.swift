@@ -85,6 +85,20 @@ extension Descriptor {
         }
     }
     
+    static func createLightPipelineState() -> MTLRenderPipelineState {
+        let descriptor = MTLRenderPipelineDescriptor()
+        descriptor.colorAttachments[0].pixelFormat = Constants.pixelFormat;
+        descriptor.depthAttachmentPixelFormat = .depth32Float
+        descriptor.vertexFunction = Device.sharedDevice.library?.makeFunction(name: "lightVertexShader")
+        descriptor.fragmentFunction = Device.sharedDevice.library?.makeFunction(name: "lightFragmentShader")
+        descriptor.vertexDescriptor = Descriptor.getSimpleVertexDescriptor()
+        do {
+            return try Device.sharedDevice.device!.makeRenderPipelineState(descriptor: descriptor)
+        } catch let error {
+            fatalError(error.localizedDescription)
+        }
+    }
+    
     static func createIrradianceMapPipelineState() -> MTLRenderPipelineState {
         let descriptor = MTLRenderPipelineDescriptor()
         descriptor.colorAttachments[0].pixelFormat = .rgba16Float;

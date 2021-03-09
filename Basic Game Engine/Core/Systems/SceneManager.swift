@@ -39,10 +39,20 @@ class Scene: NSObject {
  //   var samplerState: MTLSamplerState!
     var firstDraw = true
     private var exposure: Float = 0.5
-    lazy var ltcMat = Skybox.loadHDR(name: "ltc_mat")
-    lazy var ltcMag = Skybox.loadHDR(name: "ltc_amp")
+    var ltcMat: MTLTexture!
+    var ltcMag: MTLTexture!
+    
+    var lightPolygon: [Float3] = [
+        Float3(-18, 0, 100),
+        Float3(18, 0, 100),
+        Float3(18, 10, 100),
+        Float3(-18, 10, 100)
+    ]
+    
+    var light: PolygonLight
     
     override init() {
+        light = PolygonLight(vertices: lightPolygon)
         super.init()
         camera = getCamera()
         skybox = getSkybox()
@@ -52,6 +62,7 @@ class Scene: NSObject {
         addPhysics()
         addBehaviour()
         createShadowTexture()
+        createLTCTextures()
     }
     
     func getGameObjects() -> [GameObject] {[]}
@@ -81,6 +92,7 @@ extension Scene: MTKViewDelegate {
                 }
             }
         }
+        updateSceneData()
         updateGameObjects()
         render(view)
     }
@@ -140,20 +152,23 @@ extension Scene {
         //    let options_: [MTKTextureLoader.Option : Any] = [.SRGB : false]
         //    dfgLut.texture = try! textureLoader.newTexture(name: "dfglut", scaleFactor: 1.0, bundle: nil, options: options_)
         }
-        
+        /*
         let shadowCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: shadowDescriptor)
         shadowCommandEncoder?.setDepthStencilState(depthStencilState)
         shadowCommandEncoder?.setCullMode(.none)
         drawGameObjects(renderCommandEncoder: shadowCommandEncoder, shadowPass: true)
         shadowCommandEncoder?.endEncoding()
-        
+        */
         let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         renderCommandEncoder?.setDepthStencilState(depthStencilState)
         renderCommandEncoder?.setFragmentTexture(preFilterEnvMap.texture, index: TextureIndex.preFilterEnvMap.rawValue)
         renderCommandEncoder?.setFragmentTexture(dfgLut.texture, index: TextureIndex.DFGlut.rawValue)
         renderCommandEncoder?.setFragmentTexture(irradianceMap.texture, index: TextureIndex.irradianceMap.rawValue)
+        renderCommandEncoder?.setFragmentTexture(ltcMat, index: TextureIndex.ltc_mat.rawValue)
+        renderCommandEncoder?.setFragmentTexture(ltcMag, index: TextureIndex.ltc_mag.rawValue)
         renderCommandEncoder?.setCullMode(.none)
         drawGameObjects(renderCommandEncoder: renderCommandEncoder)
+        drawLight(renderCommandEncoder: renderCommandEncoder)
         drawSkybox(renderCommandEncoder: renderCommandEncoder)
         renderCommandEncoder?.endEncoding()
         
@@ -176,6 +191,15 @@ extension Scene {
         shadowPipelineState = Descriptor.createShadowPipelineState()
     }
     
+    func createLTCTextures() {
+    //    ltcMat = Skybox.loadHDR(name: "ltc_mat")
+        let textureLoader = MTKTextureLoader(device: device!)
+        let options_: [MTKTextureLoader.Option : Any] = [.SRGB : false]
+        let url = Bundle.main.url(forResource: "ltc_mat", withExtension: "tiff")!
+        ltcMat = try! textureLoader.newTexture(URL: url, options: [:])
+        ltcMag = Skybox.loadHDR(name: "ltc_mag")
+    }
+    
     func drawGameObjects(renderCommandEncoder: MTLRenderCommandEncoder?, shadowPass: Bool = false) {
         for gameObject in gameObjects {
             if let renderPipelineStatus = shadowPass ? shadowPipelineState : gameObject.renderPipelineState, let mesh_ = gameObject.getComponent(Mesh.self) {
@@ -193,6 +217,7 @@ extension Scene {
                         let mat = meshNode.material
                         var material = ShaderMaterial(baseColor: mat.baseColor, roughness: mat.roughness, metallic: mat.metallic, mipmapCount: preFilterEnvMap.mipMapCount)
                         renderCommandEncoder?.setFragmentBytes(&material, length: MemoryLayout<ShaderMaterial>.size, index: 0)
+                        renderCommandEncoder?.setFragmentBytes(&lightPolygon, length: MemoryLayout<Float3>.size * 4, index: 1)
                         renderCommandEncoder?.setFragmentTexture(mat.textureSet.baseColor, index: TextureIndex.baseColor.rawValue)
                         renderCommandEncoder?.setFragmentTexture(mat.textureSet.roughness, index: TextureIndex.roughness.rawValue)
                         renderCommandEncoder?.setFragmentTexture(mat.textureSet.metallic, index: TextureIndex.metallic.rawValue)
@@ -219,6 +244,15 @@ extension Scene {
         renderCommandEncoder?.drawIndexedPrimitives(type: .triangle, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: 0)
     }
     
+    func drawLight(renderCommandEncoder: MTLRenderCommandEncoder?) {
+        renderCommandEncoder?.setDepthStencilState(depthStencilState)
+        renderCommandEncoder?.setRenderPipelineState(light.pipelineState)
+        var u = getUniformData()
+        renderCommandEncoder?.setVertexBytes(&u, length: MemoryLayout<Uniforms>.stride, index: 1)
+        renderCommandEncoder?.setVertexBuffer(light.vertexBuffer, offset: 0, index: 0)
+        renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: light.vertices.count)
+    }
+    
     func drawPrefilterEnvMap(renderCommandEncoder: MTLRenderCommandEncoder?, roughness: Float = 0) {
         renderCommandEncoder?.setRenderPipelineState(preFilterEnvMap.pipelineState)
         renderCommandEncoder?.setVertexBuffer(preFilterEnvMap.vertexBuffer, offset: 0, index: 0)
@@ -241,6 +275,10 @@ extension Scene {
         renderCommandEncoder?.setFragmentTexture(skybox.texture, index: 3)
         renderCommandEncoder?.setFragmentSamplerState(skybox.samplerState, index: 0)
         renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: irradianceMap.vertices.count)
+    }
+    
+    func updateSceneData() {
+        
     }
     
     func updateGameObjects() {

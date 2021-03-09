@@ -334,3 +334,19 @@ fragment float4 irradianceMapFragmentShader (VertexOut vOut [[ stage_in ]], text
     float3 color = irradianceMap(textureDir, envMapTexture);
     return float4(color, 1);
 }
+
+// Light shader
+
+vertex VertexOut lightVertexShader (const SimpleVertex vIn [[ stage_in ]], constant Uniforms &uniforms [[buffer(1)]]) {
+    VertexOut vOut;
+    float4x4 VM = uniforms.V;
+    float4x4 PVM = uniforms.P*VM;
+    vOut.position = PVM * float4(vIn.position, 1.0);
+    return vOut;
+}
+
+fragment float4 lightFragmentShader (VertexOut vOut [[ stage_in ]]) {
+    float intensity = 1.5;
+    float3 color = float3(1, 1, 1) * intensity;
+    return float4(color, 1.0);
+}

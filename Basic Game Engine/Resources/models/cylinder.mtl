@@ -10,11 +10,11 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd Tiles_Moroccan_001_basecolor.jpg
-map_roughness Tiles_Moroccan_001_roughness.jpg
-map_metallic old_plankawdds_02_specs_2k.jpg
-map_tangentSpaceNormal Tiles_Moroccan_001_normal.jpg
-map_ao Tiles_Moroccan_001_ambientOcclusion.jpg
+map_Kd uk0ocizfw_4K_Albedo.jpg
+map_roughness uk0ocizfw_4K_Roughness.jpg
+map_metallic uk0ocizfw_4K_Metalness.jpg
+map_tangentSpaceNormal uk0ocizfw_4K_Normal.jpg
+map_ao uk0ocizfw_4K_AO.jpg
 
 newmtl Material.003
 Ns 225.000000

@@ -95,3 +95,30 @@ class DFGLut {
         renderPassDescriptor.setupColorAttachment(texture)
     }
 }
+
+class PolygonLight {
+    var pipelineState: MTLRenderPipelineState
+    let vertexBuffer: MTLBuffer
+    var vertices: [Vertex] = [
+        Vertex(position: Float3(-1, -1, 0), color: Float4(0.0, 0.0, 0.0, 1)),
+        Vertex(position: Float3(-1, 1, 0), color: Float4(0.0, 1.0, 0.0, 1)),
+        Vertex(position: Float3(1, 1, 0), color: Float4(1.0, 1.0, 0.0, 1)),
+        Vertex(position: Float3(1, 1, 0), color: Float4(1.0, 1.0, 0, 1)),
+        Vertex(position: Float3(-1, -1, 0), color: Float4(0.0, 0.0, 0.0, 1)),
+        Vertex(position: Float3(1, -1, 0), color: Float4(1.0, 0.0, 0.0, 1))
+    ]
+    
+    init(vertices: [Float3]) {
+        self.vertices = [
+            Vertex(position: vertices[0], color: Float4(0.0, 0.0, 0.0, 1)),
+            Vertex(position: vertices[1], color: Float4(0.0, 1.0, 0.0, 1)),
+            Vertex(position: vertices[2], color: Float4(1.0, 1.0, 0.0, 1)),
+            Vertex(position: vertices[0], color: Float4(1.0, 1.0, 0, 1)),
+            Vertex(position: vertices[2], color: Float4(0.0, 0.0, 0.0, 1)),
+            Vertex(position: vertices[3], color: Float4(1.0, 0.0, 0.0, 1))
+        ]
+        let device = Device.sharedDevice.device!
+        vertexBuffer = device.makeBuffer(bytes: self.vertices, length: MemoryLayout<Vertex>.stride * self.vertices.count, options: [])!
+        pipelineState = Descriptor.createLightPipelineState()
+    }
+}

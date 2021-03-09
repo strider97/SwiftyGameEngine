@@ -23,8 +23,8 @@ Kd 0.8 0.8 0.8
 Ks 0.8 0.8 0.8
 d 1
 illum 2
-map_Kd sefmegyc_4K_Albedo.jpg
-map_roughness sefmegyc_4K_Roughness.jpg
-map_metallic sefmegyc_4K_Metalness.jpg
-map_tangentSpaceNormal sefmegyc_4K_Normal.jpg
-map_ao Tiles_Moroccan_001_ambientadOcclusion.jpg
+map_Kd bricks_0013_base_color_4k.jpg
+map_roughness bricks_0013_roughness_4k.jpg
+map_metallic sefmegyc_4K_Metalasdness.jpg
+map_tangentSpaceNormal bricks_0013_normal_4k.jpg
+map_ao bricks_0013_ao_4k.jpg

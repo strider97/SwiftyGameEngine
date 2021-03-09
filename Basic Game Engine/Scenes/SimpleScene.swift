@@ -13,7 +13,7 @@ class SimpleScene: Scene {
     var model: GameObject!
     
     override func getGameObjects() -> [GameObject] {
-        model = GameObject(modelName: "cerberus")
+        model = GameObject(modelName: "cylinder")
     //    blades = GameObject(modelName: "heliBlades")
         let mesh = model.getComponent(Mesh.self)!
         for (_, meshNodes) in mesh.meshNodes {
@@ -32,7 +32,7 @@ class SimpleScene: Scene {
     }
     
     override func getSkybox() -> Skybox {
-        return Skybox(textureName: "music_hall")
+        return Skybox(textureName: "kiara")
     }
     
     override func addBehaviour() {
