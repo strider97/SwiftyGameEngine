@@ -299,10 +299,15 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     float3 eyeDir = normalize(vOut.eye - vOut.position);
     
     float3 smoothN = vOut.smoothNormal;
-    float3 tangentNormal = normalMap.sample(s, vOut.texCoords).xyz * 2.0 - 1.0;
-    float3 N = getNormalFromMap(vOut.m_position.xyz, smoothN, vOut.texCoords, tangentNormal);
-//    float3 N = smoothN;
+//    float3 tangentNormal = normalMap.sample(s, vOut.texCoords).xyz * 2.0 - 1.0;
+//    float3 N = getNormalFromMap(vOut.m_position.xyz, smoothN, vOut.texCoords, tangentNormal);
     float3 V = eyeDir;
+    float3 l = normalize(float3(1));
+    float3 ambient = float3(0.05);
+    float3 diffuse = albedo * saturate(dot(smoothN, l));
+    float3 color = diffuse + ambient;
+
+    /*
     float3 F0 = float3(0.04);
     F0 = mix(F0, albedo, 1.0*metallic);
     float3 F = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
@@ -313,18 +318,20 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     R.x = -R.x;
     R.z = -R.z;
     float ao = aoTexture.sample(s, vOut.texCoords).r;
-    float3 irradiance = irradianceMap.sample(s, sampleSphericalMap_(R)).rgb;
-    float3 diffuse = irradiance * albedo;
-    float3 specular = approximateSpecularIBL(F, roughness, material.mipmapCount, N, V, preFilterEnvMap, DFGlut);
-    float3 color =  kD * diffuse + specular;
+    */
+    
+ //   float3 irradiance = irradianceMap.sample(s, sampleSphericalMap_(R)).rgb;
+ //   float3 diffuse = irradiance * albedo;
+ //   float3 specular = approximateSpecularIBL(F, roughness, material.mipmapCount, N, V, preFilterEnvMap, DFGlut);
+ //   float3 color =  kD * diffuse + specular;
     
     // calculate for area light
+    /*
     float intensity = 14.0;
     float3 lightColor = float3(1, 1, 1);
     float theta = acos(dot(N, V));
     float2 uv = float2(roughness, theta/(0.5*pi));
     float4 t = ltc_mat.sample(s, uv);
- //   t = (t - 1.0) * 4.0;
     float3x3 Minv = float3x3(
                  float3(  1,   0, t.y),
                  float3(  0, t.z,   0),
@@ -337,7 +344,9 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     colorAL *= lightColor * intensity / (2.0 * pi);
     color *= 0.0;
     color += max(0, colorAL);
-    color *= ao;
+    */
+ //   color *= ao;
+ //   return float4(abs(smoothN), 1);
     float exposure = max(0.01, vOut.exposure);
   //  color = color / (color + float3(1.0));
     color = 1 - exp(-color * exposure);

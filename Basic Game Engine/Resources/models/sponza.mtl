@@ -1,0 +1,300 @@
+# Blender MTL File: 'None'
+# Material Count: 25
+
+newmtl sponza:Material__299
+Ns 107.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+map_tangentSpaceNormal Background_Normal.png
+map_Kd Background_Albedo.png
+
+newmtl sponza:Material__300
+Ns 179.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+
+newmtl sponza:Material__301
+Ns 107.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+map_tangentSpaceNormal Lion_Normal.png
+map_Kd Lion_Albedo.png
+
+newmtl sponza:Material__58
+Ns 107.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+map_tangentSpaceNormal VasePlant_normal.png
+map_Kd VasePlant_diffuse.png
+
+newmtl sponza:arch1
+Ns 107.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+map_tangentSpaceNormal Sponza_Arch_normal.png
+map_Kd Sponza_Arch_diffuse.png
+
+newmtl sponza:bricks1
+Ns 107.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+map_tangentSpaceNormal Sponza_Bricks_a_Normal.png
+map_Kd Sponza_Bricks_a_Albedo.png
+
+newmtl sponza:ceiling1
+Ns 107.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+map_tangentSpaceNormal Sponza_Ceiling_normal.png
+map_Kd Sponza_Ceiling_diffuse.png
+
+newmtl sponza:chain1
+Ns 107.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+map_tangentSpaceNormal ChainTexture_Normal.png
+map_Kd ChainTexture_Albedo.png
+
+newmtl sponza:column_a1
+Ns 107.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+map_tangentSpaceNormal Sponza_Column_a_normal.png
+map_Kd Sponza_Column_a_diffuse.png
+
+newmtl sponza:column_b1
+Ns 107.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+map_tangentSpaceNormal Sponza_Column_b_normal.png
+map_Kd Sponza_Column_b_diffuse.png
+
+newmtl sponza:column_c1
+Ns 107.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+map_tangentSpaceNormal Sponza_Column_c_normal.png
+map_Kd Sponza_Column_c_diffuse.png
+
+newmtl sponza:details1
+Ns 107.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+map_tangentSpaceNormal Sponza_Details_normal.png
+map_Kd Sponza_Details_diffuse.png
+
+newmtl sponza:fabric_a1
+Ns 107.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+map_tangentSpaceNormal Sponza_Fabric_Red_normal.png
+map_Kd Sponza_Fabric_Red_diffuse.png
+
+newmtl sponza:fabric_c1
+Ns 107.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+map_tangentSpaceNormal Sponza_Curtain_Red_normal.png
+map_Kd Sponza_Curtain_Red_diffuse.png
+
+newmtl sponza:fabric_d1
+Ns 107.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+map_tangentSpaceNormal Sponza_Fabric_Blue_normal.png
+map_Kd Sponza_Fabric_Blue_diffuse.png
+
+newmtl sponza:fabric_e1
+Ns 107.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+map_tangentSpaceNormal Sponza_Fabric_Green_normal.png
+map_Kd Sponza_Fabric_Green_diffuse.png
+
+newmtl sponza:fabric_f1
+Ns 107.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+map_tangentSpaceNormal Sponza_Curtain_Green_normal.png
+map_Kd Sponza_Curtain_Green_diffuse.png
+
+newmtl sponza:fabric_g1
+Ns 107.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+map_tangentSpaceNormal Sponza_Curtain_Blue_normal.png
+map_Kd Sponza_Curtain_Blue_diffuse.png
+
+newmtl sponza:flagpole1
+Ns 107.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+map_tangentSpaceNormal Sponza_FlagPole_normal.png
+map_Kd Sponza_FlagPole_diffuse.png
+
+newmtl sponza:floor1
+Ns 107.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+map_tangentSpaceNormal Sponza_Floor_normal.png
+map_Kd Sponza_Floor_diffuse.png
+
+newmtl sponza:leaf1
+Ns 107.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+map_tangentSpaceNormal Sponza_Thorn_normal.png
+map_Kd Sponza_Thorn_diffuse.png
+
+newmtl sponza:roof1
+Ns 107.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+map_tangentSpaceNormal Sponza_Roof_normal.png
+map_Kd Sponza_Roof_diffuse.png
+
+newmtl sponza:vase1
+Ns 107.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+map_tangentSpaceNormal Vase_normal.png
+map_Kd Vase_diffuse.png
+
+newmtl sponza:vase_hanging1
+Ns 107.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+map_tangentSpaceNormal VaseHanging_normal.png
+map_Kd VaseHanging_diffuse.png
+
+newmtl sponza:vase_round1
+Ns 107.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+map_tangentSpaceNormal VaseRound_normal.png
+map_Kd VaseRound_diffuse.png

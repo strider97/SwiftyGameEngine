@@ -181,7 +181,7 @@ extension Scene {
         renderCommandEncoder?.setFragmentTexture(ltcMag, index: TextureIndex.ltc_mag.rawValue)
         renderCommandEncoder?.setCullMode(.none)
         drawGameObjects(renderCommandEncoder: renderCommandEncoder)
-        drawLight(renderCommandEncoder: renderCommandEncoder)
+    //    drawLight(renderCommandEncoder: renderCommandEncoder)
         drawSkybox(renderCommandEncoder: renderCommandEncoder)
         renderCommandEncoder?.endEncoding()
         
