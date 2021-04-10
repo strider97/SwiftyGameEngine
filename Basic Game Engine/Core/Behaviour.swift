@@ -51,7 +51,7 @@ class MoveInCircle: Behaviour {
     }
     override func update() {
         let time = GameTimer.sharedTimer.time
-        gameObject.transform.position = Float3(radius*sin(time), 0, 0)
+        gameObject.transform.position = Float3(radius*sin(time/5), 0, 0)
     }
 }
 

@@ -43,10 +43,17 @@ class Scene: NSObject {
     var ltcMag: MTLTexture!
     
     var lightPolygon: [Float3] = [
-        Float3(-18, 0, 100),
-        Float3(18, 0, 100),
-        Float3(18, 10, 100),
-        Float3(-18, 10, 100)
+        Float3(-6, -1.9, 20),
+        Float3(0, 3, 20),
+        Float3(6, -1.9, 20),
+        Float3(0, 10, 20)
+    ]
+    
+    var lightPolygonInitial: [Float3] = [
+        Float3(-6, -1.9, 20),
+        Float3(0, 3, 20),
+        Float3(6, -1.9, 20),
+        Float3(0, 10, 20)
     ]
     
     var light: PolygonLight
@@ -100,6 +107,12 @@ extension Scene: MTKViewDelegate {
 
 extension Scene {
     func getUniformData(_ M: Matrix4 = Matrix4(1.0)) -> Uniforms {
+        return Uniforms(M: M, V: camera.lookAtMatrix, P: P, eye: camera.position, exposure: exposure)
+    }
+    
+    func getLightUniformData() -> Uniforms {
+        var M = Matrix4(1)
+        M[3][0] = Float(sin(GameTimer.sharedTimer.time) * 20)
         return Uniforms(M: M, V: camera.lookAtMatrix, P: P, eye: camera.position, exposure: exposure)
     }
     
@@ -247,7 +260,7 @@ extension Scene {
     func drawLight(renderCommandEncoder: MTLRenderCommandEncoder?) {
         renderCommandEncoder?.setDepthStencilState(depthStencilState)
         renderCommandEncoder?.setRenderPipelineState(light.pipelineState)
-        var u = getUniformData()
+        var u = getLightUniformData()
         renderCommandEncoder?.setVertexBytes(&u, length: MemoryLayout<Uniforms>.stride, index: 1)
         renderCommandEncoder?.setVertexBuffer(light.vertexBuffer, offset: 0, index: 0)
         renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: light.vertices.count)
@@ -278,7 +291,9 @@ extension Scene {
     }
     
     func updateSceneData() {
-        
+        for i in 0..<lightPolygon.count {
+            lightPolygon[i] = lightPolygonInitial[i] + Float3(sin(GameTimer.sharedTimer.time) * 20, 0, 0)
+        }
     }
     
     func updateGameObjects() {

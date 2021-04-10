@@ -11,20 +11,20 @@ class SimpleScene: Scene {
     
     var blades: GameObject!
     var model: GameObject!
+    var model2: GameObject!
     
     override func getGameObjects() -> [GameObject] {
-        model = GameObject(modelName: "cylinder")
-    //    blades = GameObject(modelName: "heliBlades")
-        let mesh = model.getComponent(Mesh.self)!
-        for (_, meshNodes) in mesh.meshNodes {
-            for meshNode in meshNodes {
-                let material = meshNode.material
-            //    material.roughness *= material.roughness
-            //    material.metallic = 0.0
-            //    material.baseColor = Float3(1.0, 1.0, 0.7)
-            }
-        }
-        return [model]
+        model = GameObject(modelName: "plane")
+        model2 = GameObject(modelName: "cylinder")
+        
+        model.transform.translate(Float3(0, -2, 0))
+   //     model2.transform.translate(Float3(0, 100, 0))
+        model.transform.scale(Float3(repeating: 3))
+        model2.transform.scale(Float3(repeating: 3))
+   //     model2.transform.rotate(angle: -MathConstants.PI.rawValue/2, axis: Float3(1, 0, 0))
+   //     model2.transform.scale(Float3(repeating: 0.8))
+   //     model2.transform.translate(Float3(0, -15, 0))
+        return [model, model2]
     }
     
     override func addPhysics() {
@@ -32,12 +32,12 @@ class SimpleScene: Scene {
     }
     
     override func getSkybox() -> Skybox {
-        return Skybox(textureName: "kiara")
+        return Skybox(textureName: "park")
     }
     
     override func addBehaviour() {
-    //    let _ = MoveInCircle(gameObject: model, radius: 10)
-        let _ = RotateZ(gameObject: model, speed: 0.1)
+    //    let _ = MoveInCircle(gameObject: model2, radius: 15)
+    //    let _ = RotateZ(gameObject: model, speed: 0.1)
     }
     
     override func getCamera() -> Camera {

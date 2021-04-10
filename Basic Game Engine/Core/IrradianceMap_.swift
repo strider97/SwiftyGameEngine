@@ -112,8 +112,8 @@ class PolygonLight {
         self.vertices = [
             Vertex(position: vertices[0], color: Float4(0.0, 0.0, 0.0, 1)),
             Vertex(position: vertices[1], color: Float4(0.0, 1.0, 0.0, 1)),
-            Vertex(position: vertices[2], color: Float4(1.0, 1.0, 0.0, 1)),
-            Vertex(position: vertices[0], color: Float4(1.0, 1.0, 0, 1)),
+            Vertex(position: vertices[3], color: Float4(1.0, 1.0, 0.0, 1)),
+            Vertex(position: vertices[1], color: Float4(1.0, 1.0, 0, 1)),
             Vertex(position: vertices[2], color: Float4(0.0, 0.0, 0.0, 1)),
             Vertex(position: vertices[3], color: Float4(1.0, 0.0, 0.0, 1))
         ]

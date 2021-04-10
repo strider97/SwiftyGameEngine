@@ -293,9 +293,9 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     float3 albedo = material.baseColor;
     albedo *= pow(baseColor.sample(s, vOut.texCoords).rgb, 3.0);
     float metallic = material.metallic;
-    metallic *= pow(metallicMap.sample(s, vOut.texCoords).b, 1.0);
+    metallic *= metallicMap.sample(s, vOut.texCoords).b;
     float roughness = material.roughness;
-    roughness *= pow(roughnessMap.sample(s, vOut.texCoords).g, 1.0);
+    roughness *= roughnessMap.sample(s, vOut.texCoords).g;
     float3 eyeDir = normalize(vOut.eye - vOut.position);
     
     float3 smoothN = vOut.smoothNormal;
@@ -316,9 +316,10 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     float3 irradiance = irradianceMap.sample(s, sampleSphericalMap_(R)).rgb;
     float3 diffuse = irradiance * albedo;
     float3 specular = approximateSpecularIBL(F, roughness, material.mipmapCount, N, V, preFilterEnvMap, DFGlut);
+    float3 color =  kD * diffuse + specular;
     
     // calculate for area light
-    float intensity = 3.4;
+    float intensity = 14.0;
     float3 lightColor = float3(1, 1, 1);
     float theta = acos(dot(N, V));
     float2 uv = float2(roughness, theta/(0.5*pi));
@@ -332,11 +333,10 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     float3 spec = LTC_Evaluate(N, V, vOut.position, Minv, lightPolygon, true);
     spec *= ltc_mag.sample(s, uv).w;
     float3 diff = LTC_Evaluate(N, V, vOut.position, float3x3(1), lightPolygon, true);
-    float3 colorAL = kD * albedo * diff + spec;
+    float3 colorAL = kD * albedo * diff + F * spec;
     colorAL *= lightColor * intensity / (2.0 * pi);
-    
-    float3 color =  kD * diffuse + specular;
-    color += colorAL;
+    color *= 0.0;
+    color += max(0, colorAL);
     color *= ao;
     float exposure = max(0.01, vOut.exposure);
   //  color = color / (color + float3(1.0));
