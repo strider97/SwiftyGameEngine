@@ -24,7 +24,9 @@ class Scene: NSObject {
     static let W: Float = 1280
     static let H: Float = 720
     final let P = Matrix4(projectionFov: (MathConstants.PI.rawValue/3), near: 0.01, far: 500, aspect: Scene.W/Scene.H)
-    final let orthoGraphicP = Matrix4(orthoLeft: -10, right: 10, bottom: -10, top: 10, near: 0.01, far: 20)
+    var sunDirection = Float3(6, 20, 9)
+    var orthoGraphicP = Matrix4(orthoLeft: -8, right: 8, bottom: -8, top: 8, near: 0.01, far: 100)
+    lazy var shadowViewMatrix = Matrix4.viewMatrix(position: sunDirection, target: Float3(0, 0, 0), up: Camera.WorldUp)
     final let timer = GameTimer.sharedTimer
     final var camera: Camera!
     final let device = Device.sharedDevice.device
@@ -126,7 +128,7 @@ extension Scene {
     }
     
     func getFarShadowUniformData(_ M: Matrix4 = Matrix4(1.0)) -> Uniforms {
-        return Uniforms(M: M, V: camera.lookAtMatrix, P: orthoGraphicP, eye: camera.position)
+        return Uniforms(M: M, V: shadowViewMatrix, P: orthoGraphicP, eye: camera.position)
     }
     
     func render(_ view: MTKView) {
@@ -165,13 +167,14 @@ extension Scene {
         //    let options_: [MTKTextureLoader.Option : Any] = [.SRGB : false]
         //    dfgLut.texture = try! textureLoader.newTexture(name: "dfglut", scaleFactor: 1.0, bundle: nil, options: options_)
         }
-        /*
+        
         let shadowCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: shadowDescriptor)
         shadowCommandEncoder?.setDepthStencilState(depthStencilState)
         shadowCommandEncoder?.setCullMode(.none)
+    //    shadowCommandEncoder?.setDepthBias(0.001, slopeScale: 1.0, clamp: 0.01)
         drawGameObjects(renderCommandEncoder: shadowCommandEncoder, shadowPass: true)
         shadowCommandEncoder?.endEncoding()
-        */
+        
         let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         renderCommandEncoder?.setDepthStencilState(depthStencilState)
         renderCommandEncoder?.setFragmentTexture(preFilterEnvMap.texture, index: TextureIndex.preFilterEnvMap.rawValue)
@@ -179,6 +182,7 @@ extension Scene {
         renderCommandEncoder?.setFragmentTexture(irradianceMap.texture, index: TextureIndex.irradianceMap.rawValue)
         renderCommandEncoder?.setFragmentTexture(ltcMat, index: TextureIndex.ltc_mat.rawValue)
         renderCommandEncoder?.setFragmentTexture(ltcMag, index: TextureIndex.ltc_mag.rawValue)
+        renderCommandEncoder?.setFragmentTexture(shadowTexture, index: TextureIndex.shadowMap.rawValue)
         renderCommandEncoder?.setCullMode(.none)
         drawGameObjects(renderCommandEncoder: renderCommandEncoder)
     //    drawLight(renderCommandEncoder: renderCommandEncoder)
@@ -199,7 +203,7 @@ extension Scene {
     }
     
     func createShadowTexture() {
-        shadowTexture = Descriptor.build2DTexture(pixelFormat: .depth32Float, size: CGSize(width: Int(Self.W), height: Int(Self.W)))
+        shadowTexture = Descriptor.build2DTexture(pixelFormat: .depth32Float, size: CGSize(width: 2*Int(Self.W), height: 2*Int(Self.W)))
         shadowDescriptor.setupDepthAttachment(texture: shadowTexture)
         shadowPipelineState = Descriptor.createShadowPipelineState()
     }
@@ -217,7 +221,13 @@ extension Scene {
         for gameObject in gameObjects {
             if let renderPipelineStatus = shadowPass ? shadowPipelineState : gameObject.renderPipelineState, let mesh_ = gameObject.getComponent(Mesh.self) {
                 renderCommandEncoder?.setRenderPipelineState(renderPipelineStatus)
-                var u = shadowPass ? getFarShadowUniformData(gameObject.transform.modelMatrix) : getUniformData(gameObject.transform.modelMatrix)
+                var u = shadowPass ? getFarShadowUniformData(gameObject.transform.modelMatrix) :
+                //    getFarShadowUniformData(gameObject.transform.modelMatrix)
+                    getUniformData(gameObject.transform.modelMatrix)
+                if !shadowPass {
+                    var s = ShadowUniforms(P: orthoGraphicP, V: shadowViewMatrix, sunDirection: sunDirection.normalized)
+                    renderCommandEncoder?.setVertexBytes(&s, length: MemoryLayout<ShadowUniforms>.stride, index: 2)
+                }
                 renderCommandEncoder?.setVertexBytes(&u, length: MemoryLayout<Uniforms>.stride, index: 1)
                 
        //         print(mesh_.meshes.map{$0.name}, mesh_.mdlMeshes.map{$0.name})
@@ -227,15 +237,17 @@ extension Scene {
                     }
                     for meshNode in meshNodes {
                         // add material through uniforms
-                        let mat = meshNode.material
-                        var material = ShaderMaterial(baseColor: mat.baseColor, roughness: mat.roughness, metallic: mat.metallic, mipmapCount: preFilterEnvMap.mipMapCount)
-                        renderCommandEncoder?.setFragmentBytes(&material, length: MemoryLayout<ShaderMaterial>.size, index: 0)
-                        renderCommandEncoder?.setFragmentBytes(&lightPolygon, length: MemoryLayout<Float3>.size * 4, index: 1)
-                        renderCommandEncoder?.setFragmentTexture(mat.textureSet.baseColor, index: TextureIndex.baseColor.rawValue)
-                        renderCommandEncoder?.setFragmentTexture(mat.textureSet.roughness, index: TextureIndex.roughness.rawValue)
-                        renderCommandEncoder?.setFragmentTexture(mat.textureSet.metallic, index: TextureIndex.metallic.rawValue)
-                        renderCommandEncoder?.setFragmentTexture(mat.textureSet.normalMap, index: TextureIndex.normalMap.rawValue)
-                        renderCommandEncoder?.setFragmentTexture(mat.textureSet.ao, index: TextureIndex.ao.rawValue)
+                        if !shadowPass {
+                            let mat = meshNode.material
+                            var material = ShaderMaterial(baseColor: mat.baseColor, roughness: mat.roughness, metallic: mat.metallic, mipmapCount: preFilterEnvMap.mipMapCount)
+                            renderCommandEncoder?.setFragmentBytes(&material, length: MemoryLayout<ShaderMaterial>.size, index: 0)
+                            renderCommandEncoder?.setFragmentBytes(&lightPolygon, length: MemoryLayout<Float3>.size * 4, index: 1)
+                            renderCommandEncoder?.setFragmentTexture(mat.textureSet.baseColor, index: TextureIndex.baseColor.rawValue)
+                            renderCommandEncoder?.setFragmentTexture(mat.textureSet.roughness, index: TextureIndex.roughness.rawValue)
+                            renderCommandEncoder?.setFragmentTexture(mat.textureSet.metallic, index: TextureIndex.metallic.rawValue)
+                            renderCommandEncoder?.setFragmentTexture(mat.textureSet.normalMap, index: TextureIndex.normalMap.rawValue)
+                            renderCommandEncoder?.setFragmentTexture(mat.textureSet.ao, index: TextureIndex.ao.rawValue)
+                        }
                         let submesh = meshNode.mesh
                         renderCommandEncoder?.drawIndexedPrimitives(type:submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: submesh.indexBuffer.offset)
                     }
@@ -291,9 +303,11 @@ extension Scene {
     }
     
     func updateSceneData() {
-        for i in 0..<lightPolygon.count {
-            lightPolygon[i] = lightPolygonInitial[i] + Float3(sin(GameTimer.sharedTimer.time) * 20, 0, 0)
-        }
+    //    for i in 0..<lightPolygon.count {
+    //        lightPolygon[i] = lightPolygonInitial[i] + Float3(sin(GameTimer.sharedTimer.time) * 20, 0, 0)
+    //    }
+    //    sunDirection.z = 7 * cos(GameTimer.sharedTimer.time / 3)
+    //    shadowViewMatrix = Matrix4.viewMatrix(position: sunDirection, target: Float3(0, 0, 0), up: Camera.WorldUp)
     }
     
     func updateGameObjects() {
@@ -309,4 +323,10 @@ extension Scene {
             exposure -= 0.8 * Float(GameTimer.sharedTimer.deltaTime)
         }
     }
+}
+
+struct ShadowUniforms {
+    var P: Matrix4
+    var V: Matrix4
+    var sunDirection: Float3
 }

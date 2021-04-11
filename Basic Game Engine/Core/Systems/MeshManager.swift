@@ -30,6 +30,9 @@ extension MeshManager {
         asset.loadTextures()
         for sourceMesh in asset.childObjects(of: MDLMesh.self) as! [MDLMesh] {
             sourceMesh.addNormals(withAttributeNamed: Constants.smoothNormal, creaseThreshold: 0.7)
+            sourceMesh.addOrthTanBasis(forTextureCoordinateAttributeNamed: MDLVertexAttributeTextureCoordinate,
+                                       normalAttributeNamed: MDLVertexAttributeNormal,
+                                       tangentAttributeNamed: MDLVertexAttributeTangent)
             sourceMesh.vertexDescriptor = Self.getMDLVertexDescriptor()
         }
         var meshes: [MTKMesh]
@@ -49,7 +52,8 @@ extension MeshManager {
         vertexDescriptor.attributes[1] = MDLVertexAttribute(name: MDLVertexAttributeNormal, format: .float3, offset: MemoryLayout<Float>.size*3, bufferIndex: 0)
         vertexDescriptor.attributes[2] = MDLVertexAttribute(name: MDLVertexAttributeTextureCoordinate, format: .float2, offset: MemoryLayout<Float>.size*6, bufferIndex: 0)
         vertexDescriptor.attributes[3] = MDLVertexAttribute(name: Constants.smoothNormal, format: .float3, offset: MemoryLayout<Float>.size*8, bufferIndex: 0)
-        vertexDescriptor.layouts[0] = MDLVertexBufferLayout(stride: MemoryLayout<Float>.size*11)
+        vertexDescriptor.attributes[4] = MDLVertexAttribute(name: MDLVertexAttributeTangent, format: .float3, offset: MemoryLayout<Float>.size*11, bufferIndex: 0)
+        vertexDescriptor.layouts[0] = MDLVertexBufferLayout(stride: MemoryLayout<Float>.size*14)
         return vertexDescriptor
     }
     

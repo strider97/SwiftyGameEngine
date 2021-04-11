@@ -16,6 +16,12 @@ struct Uniforms {
     float exposure;
 };
 
+struct ShadowUniforms {
+    float4x4 P;
+    float4x4 V;
+    float3 sunDirection;
+};
+
 enum {
     textureIndexPreFilterEnvMap,
     textureIndexDFGlut,
@@ -26,7 +32,8 @@ enum {
     normalMap,
     ao,
     ltc_mat,
-    ltc_mag
+    ltc_mag,
+    shadowMap
 };
 
 constant float2 invPi = float2(0.15915, 0.31831);
@@ -39,6 +46,7 @@ struct VertexIn {
     float3 normal [[attribute(1)]];
     float2 texCoords [[attribute(2)]];
     float3 smoothNormal [[attribute(3)]];
+    float3 tangent [[attribute(4)]];
 };
 
 struct VertexOut {
@@ -49,6 +57,10 @@ struct VertexOut {
     float3 eye;
     float2 texCoords;
     float exposure;
+    float3 bitangent;
+    float3 tangent;
+    float4 lightFragPosition;
+    float3 sunDirection;
 };
 
 struct Material {
@@ -103,6 +115,10 @@ float3 approximateSpecularIBL( float3 SpecularColor , float Roughness, int mipma
 float3 fresnelSchlick(float3 F0, float cosTheta)
 {
     return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
+}
+
+bool inShadow() {
+    return false;
 }
 
 int ClipQuadToHorizon(float3 L[5])
@@ -274,10 +290,24 @@ float3 LTC_Evaluate(
     return Lo_i;
 }
 
-vertex VertexOut basicVertexShader(const VertexIn vIn [[ stage_in ]], constant Uniforms &uniforms [[buffer(1)]]) {
+bool insideShadow(float4 fragPosLightSpace, float3 normal, float3 l, texture2d<float, access::sample> shadowMap [[texture(shadowMap)]])
+{
+    // perform perspective divide
+    float2 xy = fragPosLightSpace.xy;// / fragPosLightSpace.w;
+    xy = xy * 0.5 + 0.5;
+    xy.y = 1 - xy.y;
+    float closestDepth = shadowMap.sample(s, xy).r;
+    float currentDepth = fragPosLightSpace.z / fragPosLightSpace.w;
+//    return closestDepth > 0.055;
+//    return currentDepth;
+    return currentDepth - 0.002 > closestDepth;
+}
+
+vertex VertexOut basicVertexShader(const VertexIn vIn [[ stage_in ]], constant Uniforms &uniforms [[buffer(1)]], constant ShadowUniforms &shadowUniforms [[buffer(2)]])  {
     VertexOut vOut;
     float4x4 VM = uniforms.V*uniforms.M;
     float4x4 PVM = uniforms.P*VM;
+    float4x4 lightPV = shadowUniforms.P * shadowUniforms.V;
     vOut.m_position = PVM * float4(vIn.position, 1.0);
     vOut.normal = (uniforms.M*float4(vIn.normal, 0)).xyz;
     vOut.position = (uniforms.M*float4(vIn.position, 1.0)).xyz;
@@ -285,10 +315,14 @@ vertex VertexOut basicVertexShader(const VertexIn vIn [[ stage_in ]], constant U
     vOut.eye = uniforms.eye;
     vOut.smoothNormal = (uniforms.M*float4(vIn.smoothNormal, 0)).xyz;
     vOut.exposure = uniforms.exposure;
+    vOut.tangent = (uniforms.M*float4(vIn.tangent, 0)).xyz;
+    vOut.bitangent = (uniforms.M*float4(cross(vIn.normal, vIn.tangent), 0)).xyz;
+    vOut.lightFragPosition = lightPV * uniforms.M * float4(vIn.position, 1.0);
+    vOut.sunDirection = shadowUniforms.sunDirection;
     return vOut;
 }
 
-fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], constant float3 *lightPolygon[[buffer(1)]], texture2d<float, access::sample> preFilterEnvMap [[texture(textureIndexPreFilterEnvMap)]], texture2d<float, access::sample> DFGlut [[texture(textureIndexDFGlut)]], texture2d<float, access::sample> irradianceMap [[texture(textureIndexirradianceMap)]], texture2d<float, access::sample> baseColor [[texture(textureIndexBaseColor)]], texture2d<float, access::sample> roughnessMap [[texture(textureIndexRoughness)]], texture2d<float, access::sample> metallicMap [[texture(textureIndexMetallic)]], texture2d<float, access::sample> normalMap [[texture(normalMap)]], texture2d<float, access::sample> aoTexture [[texture(ao)]], texture2d<float, access::sample> ltc_mat [[texture(ltc_mat)]], texture2d<float, access::sample> ltc_mag [[texture(ltc_mag)]]){
+fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], constant float3 *lightPolygon[[buffer(1)]], texture2d<float, access::sample> preFilterEnvMap [[texture(textureIndexPreFilterEnvMap)]], texture2d<float, access::sample> DFGlut [[texture(textureIndexDFGlut)]], texture2d<float, access::sample> irradianceMap [[texture(textureIndexirradianceMap)]], texture2d<float, access::sample> baseColor [[texture(textureIndexBaseColor)]], texture2d<float, access::sample> roughnessMap [[texture(textureIndexRoughness)]], texture2d<float, access::sample> metallicMap [[texture(textureIndexMetallic)]], texture2d<float, access::sample> normalMap [[texture(normalMap)]], texture2d<float, access::sample> aoTexture [[texture(ao)]], texture2d<float, access::sample> ltc_mat [[texture(ltc_mat)]], texture2d<float, access::sample> ltc_mag [[texture(ltc_mag)]], texture2d<float, access::sample> shadowMap [[texture(shadowMap)]]){
     
     float3 albedo = material.baseColor;
     albedo *= pow(baseColor.sample(s, vOut.texCoords).rgb, 3.0);
@@ -300,30 +334,35 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     
     float3 smoothN = vOut.smoothNormal;
 //    float3 tangentNormal = normalMap.sample(s, vOut.texCoords).xyz * 2.0 - 1.0;
-//    float3 N = getNormalFromMap(vOut.m_position.xyz, smoothN, vOut.texCoords, tangentNormal);
+//    float3x3 TBN(vOut.tangent, vOut.bitangent, vOut.smoothNormal);
+//    float3 N = normalize(TBN * tangentNormal);
+//    float3 N = getNormalFromMap(vOut.position.xyz, smoothN, vOut.texCoords, tangentNormal);
     float3 V = eyeDir;
-    float3 l = normalize(float3(1));
-    float3 ambient = float3(0.05);
-    float3 diffuse = albedo * saturate(dot(smoothN, l));
+    float3 l = vOut.sunDirection;
+    bool inShadow = insideShadow(vOut.lightFragPosition, smoothN, l, shadowMap);
+ //   inShadow = false;
+ //   return float4(float3(inShadow), 1);
+    float3 ambient = float3(0.015) * albedo;
+    float3 diffuse = inShadow ? 0 : 1.25 * albedo * saturate(dot(smoothN, l));
     float3 color = diffuse + ambient;
 
-    /*
-    float3 F0 = float3(0.04);
-    F0 = mix(F0, albedo, 1.0*metallic);
-    float3 F = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
-    float3 kS = F;
-    float3 kD = float3(1.0) - kS;
-    kD *= 1.0 - metallic;
-    float3 R = N;
-    R.x = -R.x;
-    R.z = -R.z;
-    float ao = aoTexture.sample(s, vOut.texCoords).r;
-    */
     
- //   float3 irradiance = irradianceMap.sample(s, sampleSphericalMap_(R)).rgb;
- //   float3 diffuse = irradiance * albedo;
- //   float3 specular = approximateSpecularIBL(F, roughness, material.mipmapCount, N, V, preFilterEnvMap, DFGlut);
- //   float3 color =  kD * diffuse + specular;
+//    float3 F0 = float3(0.04);
+//    F0 = mix(F0, albedo, 1.0*metallic);
+//    float3 F = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
+//    float3 kS = F;
+//    float3 kD = float3(1.0) - kS;
+//    kD *= 1.0 - metallic;
+//    float3 R = N;
+//    R.x = -R.x;
+//    R.z = -R.z;
+//    float ao = aoTexture.sample(s, vOut.texCoords).r;
+//
+//
+//    float3 irradiance = irradianceMap.sample(s, sampleSphericalMap_(R)).rgb;
+//    float3 diffuse = irradiance * albedo;
+//    float3 specular = approximateSpecularIBL(F, roughness, material.mipmapCount, N, V, preFilterEnvMap, DFGlut);
+//    float3 color =  kD * diffuse + specular;
     
     // calculate for area light
     /*
@@ -345,8 +384,8 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     color *= 0.0;
     color += max(0, colorAL);
     */
- //   color *= ao;
- //   return float4(abs(smoothN), 1);
+//    color *= ao;
+//    return float4(abs(N), 1);
     float exposure = max(0.01, vOut.exposure);
   //  color = color / (color + float3(1.0));
     color = 1 - exp(-color * exposure);
