@@ -222,6 +222,7 @@
 		7216525725EDABA400511342 /* helmet_normal.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7216525625EDABA400511342 /* helmet_normal.jpg */; };
 		721F5B4025E2A7920000EA4C /* sphere.usd in Resources */ = {isa = PBXBuildFile; fileRef = 721F5B3F25E2A7920000EA4C /* sphere.usd */; };
 		721F5B5625E2DC5A0000EA4C /* cloudy.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 721F5B5525E2DC5A0000EA4C /* cloudy.hdr */; };
+		7223E3EE2624EE630070CB9A /* rsmShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 7223E3ED2624EE630070CB9A /* rsmShader.metal */; };
 		722830B925C5706000C9CCF4 /* spheres.usd in Resources */ = {isa = PBXBuildFile; fileRef = 722830B825C5705F00C9CCF4 /* spheres.usd */; };
 		7230F99B25C60FAD00D9610A /* BasicScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7230F99A25C60FAD00D9610A /* BasicScene.swift */; };
 		7230F9A825C6B86B00D9610A /* Behaviour.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7230F9A725C6B86B00D9610A /* Behaviour.swift */; };
@@ -605,6 +606,7 @@
 		7216525625EDABA400511342 /* helmet_normal.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = helmet_normal.jpg; path = "../../../../Downloads/modelio-materials-master/Shared/Resources/helmet_normal.jpg"; sourceTree = "<group>"; };
 		721F5B3F25E2A7920000EA4C /* sphere.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = sphere.usd; path = "Basic Game Engine/Resources/teapot/sphere.usd"; sourceTree = SOURCE_ROOT; };
 		721F5B5525E2DC5A0000EA4C /* cloudy.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = cloudy.hdr; path = "Basic Game Engine/HDRI/cloudy.hdr"; sourceTree = SOURCE_ROOT; };
+		7223E3ED2624EE630070CB9A /* rsmShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = rsmShader.metal; sourceTree = "<group>"; };
 		722830B825C5705F00C9CCF4 /* spheres.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = spheres.usd; path = "Basic Game Engine/Resources/teapot/spheres.usd"; sourceTree = SOURCE_ROOT; };
 		7230F99A25C60FAD00D9610A /* BasicScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicScene.swift; sourceTree = "<group>"; };
 		7230F9A725C6B86B00D9610A /* Behaviour.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Behaviour.swift; sourceTree = "<group>"; };
@@ -1391,6 +1393,7 @@
 				720EC2F225D82F2500A83F1A /* SkyboxShader.metal */,
 				72ED2D9025DC61F700F12F90 /* shadowShader.metal */,
 				72D1449325F53ED80047A93D /* brdfFitShader.metal */,
+				7223E3ED2624EE630070CB9A /* rsmShader.metal */,
 			);
 			path = Shaders;
 			sourceTree = "<group>";
@@ -2002,6 +2005,7 @@
 				72E3993E25BD85E300927B17 /* GameTime.swift in Sources */,
 				72ED2D9125DC61F700F12F90 /* shadowShader.metal in Sources */,
 				72E3992825BCCDCF00927B17 /* RendererManager.swift in Sources */,
+				7223E3EE2624EE630070CB9A /* rsmShader.metal in Sources */,
 				7230F99B25C60FAD00D9610A /* BasicScene.swift in Sources */,
 				720EC2F325D82F2500A83F1A /* SkyboxShader.metal in Sources */,
 				72E398F525BC21E400927B17 /* Core.swift in Sources */,

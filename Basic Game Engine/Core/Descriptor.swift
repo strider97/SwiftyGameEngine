@@ -37,10 +37,10 @@ extension MTLRenderPassDescriptor {
         depthAttachment.clearDepth = 1
     }
     
-    func setupColorAttachment(_ texture: MTLTexture) {
-        colorAttachments[0].texture = texture
-        colorAttachments[0].loadAction = .clear
-        colorAttachments[0].storeAction = .store
+    func setupColorAttachment(_ texture: MTLTexture, _ position: Int = 0) {
+        colorAttachments[position].texture = texture
+        colorAttachments[position].loadAction = .clear
+        colorAttachments[position].storeAction = .store
     }
 }
 

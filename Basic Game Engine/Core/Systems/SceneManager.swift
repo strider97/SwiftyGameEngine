@@ -43,7 +43,7 @@ class Scene: NSObject {
     private var exposure: Float = 0.5
     var ltcMat: MTLTexture!
     var ltcMag: MTLTexture!
-    
+    var gBufferData = GBufferData(size: CGSize(width: 1280, height: 720))
     var lightPolygon: [Float3] = [
         Float3(-6, -1.9, 20),
         Float3(0, 3, 20),
@@ -167,13 +167,19 @@ extension Scene {
         //    let options_: [MTKTextureLoader.Option : Any] = [.SRGB : false]
         //    dfgLut.texture = try! textureLoader.newTexture(name: "dfglut", scaleFactor: 1.0, bundle: nil, options: options_)
         }
-        
+        /*
         let shadowCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: shadowDescriptor)
         shadowCommandEncoder?.setDepthStencilState(depthStencilState)
         shadowCommandEncoder?.setCullMode(.none)
     //    shadowCommandEncoder?.setDepthBias(0.001, slopeScale: 1.0, clamp: 0.01)
-        drawGameObjects(renderCommandEncoder: shadowCommandEncoder, shadowPass: true)
+        drawGameObjects(renderCommandEncoder: shadowCommandEncoder, renderPassType: .shadow)
         shadowCommandEncoder?.endEncoding()
+         */
+        
+        let gBufferCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: gBufferData.gBufferRenderPassDescriptor)
+        gBufferCommandEncoder?.setDepthStencilState(depthStencilState)
+        drawGameObjects(renderCommandEncoder: gBufferCommandEncoder, renderPassType: .gBuffer)
+        gBufferCommandEncoder?.endEncoding()
         
         let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         renderCommandEncoder?.setDepthStencilState(depthStencilState)
@@ -182,7 +188,7 @@ extension Scene {
         renderCommandEncoder?.setFragmentTexture(irradianceMap.texture, index: TextureIndex.irradianceMap.rawValue)
         renderCommandEncoder?.setFragmentTexture(ltcMat, index: TextureIndex.ltc_mat.rawValue)
         renderCommandEncoder?.setFragmentTexture(ltcMag, index: TextureIndex.ltc_mag.rawValue)
-        renderCommandEncoder?.setFragmentTexture(shadowTexture, index: TextureIndex.shadowMap.rawValue)
+        renderCommandEncoder?.setFragmentTexture(gBufferData.depth, index: TextureIndex.shadowMap.rawValue)
         renderCommandEncoder?.setCullMode(.none)
         drawGameObjects(renderCommandEncoder: renderCommandEncoder)
     //    drawLight(renderCommandEncoder: renderCommandEncoder)
@@ -217,14 +223,13 @@ extension Scene {
         ltcMag = Skybox.loadHDR(name: "ltc_mag")
     }
     
-    func drawGameObjects(renderCommandEncoder: MTLRenderCommandEncoder?, shadowPass: Bool = false) {
+    func drawGameObjects(renderCommandEncoder: MTLRenderCommandEncoder?, renderPassType: RenderPassType = .shading) {
         for gameObject in gameObjects {
-            if let renderPipelineStatus = shadowPass ? shadowPipelineState : gameObject.renderPipelineState, let mesh_ = gameObject.getComponent(Mesh.self) {
+            if let renderPipelineStatus = renderPassType == .shadow ? shadowPipelineState :  (renderPassType == .shading ? gameObject.renderPipelineState : gBufferData.renderPipelineState), let mesh_ = gameObject.getComponent(Mesh.self) {
                 renderCommandEncoder?.setRenderPipelineState(renderPipelineStatus)
-                var u = shadowPass ? getFarShadowUniformData(gameObject.transform.modelMatrix) :
-                //    getFarShadowUniformData(gameObject.transform.modelMatrix)
-                    getUniformData(gameObject.transform.modelMatrix)
-                if !shadowPass {
+                
+                var u = renderPassType == .shading ? getUniformData(gameObject.transform.modelMatrix) : getFarShadowUniformData(gameObject.transform.modelMatrix)
+                if renderPassType == .shading || renderPassType == .gBuffer {
                     var s = ShadowUniforms(P: orthoGraphicP, V: shadowViewMatrix, sunDirection: sunDirection.normalized)
                     renderCommandEncoder?.setVertexBytes(&s, length: MemoryLayout<ShadowUniforms>.stride, index: 2)
                 }
@@ -237,7 +242,7 @@ extension Scene {
                     }
                     for meshNode in meshNodes {
                         // add material through uniforms
-                        if !shadowPass {
+                        if renderPassType == .shading {
                             let mat = meshNode.material
                             var material = ShaderMaterial(baseColor: mat.baseColor, roughness: mat.roughness, metallic: mat.metallic, mipmapCount: preFilterEnvMap.mipMapCount)
                             renderCommandEncoder?.setFragmentBytes(&material, length: MemoryLayout<ShaderMaterial>.size, index: 0)
@@ -329,4 +334,10 @@ struct ShadowUniforms {
     var P: Matrix4
     var V: Matrix4
     var sunDirection: Float3
+}
+
+enum RenderPassType {
+    case shadow
+    case gBuffer
+    case shading
 }
