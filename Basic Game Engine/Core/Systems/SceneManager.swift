@@ -24,7 +24,7 @@ class Scene: NSObject {
     static let W: Float = 1280
     static let H: Float = 720
     final let P = Matrix4(projectionFov: (MathConstants.PI.rawValue/3), near: 0.01, far: 500, aspect: Scene.W/Scene.H)
-    var sunDirection = Float3(6, 20, 9)
+    var sunDirection = Float3(6, 20, 3)
     var orthoGraphicP = Matrix4(orthoLeft: -8, right: 8, bottom: -8, top: 8, near: 0.01, far: 100)
     lazy var shadowViewMatrix = Matrix4.viewMatrix(position: sunDirection, target: Float3(0, 0, 0), up: Camera.WorldUp)
     final let timer = GameTimer.sharedTimer
