@@ -24,8 +24,8 @@ class Scene: NSObject {
     static let W: Float = 1280
     static let H: Float = 720
     final let P = Matrix4(projectionFov: (MathConstants.PI.rawValue/3), near: 0.01, far: 500, aspect: Scene.W/Scene.H)
-    var sunDirection = Float3(6, 20, 3)
-    var orthoGraphicP = Matrix4(orthoLeft: -8, right: 8, bottom: -8, top: 8, near: 0.01, far: 100)
+    var sunDirection = Float3(8, 20, 9)
+    var orthoGraphicP = Matrix4(orthoLeft: -10, right: 10, bottom: -10, top: 10, near: 0.01, far: 100)
     lazy var shadowViewMatrix = Matrix4.viewMatrix(position: sunDirection, target: Float3(0, 0, 0), up: Camera.WorldUp)
     final let timer = GameTimer.sharedTimer
     final var camera: Camera!
@@ -43,7 +43,7 @@ class Scene: NSObject {
     private var exposure: Float = 0.5
     var ltcMat: MTLTexture!
     var ltcMag: MTLTexture!
-    var gBufferData = GBufferData(size: CGSize(width: 1280, height: 720))
+    var gBufferData = GBufferData(size: CGSize(width: 1280 * 2, height: 720 * 2))
     var lightPolygon: [Float3] = [
         Float3(-6, -1.9, 20),
         Float3(0, 3, 20),
@@ -189,6 +189,9 @@ extension Scene {
         renderCommandEncoder?.setFragmentTexture(ltcMat, index: TextureIndex.ltc_mat.rawValue)
         renderCommandEncoder?.setFragmentTexture(ltcMag, index: TextureIndex.ltc_mag.rawValue)
         renderCommandEncoder?.setFragmentTexture(gBufferData.depth, index: TextureIndex.shadowMap.rawValue)
+        renderCommandEncoder?.setFragmentTexture(gBufferData.worldPos, index: TextureIndex.worldPos.rawValue)
+        renderCommandEncoder?.setFragmentTexture(gBufferData.normal, index: TextureIndex.normal.rawValue)
+        renderCommandEncoder?.setFragmentTexture(gBufferData.flux, index: TextureIndex.flux.rawValue)
         renderCommandEncoder?.setCullMode(.none)
         drawGameObjects(renderCommandEncoder: renderCommandEncoder)
     //    drawLight(renderCommandEncoder: renderCommandEncoder)
@@ -242,16 +245,18 @@ extension Scene {
                     }
                     for meshNode in meshNodes {
                         // add material through uniforms
-                        if renderPassType == .shading {
+                        if renderPassType != .shadow {
                             let mat = meshNode.material
                             var material = ShaderMaterial(baseColor: mat.baseColor, roughness: mat.roughness, metallic: mat.metallic, mipmapCount: preFilterEnvMap.mipMapCount)
                             renderCommandEncoder?.setFragmentBytes(&material, length: MemoryLayout<ShaderMaterial>.size, index: 0)
-                            renderCommandEncoder?.setFragmentBytes(&lightPolygon, length: MemoryLayout<Float3>.size * 4, index: 1)
-                            renderCommandEncoder?.setFragmentTexture(mat.textureSet.baseColor, index: TextureIndex.baseColor.rawValue)
-                            renderCommandEncoder?.setFragmentTexture(mat.textureSet.roughness, index: TextureIndex.roughness.rawValue)
-                            renderCommandEncoder?.setFragmentTexture(mat.textureSet.metallic, index: TextureIndex.metallic.rawValue)
-                            renderCommandEncoder?.setFragmentTexture(mat.textureSet.normalMap, index: TextureIndex.normalMap.rawValue)
-                            renderCommandEncoder?.setFragmentTexture(mat.textureSet.ao, index: TextureIndex.ao.rawValue)
+                                renderCommandEncoder?.setFragmentBytes(&lightPolygon, length: MemoryLayout<Float3>.size * 4, index: 1)
+                                renderCommandEncoder?.setFragmentTexture(mat.textureSet.baseColor, index: TextureIndex.baseColor.rawValue)
+                            if renderPassType == .shading {
+                                renderCommandEncoder?.setFragmentTexture(mat.textureSet.roughness, index: TextureIndex.roughness.rawValue)
+                                renderCommandEncoder?.setFragmentTexture(mat.textureSet.metallic, index: TextureIndex.metallic.rawValue)
+                                renderCommandEncoder?.setFragmentTexture(mat.textureSet.normalMap, index: TextureIndex.normalMap.rawValue)
+                                renderCommandEncoder?.setFragmentTexture(mat.textureSet.ao, index: TextureIndex.ao.rawValue)
+                            }
                         }
                         let submesh = meshNode.mesh
                         renderCommandEncoder?.drawIndexedPrimitives(type:submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: submesh.indexBuffer.offset)
@@ -311,8 +316,8 @@ extension Scene {
     //    for i in 0..<lightPolygon.count {
     //        lightPolygon[i] = lightPolygonInitial[i] + Float3(sin(GameTimer.sharedTimer.time) * 20, 0, 0)
     //    }
-    //    sunDirection.z = 7 * cos(GameTimer.sharedTimer.time / 3)
-    //    shadowViewMatrix = Matrix4.viewMatrix(position: sunDirection, target: Float3(0, 0, 0), up: Camera.WorldUp)
+        sunDirection.z = 11 * cos(GameTimer.sharedTimer.time / 3)
+        shadowViewMatrix = Matrix4.viewMatrix(position: sunDirection, target: Float3(0, 0, 0), up: Camera.WorldUp)
     }
     
     func updateGameObjects() {

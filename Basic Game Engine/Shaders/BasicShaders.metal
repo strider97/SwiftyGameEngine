@@ -33,13 +33,18 @@ enum {
     ao,
     ltc_mat,
     ltc_mag,
-    shadowMap
+    shadowMap,
+    rsmPos,
+    rsmNormal,
+    rsmFlux,
+    rsmDepth
 };
 
 constant float2 invPi = float2(0.15915, 0.31831);
 constant float pi = 3.1415926;
 
 constexpr sampler s(coord::normalized, address::repeat, filter::linear, mip_filter::linear);
+constexpr sampler s1(coord::normalized, address::mirrored_repeat, filter::linear, mip_filter::linear);
 
 struct VertexIn {
     float3 position [[attribute(0)]];
@@ -117,8 +122,14 @@ float3 fresnelSchlick(float3 F0, float cosTheta)
     return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
 }
 
-bool inShadow() {
-    return false;
+float2 Hammersley(uint i, float numSamples) {
+    uint bits = i;
+    bits = (bits << 16) | (bits >> 16);
+    bits = ((bits & 0x55555555) << 1) | ((bits & 0xAAAAAAAA) >> 1);
+    bits = ((bits & 0x33333333) << 2) | ((bits & 0xCCCCCCCC) >> 2);
+    bits = ((bits & 0x0F0F0F0F) << 4) | ((bits & 0xF0F0F0F0) >> 4);
+    bits = ((bits & 0x00FF00FF) << 8) | ((bits & 0xFF00FF00) >> 8);
+    return float2(i / numSamples, bits / exp2(32.0));
 }
 
 int ClipQuadToHorizon(float3 L[5])
@@ -290,17 +301,40 @@ float3 LTC_Evaluate(
     return Lo_i;
 }
 
-bool insideShadow(float4 fragPosLightSpace, float3 normal, float3 l, texture2d<float, access::sample> shadowMap [[texture(shadowMap)]])
+bool insideShadow(float4 fragPosLightSpace, float3 normal, float3 l, depth2d<float, access::sample> shadowMap [[texture(shadowMap)]])
 {
     // perform perspective divide
     float2 xy = fragPosLightSpace.xy;// / fragPosLightSpace.w;
     xy = xy * 0.5 + 0.5;
     xy.y = 1 - xy.y;
-    float closestDepth = shadowMap.sample(s, xy).r;
+    float closestDepth = shadowMap.sample(s, xy);
     float currentDepth = fragPosLightSpace.z / fragPosLightSpace.w;
 //    return closestDepth > 0.055;
 //    return currentDepth;
     return currentDepth - 0.002 > closestDepth;
+}
+
+float3 getRSMGlobalIllumination (float4 fragPosLightSpace, float3 pos, float3 smoothNormal, depth2d<float, access::sample> shadowMap [[texture(shadowMap)]], texture2d<float, access::sample> worldPos [[texture(rsmPos)]], texture2d<float, access::sample> worldNormal [[texture(rsmNormal)]], texture2d<float, access::sample> flux [[texture(rsmFlux)]]) {
+    float2 xy = fragPosLightSpace.xy;// / fragPosLightSpace.w;
+    xy = xy * 0.5 + 0.5;
+    xy.y = 1 - xy.y;
+    float radius = 0.4;
+    float4 bounds = clamp(float4(xy - radius, xy + radius), 0, 1);
+    float samples = 25;
+    float2 sampleStep = float2(bounds.z - bounds.x, bounds.w - bounds.y)/(samples);
+    float3 radiance = float3(0);
+    for(int i = 0; i<samples; i++) {
+        for(int j = 0; j <samples; j++) {
+            float2 point = bounds.xy + float2(j*sampleStep.x, i*sampleStep.y);
+            float3 N = worldNormal.sample(s1, point).rgb;
+            float3 sampledLightflux = flux.sample(s1, point).rgb;
+            float3 lightSamplePos = worldPos.sample(s1, point).rgb;
+            float3 dist = max(0.001, length(pos - lightSamplePos));
+            float3 attenuation = 1.0 / (dist * dist);
+            radiance += sampledLightflux * saturate(dot(N, pos - lightSamplePos)) * saturate(dot(smoothNormal, lightSamplePos - pos)) * attenuation / (samples * samples) ;
+        }
+    }
+    return radiance;
 }
 
 vertex VertexOut basicVertexShader(const VertexIn vIn [[ stage_in ]], constant Uniforms &uniforms [[buffer(1)]], constant ShadowUniforms &shadowUniforms [[buffer(2)]])  {
@@ -322,7 +356,7 @@ vertex VertexOut basicVertexShader(const VertexIn vIn [[ stage_in ]], constant U
     return vOut;
 }
 
-fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], constant float3 *lightPolygon[[buffer(1)]], texture2d<float, access::sample> preFilterEnvMap [[texture(textureIndexPreFilterEnvMap)]], texture2d<float, access::sample> DFGlut [[texture(textureIndexDFGlut)]], texture2d<float, access::sample> irradianceMap [[texture(textureIndexirradianceMap)]], texture2d<float, access::sample> baseColor [[texture(textureIndexBaseColor)]], texture2d<float, access::sample> roughnessMap [[texture(textureIndexRoughness)]], texture2d<float, access::sample> metallicMap [[texture(textureIndexMetallic)]], texture2d<float, access::sample> normalMap [[texture(normalMap)]], texture2d<float, access::sample> aoTexture [[texture(ao)]], texture2d<float, access::sample> ltc_mat [[texture(ltc_mat)]], texture2d<float, access::sample> ltc_mag [[texture(ltc_mag)]], texture2d<float, access::sample> shadowMap [[texture(shadowMap)]]){
+fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], constant float3 *lightPolygon[[buffer(1)]], texture2d<float, access::sample> preFilterEnvMap [[texture(textureIndexPreFilterEnvMap)]], texture2d<float, access::sample> DFGlut [[texture(textureIndexDFGlut)]], texture2d<float, access::sample> irradianceMap [[texture(textureIndexirradianceMap)]], texture2d<float, access::sample> baseColor [[texture(textureIndexBaseColor)]], texture2d<float, access::sample> roughnessMap [[texture(textureIndexRoughness)]], texture2d<float, access::sample> metallicMap [[texture(textureIndexMetallic)]], texture2d<float, access::sample> normalMap [[texture(normalMap)]], texture2d<float, access::sample> aoTexture [[texture(ao)]], texture2d<float, access::sample> ltc_mat [[texture(ltc_mat)]], texture2d<float, access::sample> ltc_mag [[texture(ltc_mag)]], depth2d<float, access::sample> shadowMap [[texture(shadowMap)]], texture2d<float, access::sample> worldPos [[texture(rsmPos)]], texture2d<float, access::sample> worldNormal [[texture(rsmNormal)]], texture2d<float, access::sample> flux [[texture(rsmFlux)]]){
     
     float3 albedo = material.baseColor;
     albedo *= pow(baseColor.sample(s, vOut.texCoords).rgb, 3.0);
@@ -342,7 +376,7 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     bool inShadow = insideShadow(vOut.lightFragPosition, smoothN, l, shadowMap);
  //   inShadow = false;
  //   return float4(float3(inShadow), 1);
-    float3 ambient = float3(0.015) * albedo;
+    float3 ambient = (getRSMGlobalIllumination(vOut.lightFragPosition, vOut.position, smoothN, shadowMap, worldPos, worldNormal, flux) + 0.0) * albedo;
     float3 diffuse = inShadow ? 0 : 1.25 * albedo * saturate(dot(smoothN, l));
     float3 color = diffuse + ambient;
 
@@ -392,3 +426,9 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     color = pow(color, float3(1.0/2.2));
     return float4(color, 1.0);
 }
+
+fragment float4 fragmentRSM(VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], constant float3 *lightPolygon[[buffer(1)]], texture2d<float, access::sample> worldPos [[texture(rsmPos)]], texture2d<float, access::sample> worldNormal [[texture(rsmNormal)]], texture2d<float, access::sample> flux [[texture(rsmFlux)]], depth2d<float, access::sample> rsmDepth [[texture(rsmDepth)]]) {
+    return float4(0);
+}
+
+

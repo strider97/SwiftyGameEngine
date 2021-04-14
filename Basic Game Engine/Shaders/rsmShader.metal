@@ -20,6 +20,7 @@ struct VertexOut {
     float4 position [[position]];
     float3 worldPos;
     float3 smoothNormal;
+    float2 uv;
 };
 
 struct Uniforms {
@@ -42,19 +43,27 @@ struct GbufferOut {
     float4 flux [[ color(2) ]];
 };
 
+struct Material {
+    float3 baseColor;
+    float roughness;
+    float metallic;
+    int mipmapCount;
+};
+
 vertex VertexOut vertexRSM(const VertexIn vIn [[ stage_in ]], constant Uniforms &uniforms [[buffer(1)]], constant ShadowUniforms &shadowUniforms [[buffer(2)]])  {
     VertexOut vOut;
     float4x4 PVM = shadowUniforms.P * shadowUniforms.V * uniforms.M;
     vOut.position = PVM * float4(vIn.position, 1.0);
     vOut.worldPos = (uniforms.M * float4(vIn.position, 1.0)).xyz;
     vOut.smoothNormal = (uniforms.M*float4(vIn.smoothNormal, 0)).xyz;
+    vOut.uv = float2(vIn.texCoords.x, 1-vIn.texCoords.y);
     return vOut;
 }
 
-fragment GbufferOut fragmentRSM (VertexOut vOut [[ stage_in ]]) {
+fragment GbufferOut fragmentRSMData (VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], texture2d<float, access::sample> baseColor [[texture(3)]]) {
     GbufferOut out;
     out.worldPos = float4(vOut.worldPos, 1);
     out.normal = float4(vOut.smoothNormal, 1);
-    out.flux = 2;
+    out.flux = float4(float3(15) * material.baseColor, 1);
     return out;
 }

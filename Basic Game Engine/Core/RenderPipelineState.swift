@@ -55,7 +55,7 @@ class GBufferData {
         descriptor.depthAttachmentPixelFormat = .depth32Float
         
         descriptor.vertexFunction = Device.sharedDevice.library!.makeFunction(name: "vertexRSM")
-        descriptor.fragmentFunction = Device.sharedDevice.library!.makeFunction(name: "fragmentRSM")
+        descriptor.fragmentFunction = Device.sharedDevice.library!.makeFunction(name: "fragmentRSMData")
         descriptor.vertexDescriptor = MeshManager.meshManager.vertexDescriptor
         do {
             renderPipelineState = try Device.sharedDevice.device!.makeRenderPipelineState(descriptor: descriptor)

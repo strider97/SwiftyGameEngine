@@ -27,6 +27,10 @@ enum TextureIndex: Int {
     case ltc_mat
     case ltc_mag
     case shadowMap
+    case worldPos
+    case normal
+    case flux
+    case depth
 }
 
 class Material {

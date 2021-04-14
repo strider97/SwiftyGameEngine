@@ -224,6 +224,10 @@
 		721F5B5625E2DC5A0000EA4C /* cloudy.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 721F5B5525E2DC5A0000EA4C /* cloudy.hdr */; };
 		7223E3EE2624EE630070CB9A /* rsmShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 7223E3ED2624EE630070CB9A /* rsmShader.metal */; };
 		722830B925C5706000C9CCF4 /* spheres.usd in Resources */ = {isa = PBXBuildFile; fileRef = 722830B825C5705F00C9CCF4 /* spheres.usd */; };
+		7229EA9B26263A8600112F1A /* house.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 7229EA9926263A8600112F1A /* house.mtl */; };
+		7229EA9C26263A8600112F1A /* house.obj in Resources */ = {isa = PBXBuildFile; fileRef = 7229EA9A26263A8600112F1A /* house.obj */; };
+		7229EAA22626448B00112F1A /* room.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 7229EAA02626448B00112F1A /* room.mtl */; };
+		7229EAA32626448C00112F1A /* room.obj in Resources */ = {isa = PBXBuildFile; fileRef = 7229EAA12626448B00112F1A /* room.obj */; };
 		7230F99B25C60FAD00D9610A /* BasicScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7230F99A25C60FAD00D9610A /* BasicScene.swift */; };
 		7230F9A825C6B86B00D9610A /* Behaviour.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7230F9A725C6B86B00D9610A /* Behaviour.swift */; };
 		7244840C25C6F42300294331 /* SimpleScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7244840B25C6F42300294331 /* SimpleScene.swift */; };
@@ -608,6 +612,10 @@
 		721F5B5525E2DC5A0000EA4C /* cloudy.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = cloudy.hdr; path = "Basic Game Engine/HDRI/cloudy.hdr"; sourceTree = SOURCE_ROOT; };
 		7223E3ED2624EE630070CB9A /* rsmShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = rsmShader.metal; sourceTree = "<group>"; };
 		722830B825C5705F00C9CCF4 /* spheres.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = spheres.usd; path = "Basic Game Engine/Resources/teapot/spheres.usd"; sourceTree = SOURCE_ROOT; };
+		7229EA9926263A8600112F1A /* house.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = house.mtl; sourceTree = "<group>"; };
+		7229EA9A26263A8600112F1A /* house.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = house.obj; sourceTree = "<group>"; };
+		7229EAA02626448B00112F1A /* room.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = room.mtl; sourceTree = "<group>"; };
+		7229EAA12626448B00112F1A /* room.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = room.obj; sourceTree = "<group>"; };
 		7230F99A25C60FAD00D9610A /* BasicScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicScene.swift; sourceTree = "<group>"; };
 		7230F9A725C6B86B00D9610A /* Behaviour.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Behaviour.swift; sourceTree = "<group>"; };
 		7244840B25C6F42300294331 /* SimpleScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleScene.swift; sourceTree = "<group>"; };
@@ -1465,6 +1473,10 @@
 		72E3999925BF0C8300927B17 /* models */ = {
 			isa = PBXGroup;
 			children = (
+				7229EAA02626448B00112F1A /* room.mtl */,
+				7229EAA12626448B00112F1A /* room.obj */,
+				7229EA9926263A8600112F1A /* house.mtl */,
+				7229EA9A26263A8600112F1A /* house.obj */,
 				72583F1C26225AEE00ADD5BD /* sponza.mtl */,
 				72583F1B26225AEE00ADD5BD /* sponza.obj */,
 				7274A88B25F8A29E00F716AF /* plane.mtl */,
@@ -1686,6 +1698,7 @@
 				729B14E325D8966000129165 /* room.hdr in Resources */,
 				72583F1D26225AEE00ADD5BD /* sponza.obj in Resources */,
 				72164FCE25E99CCE00511342 /* f1.obj in Resources */,
+				7229EA9C26263A8600112F1A /* house.obj in Resources */,
 				729B14DE25D8941600129165 /* ground.hdr in Resources */,
 				721651B025EBB3AC00511342 /* microscope.obj in Resources */,
 				721650DB25EAF9A000511342 /* vcwlfcgv_4K_AO.jpg in Resources */,
@@ -1747,6 +1760,7 @@
 				721651FF25ED571E00511342 /* Trousers_skirt_Roughness.jpeg in Resources */,
 				7216501D25EA859A00511342 /* backpack.mtl in Resources */,
 				721650F025EAFC9100511342 /* uk0ocizfw_2K_Normal.jpg in Resources */,
+				7229EA9B26263A8600112F1A /* house.mtl in Resources */,
 				7216508025EAE81200511342 /* denim_fabric_nor_2k.png in Resources */,
 				7216521B25ED571E00511342 /* Mask_Roughness.jpg in Resources */,
 				7216520625ED571E00511342 /* Head_withpaint_Normal.jpeg in Resources */,
@@ -1780,6 +1794,7 @@
 				72583F8F262266E000ADD5BD /* Sponza_Column_a_normal.png in Resources */,
 				72583F77262266E000ADD5BD /* Lion_Roughness.png in Resources */,
 				721650C525EAF31600511342 /* schvfgwp_4K_Normal.jpg in Resources */,
+				7229EAA32626448C00112F1A /* room.obj in Resources */,
 				72164FEA25EA48C000511342 /* helmet_metallic.jpg in Resources */,
 				721F5B5625E2DC5A0000EA4C /* cloudy.hdr in Resources */,
 				7216501325EA611200511342 /* text_alpha.jpg in Resources */,
@@ -1867,6 +1882,7 @@
 				7216512125EB043B00511342 /* ukmmbb3fw_4K_Albedo.jpg in Resources */,
 				7216520325ED571E00511342 /* Coat_BaseColor.jpeg in Resources */,
 				7216524E25ED655000511342 /* Low.obj in Resources */,
+				7229EAA22626448B00112F1A /* room.mtl in Resources */,
 				721651B125EBB3AC00511342 /* microscope.mtl in Resources */,
 				72583FB7262266E000ADD5BD /* ChainTexture_Normal.png in Resources */,
 				7216517D25EBAC5B00511342 /* Tiles_Moroccan_001_roughness.jpg in Resources */,
