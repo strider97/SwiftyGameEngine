@@ -24,7 +24,7 @@ class Scene: NSObject {
     static let W: Float = 1280
     static let H: Float = 720
     final let P = Matrix4(projectionFov: (MathConstants.PI.rawValue/3), near: 0.01, far: 500, aspect: Scene.W/Scene.H)
-    var sunDirection = Float3(8, 20, 9)
+    var sunDirection = Float3(8, 20, 3)
     var orthoGraphicP = Matrix4(orthoLeft: -10, right: 10, bottom: -10, top: 10, near: 0.01, far: 100)
     lazy var shadowViewMatrix = Matrix4.viewMatrix(position: sunDirection, target: Float3(0, 0, 0), up: Camera.WorldUp)
     final let timer = GameTimer.sharedTimer
@@ -43,7 +43,7 @@ class Scene: NSObject {
     private var exposure: Float = 0.5
     var ltcMat: MTLTexture!
     var ltcMag: MTLTexture!
-    var gBufferData = GBufferData(size: CGSize(width: 1280 * 2, height: 720 * 2))
+    var gBufferData = GBufferData(size: CGSize(width: 256, height: 256))
     var lightPolygon: [Float3] = [
         Float3(-6, -1.9, 20),
         Float3(0, 3, 20),
@@ -167,14 +167,14 @@ extension Scene {
         //    let options_: [MTKTextureLoader.Option : Any] = [.SRGB : false]
         //    dfgLut.texture = try! textureLoader.newTexture(name: "dfglut", scaleFactor: 1.0, bundle: nil, options: options_)
         }
-        /*
+        
         let shadowCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: shadowDescriptor)
         shadowCommandEncoder?.setDepthStencilState(depthStencilState)
-        shadowCommandEncoder?.setCullMode(.none)
+        shadowCommandEncoder?.setCullMode(.front)
     //    shadowCommandEncoder?.setDepthBias(0.001, slopeScale: 1.0, clamp: 0.01)
         drawGameObjects(renderCommandEncoder: shadowCommandEncoder, renderPassType: .shadow)
         shadowCommandEncoder?.endEncoding()
-         */
+         
         
         let gBufferCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: gBufferData.gBufferRenderPassDescriptor)
         gBufferCommandEncoder?.setDepthStencilState(depthStencilState)
@@ -188,11 +188,11 @@ extension Scene {
         renderCommandEncoder?.setFragmentTexture(irradianceMap.texture, index: TextureIndex.irradianceMap.rawValue)
         renderCommandEncoder?.setFragmentTexture(ltcMat, index: TextureIndex.ltc_mat.rawValue)
         renderCommandEncoder?.setFragmentTexture(ltcMag, index: TextureIndex.ltc_mag.rawValue)
-        renderCommandEncoder?.setFragmentTexture(gBufferData.depth, index: TextureIndex.shadowMap.rawValue)
+        renderCommandEncoder?.setFragmentTexture(shadowTexture, index: TextureIndex.shadowMap.rawValue)
         renderCommandEncoder?.setFragmentTexture(gBufferData.worldPos, index: TextureIndex.worldPos.rawValue)
         renderCommandEncoder?.setFragmentTexture(gBufferData.normal, index: TextureIndex.normal.rawValue)
         renderCommandEncoder?.setFragmentTexture(gBufferData.flux, index: TextureIndex.flux.rawValue)
-        renderCommandEncoder?.setCullMode(.none)
+        renderCommandEncoder?.setCullMode(.front)
         drawGameObjects(renderCommandEncoder: renderCommandEncoder)
     //    drawLight(renderCommandEncoder: renderCommandEncoder)
         drawSkybox(renderCommandEncoder: renderCommandEncoder)
@@ -316,8 +316,8 @@ extension Scene {
     //    for i in 0..<lightPolygon.count {
     //        lightPolygon[i] = lightPolygonInitial[i] + Float3(sin(GameTimer.sharedTimer.time) * 20, 0, 0)
     //    }
-        sunDirection.z = 11 * cos(GameTimer.sharedTimer.time / 3)
-        shadowViewMatrix = Matrix4.viewMatrix(position: sunDirection, target: Float3(0, 0, 0), up: Camera.WorldUp)
+    //    sunDirection.z = 11 * cos(GameTimer.sharedTimer.time / 3)
+    //    shadowViewMatrix = Matrix4.viewMatrix(position: sunDirection, target: Float3(0, 0, 0), up: Camera.WorldUp)
     }
     
     func updateGameObjects() {

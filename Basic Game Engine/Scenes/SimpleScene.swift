@@ -14,7 +14,7 @@ class SimpleScene: Scene {
     var model2: GameObject!
     
     override func getGameObjects() -> [GameObject] {
-        model = GameObject(modelName: "house")
+        model = GameObject(modelName: "sponza")
    //     model2 = GameObject(modelName: "cylinder")
         
    //    model.transform.translate(Float3(0, -2, 0))
