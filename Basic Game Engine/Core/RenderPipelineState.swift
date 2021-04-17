@@ -30,13 +30,13 @@ class GBufferData {
     var gBufferRenderPassDescriptor: MTLRenderPassDescriptor!
     var renderPipelineState: MTLRenderPipelineState?
     
-    init(size: CGSize) {
+    init(size: CGSize, fragmentFunction: String = "fragmentRSMData") {
         depth = Descriptor.build2DTexture(pixelFormat: .depth32Float, size: size)
         normal = Descriptor.build2DTexture(pixelFormat: .rgba16Float, size: size)
         worldPos = Descriptor.build2DTexture(pixelFormat: .rgba32Float, size: size)
         flux = Descriptor.build2DTexture(pixelFormat: .rgba16Float, size: size)
         buildGBufferRenderPassDescriptor(size: size)
-        buildGBufferPipelineState()
+        buildGBufferPipelineState(fragmentFunction: fragmentFunction)
     }
     
     func buildGBufferRenderPassDescriptor(size: CGSize) {
@@ -47,7 +47,7 @@ class GBufferData {
         gBufferRenderPassDescriptor.setupDepthAttachment(texture: depth)
     }
     
-    func buildGBufferPipelineState() {
+    func buildGBufferPipelineState(fragmentFunction: String) {
         let descriptor = MTLRenderPipelineDescriptor()
         descriptor.colorAttachments[0].pixelFormat = .rgba16Float
         descriptor.colorAttachments[1].pixelFormat = .rgba32Float
@@ -55,12 +55,21 @@ class GBufferData {
         descriptor.depthAttachmentPixelFormat = .depth32Float
         
         descriptor.vertexFunction = Device.sharedDevice.library!.makeFunction(name: "vertexRSM")
-        descriptor.fragmentFunction = Device.sharedDevice.library!.makeFunction(name: "fragmentRSMData")
+        descriptor.fragmentFunction = Device.sharedDevice.library!.makeFunction(name: fragmentFunction)
         descriptor.vertexDescriptor = MeshManager.meshManager.vertexDescriptor
         do {
             renderPipelineState = try Device.sharedDevice.device!.makeRenderPipelineState(descriptor: descriptor)
         } catch let error {
             fatalError(error.localizedDescription)
         }
+    }
+}
+
+class LPVData: GBufferData {
+    var volumeTexture: MTLTexture
+    
+    init(dimension: Int, size: CGSize) {
+        volumeTexture = Descriptor.build3DTexture(dim: dimension)
+        super.init(size: size, fragmentFunction: "lpvDataFragment")
     }
 }

@@ -67,3 +67,11 @@ fragment GbufferOut fragmentRSMData (VertexOut vOut [[ stage_in ]], constant Mat
     out.flux = float4(float3(15) * material.baseColor, 1);
     return out;
 }
+
+fragment GbufferOut lpvDataFragment (VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], texture2d<float, access::sample> baseColor [[texture(3)]], texture3d<float, access::write> volume [[texture(4)]]) {
+    GbufferOut out;
+    out.worldPos = float4(vOut.worldPos, 1);
+    out.normal = float4(vOut.smoothNormal, 1);
+    out.flux = float4(float3(15) * material.baseColor, 1);
+    return out;
+}

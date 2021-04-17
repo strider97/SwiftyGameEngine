@@ -27,6 +27,20 @@ class Descriptor {
         texture.label = label
         return texture
     }
+    
+    static func build3DTexture(dim: Int, label: String = "3D texture") -> MTLTexture {
+        let device = Device.sharedDevice.device!
+        let textureDescriptor = MTLTextureDescriptor()
+        textureDescriptor.textureType = .type3D
+        textureDescriptor.pixelFormat = .rgba32Float
+        textureDescriptor.width = dim
+        textureDescriptor.height = dim
+        textureDescriptor.depth = dim
+        textureDescriptor.usage = [.shaderRead, .shaderWrite]
+        guard let texture = device.makeTexture(descriptor: textureDescriptor) else { fatalError("Could not make texture") }
+        texture.label = label
+        return texture
+    }
 }
 
 extension MTLRenderPassDescriptor {

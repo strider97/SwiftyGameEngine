@@ -320,7 +320,7 @@ float3 getRSMGlobalIllumination (float4 fragPosLightSpace, float3 pos, float3 sm
     xy.y = 1 - xy.y;
     float radius = 0.16;
 //    float4 bounds = clamp(float4(xy - radius, xy + radius), 0, 1);
-    float samples = 400;
+    float samples = 00;
 //    float2 sampleStep = float2(bounds.z - bounds.x, bounds.w - bounds.y)/(samples);
     float3 radiance = float3(0);
     //(s+rmaxξ1 sin(2πξ2),t +rmaxξ1 cos(2πξ2)).
@@ -391,7 +391,7 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     bool inShadow = insideShadow(vOut.lightFragPosition, smoothN, l, shadowMap);
  //   inShadow = false;
  //   return float4(float3(inShadow), 1);
-    float3 ambient = (getRSMGlobalIllumination(vOut.lightFragPosition, vOut.position, smoothN, shadowMap, worldPos, worldNormal, flux) + 0.002) * albedo;
+    float3 ambient = (getRSMGlobalIllumination(vOut.lightFragPosition, vOut.position, smoothN, shadowMap, worldPos, worldNormal, flux) + 0.0) * albedo;
     float3 diffuse = inShadow ? 0 : albedo * saturate(dot(smoothN, l));
     float3 color = diffuse + ambient;
 
