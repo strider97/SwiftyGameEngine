@@ -31,6 +31,7 @@ enum TextureIndex: Int {
     case normal
     case flux
     case depth
+    case LPV
 }
 
 class Material {

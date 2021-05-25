@@ -39,6 +39,13 @@ class Descriptor {
         textureDescriptor.usage = [.shaderRead, .shaderWrite]
         guard let texture = device.makeTexture(descriptor: textureDescriptor) else { fatalError("Could not make texture") }
         texture.label = label
+        let values: [Float] = [Float](repeating: 0.0, count: dim*dim*dim*4)
+        texture.replace(region: MTLRegionMake3D(0, 0, 0, dim, dim, dim),
+                        mipmapLevel:0,
+                        slice:0,
+                        withBytes:values,
+                        bytesPerRow:dim * MemoryLayout<Float>.size * 4,
+                        bytesPerImage:dim * dim * MemoryLayout<Float>.size * 4)
         return texture
     }
 }

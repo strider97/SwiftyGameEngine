@@ -67,9 +67,21 @@ class GBufferData {
 
 class LPVData: GBufferData {
     var volumeTexture: MTLTexture
+    let dim: Int
     
     init(dimension: Int, size: CGSize) {
         volumeTexture = Descriptor.build3DTexture(dim: dimension)
+        self.dim = dimension
         super.init(size: size, fragmentFunction: "lpvDataFragment")
+    }
+    
+    func resetTexture() {
+        let values: [Float] = [Float](repeating: 0.0, count: dim*dim*dim*4)
+        volumeTexture.replace(region: MTLRegionMake3D(0, 0, 0, dim, dim, dim),
+                        mipmapLevel:0,
+                        slice:0,
+                        withBytes:values,
+                        bytesPerRow:dim * MemoryLayout<Float>.size * 4,
+                        bytesPerImage:dim * dim * MemoryLayout<Float>.size * 4)
     }
 }

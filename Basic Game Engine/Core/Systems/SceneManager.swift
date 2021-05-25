@@ -43,7 +43,8 @@ class Scene: NSObject {
     private var exposure: Float = 0.5
     var ltcMat: MTLTexture!
     var ltcMag: MTLTexture!
-    var gBufferData = GBufferData(size: CGSize(width: 256, height: 256))
+ //   var gBufferData = GBufferData(size: CGSize(width: 256, height: 256))
+    var lpvData = LPVData(dimension: 32, size: CGSize(width: 1024, height: 1024))
     var lightPolygon: [Float3] = [
         Float3(-6, -1.9, 20),
         Float3(0, 3, 20),
@@ -174,10 +175,14 @@ extension Scene {
     //    shadowCommandEncoder?.setDepthBias(0.001, slopeScale: 1.0, clamp: 0.01)
         drawGameObjects(renderCommandEncoder: shadowCommandEncoder, renderPassType: .shadow)
         shadowCommandEncoder?.endEncoding()
-         
         
-        let gBufferCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: gBufferData.gBufferRenderPassDescriptor)
+        let gBufferCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: lpvData.gBufferRenderPassDescriptor)
+        let dim = 32
+        let values: [Float] = [Float](repeating: 0.0, count: dim*dim*dim*4)
+        lpvData.resetTexture()
         gBufferCommandEncoder?.setDepthStencilState(depthStencilState)
+        gBufferCommandEncoder?.setFragmentTexture(shadowTexture, index: 0)
+        gBufferCommandEncoder?.setFragmentTexture(lpvData.volumeTexture, index: 4)
         drawGameObjects(renderCommandEncoder: gBufferCommandEncoder, renderPassType: .gBuffer)
         gBufferCommandEncoder?.endEncoding()
         
@@ -189,9 +194,10 @@ extension Scene {
         renderCommandEncoder?.setFragmentTexture(ltcMat, index: TextureIndex.ltc_mat.rawValue)
         renderCommandEncoder?.setFragmentTexture(ltcMag, index: TextureIndex.ltc_mag.rawValue)
         renderCommandEncoder?.setFragmentTexture(shadowTexture, index: TextureIndex.shadowMap.rawValue)
-        renderCommandEncoder?.setFragmentTexture(gBufferData.worldPos, index: TextureIndex.worldPos.rawValue)
-        renderCommandEncoder?.setFragmentTexture(gBufferData.normal, index: TextureIndex.normal.rawValue)
-        renderCommandEncoder?.setFragmentTexture(gBufferData.flux, index: TextureIndex.flux.rawValue)
+        renderCommandEncoder?.setFragmentTexture(lpvData.worldPos, index: TextureIndex.worldPos.rawValue)
+        renderCommandEncoder?.setFragmentTexture(lpvData.normal, index: TextureIndex.normal.rawValue)
+        renderCommandEncoder?.setFragmentTexture(lpvData.flux, index: TextureIndex.flux.rawValue)
+        renderCommandEncoder?.setFragmentTexture(lpvData.volumeTexture, index: TextureIndex.LPV.rawValue)
         renderCommandEncoder?.setCullMode(.front)
         drawGameObjects(renderCommandEncoder: renderCommandEncoder)
     //    drawLight(renderCommandEncoder: renderCommandEncoder)
@@ -228,7 +234,7 @@ extension Scene {
     
     func drawGameObjects(renderCommandEncoder: MTLRenderCommandEncoder?, renderPassType: RenderPassType = .shading) {
         for gameObject in gameObjects {
-            if let renderPipelineStatus = renderPassType == .shadow ? shadowPipelineState :  (renderPassType == .shading ? gameObject.renderPipelineState : gBufferData.renderPipelineState), let mesh_ = gameObject.getComponent(Mesh.self) {
+            if let renderPipelineStatus = renderPassType == .shadow ? shadowPipelineState :  (renderPassType == .shading ? gameObject.renderPipelineState : lpvData.renderPipelineState), let mesh_ = gameObject.getComponent(Mesh.self) {
                 renderCommandEncoder?.setRenderPipelineState(renderPipelineStatus)
                 
                 var u = renderPassType == .shading ? getUniformData(gameObject.transform.modelMatrix) : getFarShadowUniformData(gameObject.transform.modelMatrix)
@@ -316,8 +322,8 @@ extension Scene {
     //    for i in 0..<lightPolygon.count {
     //        lightPolygon[i] = lightPolygonInitial[i] + Float3(sin(GameTimer.sharedTimer.time) * 20, 0, 0)
     //    }
-        sunDirection.z = 11 * cos(GameTimer.sharedTimer.time / 3)
-        shadowViewMatrix = Matrix4.viewMatrix(position: sunDirection, target: Float3(0, 0, 0), up: Camera.WorldUp)
+    //    sunDirection.z = 11 * cos(GameTimer.sharedTimer.time / 3)
+    //    shadowViewMatrix = Matrix4.viewMatrix(position: sunDirection, target: Float3(0, 0, 0), up: Camera.WorldUp)
     }
     
     func updateGameObjects() {
