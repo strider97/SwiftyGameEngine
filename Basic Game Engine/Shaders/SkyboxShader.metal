@@ -68,6 +68,7 @@ fragment float4 skyboxFragmentShader (VertexOut vOut [[ stage_in ]], texture2d<f
     skyColor = skyColor / (skyColor + float3(1.0));
     skyColor = pow(skyColor, float3(1.0/2.2));
     float4 color = min(1.0, float4(skyColor.x, skyColor.y, skyColor.z, 1));
+    color = float4(float3(0.02), 1);
     return color;
 }
 

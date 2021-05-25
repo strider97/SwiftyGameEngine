@@ -300,7 +300,7 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     
     float3 smoothN = vOut.smoothNormal;
     float3 tangentNormal = normalMap.sample(s, vOut.texCoords).xyz * 2.0 - 1.0;
-    float3 N = getNormalFromMap(vOut.m_position.xyz, smoothN, vOut.texCoords, tangentNormal);
+    float3 N = getNormalFromMap(vOut.position, smoothN, vOut.texCoords, tangentNormal);
 //    float3 N = smoothN;
     float3 V = eyeDir;
     float3 F0 = float3(0.04);
@@ -333,7 +333,7 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     float3 spec = LTC_Evaluate(N, V, vOut.position, Minv, lightPolygon, true);
     spec *= ltc_mag.sample(s, uv).w;
     float3 diff = LTC_Evaluate(N, V, vOut.position, float3x3(1), lightPolygon, true);
-    float3 colorAL = kD * albedo * diff + F * spec;
+    float3 colorAL = kD * albedo * abs(diff) + F * spec;
     colorAL *= lightColor * intensity / (2.0 * pi);
     color *= 0.0;
     color += max(0, colorAL);
