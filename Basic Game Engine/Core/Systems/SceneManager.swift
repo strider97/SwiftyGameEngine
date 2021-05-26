@@ -21,6 +21,7 @@ class SceneManager {
 class Scene: NSObject {
     var name = "Game Scene"
     var gameObjects: [GameObject] = []
+    var rayTracer: Raytracer?
     static let W: Float = 1280
     static let H: Float = 720
     final let P = Matrix4(projectionFov: (MathConstants.PI.rawValue/3), near: 0.01, far: 500, aspect: Scene.W/Scene.H)
@@ -86,7 +87,13 @@ class Scene: NSObject {
 }
 
 extension Scene: MTKViewDelegate {
-    func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {}
+    func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
+        if rayTracer == nil {
+            rayTracer = Raytracer(metalView: view)
+            rayTracer?.camera = camera
+        }
+        rayTracer?.mtkView(view, drawableSizeWillChange: CGSize(width: size.width/2, height: size.height/2))
+    }
     
     func draw(in view: MTKView) {
         timer.updateTime()
@@ -167,6 +174,8 @@ extension Scene {
         //    let options_: [MTKTextureLoader.Option : Any] = [.SRGB : false]
         //    dfgLut.texture = try! textureLoader.newTexture(name: "dfglut", scaleFactor: 1.0, bundle: nil, options: options_)
         }
+        
+        rayTracer?.draw(in: view, commandBuffer: commandBuffer)
         
         let shadowCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: shadowDescriptor)
         shadowCommandEncoder?.setDepthStencilState(depthStencilState)
@@ -273,7 +282,7 @@ extension Scene {
         renderCommandEncoder?.setVertexBytes(&u, length: MemoryLayout<Uniforms>.stride, index: 1)
         renderCommandEncoder?.setVertexBuffer(skybox.mesh.vertexBuffers[0].buffer,
                                               offset: 0, index: 0)
-        renderCommandEncoder?.setFragmentTexture(skybox.texture, index: 3)
+        renderCommandEncoder?.setFragmentTexture(rayTracer?.renderTarget!, index: 3)
         let submesh = skybox.mesh.submeshes[0]
         renderCommandEncoder?.setFragmentSamplerState(skybox.samplerState, index: 0)
         renderCommandEncoder?.drawIndexedPrimitives(type: .triangle, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: 0)

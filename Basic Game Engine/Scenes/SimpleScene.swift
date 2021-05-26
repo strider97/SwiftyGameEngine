@@ -15,15 +15,6 @@ class SimpleScene: Scene {
     
     override func getGameObjects() -> [GameObject] {
         model = GameObject(modelName: "sponza")
-   //     model2 = GameObject(modelName: "cylinder")
-        
-   //    model.transform.translate(Float3(0, -2, 0))
-   //     model2.transform.translate(Float3(0, 100, 0))
-   //     model.transform.scale(Float3(repeating: 3))
-   //     model2.transform.scale(Float3(repeating: 3))
-   //     model2.transform.rotate(angle: -MathConstants.PI.rawValue/2, axis: Float3(1, 0, 0))
-   //     model2.transform.scale(Float3(repeating: 0.8))
-   //     model2.transform.translate(Float3(0, -15, 0))
         return [model]
     }
     

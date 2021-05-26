@@ -389,54 +389,11 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     float3 V = eyeDir;
     float3 l = vOut.sunDirection;
     bool inShadow = insideShadow(vOut.lightFragPosition, smoothN, l, shadowMap);
- //   inShadow = false;
- //   return float4(float3(inShadow), 1);
-    float3 ambient = (getRSMGlobalIllumination(vOut.lightFragPosition, vOut.position, smoothN, shadowMap, worldPos, worldNormal, flux) + 0.0) * albedo;
+    float3 ambient = 0.021 * albedo;
     float3 diffuse = inShadow ? 0 : albedo * saturate(dot(smoothN, l));
     float3 color = diffuse + ambient;
-
     
-//    float3 F0 = float3(0.04);
-//    F0 = mix(F0, albedo, 1.0*metallic);
-//    float3 F = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
-//    float3 kS = F;
-//    float3 kD = float3(1.0) - kS;
-//    kD *= 1.0 - metallic;
-//    float3 R = N;
-//    R.x = -R.x;
-//    R.z = -R.z;
-//    float ao = aoTexture.sample(s, vOut.texCoords).r;
-//
-//
-//    float3 irradiance = irradianceMap.sample(s, sampleSphericalMap_(R)).rgb;
-//    float3 diffuse = irradiance * albedo;
-//    float3 specular = approximateSpecularIBL(F, roughness, material.mipmapCount, N, V, preFilterEnvMap, DFGlut);
-//    float3 color =  kD * diffuse + specular;
-    
-    // calculate for area light
-    /*
-    float intensity = 14.0;
-    float3 lightColor = float3(1, 1, 1);
-    float theta = acos(dot(N, V));
-    float2 uv = float2(roughness, theta/(0.5*pi));
-    float4 t = ltc_mat.sample(s, uv);
-    float3x3 Minv = float3x3(
-                 float3(  1,   0, t.y),
-                 float3(  0, t.z,   0),
-                 float3(t.w,   0, t.x)
-            );
-    float3 spec = LTC_Evaluate(N, V, vOut.position, Minv, lightPolygon, true);
-    spec *= ltc_mag.sample(s, uv).w;
-    float3 diff = LTC_Evaluate(N, V, vOut.position, float3x3(1), lightPolygon, true);
-    float3 colorAL = kD * albedo * diff + F * spec;
-    colorAL *= lightColor * intensity / (2.0 * pi);
-    color *= 0.0;
-    color += max(0, colorAL);
-    */
-//    color *= ao;
-//    return float4(abs(N), 1);
     float exposure = max(0.01, vOut.exposure);
-  //  color = color / (color + float3(1.0));
     color = 1 - exp(-color * exposure);
     color = pow(color, float3(1.0/2.2));
     return float4(color, 1.0);

@@ -230,6 +230,9 @@
 		7229EAA32626448C00112F1A /* room.obj in Resources */ = {isa = PBXBuildFile; fileRef = 7229EAA12626448B00112F1A /* room.obj */; };
 		7230F99B25C60FAD00D9610A /* BasicScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7230F99A25C60FAD00D9610A /* BasicScene.swift */; };
 		7230F9A825C6B86B00D9610A /* Behaviour.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7230F9A725C6B86B00D9610A /* Behaviour.swift */; };
+		72439113265ED1920066F3B4 /* Raytracer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72439112265ED1920066F3B4 /* Raytracer.swift */; };
+		7243911B265EDE7E0066F3B4 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 7243911A265EDE7E0066F3B4 /* Shaders.metal */; };
+		72439121265EDECE0066F3B4 /* RayTracing.metal in Sources */ = {isa = PBXBuildFile; fileRef = 72439120265EDECE0066F3B4 /* RayTracing.metal */; };
 		7244840C25C6F42300294331 /* SimpleScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7244840B25C6F42300294331 /* SimpleScene.swift */; };
 		72583F1D26225AEE00ADD5BD /* sponza.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72583F1B26225AEE00ADD5BD /* sponza.obj */; };
 		72583F1E26225AEE00ADD5BD /* sponza.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 72583F1C26225AEE00ADD5BD /* sponza.mtl */; };
@@ -618,6 +621,10 @@
 		7229EAA12626448B00112F1A /* room.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = room.obj; sourceTree = "<group>"; };
 		7230F99A25C60FAD00D9610A /* BasicScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicScene.swift; sourceTree = "<group>"; };
 		7230F9A725C6B86B00D9610A /* Behaviour.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Behaviour.swift; sourceTree = "<group>"; };
+		72439112265ED1920066F3B4 /* Raytracer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Raytracer.swift; sourceTree = "<group>"; };
+		7243911A265EDE7E0066F3B4 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		7243911F265EDE9F0066F3B4 /* ShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShaderTypes.h; sourceTree = "<group>"; };
+		72439120265EDECE0066F3B4 /* RayTracing.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = RayTracing.metal; sourceTree = "<group>"; };
 		7244840B25C6F42300294331 /* SimpleScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleScene.swift; sourceTree = "<group>"; };
 		72583F1B26225AEE00ADD5BD /* sponza.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sponza.obj; sourceTree = "<group>"; };
 		72583F1C26225AEE00ADD5BD /* sponza.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sponza.mtl; sourceTree = "<group>"; };
@@ -1402,6 +1409,9 @@
 				72ED2D9025DC61F700F12F90 /* shadowShader.metal */,
 				72D1449325F53ED80047A93D /* brdfFitShader.metal */,
 				7223E3ED2624EE630070CB9A /* rsmShader.metal */,
+				7243911A265EDE7E0066F3B4 /* Shaders.metal */,
+				7243911F265EDE9F0066F3B4 /* ShaderTypes.h */,
+				72439120265EDECE0066F3B4 /* RayTracing.metal */,
 			);
 			path = Shaders;
 			sourceTree = "<group>";
@@ -1419,6 +1429,7 @@
 				720EC2ED25D7CCD300A83F1A /* Skybox.swift */,
 				72ED2D8B25DC33FF00F12F90 /* Descriptor.swift */,
 				72DACABB25DE6AED00DB3C50 /* IrradianceMap_.swift */,
+				72439112265ED1920066F3B4 /* Raytracer.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -2007,6 +2018,7 @@
 				72DACABC25DE6AED00DB3C50 /* IrradianceMap_.swift in Sources */,
 				72ED2D8C25DC33FF00F12F90 /* Descriptor.swift in Sources */,
 				7244840C25C6F42300294331 /* SimpleScene.swift in Sources */,
+				72439121265EDECE0066F3B4 /* RayTracing.metal in Sources */,
 				72E3992225BCC95500927B17 /* Renderer.swift in Sources */,
 				72E398A725BB4ECA00927B17 /* GameViewController.swift in Sources */,
 				72E3991D25BCBBB900927B17 /* RenderPipelineState.swift in Sources */,
@@ -2015,12 +2027,14 @@
 				72E398AA25BB4ECA00927B17 /* Basic_Game_Engine.xcdatamodeld in Sources */,
 				72D1449425F53ED80047A93D /* brdfFitShader.metal in Sources */,
 				720EC2EE25D7CCD300A83F1A /* Skybox.swift in Sources */,
+				7243911B265EDE7E0066F3B4 /* Shaders.metal in Sources */,
 				72E398DB25BB6FB800927B17 /* HelloWorldView.swift in Sources */,
 				72E3990025BC98AA00927B17 /* Utils.swift in Sources */,
 				72E398EF25BC19EF00927B17 /* Camera.swift in Sources */,
 				72E3993E25BD85E300927B17 /* GameTime.swift in Sources */,
 				72ED2D9125DC61F700F12F90 /* shadowShader.metal in Sources */,
 				72E3992825BCCDCF00927B17 /* RendererManager.swift in Sources */,
+				72439113265ED1920066F3B4 /* Raytracer.swift in Sources */,
 				7223E3EE2624EE630070CB9A /* rsmShader.metal in Sources */,
 				7230F99B25C60FAD00D9610A /* BasicScene.swift in Sources */,
 				720EC2F325D82F2500A83F1A /* SkyboxShader.metal in Sources */,
