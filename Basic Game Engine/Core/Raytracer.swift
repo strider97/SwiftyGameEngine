@@ -7,6 +7,7 @@
 
 import MetalKit
 import MetalPerformanceShaders
+import ModelIO
 
 class Raytracer {
     var device: MTLDevice
@@ -45,9 +46,10 @@ class Raytracer {
     var randomBufferOffset = 0
     var uniformBufferOffset = 0
     var uniformBufferIndex = 0
-    var frameIndex: uint = 0
+    var frameIndex: UInt32 = 0
     var renderTarget: MTLTexture!
     weak var camera: Camera!
+    weak var scene: Scene!
     
     lazy var vertexDescriptor: MDLVertexDescriptor = {
       let vertexDescriptor = MDLVertexDescriptor()
@@ -181,29 +183,36 @@ class Raytracer {
         camera.forward = self.camera.front
         camera.right = self.camera.right
         camera.up = self.camera.up
-      
-        let fieldOfView = MathConstants.PI.rawValue/3
-      let aspectRatio = Float(size.width) / Float(size.height)
-      let imagePlaneHeight = tanf(fieldOfView / 2.0)
-      let imagePlaneWidth = aspectRatio * imagePlaneHeight
-      
-  //    camera.right *= imagePlaneWidth
-  //    camera.up *= imagePlaneHeight
-        print(camera.right!)
-      var light = AreaLight()
-      light.position = Float3(0.0, 1.98, 7.0)
-      light.forward = Float3(0.0, -1.0, 0.0)
-      light.right = Float3(0.25, 0.0, 0.0)
-      light.up = Float3(0.0, 0.0, 0.25)
-      light.color = Float3(4.0, 4.0, 4.0)
+        
+    //    camera.position = Float3(0, 1, -10)
+    //    camera.forward = Float3(0.0, 0.0, -1.0)
+    //    camera.right = Float3(1.0, 0.0, 0.0)
+    //    camera.up = Float3(0.0, 1.0, 0.0)
+        
+        let fieldOfView = 60.0 * (Float.pi / 180.0)
+        let aspectRatio = Float(size.width) / Float(size.height)
+        let imagePlaneHeight = tanf(fieldOfView / 2.0)
+        let imagePlaneWidth = aspectRatio * imagePlaneHeight
+        
+        camera.right *= imagePlaneWidth
+        camera.up *= imagePlaneHeight
+        
+   //     print(camera.right!)
+        var light = AreaLight()
+        light.position = Float3(5000, 10000, 5000)
+        light.forward = Float3(0.0, 0.0, -1.0)
+        light.right = Float3(1.0, 0.0, 0.0)
+        light.up = Float3(0.0, 1.0, 0.0)
+        light.color = Float3(4.0, 4.0, 4.0)
       
       uniforms.pointee.camera = camera
       uniforms.pointee.light = light
+        uniforms.pointee.sunDirection = scene.sunDirection
       
-      uniforms.pointee.width = uint(size.width)
-      uniforms.pointee.height = uint(size.height)
+        uniforms.pointee.width = UInt32(size.width)
+        uniforms.pointee.height = UInt32(size.height)
       uniforms.pointee.blocksWide = ((uniforms.pointee.width) + 15) / 16
-      uniforms.pointee.frameIndex = frameIndex
+        uniforms.pointee.frameIndex = frameIndex
       frameIndex += 1
       #if os(OSX)
       uniformBuffer?.didModifyRange(uniformBufferOffset..<(uniformBufferOffset + alignedUniformsSize))
@@ -271,7 +280,7 @@ extension Raytracer {
                                            threadsPerThreadgroup: threadsPerGroup)
       computeEncoder?.endEncoding()
       
-      for _ in 0..<3 {
+      for _ in 0..<1 {
         // MARK: generate intersections between rays and model triangles
         intersector?.intersectionDataType = .distancePrimitiveIndexCoordinates
         intersector?.encodeIntersection(
@@ -365,65 +374,78 @@ extension Raytracer {
   }
 
 extension Raytracer {
-  func loadAsset(name: String, position: Float3 = [0, 0, 0], scale: Float = 1) {
-    let assetURL = Bundle.main.url(forResource: name, withExtension: "obj")!
-    let allocator = MTKMeshBufferAllocator(device: device)
-    let asset = MDLAsset(url: assetURL,
-                         vertexDescriptor: vertexDescriptor,
-                         bufferAllocator: allocator)
-    guard let mdlMesh = asset.object(at: 0) as? MDLMesh,
-      let mdlSubmeshes = mdlMesh.submeshes as? [MDLSubmesh] else { return }
-    let mesh = try! MTKMesh(mesh: mdlMesh, device: device)
-    let count = mesh.vertexBuffers[0].buffer.length / MemoryLayout<Float3>.size
-    let positionBuffer = mesh.vertexBuffers[0].buffer
-    let normalsBuffer = mesh.vertexBuffers[1].buffer
-    let normalsPtr = normalsBuffer.contents().bindMemory(to: Float3.self, capacity: count)
-    let positionPtr = positionBuffer.contents().bindMemory(to: Float3.self, capacity: count)
-    for (mdlIndex, submesh) in mesh.submeshes.enumerated() {
-      let indexBuffer = submesh.indexBuffer.buffer
-      let offset = submesh.indexBuffer.offset
-      let indexPtr = indexBuffer.contents().advanced(by: offset)
-      var indices = indexPtr.bindMemory(to: uint.self, capacity: submesh.indexCount)
-      for _ in 0..<submesh.indexCount {
-        let index = Int(indices.pointee)
-        vertices.append(positionPtr[index] * scale + position)
-        normals.append(normalsPtr[index])
-        indices = indices.advanced(by: 1)
-        let mdlSubmesh = mdlSubmeshes[mdlIndex]
-        let color: Float3
-        if let baseColor = mdlSubmesh.material?.property(with: .baseColor),
-           baseColor.type == .float3 {
-          color = baseColor.float3Value
-        } else {
-          color = [1, 0, 0]
-        }
-        colors.append(color)
+    func loadAsset(name modelName: String, position: float3 = [0, 0, 0], scale: Float = 1) {
+      guard let url = Bundle.main.url(forResource: modelName, withExtension: "obj") else { return }
+      let bufferAllocator_ = MTKMeshBufferAllocator(device: device)
+      let asset_ = MDLAsset(url: url, vertexDescriptor: Self.getMDLVertexDescriptor(), bufferAllocator: bufferAllocator_)
+      asset_.loadTextures()
+      var meshes: [MTKMesh]
+      var meshesMDL: [MDLMesh]
+      do {
+          try (meshesMDL, meshes) = MTKMesh.newMeshes(asset: asset_, device: device)
+      //    allMeshes[modelName] = (meshesMDL, meshes)
+      } catch let error as NSError {
+          fatalError(error.description)
+      }
+  //    return (meshesMDL, meshes)
+      for mesh in meshes {
+          for vertexBuffer in mesh.vertexBuffers {
+              let count = vertexBuffer.buffer.length / MemoryLayout<VertexIn>.stride
+              let ptr = vertexBuffer.buffer.contents().bindMemory(to: VertexIn.self, capacity: count)
+              
+              for submesh in mesh.submeshes {
+                  let indexBuffer = submesh.indexBuffer.buffer
+                  let offset = submesh.indexBuffer.offset
+                  let indexPtr = indexBuffer.contents().advanced(by: offset)
+                  var indices = indexPtr.bindMemory(to: uint.self, capacity: submesh.indexCount)
+                  for _ in 0..<submesh.indexCount {
+                    let index = Int(indices.pointee)
+                    let vertex = ptr[index]
+                  //    vertices_.append(ptr[index])
+                      vertices.append(vertex.position * scale + position)
+                      normals.append(vertex.normal)
+                      colors.append(Float3(repeating: 1))
+                    indices = indices.advanced(by: 1)
+                  }
+              }
+          }
       }
     }
-  }
+    
+    static func getMDLVertexDescriptor() -> MDLVertexDescriptor {
+        let vertexDescriptor = MDLVertexDescriptor()
+        vertexDescriptor.attributes[0] = MDLVertexAttribute(name: MDLVertexAttributePosition, format: .float3, offset: 0, bufferIndex: 0)
+        vertexDescriptor.attributes[1] = MDLVertexAttribute(name: MDLVertexAttributeNormal, format: .float3, offset: MemoryLayout<Float>.size*3, bufferIndex: 0)
+        vertexDescriptor.attributes[2] = MDLVertexAttribute(name: MDLVertexAttributeTextureCoordinate, format: .float2, offset: MemoryLayout<Float>.size*6, bufferIndex: 0)
+        vertexDescriptor.layouts[0] = MDLVertexBufferLayout(stride: MemoryLayout<Float>.size*8)
+        return vertexDescriptor
+    }
+    
+    struct VertexIn {
+        var pos: Float3_
+        var n: Float3_
+        var tex: Float2_
+    }
 
+    struct Float3_ {
+        var x: Float
+        var y: Float
+        var z: Float
+    }
+
+    struct Float2_ {
+        var x: Float
+        var y: Float
+    }
+    
 }
 
-struct Camera_ {
-    var position: Float3!
-    var right: Float3!
-    var up: Float3!
-    var forward: Float3!
-}
 
-struct AreaLight {
-    var position: Float3!
-    var forward: Float3!
-    var right: Float3!
-    var up: Float3!
-    var color: Float3!
-}
-
-struct Uniforms_ {
-    var width: UInt32!
-    var height: UInt32!
-    var blocksWide: UInt32!
-    var frameIndex: UInt32!
-    var camera: Camera_!
-    var light: AreaLight!
+extension Raytracer.VertexIn {
+    var position: Float3 {
+        return Float3(pos.x, pos.y, pos.z)
+    }
+    var normal: Float3 {
+        return Float3(n.x, n.y, n.z)
+    }
 }

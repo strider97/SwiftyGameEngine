@@ -58,9 +58,7 @@ vertex Vertex vertexShaderRT(unsigned short vid [[vertex_id]])
   return out;
 }
 
-fragment float4 fragmentShaderRT(Vertex in [[stage_in]],
-                               texture2d<float> tex)
-{
+fragment float4 fragmentShaderRT(Vertex in [[stage_in]], texture2d<float> tex) {
   constexpr sampler s(min_filter::nearest,
                       mag_filter::nearest,
                       mip_filter::none);

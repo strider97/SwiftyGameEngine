@@ -91,6 +91,7 @@ extension Scene: MTKViewDelegate {
         if rayTracer == nil {
             rayTracer = Raytracer(metalView: view)
             rayTracer?.camera = camera
+            rayTracer?.scene = self
         }
         rayTracer?.mtkView(view, drawableSizeWillChange: CGSize(width: size.width/2, height: size.height/2))
     }
@@ -236,7 +237,7 @@ extension Scene {
     }
     
     func drawGameObjects(renderCommandEncoder: MTLRenderCommandEncoder?, renderPassType: RenderPassType = .shading) {
-        for gameObject in gameObjects {
+        for (i, gameObject) in gameObjects.enumerated() {
             if let renderPipelineStatus = renderPassType == .shadow ? shadowPipelineState :  (renderPassType == .shading ? gameObject.renderPipelineState : gBufferData.renderPipelineState), let mesh_ = gameObject.getComponent(Mesh.self) {
                 renderCommandEncoder?.setRenderPipelineState(renderPipelineStatus)
                 
@@ -260,6 +261,9 @@ extension Scene {
                             renderCommandEncoder?.setFragmentBytes(&material, length: MemoryLayout<ShaderMaterial>.size, index: 0)
                                 renderCommandEncoder?.setFragmentBytes(&lightPolygon, length: MemoryLayout<Float3>.size * 4, index: 1)
                                 renderCommandEncoder?.setFragmentTexture(mat.textureSet.baseColor, index: TextureIndex.baseColor.rawValue)
+                            if i == 1 {
+                                renderCommandEncoder?.setFragmentTexture(rayTracer?.renderTarget!, index: TextureIndex.baseColor.rawValue)
+                            }
                             if renderPassType == .shading {
                                 renderCommandEncoder?.setFragmentTexture(mat.textureSet.roughness, index: TextureIndex.roughness.rawValue)
                                 renderCommandEncoder?.setFragmentTexture(mat.textureSet.metallic, index: TextureIndex.metallic.rawValue)
@@ -282,7 +286,7 @@ extension Scene {
         renderCommandEncoder?.setVertexBytes(&u, length: MemoryLayout<Uniforms>.stride, index: 1)
         renderCommandEncoder?.setVertexBuffer(skybox.mesh.vertexBuffers[0].buffer,
                                               offset: 0, index: 0)
-        renderCommandEncoder?.setFragmentTexture(rayTracer?.renderTarget!, index: 3)
+        renderCommandEncoder?.setFragmentTexture(skybox.texture, index: 3)
         let submesh = skybox.mesh.submeshes[0]
         renderCommandEncoder?.setFragmentSamplerState(skybox.samplerState, index: 0)
         renderCommandEncoder?.drawIndexedPrimitives(type: .triangle, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: 0)

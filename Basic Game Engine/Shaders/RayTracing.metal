@@ -221,9 +221,10 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
       lightColor *= saturate(dot(surfaceNormal, lightDirection));
       color *= interpolateVertexAttribute(vertexColors, intersection);
       shadowRay.origin = intersectionPoint + surfaceNormal * 1e-3;
-      shadowRay.direction = lightDirection;
+      shadowRay.direction = uniforms.sunDirection;
       shadowRay.maxDistance = lightDistance - 1e-3;
       shadowRay.color = lightColor * color;
+        shadowRay.color = abs(surfaceNormal);
       
       float3 sampleDirection = sampleCosineWeightedHemisphere(r);
       sampleDirection = alignHemisphereWithNormal(sampleDirection,

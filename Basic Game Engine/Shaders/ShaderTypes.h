@@ -57,6 +57,7 @@ struct Uniforms_
   unsigned int frameIndex;
   struct Camera_ camera;
   struct AreaLight light;
+    vector_float3 sunDirection;
 };
 
 #endif /* ShaderTypes_h */

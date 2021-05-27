@@ -15,7 +15,12 @@ class SimpleScene: Scene {
     
     override func getGameObjects() -> [GameObject] {
         model = GameObject(modelName: "sponza")
-        return [model]
+        model2 = GameObject(modelName: "plane")
+        model2.transform.position = Float3(30, 20, 0)
+        model2.transform.scale(Float3(repeating: 10))
+        model2.transform.rotate(angle: MathConstants.PI.rawValue/2, axis: Float3(0, 0, 1))
+        model2.transform.rotate(angle: MathConstants.PI.rawValue/2, axis: Float3(0, 1, 0))
+        return [model, model2]
     }
     
     override func addPhysics() {
