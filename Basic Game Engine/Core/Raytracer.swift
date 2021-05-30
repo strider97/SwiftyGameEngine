@@ -143,7 +143,7 @@ class Raytracer {
     }
     
     func createScene() {
-        loadAsset(name: "sponza")
+        loadAsset(name: "house")
     }
     
     
@@ -179,7 +179,7 @@ class Raytracer {
       
         var camera = Camera_()
     //    camera.position = float3(8*sin(GameTimer.sharedTimer.time/10.0), 1.0, 8*cos(GameTimer.sharedTimer.time/10.0))
-        camera.position = self.camera.position
+        camera.position = Float3(-12, 5, 0);
         camera.forward = self.camera.front
         camera.right = self.camera.right
         camera.up = self.camera.up
@@ -189,8 +189,8 @@ class Raytracer {
     //    camera.right = Float3(1.0, 0.0, 0.0)
     //    camera.up = Float3(0.0, 1.0, 0.0)
         
-        let fieldOfView = 60.0 * (Float.pi / 180.0)
-        let aspectRatio = Float(size.width) / Float(size.height)
+        let fieldOfView = 45.0 * (Float.pi / 180.0)
+        let aspectRatio = Float(Constants.probeReso) / Float(Constants.probeReso)
         let imagePlaneHeight = tanf(fieldOfView / 2.0)
         let imagePlaneWidth = aspectRatio * imagePlaneHeight
         
@@ -204,16 +204,19 @@ class Raytracer {
         light.right = Float3(1.0, 0.0, 0.0)
         light.up = Float3(0.0, 1.0, 0.0)
         light.color = Float3(4.0, 4.0, 4.0)
-      
+        
       uniforms.pointee.camera = camera
       uniforms.pointee.light = light
         uniforms.pointee.sunDirection = scene.sunDirection
-      
+        
+        uniforms.pointee.probeWidth = Int32(Constants.probeReso)
+        uniforms.pointee.probeHeight = Int32(Constants.probeReso)
         uniforms.pointee.width = UInt32(size.width)
         uniforms.pointee.height = UInt32(size.height)
       uniforms.pointee.blocksWide = ((uniforms.pointee.width) + 15) / 16
         uniforms.pointee.frameIndex = frameIndex
       frameIndex += 1
+      //  print(self.camera.position)
       #if os(OSX)
       uniformBuffer?.didModifyRange(uniformBufferOffset..<(uniformBufferOffset + alignedUniformsSize))
       #endif

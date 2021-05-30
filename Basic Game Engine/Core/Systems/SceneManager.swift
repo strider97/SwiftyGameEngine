@@ -93,7 +93,8 @@ extension Scene: MTKViewDelegate {
             rayTracer?.camera = camera
             rayTracer?.scene = self
         }
-        rayTracer?.mtkView(view, drawableSizeWillChange: CGSize(width: size.width/2, height: size.height/2))
+   //     rayTracer?.mtkView(view, drawableSizeWillChange: CGSize(width: Constants.probeReso * Constants.probeCount, height: Constants.probeReso * Constants.probeCount))
+        rayTracer?.mtkView(view, drawableSizeWillChange: CGSize(width: Constants.probeCount * Constants.probeReso, height: Constants.probeReso))
     }
     
     func draw(in view: MTKView) {
@@ -186,10 +187,10 @@ extension Scene {
         shadowCommandEncoder?.endEncoding()
          
         
-        let gBufferCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: gBufferData.gBufferRenderPassDescriptor)
-        gBufferCommandEncoder?.setDepthStencilState(depthStencilState)
-        drawGameObjects(renderCommandEncoder: gBufferCommandEncoder, renderPassType: .gBuffer)
-        gBufferCommandEncoder?.endEncoding()
+//        let gBufferCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: gBufferData.gBufferRenderPassDescriptor)
+//        gBufferCommandEncoder?.setDepthStencilState(depthStencilState)
+//        drawGameObjects(renderCommandEncoder: gBufferCommandEncoder, renderPassType: .gBuffer)
+//        gBufferCommandEncoder?.endEncoding()
         
         let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         renderCommandEncoder?.setDepthStencilState(depthStencilState)
@@ -329,7 +330,7 @@ extension Scene {
     //    for i in 0..<lightPolygon.count {
     //        lightPolygon[i] = lightPolygonInitial[i] + Float3(sin(GameTimer.sharedTimer.time) * 20, 0, 0)
     //    }
-        sunDirection.z = 11 * cos(GameTimer.sharedTimer.time / 3)
+        sunDirection.x = 11 * cos(GameTimer.sharedTimer.time / 3)
         shadowViewMatrix = Matrix4.viewMatrix(position: sunDirection, target: Float3(0, 0, 0), up: Camera.WorldUp)
     }
     

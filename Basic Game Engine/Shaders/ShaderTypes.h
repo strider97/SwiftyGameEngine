@@ -58,6 +58,9 @@ struct Uniforms_
   struct Camera_ camera;
   struct AreaLight light;
     vector_float3 sunDirection;
+    float ambientCube[6];
+    int probeWidth;
+    int probeHeight;
 };
 
 #endif /* ShaderTypes_h */

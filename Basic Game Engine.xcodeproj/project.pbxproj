@@ -2221,6 +2221,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "Ravi.Basic-Game-Engine";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Basic Game Engine/Shaders/ShaderTypes.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -2240,6 +2241,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "Ravi.Basic-Game-Engine";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Basic Game Engine/Shaders/ShaderTypes.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;

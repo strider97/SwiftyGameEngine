@@ -58,6 +58,16 @@ constant unsigned int primes[] = {
     41, 43, 47, 53,
 };
 
+constant int AMBIENT_DIR_COUNT = 6;
+constant float3 ambientCubeDir[] = {
+    float3(1, 0, 0),
+    float3(0, 1, 0),
+    float3(0, 0, 1),
+    float3(-1, 0, 0),
+    float3(0, -1, 0),
+    float3(0, 0, -1)
+};
+
 float halton(unsigned int i, unsigned int d) {
     unsigned int b = primes[d];
     
@@ -75,6 +85,14 @@ float halton(unsigned int i, unsigned int d) {
     return r;
 }
 
+/*
+ float2 pixel = float2(tid.x % uniforms.probeWidth, tid.y % uniforms.probeHeight);
+//   float2 r = random[(tid.y % 16) * 16 + (tid.x % 16)];
+//      r = 0;
+//    pixel += r;
+ float2 uv = (float2)pixel / float2(uniforms.probeWidth, uniforms.probeHeight);
+ */
+
 kernel void primaryRays(constant Uniforms_ & uniforms [[buffer(0)]],
                         device Ray *rays [[buffer(1)]],
                         device float2 *random [[buffer(2)]],
@@ -82,11 +100,11 @@ kernel void primaryRays(constant Uniforms_ & uniforms [[buffer(0)]],
                         uint2 tid [[thread_position_in_grid]])
 {
   if (tid.x < uniforms.width && tid.y < uniforms.height) {
-    float2 pixel = (float2)tid;
-    float2 r = random[(tid.y % 16) * 16 + (tid.x % 16)];
-      r = 0;
-    pixel += r;
-    float2 uv = (float2)pixel / float2(uniforms.width, uniforms.height);
+      float2 pixel = float2(tid.x % uniforms.probeWidth, tid.y % uniforms.probeHeight);
+     //   float2 r = random[(tid.y % 16) * 16 + (tid.x % 16)];
+     //      r = 0;
+     //    pixel += r;
+      float2 uv = (float2)pixel / float2(uniforms.probeWidth, uniforms.probeHeight);
     uv = uv * 2.0 - 1.0;
     constant Camera_ & camera = uniforms.camera;
     unsigned int rayIdx = tid.y * uniforms.width + tid.x;
@@ -97,7 +115,7 @@ kernel void primaryRays(constant Uniforms_ & uniforms [[buffer(0)]],
     ray.minDistance = 0;
     ray.maxDistance = INFINITY;
     ray.color = float3(1.0);
-    t.write(float4(0.0), tid);
+    t.write(float4(0.1), tid);
   }
 }
 
@@ -213,18 +231,17 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
       surfaceNormal = normalize(surfaceNormal);
       float2 r = random[(tid.y % 16) * 16 + (tid.x % 16)];
         r = 0;
-      float3 lightDirection;
-      float3 lightColor;
-      float lightDistance;
-      sampleAreaLight(uniforms.light, r, intersectionPoint,
-                      lightDirection, lightColor, lightDistance);
-      lightColor *= saturate(dot(surfaceNormal, lightDirection));
-      color *= interpolateVertexAttribute(vertexColors, intersection);
+      float3 lightDirection = uniforms.sunDirection;
+      float3 lightColor = uniforms.light.color;
+      float lightDistance = INFINITY;
+  //    sampleAreaLight(uniforms.light, r, intersectionPoint, lightDirection, lightColor, lightDistance);
+      lightColor = saturate(dot(surfaceNormal, lightDirection));
+      color = interpolateVertexAttribute(vertexColors, intersection);
       shadowRay.origin = intersectionPoint + surfaceNormal * 1e-3;
       shadowRay.direction = uniforms.sunDirection;
-      shadowRay.maxDistance = lightDistance - 1e-3;
+      shadowRay.maxDistance = lightDistance;
       shadowRay.color = lightColor * color;
-        shadowRay.color = abs(surfaceNormal);
+    //    shadowRay.color = abs(surfaceNormal)*2;
       
       float3 sampleDirection = sampleCosineWeightedHemisphere(r);
       sampleDirection = alignHemisphereWithNormal(sampleDirection,
@@ -241,7 +258,7 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
 }
 
 kernel void shadowKernel(uint2 tid [[thread_position_in_grid]],
-                         constant Uniforms_ & uniforms,
+                         device Uniforms_ & uniforms,
                          device Ray *shadowRays,
                          device float *intersections,
                          texture2d<float, access::read_write> renderTarget)
@@ -250,10 +267,16 @@ kernel void shadowKernel(uint2 tid [[thread_position_in_grid]],
     unsigned int rayIdx = tid.y * uniforms.width + tid.x;
     device Ray & shadowRay = shadowRays[rayIdx];
     float intersectionDistance = intersections[rayIdx];
-    if (shadowRay.maxDistance >= 0.0 && intersectionDistance < 0.0) {
       float3 color = shadowRay.color;
+    if (shadowRay.maxDistance >= 0.0 && intersectionDistance < 0.0) {
       color += renderTarget.read(tid).xyz;
       renderTarget.write(float4(color, 1.0), tid);
     }
+//      for (int i = 0; i<AMBIENT_DIR_COUNT; i++) {
+//          float oldValue = renderTarget.read(tid).x;
+//          float newValue = saturate(dot(shadowRay.direction * color, ambientCubeDir[i]));
+//          float mixed = mix(oldValue, newValue, 0.9);
+//          renderTarget.write(float4(float3(mixed), 1.0), tid);
+//      }
   }
 }
