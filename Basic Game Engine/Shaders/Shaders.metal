@@ -67,9 +67,43 @@ struct VertexIn {
 
 struct VertexOut {
     float4 m_position [[position]];
+    float3 position;
     float3 smoothNormal;
     float2 texCoords;
 };
+
+struct LightProbeData {
+    float3 gridEdge;
+    float3 gridOrigin;
+    int probeGridWidth;
+    int probeGridHeight;
+};
+
+constant int AMBIENT_DIR_COUNT = 6;
+constant float3 ambientCubeDir[] = {
+    float3(1, 0, 0),
+    float3(0, 1, 0),
+    float3(0, 0, 1),
+    float3(-1, 0, 0),
+    float3(0, -1, 0),
+    float3(0, 0, -1)
+};
+
+/*
+ func indexToGridPos(_ index: Int, _ origin: Float3, _ gridEdge: Float3) -> Float3{
+     let indexD = index / (width * height)
+     let indexH = (index % (width * height)) / width
+     let indexW = (index % (width * height)) % width
+     return origin + Float3(Float(indexW), Float(indexH), Float(indexD)) * gridEdge
+ }
+ */
+
+
+
+ushort2 gridPosToTex(float3 pos, float3 gridEdge, float3 gridOrigin, int probeGridWidth, int probeGridHeight) {
+    int3 texPos = int3((pos - gridOrigin)/gridEdge);
+    return ushort2(texPos.y * probeGridWidth + texPos.x, texPos.z);
+}
 
 vertex Vertex vertexShaderRT(unsigned short vid [[vertex_id]])
 {
@@ -93,15 +127,22 @@ vertex VertexOut lightProbeVertexShader(const VertexIn vIn [[ stage_in ]], const
     float4x4 VM = uniforms.V*uniforms.M;
     float4x4 PVM = uniforms.P*VM;
     vOut.m_position = PVM * float4(vIn.position, 1.0);
+    vOut.position = (uniforms.M*float4(vIn.position, 1.0)).xyz;
     vOut.texCoords = float2(vIn.texCoords.x, 1 - vIn.texCoords.y);
     vOut.smoothNormal = (uniforms.M*float4(vIn.smoothNormal, 0)).xyz;
     return vOut;
 }
 
-fragment float4 lightProbeFragmentShader(VertexOut in [[stage_in]], texture2d<float> tex) {
-//  constexpr sampler s(min_filter::nearest, mag_filter::nearest, ¯mip_filter::none);
-//  float3 color = tex.sample(s, in.uv).xyz;
-  return float4(1, 1, 1, 1.0);
+fragment float4 lightProbeFragmentShader(VertexOut vOut [[stage_in]], constant LightProbeData &probe [[buffer(0)]], texture3d<float, access::read> lightProbeTexture) {
+    ushort2 texPos = gridPosToTex(vOut.position, probe.gridEdge, probe.gridOrigin, probe.probeGridWidth, probe.probeGridHeight);
+    float3 col1 = lightProbeTexture.read(ushort3(texPos, 0)).rgb;
+    float3 col2 = lightProbeTexture.read(ushort3(texPos, 1)).rgb;
+    float colors[6] = {col1.x, col1.y, col1.z, col2.x, col2.y, col2.z};
+    float3 color = 0;
+    for (int i = 0; i<AMBIENT_DIR_COUNT; i++) {
+        color += saturate(dot(colors[i] * ambientCubeDir[i], vOut.smoothNormal));
+    }
+  return float4(color, 1.0);
 }
 
 kernel void accumulateKernel(constant Uniforms_ & uniforms,

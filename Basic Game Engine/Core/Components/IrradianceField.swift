@@ -8,6 +8,13 @@
 import Foundation
 import MetalKit
 
+struct LightProbeData {
+    let gridEdge: Float3
+    let gridOrigin: Float3
+    let probeGridWidth: Int
+    let probeGridHeight: Int
+}
+
 class IrradianceField {
     let width: Int
     let height: Int
@@ -16,6 +23,8 @@ class IrradianceField {
     var probeLocations: MTLBuffer!
     var probeCount: Int
     var probeLocationsArray: [Float3] = []
+    let origin: Float3
+    let gridEdge: Float3
     
     convenience init(_ w: Int, _ centre: Float3, _ gridSize: Float3) {
         self.init(w, w, w, centre, gridSize)
@@ -27,8 +36,8 @@ class IrradianceField {
         depth = d
         probeCount = w * h * d
         ambientCubeTexture = Descriptor.build3DTexture(dimW: w*h, dimH: d, dimD: 2, label: "Irradiance Field", pixelFormat: .rgba32Float)
-        let gridEdge = gridSize / Float3(Float(w-1), Float(h-1), Float(d-1))
-        let origin = centre - gridSize/2
+        gridEdge = gridSize / Float3(Float(w-1), Float(h-1), Float(d-1))
+        origin = centre - gridSize/2
         makeBuffer(origin, gridEdge)
     }
     

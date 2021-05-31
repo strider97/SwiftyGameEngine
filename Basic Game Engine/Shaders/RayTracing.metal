@@ -85,11 +85,17 @@ float halton(unsigned int i, unsigned int d) {
     return r;
 }
 
-float3 indexToGridPos(int index, float3 origin, float3 gridEdge, int width, int height){
+uint3 indexToGridPos(int index, int width, int height){
     int indexD = index / (width * height);
     int indexH = (index % (width * height)) / width;
     int indexW = (index % (width * height)) % width;
-    return origin + float3(indexW, indexH, indexD) * gridEdge;
+    return uint3(indexW, indexH, indexD);
+}
+
+uint2 indexToTexPos(int index, int width, int height){
+    int indexD = index / (width * height);
+    int indexH = (index % (width * height));
+    return uint2(indexH, indexD);
 }
 
 /*
@@ -274,7 +280,9 @@ kernel void shadowKernel(uint2 tid [[thread_position_in_grid]],
                          device Ray *shadowRays,
                          device float *intersections,
                          device float3 *probeLocations [[buffer(3)]],
-                         texture2d<float, access::read_write> renderTarget)
+                         texture2d<float, access::read_write> renderTarget,
+                         texture3d<float, access::read_write> lightProbeTexture
+                         )
 {
   if (tid.x < uniforms.width && tid.y < uniforms.height) {
     unsigned int rayIdx = tid.y * uniforms.width + tid.x;
@@ -285,11 +293,17 @@ kernel void shadowKernel(uint2 tid [[thread_position_in_grid]],
       color += renderTarget.read(tid).xyz;
       renderTarget.write(float4(color, 1.0), tid);
     }
-//      for (int i = 0; i<AMBIENT_DIR_COUNT; i++) {
-//          float oldValue = renderTarget.read(tid).x;
-//          float newValue = saturate(dot(shadowRay.direction * color, ambientCubeDir[i]));
-//          float mixed = mix(oldValue, newValue, 0.9);
-//          renderTarget.write(float4(float3(mixed), 1.0), tid);
-//      }
+      int index = tid.x / uniforms.probeWidth;
+      uint2 texPos = indexToTexPos(index, uniforms.probeGridWidth, uniforms.probeGridHeight);
+      float3 oldValue1 = lightProbeTexture.read(ushort3(texPos.x, texPos.y, 0)).rgb;
+      float3 oldValue2 = lightProbeTexture.read(ushort3(texPos.x, texPos.y, 1)).rgb;
+      float oldValues[6] = {oldValue1.x, oldValue1.y, oldValue1.z, oldValue2.x, oldValue2.y, oldValue2.z};
+      float newValues[6] = { 0, 0, 0, 0, 0, 0 };
+      for (int i = 0; i<AMBIENT_DIR_COUNT; i++) {
+          float newValue = saturate(dot(shadowRay.direction * color, ambientCubeDir[i]));
+          newValues[i] = mix(oldValues[i], newValue, 0.5);
+      }
+      lightProbeTexture.write(float4(newValues[0], newValues[1], newValues[2], 1), ushort3(texPos.x, texPos.y, 0));
+      lightProbeTexture.write(float4(newValues[3], newValues[4], newValues[5], 1), ushort3(texPos.x, texPos.y, 1));
   }
 }

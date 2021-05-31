@@ -81,7 +81,7 @@ class Raytracer {
         createBuffers()
         buildIntersector()
         buildAccelerationStructure()
-        irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 5, 0), Float3(10, 4, 10))
+        irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 7.5, 0), Float3(30, 15, 15))
     }
     
     func buildAccelerationStructure() {
@@ -241,7 +241,6 @@ extension Raytracer {
       renderTargetDescriptor.storageMode = .private
       renderTargetDescriptor.usage = [.shaderRead, .shaderWrite]
       renderTarget = device.makeTexture(descriptor: renderTargetDescriptor)
-//        renderTarget = irradianceField.ambientCubeTexture
       
       let rayCount = Int(size.width * size.height)
       rayBuffer = device.makeBuffer(length: rayStride * rayCount,
@@ -343,6 +342,7 @@ extension Raytracer {
         computeEncoder?.setBuffer(intersectionBuffer, offset: 0, index: 2)
         computeEncoder?.setBuffer(irradianceField.probeLocations, offset: 0, index: 3)
         computeEncoder?.setTexture(renderTarget, index: 0)
+        computeEncoder?.setTexture(irradianceField.ambientCubeTexture!, index: 1)
         computeEncoder?.setComputePipelineState(shadowPipeline!)
         computeEncoder?.dispatchThreadgroups(
           threadGroups,
@@ -449,7 +449,6 @@ extension Raytracer {
     }
     
 }
-
 
 extension Raytracer.VertexIn {
     var position: Float3 {

@@ -318,6 +318,10 @@ extension Scene {
         guard let mesh_ = sphere.getComponent(Mesh.self) else { return }
         renderCommandEncoder?.setDepthStencilState(depthStencilState)
         renderCommandEncoder?.setRenderPipelineState(sphere.renderPipelineState!)
+        let irradianceField = rayTracer!.irradianceField!
+        var lightProbeData = LightProbeData(gridEdge: irradianceField.gridEdge, gridOrigin: irradianceField.origin, probeGridWidth: irradianceField.width, probeGridHeight: irradianceField.height)
+        renderCommandEncoder?.setFragmentBytes(&lightProbeData, length: MemoryLayout<LightProbeData>.stride, index: 0)
+        renderCommandEncoder?.setFragmentTexture(irradianceField.ambientCubeTexture, index: 0)
         for (index, _) in rayTracer!.irradianceField.probeLocationsArray.enumerated() {
             var u = getLightProbeUniformData(index)
             renderCommandEncoder?.setVertexBytes(&u, length: MemoryLayout<Uniforms>.stride, index: 1)
@@ -361,7 +365,7 @@ extension Scene {
     //    for i in 0..<lightPolygon.count {
     //        lightPolygon[i] = lightPolygonInitial[i] + Float3(sin(GameTimer.sharedTimer.time) * 20, 0, 0)
     //    }
-        sunDirection.x = 11 * cos(GameTimer.sharedTimer.time / 3)
+        sunDirection.z = 11 * cos(GameTimer.sharedTimer.time / 3)
         shadowViewMatrix = Matrix4.viewMatrix(position: sunDirection, target: Float3(0, 0, 0), up: Camera.WorldUp)
     }
     
