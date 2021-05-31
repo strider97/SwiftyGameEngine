@@ -49,6 +49,28 @@ constant float2 quadVertices[] = {
   float2( 1, -1)
 };
 
+struct Uniforms {
+    float4x4 M;
+    float4x4 V;
+    float4x4 P;
+    float3 eye;
+    float exposure;
+};
+
+struct VertexIn {
+    float3 position [[attribute(0)]];
+    float3 normal [[attribute(1)]];
+    float2 texCoords [[attribute(2)]];
+    float3 smoothNormal [[attribute(3)]];
+    float3 tangent [[attribute(4)]];
+};
+
+struct VertexOut {
+    float4 m_position [[position]];
+    float3 smoothNormal;
+    float2 texCoords;
+};
+
 vertex Vertex vertexShaderRT(unsigned short vid [[vertex_id]])
 {
   float2 position = quadVertices[vid];
@@ -64,6 +86,22 @@ fragment float4 fragmentShaderRT(Vertex in [[stage_in]], texture2d<float> tex) {
                       mip_filter::none);
   float3 color = tex.sample(s, in.uv).xyz;
   return float4(color, 1.0);
+}
+
+vertex VertexOut lightProbeVertexShader(const VertexIn vIn [[ stage_in ]], constant Uniforms &uniforms [[buffer(1)]]) {
+    VertexOut vOut;
+    float4x4 VM = uniforms.V*uniforms.M;
+    float4x4 PVM = uniforms.P*VM;
+    vOut.m_position = PVM * float4(vIn.position, 1.0);
+    vOut.texCoords = float2(vIn.texCoords.x, 1 - vIn.texCoords.y);
+    vOut.smoothNormal = (uniforms.M*float4(vIn.smoothNormal, 0)).xyz;
+    return vOut;
+}
+
+fragment float4 lightProbeFragmentShader(VertexOut in [[stage_in]], texture2d<float> tex) {
+//  constexpr sampler s(min_filter::nearest, mag_filter::nearest, ¯mip_filter::none);
+//  float3 color = tex.sample(s, in.uv).xyz;
+  return float4(1, 1, 1, 1.0);
 }
 
 kernel void accumulateKernel(constant Uniforms_ & uniforms,

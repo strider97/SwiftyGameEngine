@@ -28,18 +28,22 @@ class Descriptor {
         return texture
     }
     
-    static func build3DTexture(dim: Int, label: String = "3D texture") -> MTLTexture {
+    static func build3DTexture(dimW: Int, dimH: Int, dimD: Int, label: String = "3D texture", pixelFormat: MTLPixelFormat = .rgba32Float) -> MTLTexture {
         let device = Device.sharedDevice.device!
         let textureDescriptor = MTLTextureDescriptor()
         textureDescriptor.textureType = .type3D
-        textureDescriptor.pixelFormat = .rgba32Float
-        textureDescriptor.width = dim
-        textureDescriptor.height = dim
-        textureDescriptor.depth = dim
+        textureDescriptor.pixelFormat = pixelFormat
+        textureDescriptor.width = dimW
+        textureDescriptor.height = dimH
+        textureDescriptor.depth = dimD
         textureDescriptor.usage = [.shaderRead, .shaderWrite]
         guard let texture = device.makeTexture(descriptor: textureDescriptor) else { fatalError("Could not make texture") }
         texture.label = label
         return texture
+    }
+    
+    static func build3DTexture(dim: Int, label: String = "3D texture") -> MTLTexture {
+        return Self.build3DTexture(dimW: dim, dimH: dim, dimD: dim, label: label)
     }
 }
 
@@ -106,6 +110,20 @@ extension Descriptor {
         descriptor.vertexFunction = Device.sharedDevice.library?.makeFunction(name: "lightVertexShader")
         descriptor.fragmentFunction = Device.sharedDevice.library?.makeFunction(name: "lightFragmentShader")
         descriptor.vertexDescriptor = Descriptor.getSimpleVertexDescriptor()
+        do {
+            return try Device.sharedDevice.device!.makeRenderPipelineState(descriptor: descriptor)
+        } catch let error {
+            fatalError(error.localizedDescription)
+        }
+    }
+    
+    static func createLightProbePipelineState() -> MTLRenderPipelineState {
+        let descriptor = MTLRenderPipelineDescriptor()
+        descriptor.colorAttachments[0].pixelFormat = Constants.pixelFormat;
+        descriptor.depthAttachmentPixelFormat = .depth32Float
+        descriptor.vertexFunction = Device.sharedDevice.library?.makeFunction(name: "lightProbeVertexShader")
+        descriptor.fragmentFunction = Device.sharedDevice.library?.makeFunction(name: "lightProbeFragmentShader")
+        descriptor.vertexDescriptor = MeshManager.getVertexDescriptor()
         do {
             return try Device.sharedDevice.device!.makeRenderPipelineState(descriptor: descriptor)
         } catch let error {

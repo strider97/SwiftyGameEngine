@@ -8,7 +8,6 @@
 import MetalKit
 
 class BasicScene: Scene {
-    var sphere: GameObject!
     var ring: GameObject!
     
     override func getGameObjects() -> [GameObject] {

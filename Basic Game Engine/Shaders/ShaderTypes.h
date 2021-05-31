@@ -49,18 +49,32 @@ struct AreaLight {
   vector_float3 color;
 };
 
+struct LightProbe_ {
+    vector_float3 position;
+};
+
+struct IrradianceField_ {
+    unsigned int probeCount;
+    unsigned int width;
+    unsigned int height;
+    unsigned int depth;
+    vector_float3 origin;
+    vector_float3 gridEdges;
+};
+
 struct Uniforms_
 {
-  unsigned int width;
-  unsigned int height;
-  unsigned int blocksWide;
-  unsigned int frameIndex;
-  struct Camera_ camera;
-  struct AreaLight light;
+    unsigned int width;
+    unsigned int height;
+    unsigned int blocksWide;
+    unsigned int frameIndex;
+    struct Camera_ camera;
+    struct AreaLight light;
     vector_float3 sunDirection;
-    float ambientCube[6];
     int probeWidth;
     int probeHeight;
+    int probeGridWidth;
+    int probeGridHeight;
 };
 
 #endif /* ShaderTypes_h */

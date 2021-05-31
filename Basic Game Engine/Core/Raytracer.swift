@@ -50,6 +50,7 @@ class Raytracer {
     var renderTarget: MTLTexture!
     weak var camera: Camera!
     weak var scene: Scene!
+    var irradianceField: IrradianceField!
     
     lazy var vertexDescriptor: MDLVertexDescriptor = {
       let vertexDescriptor = MDLVertexDescriptor()
@@ -80,6 +81,7 @@ class Raytracer {
         createBuffers()
         buildIntersector()
         buildAccelerationStructure()
+        irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 5, 0), Float3(10, 4, 10))
     }
     
     func buildAccelerationStructure() {
@@ -143,7 +145,7 @@ class Raytracer {
     }
     
     func createScene() {
-        loadAsset(name: "house")
+        loadAsset(name: "sponza")
     }
     
     
@@ -179,7 +181,7 @@ class Raytracer {
       
         var camera = Camera_()
     //    camera.position = float3(8*sin(GameTimer.sharedTimer.time/10.0), 1.0, 8*cos(GameTimer.sharedTimer.time/10.0))
-        camera.position = Float3(-12, 5, 0);
+        camera.position = Float3(-17, 5, 0);
         camera.forward = self.camera.front
         camera.right = self.camera.right
         camera.up = self.camera.up
@@ -211,6 +213,8 @@ class Raytracer {
         
         uniforms.pointee.probeWidth = Int32(Constants.probeReso)
         uniforms.pointee.probeHeight = Int32(Constants.probeReso)
+        uniforms.pointee.probeGridWidth = Int32(Constants.probeGrid.0)
+        uniforms.pointee.probeGridHeight = Int32(Constants.probeGrid.1)
         uniforms.pointee.width = UInt32(size.width)
         uniforms.pointee.height = UInt32(size.height)
       uniforms.pointee.blocksWide = ((uniforms.pointee.width) + 15) / 16
@@ -237,6 +241,7 @@ extension Raytracer {
       renderTargetDescriptor.storageMode = .private
       renderTargetDescriptor.usage = [.shaderRead, .shaderWrite]
       renderTarget = device.makeTexture(descriptor: renderTargetDescriptor)
+//        renderTarget = irradianceField.ambientCubeTexture
       
       let rayCount = Int(size.width * size.height)
       rayBuffer = device.makeBuffer(length: rayStride * rayCount,
@@ -277,6 +282,7 @@ extension Raytracer {
       computeEncoder?.setBuffer(rayBuffer, offset: 0, index: 1)
       computeEncoder?.setBuffer(randomBuffer, offset: randomBufferOffset,
                                 index: 2)
+        computeEncoder?.setBuffer(irradianceField.probeLocations, offset: 0, index: 3)
       computeEncoder?.setTexture(renderTarget, index: 0)
       computeEncoder?.setComputePipelineState(rayPipeline)
       computeEncoder?.dispatchThreadgroups(threadGroups,
@@ -335,6 +341,7 @@ extension Raytracer {
                                   index: 0)
         computeEncoder?.setBuffer(shadowRayBuffer, offset: 0, index: 1)
         computeEncoder?.setBuffer(intersectionBuffer, offset: 0, index: 2)
+        computeEncoder?.setBuffer(irradianceField.probeLocations, offset: 0, index: 3)
         computeEncoder?.setTexture(renderTarget, index: 0)
         computeEncoder?.setComputePipelineState(shadowPipeline!)
         computeEncoder?.dispatchThreadgroups(
@@ -345,7 +352,7 @@ extension Raytracer {
         
       }
       // MARK: accumulation
-      
+      /*
       computeEncoder = commandBuffer.makeComputeCommandEncoder()
       computeEncoder?.label = "Accumulation"
       computeEncoder?.setBuffer(uniformBuffer, offset: uniformBufferOffset,
@@ -356,7 +363,7 @@ extension Raytracer {
       computeEncoder?.dispatchThreadgroups(threadGroups,
                                            threadsPerThreadgroup: threadsPerGroup)
       computeEncoder?.endEncoding()
-      
+      */
 //      guard let descriptor = view.currentRenderPassDescriptor,
 //        let renderEncoder = commandBuffer.makeRenderCommandEncoder(
 //          descriptor: descriptor) else {
@@ -377,7 +384,7 @@ extension Raytracer {
   }
 
 extension Raytracer {
-    func loadAsset(name modelName: String, position: float3 = [0, 0, 0], scale: Float = 1) {
+    func loadAsset(name modelName: String, position: Float3 = [0, 0, 0], scale: Float = 1) {
       guard let url = Bundle.main.url(forResource: modelName, withExtension: "obj") else { return }
       let bufferAllocator_ = MTKMeshBufferAllocator(device: device)
       let asset_ = MDLAsset(url: url, vertexDescriptor: Self.getMDLVertexDescriptor(), bufferAllocator: bufferAllocator_)

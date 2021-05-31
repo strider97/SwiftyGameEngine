@@ -230,6 +230,9 @@
 		7229EAA32626448C00112F1A /* room.obj in Resources */ = {isa = PBXBuildFile; fileRef = 7229EAA12626448B00112F1A /* room.obj */; };
 		7230F99B25C60FAD00D9610A /* BasicScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7230F99A25C60FAD00D9610A /* BasicScene.swift */; };
 		7230F9A825C6B86B00D9610A /* Behaviour.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7230F9A725C6B86B00D9610A /* Behaviour.swift */; };
+		7232615F2665420A005C9CB7 /* IrradianceField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7232615E2665420A005C9CB7 /* IrradianceField.swift */; };
+		724157F626657CBF00821A7C /* sphere.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 724157F426657CBF00821A7C /* sphere.mtl */; };
+		724157F726657CBF00821A7C /* sphere.obj in Resources */ = {isa = PBXBuildFile; fileRef = 724157F526657CBF00821A7C /* sphere.obj */; };
 		72439113265ED1920066F3B4 /* Raytracer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72439112265ED1920066F3B4 /* Raytracer.swift */; };
 		7243911B265EDE7E0066F3B4 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 7243911A265EDE7E0066F3B4 /* Shaders.metal */; };
 		72439121265EDECE0066F3B4 /* RayTracing.metal in Sources */ = {isa = PBXBuildFile; fileRef = 72439120265EDECE0066F3B4 /* RayTracing.metal */; };
@@ -621,6 +624,9 @@
 		7229EAA12626448B00112F1A /* room.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = room.obj; sourceTree = "<group>"; };
 		7230F99A25C60FAD00D9610A /* BasicScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicScene.swift; sourceTree = "<group>"; };
 		7230F9A725C6B86B00D9610A /* Behaviour.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Behaviour.swift; sourceTree = "<group>"; };
+		7232615E2665420A005C9CB7 /* IrradianceField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IrradianceField.swift; sourceTree = "<group>"; };
+		724157F426657CBF00821A7C /* sphere.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sphere.mtl; sourceTree = "<group>"; };
+		724157F526657CBF00821A7C /* sphere.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sphere.obj; sourceTree = "<group>"; };
 		72439112265ED1920066F3B4 /* Raytracer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Raytracer.swift; sourceTree = "<group>"; };
 		7243911A265EDE7E0066F3B4 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		7243911F265EDE9F0066F3B4 /* ShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShaderTypes.h; sourceTree = "<group>"; };
@@ -1441,6 +1447,7 @@
 				72E3990A25BC9D7B00927B17 /* Mesh.swift */,
 				72E398E625BC135C00927B17 /* GameObject.swift */,
 				72E3992125BCC95500927B17 /* Renderer.swift */,
+				7232615E2665420A005C9CB7 /* IrradianceField.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -1484,6 +1491,8 @@
 		72E3999925BF0C8300927B17 /* models */ = {
 			isa = PBXGroup;
 			children = (
+				724157F426657CBF00821A7C /* sphere.mtl */,
+				724157F526657CBF00821A7C /* sphere.obj */,
 				7229EAA02626448B00112F1A /* room.mtl */,
 				7229EAA12626448B00112F1A /* room.obj */,
 				7229EA9926263A8600112F1A /* house.mtl */,
@@ -1784,6 +1793,7 @@
 				7216508325EAE81200511342 /* denim_fabric_diff_2k.png in Resources */,
 				721650C225EAF31600511342 /* schvfgwp_4K_Metalness.jpg in Resources */,
 				72583F88262266E000ADD5BD /* Background_Roughness.png in Resources */,
+				724157F626657CBF00821A7C /* sphere.mtl in Resources */,
 				7216505B25EAE45D00511342 /* cylinder.mtl in Resources */,
 				7216503225EA877300511342 /* daizi_baseColor.jpeg in Resources */,
 				72583FB5262266E000ADD5BD /* ChainTexture_Metallic.png in Resources */,
@@ -1940,6 +1950,7 @@
 				7216505225EAE3C300511342 /* old_planks_02_disp_2k.png in Resources */,
 				72164FF425EA55F500511342 /* cerberus.obj in Resources */,
 				721651FE25ED571E00511342 /* internal_ground_ao_texture.jpeg in Resources */,
+				724157F726657CBF00821A7C /* sphere.obj in Resources */,
 				721650A425EAEBA300511342 /* vbikfjt_2K_Albedo.jpg in Resources */,
 				7216503625EA877300511342 /* material_3_baseColor.jpeg in Resources */,
 				7216514025EB9EA500511342 /* vbwkdallw_4K_AO.jpg in Resources */,
@@ -2044,6 +2055,7 @@
 				72E3996F25BEBA0800927B17 /* MeshManager.swift in Sources */,
 				7216506125EAE59800511342 /* cylinderSome.mtl.swift in Sources */,
 				72E398FA25BC432C00927B17 /* Constants.swift in Sources */,
+				7232615F2665420A005C9CB7 /* IrradianceField.swift in Sources */,
 				7230F9A825C6B86B00D9610A /* Behaviour.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

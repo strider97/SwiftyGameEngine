@@ -85,6 +85,13 @@ float halton(unsigned int i, unsigned int d) {
     return r;
 }
 
+float3 indexToGridPos(int index, float3 origin, float3 gridEdge, int width, int height){
+    int indexD = index / (width * height);
+    int indexH = (index % (width * height)) / width;
+    int indexW = (index % (width * height)) % width;
+    return origin + float3(indexW, indexH, indexD) * gridEdge;
+}
+
 /*
  float2 pixel = float2(tid.x % uniforms.probeWidth, tid.y % uniforms.probeHeight);
 //   float2 r = random[(tid.y % 16) * 16 + (tid.x % 16)];
@@ -96,6 +103,7 @@ float halton(unsigned int i, unsigned int d) {
 kernel void primaryRays(constant Uniforms_ & uniforms [[buffer(0)]],
                         device Ray *rays [[buffer(1)]],
                         device float2 *random [[buffer(2)]],
+                        constant float3 *probeLocations [[buffer(3)]],
                         texture2d<float, access::write> t [[texture(0)]],
                         uint2 tid [[thread_position_in_grid]])
 {
@@ -109,7 +117,11 @@ kernel void primaryRays(constant Uniforms_ & uniforms [[buffer(0)]],
     constant Camera_ & camera = uniforms.camera;
     unsigned int rayIdx = tid.y * uniforms.width + tid.x;
     device Ray & ray = rays[rayIdx];
-    ray.origin = camera.position;
+      
+         int index = tid.x / uniforms.probeWidth;
+       ray.origin = probeLocations[index];
+       
+//    ray.origin = camera.position;
     ray.direction = normalize(uv.x * camera.right + uv.y * camera.up +
                               camera.forward);
     ray.minDistance = 0;
@@ -261,6 +273,7 @@ kernel void shadowKernel(uint2 tid [[thread_position_in_grid]],
                          device Uniforms_ & uniforms,
                          device Ray *shadowRays,
                          device float *intersections,
+                         device float3 *probeLocations [[buffer(3)]],
                          texture2d<float, access::read_write> renderTarget)
 {
   if (tid.x < uniforms.width && tid.y < uniforms.height) {

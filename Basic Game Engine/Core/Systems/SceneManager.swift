@@ -60,6 +60,7 @@ class Scene: NSObject {
     ]
     
     var light: PolygonLight
+    var sphere = GameObject(modelName: "sphere")
     
     override init() {
         light = PolygonLight(vertices: lightPolygon)
@@ -73,6 +74,8 @@ class Scene: NSObject {
         addBehaviour()
         createShadowTexture()
         createLTCTextures()
+        sphere.transform.scale(Float3(repeating: 0.2))
+        sphere.renderPipelineState = Descriptor.createLightProbePipelineState()
     }
     
     func getGameObjects() -> [GameObject] {[]}
@@ -124,6 +127,15 @@ extension Scene {
     func getLightUniformData() -> Uniforms {
         var M = Matrix4(1)
         M[3][0] = Float(sin(GameTimer.sharedTimer.time) * 20)
+        return Uniforms(M: M, V: camera.lookAtMatrix, P: P, eye: camera.position, exposure: exposure)
+    }
+    
+    func getLightProbeUniformData(_ index: Int) -> Uniforms {
+        var M = sphere.transform.modelMatrix
+        let pos = rayTracer!.irradianceField.probeLocationsArray[index]
+        M[3][0] = pos[0]
+        M[3][1] = pos[1]
+        M[3][2] = pos[2]
         return Uniforms(M: M, V: camera.lookAtMatrix, P: P, eye: camera.position, exposure: exposure)
     }
     
@@ -205,7 +217,7 @@ extension Scene {
         renderCommandEncoder?.setFragmentTexture(gBufferData.flux, index: TextureIndex.flux.rawValue)
         renderCommandEncoder?.setCullMode(.front)
         drawGameObjects(renderCommandEncoder: renderCommandEncoder)
-    //    drawLight(renderCommandEncoder: renderCommandEncoder)
+        drawLightProbes(renderCommandEncoder: renderCommandEncoder)
         drawSkybox(renderCommandEncoder: renderCommandEncoder)
         renderCommandEncoder?.endEncoding()
         
@@ -300,6 +312,25 @@ extension Scene {
         renderCommandEncoder?.setVertexBytes(&u, length: MemoryLayout<Uniforms>.stride, index: 1)
         renderCommandEncoder?.setVertexBuffer(light.vertexBuffer, offset: 0, index: 0)
         renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: light.vertices.count)
+    }
+    
+    func drawLightProbes(renderCommandEncoder: MTLRenderCommandEncoder?) {
+        guard let mesh_ = sphere.getComponent(Mesh.self) else { return }
+        renderCommandEncoder?.setDepthStencilState(depthStencilState)
+        renderCommandEncoder?.setRenderPipelineState(sphere.renderPipelineState!)
+        for (index, _) in rayTracer!.irradianceField.probeLocationsArray.enumerated() {
+            var u = getLightProbeUniformData(index)
+            renderCommandEncoder?.setVertexBytes(&u, length: MemoryLayout<Uniforms>.stride, index: 1)
+            for (mesh, meshNodes) in mesh_.meshNodes {
+                for (bufferIndex, vertexBuffer) in mesh.vertexBuffers.enumerated() {
+                    renderCommandEncoder?.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: bufferIndex)
+                }
+                for meshNode in meshNodes {
+                    let submesh = meshNode.mesh
+                    renderCommandEncoder?.drawIndexedPrimitives(type:submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: submesh.indexBuffer.offset)
+                }
+            }
+        }
     }
     
     func drawPrefilterEnvMap(renderCommandEncoder: MTLRenderCommandEncoder?, roughness: Float = 0) {
