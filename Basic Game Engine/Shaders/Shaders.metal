@@ -69,6 +69,7 @@ struct VertexOut {
     float4 m_position [[position]];
     float3 position;
     float3 smoothNormal;
+    float3 normal;
     float2 texCoords;
 };
 
@@ -98,7 +99,17 @@ constant float3 ambientCubeDir[] = {
  }
  */
 
-
+/*
+int2 indexToTexPos_(int index, int width, int height){
+    int indexD = index / (width * height);
+    int indexH = (index % (width * height));
+    return int2(indexH, indexD);
+}
+int2 gridPosToTex(float3 pos, float3 gridEdge, float3 gridOrigin, int probeGridWidth, int probeGridHeight) {
+    float3 texPos = (pos - gridOrigin)/gridEdge;
+    int index = int(texPos.z) * probeGridWidth * probeGridHeight + int(texPos.y)*probeGridWidth + int(texPos.x);
+    return indexToTexPos_(index, probeGridWidth, probeGridHeight);
+}*/
 
 ushort2 gridPosToTex(float3 pos, float3 gridEdge, float3 gridOrigin, int probeGridWidth, int probeGridHeight) {
     int3 texPos = int3((pos - gridOrigin)/gridEdge);
@@ -130,11 +141,12 @@ vertex VertexOut lightProbeVertexShader(const VertexIn vIn [[ stage_in ]], const
     vOut.position = (uniforms.M*float4(vIn.position, 1.0)).xyz;
     vOut.texCoords = float2(vIn.texCoords.x, 1 - vIn.texCoords.y);
     vOut.smoothNormal = (uniforms.M*float4(vIn.smoothNormal, 0)).xyz;
+    vOut.normal = (uniforms.M*float4(vIn.normal, 0)).xyz;
     return vOut;
 }
 
 fragment float4 lightProbeFragmentShader(VertexOut vOut [[stage_in]], constant LightProbeData &probe [[buffer(0)]], texture3d<float, access::read> lightProbeTexture) {
-    ushort2 texPos = gridPosToTex(vOut.position, probe.gridEdge, probe.gridOrigin, probe.probeGridWidth, probe.probeGridHeight);
+    ushort2 texPos = gridPosToTex(vOut.position - vOut.smoothNormal * 0.2, probe.gridEdge, probe.gridOrigin, probe.probeGridWidth, probe.probeGridHeight);
     float3 col1 = lightProbeTexture.read(ushort3(texPos, 0)).rgb;
     float3 col2 = lightProbeTexture.read(ushort3(texPos, 1)).rgb;
     float colors[6] = {col1.x, col1.y, col1.z, col2.x, col2.y, col2.z};
@@ -142,6 +154,7 @@ fragment float4 lightProbeFragmentShader(VertexOut vOut [[stage_in]], constant L
     for (int i = 0; i<AMBIENT_DIR_COUNT; i++) {
         color += saturate(dot(colors[i] * ambientCubeDir[i], vOut.smoothNormal));
     }
+ //   color = normalize(abs(vOut.position + probe.gridOrigin));
   return float4(color, 1.0);
 }
 

@@ -21,7 +21,7 @@ class SimpleScene: Scene {
         model2.transform.scale(Float3(1, 5, 5*scale))
         model2.transform.rotate(angle: MathConstants.PI.rawValue/2, axis: Float3(0, 0, 1))
         model2.transform.rotate(angle: MathConstants.PI.rawValue/2, axis: Float3(0, 1, 0))
-        return [model, model2]
+        return [model]
     }
     
     override func addPhysics() {

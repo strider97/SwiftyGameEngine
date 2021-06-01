@@ -32,13 +32,20 @@ class Descriptor {
         let device = Device.sharedDevice.device!
         let textureDescriptor = MTLTextureDescriptor()
         textureDescriptor.textureType = .type3D
-        textureDescriptor.pixelFormat = pixelFormat
+        textureDescriptor.pixelFormat = .rgba32Float
         textureDescriptor.width = dimW
         textureDescriptor.height = dimH
         textureDescriptor.depth = dimD
         textureDescriptor.usage = [.shaderRead, .shaderWrite]
         guard let texture = device.makeTexture(descriptor: textureDescriptor) else { fatalError("Could not make texture") }
         texture.label = label
+        let values: [Float] = [Float](repeating: 0.0, count: dimW*dimH*dimD*4)
+        texture.replace(region: MTLRegionMake3D(0, 0, 0, dimW, dimH, dimD),
+                        mipmapLevel:0,
+                        slice:0,
+                        withBytes:values,
+                        bytesPerRow:dimW * MemoryLayout<Float>.size * 4,
+                        bytesPerImage:dimW * dimH * MemoryLayout<Float>.size * 4)
         return texture
     }
     

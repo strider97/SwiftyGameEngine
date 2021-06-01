@@ -209,7 +209,7 @@ class Raytracer {
         
       uniforms.pointee.camera = camera
       uniforms.pointee.light = light
-        uniforms.pointee.sunDirection = scene.sunDirection
+        uniforms.pointee.sunDirection = scene.sunDirection.normalized;
         
         uniforms.pointee.probeWidth = Int32(Constants.probeReso)
         uniforms.pointee.probeHeight = Int32(Constants.probeReso)
@@ -236,8 +236,8 @@ extension Raytracer {
       let renderTargetDescriptor = MTLTextureDescriptor()
       renderTargetDescriptor.pixelFormat = .rgba32Float
       renderTargetDescriptor.textureType = .type2D
-      renderTargetDescriptor.width = Int(size.width)
-      renderTargetDescriptor.height = Int(size.height)
+        renderTargetDescriptor.width = Int(Constants.probeReso)
+        renderTargetDescriptor.height = Int(Constants.probeReso)
       renderTargetDescriptor.storageMode = .private
       renderTargetDescriptor.usage = [.shaderRead, .shaderWrite]
       renderTarget = device.makeTexture(descriptor: renderTargetDescriptor)
@@ -282,6 +282,7 @@ extension Raytracer {
       computeEncoder?.setBuffer(randomBuffer, offset: randomBufferOffset,
                                 index: 2)
         computeEncoder?.setBuffer(irradianceField.probeLocations, offset: 0, index: 3)
+        computeEncoder?.setBuffer(irradianceField.probeDirections, offset: Constants.probeReso * Constants.probeReso, index: 4)
       computeEncoder?.setTexture(renderTarget, index: 0)
       computeEncoder?.setComputePipelineState(rayPipeline)
       computeEncoder?.dispatchThreadgroups(threadGroups,
@@ -341,6 +342,7 @@ extension Raytracer {
         computeEncoder?.setBuffer(shadowRayBuffer, offset: 0, index: 1)
         computeEncoder?.setBuffer(intersectionBuffer, offset: 0, index: 2)
         computeEncoder?.setBuffer(irradianceField.probeLocations, offset: 0, index: 3)
+        computeEncoder?.setBuffer(irradianceField.probeDirections, offset: Constants.probeReso * Constants.probeReso, index: 4)
         computeEncoder?.setTexture(renderTarget, index: 0)
         computeEncoder?.setTexture(irradianceField.ambientCubeTexture!, index: 1)
         computeEncoder?.setComputePipelineState(shadowPipeline!)

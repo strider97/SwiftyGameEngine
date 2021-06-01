@@ -21,8 +21,10 @@ class IrradianceField {
     let depth: Int
     var ambientCubeTexture: MTLTexture!
     var probeLocations: MTLBuffer!
+    var probeDirections: MTLBuffer!
     var probeCount: Int
     var probeLocationsArray: [Float3] = []
+    var probeDirectionsArray: [Float3] = []
     let origin: Float3
     let gridEdge: Float3
     
@@ -49,6 +51,33 @@ class IrradianceField {
         return origin + Float3(Float(indexW), Float(indexH), Float(indexD)) * gridEdge
     }
     
+    static func sphericalFibonacci9(_ i_: Float, _ n: Float) -> Float3{
+        let i = i_ + 0.5
+        let goldenRatio: Float = 1.6180339
+        let theta = 2 * MathConstants.PI.rawValue * i / goldenRatio
+        let phi = acos(1 - 2*(i+0.5)/n)
+        return Float3(cos(theta) * sin(phi), sin(theta) * sin(phi), cos(phi))
+    }
+    
+    func indexToTexPos_( index: Int) -> Float2{
+        let indexD = index / (width * height)
+        let indexH = (index % (width * height))
+        return Float2(Float(indexH), Float(indexD))
+    }
+    func gridPosToTex(pos: Float3) -> Int {
+        let texPos = Float3((pos - origin)/gridEdge)
+        var index = Int(texPos.z) * width * height
+            index += Int(texPos.y) * width + Int(texPos.x)
+        return index
+    //    return indexToTexPos_(index, width, height)
+    }
+    
+    func gridPosToTex_(pos: Float3) -> Float2{
+        let texPos = (pos - origin)/gridEdge;
+    //    return ushort2(0, 0);
+        return Float2(texPos.y * Float(width) + texPos.x, texPos.z);
+    }
+    
     func makeBuffer(_ origin: Float3, _ gridEdge: Float3) {
         let device = Device.sharedDevice.device!
         for i in 0..<probeCount {
@@ -57,5 +86,17 @@ class IrradianceField {
         }
         print(probeLocationsArray)
         self.probeLocations = device.makeBuffer(bytes: probeLocationsArray, length: MemoryLayout<Float3>.stride * probeCount, options: .storageModeManaged)!
+        let numRays = Constants.probeReso * Constants.probeReso
+        for i in 0..<numRays{
+            let dir = Self.sphericalFibonacci9(Float(i), Float(numRays))
+            probeDirectionsArray.append(dir)
+        }
+    //    print(probeDirectionsArray)
+        self.probeDirections = device.makeBuffer(bytes: probeDirectionsArray, length: MemoryLayout<Float3>.stride * numRays, options: .storageModeManaged)!
+        print(self.origin)
+        for val in probeLocationsArray {
+            let i = gridPosToTex(pos: val)
+            print(i, indexToTexPos_(index: i), gridPosToTex_(pos: val))
+        }
     }
 }
