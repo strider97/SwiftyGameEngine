@@ -112,7 +112,8 @@ int2 gridPosToTex(float3 pos, float3 gridEdge, float3 gridOrigin, int probeGridW
 }*/
 
 ushort2 gridPosToTex(float3 pos, float3 gridEdge, float3 gridOrigin, int probeGridWidth, int probeGridHeight) {
-    int3 texPos = int3((pos - gridOrigin)/gridEdge);
+    float3 texPos_ = (pos - gridOrigin)/gridEdge;
+    int3 texPos = int3(rint(texPos_.x), rint(texPos_.y), rint(texPos_.z));
     return ushort2(texPos.y * probeGridWidth + texPos.x, texPos.z);
 }
 
@@ -145,32 +146,63 @@ vertex VertexOut lightProbeVertexShader(const VertexIn vIn [[ stage_in ]], const
     return vOut;
 }
 
+float signum(float a) {
+    return a > 0 ? 1 : 0;
+}
+
 fragment float4 lightProbeFragmentShader(VertexOut vOut [[stage_in]], constant LightProbeData &probe [[buffer(0)]], texture3d<float, access::read> lightProbeTexture) {
     ushort2 texPos = gridPosToTex(vOut.position - vOut.smoothNormal * 0.2, probe.gridEdge, probe.gridOrigin, probe.probeGridWidth, probe.probeGridHeight);
     float3 col1 = lightProbeTexture.read(ushort3(texPos, 0)).rgb;
     float3 col2 = lightProbeTexture.read(ushort3(texPos, 1)).rgb;
     float colors[6] = {col1.x, col1.y, col1.z, col2.x, col2.y, col2.z};
     float3 color = 0;
-    for (int i = 0; i<AMBIENT_DIR_COUNT; i++) {
-        color += saturate(dot(colors[i] * ambientCubeDir[i], vOut.smoothNormal));
+    /*
+    float colors[6] = {0, 0, 0, 0, 0, 0};
+    float3 color = 0;
+    float3 dirs[6] = {
+        normalize(float3(1, 1, 1)),
+        normalize(float3(1, 10, 1)),
+        normalize(float3(4, 1, 2)),
+        normalize(float3(7, 6, 0)),
+        normalize(float3(1, 0, 0)),
+        normalize(float3(-0.0001, 0, 1)),
+    };
+    for (int i = 0; i<6; i++) {
+        for (int j = 0; j<AMBIENT_DIR_COUNT; j++) {
+            colors[j] += max(0.0, (dot(ambientCubeDir[j], dirs[i])));
+        }
     }
- //   color = normalize(abs(vOut.position + probe.gridOrigin));
+     */
+    for (int i = 0; i<AMBIENT_DIR_COUNT; i++) {
+    //    color += saturate(dot(colors[i] * ambientCubeDir[i], vOut.smoothNormal));
+        color += max(0.0, dot(colors[i] * ambientCubeDir[i], vOut.smoothNormal));
+    }
+ //   int col = rint(0.50);
   return float4(color, 1.0);
 }
 
-kernel void accumulateKernel(constant Uniforms_ & uniforms,
-                             texture2d<float> renderTex,
-                             texture2d<float, access::read_write> t,
-                             uint2 tid [[thread_position_in_grid]])
+uint2 indexToTexPos__(int index, int width, int height){
+    int indexD = index / (width * height);
+    int indexH = (index % (width * height));
+    return uint2(indexH, indexD);
+}
+
+float sumVec(float3 a) {
+    return a.r + a.g + a.b;
+}
+
+kernel void accumulateKernel(constant Uniforms_ & uniforms, texture3d<float, access::read_write> lightProbeTexture, texture3d<float, access::write> lightProbeTextureFinal, uint2 tid [[thread_position_in_grid]])
 {
   if (tid.x < uniforms.width && tid.y < uniforms.height) {
-    float3 color = renderTex.read(tid).xyz;
     if (uniforms.frameIndex > 0) {
-      float3 prevColor = t.read(tid).xyz;
-      prevColor *= uniforms.frameIndex;
-      color += prevColor;
-      color /= (uniforms.frameIndex + 1);
+        int index = tid.x / uniforms.probeWidth;
+        uint2 texPos = indexToTexPos__(index, uniforms.probeGridWidth, uniforms.probeGridHeight);
+        float4 oldValue1 = lightProbeTexture.read(ushort3(texPos.x, texPos.y, 0));
+        float4 oldValue2 = lightProbeTexture.read(ushort3(texPos.x, texPos.y, 1));
+        lightProbeTextureFinal.write(oldValue1, ushort3(texPos.x, texPos.y, 0));
+        lightProbeTextureFinal.write(oldValue2, ushort3(texPos.x, texPos.y, 1));
+        lightProbeTexture.write(float4(0, 0, 0, 1), ushort3(texPos.x, texPos.y, 0));
+        lightProbeTexture.write(float4(0, 0, 0, 1), ushort3(texPos.x, texPos.y, 1));
     }
-    t.write(float4(color, 1.0), tid);
   }
 }

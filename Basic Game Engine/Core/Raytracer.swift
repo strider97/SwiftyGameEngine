@@ -51,6 +51,7 @@ class Raytracer {
     weak var camera: Camera!
     weak var scene: Scene!
     var irradianceField: IrradianceField!
+    var fence: MTLFence!
     
     lazy var vertexDescriptor: MDLVertexDescriptor = {
       let vertexDescriptor = MDLVertexDescriptor()
@@ -74,6 +75,7 @@ class Raytracer {
     init(metalView: MTKView) {
         device = Device.sharedDevice.device!
         semaphore = DispatchSemaphore.init(value: maxFramesInFlight)
+        fence = device.makeFence()
         library = Device.sharedDevice.library!
         commandQueue = Device.sharedDevice.commandQueue!
         buildPipelines(view: metalView)
@@ -321,7 +323,6 @@ extension Raytracer {
           threadGroups,
           threadsPerThreadgroup: threadsPerGroup)
         computeEncoder?.endEncoding()
-        
         // MARK: shadows
         intersector?.label = "Shadows Intersector"
         intersector?.intersectionDataType = .distance
@@ -350,22 +351,19 @@ extension Raytracer {
           threadGroups,
           threadsPerThreadgroup: threadsPerGroup)
         computeEncoder?.endEncoding()
-        
-        
       }
       // MARK: accumulation
-      /*
-      computeEncoder = commandBuffer.makeComputeCommandEncoder()
+       computeEncoder = commandBuffer.makeComputeCommandEncoder()
       computeEncoder?.label = "Accumulation"
       computeEncoder?.setBuffer(uniformBuffer, offset: uniformBufferOffset,
                                 index: 0)
-      computeEncoder?.setTexture(renderTarget, index: 0)
-      computeEncoder?.setTexture(accumulationTarget, index: 1)
+        computeEncoder?.setTexture(irradianceField.ambientCubeTexture, index: 0)
+        computeEncoder?.setTexture(irradianceField.ambientCubeTextureFinal, index: 1)
       computeEncoder?.setComputePipelineState(accumulatePipeline)
       computeEncoder?.dispatchThreadgroups(threadGroups,
                                            threadsPerThreadgroup: threadsPerGroup)
       computeEncoder?.endEncoding()
-      */
+      
 //      guard let descriptor = view.currentRenderPassDescriptor,
 //        let renderEncoder = commandBuffer.makeRenderCommandEncoder(
 //          descriptor: descriptor) else {

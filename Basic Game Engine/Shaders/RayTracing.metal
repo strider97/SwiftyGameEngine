@@ -296,14 +296,15 @@ kernel void shadowKernel(uint2 tid [[thread_position_in_grid]], device Uniforms_
             float3 direction = probeDirections[rayDirIndex];
             direction = normalize(direction);
           uint2 texPos = indexToTexPos(index, uniforms.probeGridWidth, uniforms.probeGridHeight);
-          float3 oldValue1 = lightProbeTexture.read(ushort3(texPos.x, texPos.y, 0)).rgb;
-          float3 oldValue2 = lightProbeTexture.read(ushort3(texPos.x, texPos.y, 1)).rgb;
+          float4 oldValue1 = lightProbeTexture.read(ushort3(texPos.x, texPos.y, 0));
+          float4 oldValue2 = lightProbeTexture.read(ushort3(texPos.x, texPos.y, 1));
           float oldValues[6] = {oldValue1.x, oldValue1.y, oldValue1.z, oldValue2.x, oldValue2.y, oldValue2.z};
           float newValues[6] = { 0, 0, 0, 0, 0, 0 };
+            int raycount = uniforms.probeWidth * uniforms.probeHeight;
           for (int i = 0; i<AMBIENT_DIR_COUNT; i++) {
               float newValue = max(0.0, dot(direction * color, ambientCubeDir[i]));
-              newValues[i] = mix(oldValues[i], newValue, 0.04);
-          //    newValues[i] = oldValues[i] + newValue*0.06;
+          //    newValues[i] = mix(oldValues[i], newValue, 0.8);
+              newValues[i] = oldValues[i] + newValue;
           //    newValues[i] = shadowRay.color.r;
           //    newValues[i] = newValue;
           }

@@ -321,7 +321,7 @@ extension Scene {
         let irradianceField = rayTracer!.irradianceField!
         var lightProbeData = LightProbeData(gridEdge: irradianceField.gridEdge, gridOrigin: irradianceField.origin, probeGridWidth: irradianceField.width, probeGridHeight: irradianceField.height)
         renderCommandEncoder?.setFragmentBytes(&lightProbeData, length: MemoryLayout<LightProbeData>.stride, index: 0)
-        renderCommandEncoder?.setFragmentTexture(irradianceField.ambientCubeTexture, index: 0)
+        renderCommandEncoder?.setFragmentTexture(irradianceField.ambientCubeTextureFinal, index: 0)
         for (index, _) in rayTracer!.irradianceField.probeLocationsArray.enumerated() {
             var u = getLightProbeUniformData(index)
             renderCommandEncoder?.setVertexBytes(&u, length: MemoryLayout<Uniforms>.stride, index: 1)

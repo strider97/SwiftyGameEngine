@@ -20,6 +20,7 @@ class IrradianceField {
     let height: Int
     let depth: Int
     var ambientCubeTexture: MTLTexture!
+    var ambientCubeTextureFinal: MTLTexture!
     var probeLocations: MTLBuffer!
     var probeDirections: MTLBuffer!
     var probeCount: Int
@@ -38,6 +39,7 @@ class IrradianceField {
         depth = d
         probeCount = w * h * d
         ambientCubeTexture = Descriptor.build3DTexture(dimW: w*h, dimH: d, dimD: 2, label: "Irradiance Field", pixelFormat: .rgba32Float)
+        ambientCubeTextureFinal = Descriptor.build3DTexture(dimW: w*h, dimH: d, dimD: 2, label: "Irradiance Field final", pixelFormat: .rgba32Float)
         gridEdge = gridSize / Float3(Float(w-1), Float(h-1), Float(d-1))
         origin = centre - gridSize/2
         makeBuffer(origin, gridEdge)
@@ -66,8 +68,8 @@ class IrradianceField {
     }
     func gridPosToTex(pos: Float3) -> Int {
         let texPos = Float3((pos - origin)/gridEdge)
-        var index = Int(texPos.z) * width * height
-            index += Int(texPos.y) * width + Int(texPos.x)
+        var index = Int(rint(texPos.z)) * width * height
+        index += Int(rint(texPos.y)) * width + Int(rint(texPos.x))
         return index
     //    return indexToTexPos_(index, width, height)
     }
