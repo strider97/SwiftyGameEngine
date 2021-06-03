@@ -10,17 +10,13 @@ import MetalKit
 class SceneRenderer {
     var view: MTKView
     var device: MTLDevice?
-    
+
     init(_ device: MTLDevice?, view: MTKView) {
         self.device = device
         self.view = view
     }
-    
-    func draw() {
-        
-    }
+
+    func draw() {}
 }
 
-extension SceneRenderer {
-    
-}
+extension SceneRenderer {}

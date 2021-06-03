@@ -19,13 +19,13 @@ class IrradianceMap {
         Vertex(position: Float3(1, 1, 0), color: Float4(1.0, 1.0, 0.0, 1)),
         Vertex(position: Float3(1, 1, 0), color: Float4(1.0, 1.0, 0, 1)),
         Vertex(position: Float3(-1, -1, 0), color: Float4(0.0, 0.0, 0.0, 1)),
-        Vertex(position: Float3(1, -1, 0), color: Float4(1.0, 0.0, 0.0, 1))
+        Vertex(position: Float3(1, -1, 0), color: Float4(1.0, 0.0, 0.0, 1)),
     ]
-    
+
     init() {
         let device = Device.sharedDevice.device!
-        vertexBuffer = device.makeBuffer(bytes: vertices, length: MemoryLayout<Vertex>.stride*vertices.count, options: [])!
-        texture = Descriptor.build2DTexture(pixelFormat: .rgba16Float, size: CGSize(width: w, height: w/2), label: "irradianceMap");
+        vertexBuffer = device.makeBuffer(bytes: vertices, length: MemoryLayout<Vertex>.stride * vertices.count, options: [])!
+        texture = Descriptor.build2DTexture(pixelFormat: .rgba16Float, size: CGSize(width: w, height: w / 2), label: "irradianceMap")
         pipelineState = Descriptor.createIrradianceMapPipelineState()
         renderPassDescriptor.setupColorAttachment(texture)
     }
@@ -44,25 +44,25 @@ class PrefilterEnvMap {
         Vertex(position: Float3(1, 1, 0), color: Float4(1.0, 1.0, 0.0, 1)),
         Vertex(position: Float3(1, 1, 0), color: Float4(1.0, 1.0, 0, 1)),
         Vertex(position: Float3(-1, -1, 0), color: Float4(0.0, 0.0, 0.0, 1)),
-        Vertex(position: Float3(1, -1, 0), color: Float4(1.0, 0.0, 0.0, 1))
+        Vertex(position: Float3(1, -1, 0), color: Float4(1.0, 0.0, 0.0, 1)),
     ]
     var mipMaps: [MTLTexture] = []
     var renderPassDescriptors: [MTLRenderPassDescriptor] = []
     var mipMapCount = 0
-    
+
     init() {
         let device = Device.sharedDevice.device!
-        vertexBuffer = device.makeBuffer(bytes: vertices, length: MemoryLayout<Vertex>.stride*vertices.count, options: [])!
-        texture = Descriptor.build2DTexture(pixelFormat: .rgba16Float, size: CGSize(width: w, height: w/2), mipmapped: true);
+        vertexBuffer = device.makeBuffer(bytes: vertices, length: MemoryLayout<Vertex>.stride * vertices.count, options: [])!
+        texture = Descriptor.build2DTexture(pixelFormat: .rgba16Float, size: CGSize(width: w, height: w / 2), mipmapped: true)
         pipelineState = Descriptor.createPreFilterEnvMapPipelineState()
         renderPassDescriptor.setupColorAttachment(texture)
         generateTextureForMipmaps(w)
     }
-    
-    func generateTextureForMipmaps(_ w: Int) {
-        var width = self.w
+
+    func generateTextureForMipmaps(_: Int) {
+        var width = w
         while width >= minMipmapWidth {
-            let texture = Descriptor.build2DTexture(pixelFormat: .rgba16Float, size: CGSize(width: width, height: width/2));
+            let texture = Descriptor.build2DTexture(pixelFormat: .rgba16Float, size: CGSize(width: width, height: width / 2))
             let renderPassDescriptorMipmap = MTLRenderPassDescriptor()
             renderPassDescriptorMipmap.setupColorAttachment(texture)
             mipMaps.append(texture)
@@ -84,13 +84,13 @@ class DFGLut {
         Vertex(position: Float3(1, 1, 0), color: Float4(1.0, 1.0, 0.0, 1)),
         Vertex(position: Float3(1, 1, 0), color: Float4(1.0, 1.0, 0, 1)),
         Vertex(position: Float3(-1, -1, 0), color: Float4(0.0, 0.0, 0.0, 1)),
-        Vertex(position: Float3(1, -1, 0), color: Float4(1.0, 0.0, 0.0, 1))
+        Vertex(position: Float3(1, -1, 0), color: Float4(1.0, 0.0, 0.0, 1)),
     ]
-    
+
     init() {
         let device = Device.sharedDevice.device!
-        vertexBuffer = device.makeBuffer(bytes: vertices, length: MemoryLayout<Vertex>.stride*vertices.count, options: [])!
-        texture = Descriptor.build2DTexture(pixelFormat: .rgba16Float, size: CGSize(width: 512, height: 512));
+        vertexBuffer = device.makeBuffer(bytes: vertices, length: MemoryLayout<Vertex>.stride * vertices.count, options: [])!
+        texture = Descriptor.build2DTexture(pixelFormat: .rgba16Float, size: CGSize(width: 512, height: 512))
         pipelineState = Descriptor.createDFGLUTPipelineState()
         renderPassDescriptor.setupColorAttachment(texture)
     }
@@ -105,9 +105,9 @@ class PolygonLight {
         Vertex(position: Float3(1, 1, 0), color: Float4(1.0, 1.0, 0.0, 1)),
         Vertex(position: Float3(1, 1, 0), color: Float4(1.0, 1.0, 0, 1)),
         Vertex(position: Float3(-1, -1, 0), color: Float4(0.0, 0.0, 0.0, 1)),
-        Vertex(position: Float3(1, -1, 0), color: Float4(1.0, 0.0, 0.0, 1))
+        Vertex(position: Float3(1, -1, 0), color: Float4(1.0, 0.0, 0.0, 1)),
     ]
-    
+
     init(vertices: [Float3]) {
         self.vertices = [
             Vertex(position: vertices[0], color: Float4(0.0, 0.0, 0.0, 1)),
@@ -115,7 +115,7 @@ class PolygonLight {
             Vertex(position: vertices[3], color: Float4(1.0, 1.0, 0.0, 1)),
             Vertex(position: vertices[1], color: Float4(1.0, 1.0, 0, 1)),
             Vertex(position: vertices[2], color: Float4(0.0, 0.0, 0.0, 1)),
-            Vertex(position: vertices[3], color: Float4(1.0, 0.0, 0.0, 1))
+            Vertex(position: vertices[3], color: Float4(1.0, 0.0, 0.0, 1)),
         ]
         let device = Device.sharedDevice.device!
         vertexBuffer = device.makeBuffer(bytes: self.vertices, length: MemoryLayout<Vertex>.stride * self.vertices.count, options: [])!

@@ -41,8 +41,9 @@ class Material {
             metallic = max(0.001, metallic)
         }
     }
+
     var textureSet: TextureSet!
-    
+
     private let library = Device.sharedDevice.library
     var fragmentShaderFunction: MTLFunction?
     var vertexShaderFunction: MTLFunction?
@@ -50,14 +51,16 @@ class Material {
         vertexShaderFunction = library?.makeFunction(name: "basicVertexShader")
         fragmentShaderFunction = library?.makeFunction(name: "basicFragmentShader")
     }
+
     init(_ fragmentShader: String, _ vertexShader: String) {
         fragmentShaderFunction = library?.makeFunction(name: fragmentShader)
         vertexShaderFunction = library?.makeFunction(name: vertexShader)
     }
+
     convenience init(_ material: MDLMaterial?, _ textureLoader: MTKTextureLoader) {
         self.init()
         if let material = material {
-            baseColor = material.property(with: .baseColor)?.float3Value ?? Float3(repeating: 1) 
+            baseColor = material.property(with: .baseColor)?.float3Value ?? Float3(repeating: 1)
             roughness = material.property(with: .materialIndexOfRefraction)?.floatValue ?? Float(0.1)
             metallic = material.property(with: .emission)?.floatValue ?? Float(0.8)
             textureSet = TextureSet(material: material, textureLoader: textureLoader)
@@ -77,23 +80,23 @@ class TextureSet {
     static let defaultAOTexture = getDefautAOTexture()
     static let defaultNormalMap = getDefautNormalMap()
     static let defaultAlbedo = getDefautAlbedoTexture()
-    
+
     func texture(for semantic: MDLMaterialSemantic, in material: MDLMaterial, textureLoader: MTKTextureLoader) -> MTLTexture? {
         guard let materialProperty = material.property(with: semantic) else { return nil }
         /*
-        print(material.name)
-        print(material.property(with: .baseColor)?.float3Value)
-        print(material.property(with: .emission)?.float3Value)
-        print(material.property(with: .specular)?.float3Value)
-        print(material.property(with: .metallic)?.float3Value)
-        print(material.property(with: .roughness)?.float3Value)
-        print(material.property(with: .specular)?.float3Value)
-        print(material.property(with: .materialIndexOfRefraction)?.float3Value)
-        print(material.property(with: .userDefined)?.float3Value)
-         */
+         print(material.name)
+         print(material.property(with: .baseColor)?.float3Value)
+         print(material.property(with: .emission)?.float3Value)
+         print(material.property(with: .specular)?.float3Value)
+         print(material.property(with: .metallic)?.float3Value)
+         print(material.property(with: .roughness)?.float3Value)
+         print(material.property(with: .specular)?.float3Value)
+         print(material.property(with: .materialIndexOfRefraction)?.float3Value)
+         print(material.property(with: .userDefined)?.float3Value)
+          */
         guard let sourceTexture = materialProperty.textureSamplerValue?.texture else { return nil }
-    //    let wantMips = materialProperty.semantic != .tangentSpaceNormal
-        var options: [MTKTextureLoader.Option : Any] = [:]
+        //    let wantMips = materialProperty.semantic != .tangentSpaceNormal
+        var options: [MTKTextureLoader.Option: Any] = [:]
         if semantic == .baseColor {
             options[.SRGB] = true
         }
@@ -106,9 +109,9 @@ class TextureSet {
         roughness = texture(for: .roughness, in: sourceMaterial, textureLoader: textureLoader) ?? Self.defaultTexture
         normalMap = texture(for: .tangentSpaceNormal, in: sourceMaterial, textureLoader: textureLoader) ?? Self.defaultNormalMap
         ao = texture(for: .ambientOcclusion, in: sourceMaterial, textureLoader: textureLoader) ?? Self.defaultAOTexture
-    //    emissive = texture(for: .emission, in: sourceMaterial, textureLoader: textureLoader)
+        //    emissive = texture(for: .emission, in: sourceMaterial, textureLoader: textureLoader)
     }
-    
+
     static func getDefautTexture() -> MTLTexture {
         let bounds = MTLRegionMake2D(0, 0, 1, 1)
         let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm,
@@ -117,11 +120,11 @@ class TextureSet {
                                                                   mipmapped: false)
         descriptor.usage = .shaderRead
         let defaultTexture = Device.sharedDevice.device!.makeTexture(descriptor: descriptor)!
-        let defaultColor: [UInt8] = [ 1, 1, 1, 255 ]
+        let defaultColor: [UInt8] = [1, 1, 1, 255]
         defaultTexture.replace(region: bounds, mipmapLevel: 0, withBytes: defaultColor, bytesPerRow: 4)
         return defaultTexture
     }
-    
+
     static func getDefautAlbedoTexture() -> MTLTexture {
         let bounds = MTLRegionMake2D(0, 0, 1, 1)
         let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm,
@@ -130,11 +133,11 @@ class TextureSet {
                                                                   mipmapped: false)
         descriptor.usage = .shaderRead
         let defaultTexture = Device.sharedDevice.device!.makeTexture(descriptor: descriptor)!
-        let defaultColor: [UInt8] = [ 255, 255, 255, 255 ]
+        let defaultColor: [UInt8] = [255, 255, 255, 255]
         defaultTexture.replace(region: bounds, mipmapLevel: 0, withBytes: defaultColor, bytesPerRow: 4)
         return defaultTexture
     }
-    
+
     static func getDefautAOTexture() -> MTLTexture {
         let bounds = MTLRegionMake2D(0, 0, 1, 1)
         let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm,
@@ -143,11 +146,11 @@ class TextureSet {
                                                                   mipmapped: false)
         descriptor.usage = .shaderRead
         let defaultTexture = Device.sharedDevice.device!.makeTexture(descriptor: descriptor)!
-        let defaultColor: [UInt8] = [ 255, 255, 255, 255 ]
+        let defaultColor: [UInt8] = [255, 255, 255, 255]
         defaultTexture.replace(region: bounds, mipmapLevel: 0, withBytes: defaultColor, bytesPerRow: 4)
         return defaultTexture
     }
-    
+
     static func getDefautNormalMap() -> MTLTexture {
         let bounds = MTLRegionMake2D(0, 0, 1, 1)
         let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm,
@@ -156,7 +159,7 @@ class TextureSet {
                                                                   mipmapped: false)
         descriptor.usage = .shaderRead
         let defaultTexture = Device.sharedDevice.device!.makeTexture(descriptor: descriptor)!
-        let defaultColor: [UInt8] = [ 128, 255, 128, 255 ]
+        let defaultColor: [UInt8] = [128, 255, 128, 255]
         defaultTexture.replace(region: bounds, mipmapLevel: 0, withBytes: defaultColor, bytesPerRow: 4)
         return defaultTexture
     }

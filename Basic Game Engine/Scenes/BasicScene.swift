@@ -9,26 +9,26 @@ import MetalKit
 
 class BasicScene: Scene {
     var ring: GameObject!
-    
+
     override func getGameObjects() -> [GameObject] {
-    //    sphere = GameObject(modelName: "spheres")
-    //    ring = GameObject(modelName: "ring")
-    //    return [sphere, ring]
+        //    sphere = GameObject(modelName: "spheres")
+        //    ring = GameObject(modelName: "ring")
+        //    return [sphere, ring]
         var teapots: [GameObject] = []
         let nums = 8
         let scale: Float = 3
-        for i in 0..<nums {
-            for j in 0..<nums {
+        for i in 0 ..< nums {
+            for j in 0 ..< nums {
                 let teapot = GameObject(modelName: "planet")
-                teapot.transform.translate(-Float(nums)/2 * Float3(scale, scale, 0.0) + Float3(Float(j)*scale, Float(i)*scale, 0))
+                teapot.transform.translate(-Float(nums) / 2 * Float3(scale, scale, 0.0) + Float3(Float(j) * scale, Float(i) * scale, 0))
                 teapot.transform.scale(Float3(repeating: 0.20))
                 let mesh = teapot.getComponent(Mesh.self)!
                 for (_, meshNodes) in mesh.meshNodes {
                     for meshNode in meshNodes {
                         let material = meshNode.material
-                        let roughness = Float(j)/Float(nums-1)
+                        let roughness = Float(j) / Float(nums - 1)
                         material.roughness = roughness
-                        material.metallic = Float(i)/Float(nums-1)
+                        material.metallic = Float(i) / Float(nums - 1)
                         material.baseColor = Float3(0.0, 0, 1.0)
                     }
                 }
@@ -37,19 +37,17 @@ class BasicScene: Scene {
         }
         return teapots
     }
-    
-    override func addPhysics() {
-        
-    }
-    
+
+    override func addPhysics() {}
+
     override func getSkybox() -> Skybox {
         return Skybox(textureName: "room")
     }
-    
+
     override func addBehaviour() {
-    //    let _ = MoveInCircle(gameObject: sphere, radius: 10)
+        //    let _ = MoveInCircle(gameObject: sphere, radius: 10)
     }
-    
+
     override func getCamera() -> Camera {
         return Camera(position: Float3(0, 0, 15), target: Float3(0, 0, 0))
     }

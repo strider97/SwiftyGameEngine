@@ -15,10 +15,10 @@ class Mesh: Component {
     private var meshes: [MTKMesh] = []
     private var mdlMeshes: [MDLMesh] = []
     var meshNodes: [(MTKMesh, [MeshNode])] = []
-    
+
     init(modelName: String) {
         super.init()
-        self.vertexDescriptor = MeshManager.meshManager.vertexDescriptor
+        vertexDescriptor = MeshManager.meshManager.vertexDescriptor
         loadModel(modelName, device: Device.sharedDevice.device!)
     }
 }
@@ -29,7 +29,7 @@ extension Mesh {
         meshes = MeshManager.meshManager.loadMesh(modelName, device: device).1
         assert(mdlMeshes.count == meshes.count)
         let textureLoader = MTKTextureLoader(device: device)
-        for i in 0..<meshes.count {
+        for i in 0 ..< meshes.count {
             var meshNodeArray: [MeshNode] = []
             let mdlSubmeshes = mdlMeshes[i].submeshes as! [MDLSubmesh]
             for (index, submesh) in meshes[i].submeshes.enumerated() {
@@ -45,11 +45,10 @@ class MeshNode {
     var material: Material
     var mesh: MTKSubmesh
     var modelMatrix: Matrix4
-    
+
     init(submesh: MTKSubmesh, material: MDLMaterial?, textureLoader: MTKTextureLoader) {
         mesh = submesh
         self.material = Material(material, textureLoader)
         modelMatrix = Matrix4(1)
     }
 }
-

@@ -12,10 +12,11 @@ class MeshManager {
     static let meshManager = MeshManager()
     let vertexDescriptor: MTLVertexDescriptor!
     let vertexDescriptorMDL: MDLVertexDescriptor!
-    private init () {
-        self.vertexDescriptorMDL = Self.getMDLVertexDescriptor()
-        self.vertexDescriptor = MTKMetalVertexDescriptorFromModelIO(self.vertexDescriptorMDL)
+    private init() {
+        vertexDescriptorMDL = Self.getMDLVertexDescriptor()
+        vertexDescriptor = MTKMetalVertexDescriptorFromModelIO(vertexDescriptorMDL)
     }
+
     private var allMeshes: [String: ([MDLMesh], [MTKMesh])] = [:]
 }
 
@@ -24,7 +25,7 @@ extension MeshManager {
         if let meshes = allMeshes[modelName] {
             return meshes
         }
-        guard let url = Bundle.main.url(forResource: modelName, withExtension: "obj") else { return ([],[]) }
+        guard let url = Bundle.main.url(forResource: modelName, withExtension: "obj") else { return ([], []) }
         let bufferAllocator = MTKMeshBufferAllocator(device: device)
         let asset = MDLAsset(url: url, vertexDescriptor: nil, bufferAllocator: bufferAllocator)
         asset.loadTextures()
@@ -45,22 +46,21 @@ extension MeshManager {
         }
         return (meshesMDL, meshes)
     }
-    
+
     static func getMDLVertexDescriptor() -> MDLVertexDescriptor {
         let vertexDescriptor = MDLVertexDescriptor()
         vertexDescriptor.attributes[0] = MDLVertexAttribute(name: MDLVertexAttributePosition, format: .float3, offset: 0, bufferIndex: 0)
-        vertexDescriptor.attributes[1] = MDLVertexAttribute(name: MDLVertexAttributeNormal, format: .float3, offset: MemoryLayout<Float>.size*3, bufferIndex: 0)
-        vertexDescriptor.attributes[2] = MDLVertexAttribute(name: MDLVertexAttributeTextureCoordinate, format: .float2, offset: MemoryLayout<Float>.size*6, bufferIndex: 0)
-        vertexDescriptor.attributes[3] = MDLVertexAttribute(name: Constants.smoothNormal, format: .float3, offset: MemoryLayout<Float>.size*8, bufferIndex: 0)
-        vertexDescriptor.attributes[4] = MDLVertexAttribute(name: MDLVertexAttributeTangent, format: .float3, offset: MemoryLayout<Float>.size*11, bufferIndex: 0)
-        vertexDescriptor.layouts[0] = MDLVertexBufferLayout(stride: MemoryLayout<Float>.size*14)
+        vertexDescriptor.attributes[1] = MDLVertexAttribute(name: MDLVertexAttributeNormal, format: .float3, offset: MemoryLayout<Float>.size * 3, bufferIndex: 0)
+        vertexDescriptor.attributes[2] = MDLVertexAttribute(name: MDLVertexAttributeTextureCoordinate, format: .float2, offset: MemoryLayout<Float>.size * 6, bufferIndex: 0)
+        vertexDescriptor.attributes[3] = MDLVertexAttribute(name: Constants.smoothNormal, format: .float3, offset: MemoryLayout<Float>.size * 8, bufferIndex: 0)
+        vertexDescriptor.attributes[4] = MDLVertexAttribute(name: MDLVertexAttributeTangent, format: .float3, offset: MemoryLayout<Float>.size * 11, bufferIndex: 0)
+        vertexDescriptor.layouts[0] = MDLVertexBufferLayout(stride: MemoryLayout<Float>.size * 14)
         return vertexDescriptor
     }
-    
+
     static func getVertexDescriptor() -> MTLVertexDescriptor {
         return MTKMetalVertexDescriptorFromModelIO(Self.getMDLVertexDescriptor())!
     }
-    
 }
 
 enum Models {

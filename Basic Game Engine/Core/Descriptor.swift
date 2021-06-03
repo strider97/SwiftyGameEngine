@@ -17,7 +17,7 @@ class Descriptor {
         texture.label = label
         return texture
     }
-    
+
     static func buildTextureCube(size: Int, label: String = "") -> MTLTexture {
         let device = Device.sharedDevice.device!
         let descriptor = MTLTextureDescriptor.textureCubeDescriptor(pixelFormat: .rgba16Float, size: size, mipmapped: false)
@@ -27,8 +27,8 @@ class Descriptor {
         texture.label = label
         return texture
     }
-    
-    static func build3DTexture(dimW: Int, dimH: Int, dimD: Int, label: String = "3D texture", pixelFormat: MTLPixelFormat = .rgba32Float) -> MTLTexture {
+
+    static func build3DTexture(dimW: Int, dimH: Int, dimD: Int, label: String = "3D texture", pixelFormat _: MTLPixelFormat = .rgba32Float) -> MTLTexture {
         let device = Device.sharedDevice.device!
         let textureDescriptor = MTLTextureDescriptor()
         textureDescriptor.textureType = .type3D
@@ -39,16 +39,16 @@ class Descriptor {
         textureDescriptor.usage = [.shaderRead, .shaderWrite]
         guard let texture = device.makeTexture(descriptor: textureDescriptor) else { fatalError("Could not make texture") }
         texture.label = label
-        let values: [Float] = [Float](repeating: 0.0, count: dimW*dimH*dimD*4)
+        let values: [Float] = [Float](repeating: 0.0, count: dimW * dimH * dimD * 4)
         texture.replace(region: MTLRegionMake3D(0, 0, 0, dimW, dimH, dimD),
-                        mipmapLevel:0,
-                        slice:0,
-                        withBytes:values,
-                        bytesPerRow:dimW * MemoryLayout<Float>.size * 4,
-                        bytesPerImage:dimW * dimH * MemoryLayout<Float>.size * 4)
+                        mipmapLevel: 0,
+                        slice: 0,
+                        withBytes: values,
+                        bytesPerRow: dimW * MemoryLayout<Float>.size * 4,
+                        bytesPerImage: dimW * dimH * MemoryLayout<Float>.size * 4)
         return texture
     }
-    
+
     static func build3DTexture(dim: Int, label: String = "3D texture") -> MTLTexture {
         return Self.build3DTexture(dimW: dim, dimH: dim, dimD: dim, label: label)
     }
@@ -61,7 +61,7 @@ extension MTLRenderPassDescriptor {
         depthAttachment.storeAction = .store
         depthAttachment.clearDepth = 1
     }
-    
+
     func setupColorAttachment(_ texture: MTLTexture, _ position: Int = 0) {
         colorAttachments[position].texture = texture
         colorAttachments[position].loadAction = .clear
@@ -79,90 +79,90 @@ extension Descriptor {
         descriptor.vertexDescriptor = MeshManager.getVertexDescriptor()
         do {
             return try Device.sharedDevice.device!.makeRenderPipelineState(descriptor: descriptor)
-        } catch let error {
+        } catch {
             fatalError(error.localizedDescription)
         }
     }
-    
+
     static func createPreFilterEnvMapPipelineState() -> MTLRenderPipelineState {
         let descriptor = MTLRenderPipelineDescriptor()
-        descriptor.colorAttachments[0].pixelFormat = .rgba16Float;
+        descriptor.colorAttachments[0].pixelFormat = .rgba16Float
         descriptor.vertexFunction = Device.sharedDevice.library?.makeFunction(name: "preFilterEnvMapVertexShader")
         descriptor.fragmentFunction = Device.sharedDevice.library?.makeFunction(name: "preFilterEnvMapFragmentShader")
         descriptor.vertexDescriptor = Descriptor.getSimpleVertexDescriptor()
         do {
             return try Device.sharedDevice.device!.makeRenderPipelineState(descriptor: descriptor)
-        } catch let error {
+        } catch {
             fatalError(error.localizedDescription)
         }
     }
-    
+
     static func createDFGLUTPipelineState() -> MTLRenderPipelineState {
         let descriptor = MTLRenderPipelineDescriptor()
-        descriptor.colorAttachments[0].pixelFormat = .rgba16Float;
+        descriptor.colorAttachments[0].pixelFormat = .rgba16Float
         descriptor.vertexFunction = Device.sharedDevice.library?.makeFunction(name: "DFGVertexShader")
         descriptor.fragmentFunction = Device.sharedDevice.library?.makeFunction(name: "DFGFragmentShader")
         descriptor.vertexDescriptor = Descriptor.getSimpleVertexDescriptor()
         do {
             return try Device.sharedDevice.device!.makeRenderPipelineState(descriptor: descriptor)
-        } catch let error {
+        } catch {
             fatalError(error.localizedDescription)
         }
     }
-    
+
     static func createLightPipelineState() -> MTLRenderPipelineState {
         let descriptor = MTLRenderPipelineDescriptor()
-        descriptor.colorAttachments[0].pixelFormat = Constants.pixelFormat;
+        descriptor.colorAttachments[0].pixelFormat = Constants.pixelFormat
         descriptor.depthAttachmentPixelFormat = .depth32Float
         descriptor.vertexFunction = Device.sharedDevice.library?.makeFunction(name: "lightVertexShader")
         descriptor.fragmentFunction = Device.sharedDevice.library?.makeFunction(name: "lightFragmentShader")
         descriptor.vertexDescriptor = Descriptor.getSimpleVertexDescriptor()
         do {
             return try Device.sharedDevice.device!.makeRenderPipelineState(descriptor: descriptor)
-        } catch let error {
+        } catch {
             fatalError(error.localizedDescription)
         }
     }
-    
+
     static func createLightProbePipelineState() -> MTLRenderPipelineState {
         let descriptor = MTLRenderPipelineDescriptor()
-        descriptor.colorAttachments[0].pixelFormat = Constants.pixelFormat;
+        descriptor.colorAttachments[0].pixelFormat = Constants.pixelFormat
         descriptor.depthAttachmentPixelFormat = .depth32Float
         descriptor.vertexFunction = Device.sharedDevice.library?.makeFunction(name: "lightProbeVertexShader")
         descriptor.fragmentFunction = Device.sharedDevice.library?.makeFunction(name: "lightProbeFragmentShader")
         descriptor.vertexDescriptor = MeshManager.getVertexDescriptor()
         do {
             return try Device.sharedDevice.device!.makeRenderPipelineState(descriptor: descriptor)
-        } catch let error {
+        } catch {
             fatalError(error.localizedDescription)
         }
     }
-    
+
     static func createIrradianceMapPipelineState() -> MTLRenderPipelineState {
         let descriptor = MTLRenderPipelineDescriptor()
-        descriptor.colorAttachments[0].pixelFormat = .rgba16Float;
+        descriptor.colorAttachments[0].pixelFormat = .rgba16Float
         descriptor.vertexFunction = Device.sharedDevice.library?.makeFunction(name: "irradianceMapVertexShader")
         descriptor.fragmentFunction = Device.sharedDevice.library?.makeFunction(name: "irradianceMapFragmentShader")
         descriptor.vertexDescriptor = Descriptor.getSimpleVertexDescriptor()
         do {
             return try Device.sharedDevice.device!.makeRenderPipelineState(descriptor: descriptor)
-        } catch let error {
+        } catch {
             fatalError(error.localizedDescription)
         }
     }
 }
 
 /*
-let textureLoader = MTKTextureLoader(device: device!)
-let options_: [MTKTextureLoader.Option : Any] = [.generateMipmaps : true, .SRGB : true]
-baseColorTexture = try? textureLoader.newTexture(name: "legoMan", scaleFactor: 1.0, bundle: nil, options: options_)
-let samplerDescriptor = MTLSamplerDescriptor()
-    samplerDescriptor.normalizedCoordinates = true
-    samplerDescriptor.minFilter = .linear
-    samplerDescriptor.magFilter = .linear
-    samplerDescriptor.mipFilter = .linear
-self.samplerState = device?.makeSamplerState(descriptor: samplerDescriptor)!
- */
+ let textureLoader = MTKTextureLoader(device: device!)
+ let options_: [MTKTextureLoader.Option : Any] = [.generateMipmaps : true, .SRGB : true]
+ baseColorTexture = try? textureLoader.newTexture(name: "legoMan", scaleFactor: 1.0, bundle: nil, options: options_)
+ let samplerDescriptor = MTLSamplerDescriptor()
+     samplerDescriptor.normalizedCoordinates = true
+     samplerDescriptor.minFilter = .linear
+     samplerDescriptor.magFilter = .linear
+     samplerDescriptor.mipFilter = .linear
+ self.samplerState = device?.makeSamplerState(descriptor: samplerDescriptor)!
+  */
 
 extension Descriptor {
     static func getSimpleVertexDescriptor() -> MTLVertexDescriptor {

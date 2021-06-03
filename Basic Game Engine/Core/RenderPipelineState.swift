@@ -13,8 +13,8 @@ class MTLDeviceObject {
     var commandQueue: MTLCommandQueue?
     var library: MTLLibrary?
     var commandBuffer: MTLCommandBuffer?
-    
-    private init () {
+
+    private init() {
         device = MTLCreateSystemDefaultDevice()
         commandQueue = device?.makeCommandQueue()
         library = device?.makeDefaultLibrary()
@@ -29,7 +29,7 @@ class GBufferData {
     var flux: MTLTexture
     var gBufferRenderPassDescriptor: MTLRenderPassDescriptor!
     var renderPipelineState: MTLRenderPipelineState?
-    
+
     init(size: CGSize, fragmentFunction: String = "fragmentRSMData") {
         depth = Descriptor.build2DTexture(pixelFormat: .depth32Float, size: size)
         normal = Descriptor.build2DTexture(pixelFormat: .rgba16Float, size: size)
@@ -38,28 +38,28 @@ class GBufferData {
         buildGBufferRenderPassDescriptor(size: size)
         buildGBufferPipelineState(fragmentFunction: fragmentFunction)
     }
-    
-    func buildGBufferRenderPassDescriptor(size: CGSize) {
+
+    func buildGBufferRenderPassDescriptor(size _: CGSize) {
         gBufferRenderPassDescriptor = MTLRenderPassDescriptor()
         gBufferRenderPassDescriptor.setupColorAttachment(normal, 0)
         gBufferRenderPassDescriptor.setupColorAttachment(worldPos, 1)
         gBufferRenderPassDescriptor.setupColorAttachment(flux, 2)
         gBufferRenderPassDescriptor.setupDepthAttachment(texture: depth)
     }
-    
+
     func buildGBufferPipelineState(fragmentFunction: String) {
         let descriptor = MTLRenderPipelineDescriptor()
         descriptor.colorAttachments[0].pixelFormat = .rgba16Float
         descriptor.colorAttachments[1].pixelFormat = .rgba32Float
         descriptor.colorAttachments[2].pixelFormat = .rgba16Float
         descriptor.depthAttachmentPixelFormat = .depth32Float
-        
+
         descriptor.vertexFunction = Device.sharedDevice.library!.makeFunction(name: "vertexRSM")
         descriptor.fragmentFunction = Device.sharedDevice.library!.makeFunction(name: fragmentFunction)
         descriptor.vertexDescriptor = MeshManager.meshManager.vertexDescriptor
         do {
             renderPipelineState = try Device.sharedDevice.device!.makeRenderPipelineState(descriptor: descriptor)
-        } catch let error {
+        } catch {
             fatalError(error.localizedDescription)
         }
     }
@@ -67,7 +67,7 @@ class GBufferData {
 
 class LPVData: GBufferData {
     var volumeTexture: MTLTexture
-    
+
     init(dimension: Int, size: CGSize) {
         volumeTexture = Descriptor.build3DTexture(dim: dimension)
         super.init(size: size, fragmentFunction: "lpvDataFragment")

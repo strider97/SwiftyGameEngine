@@ -23,7 +23,6 @@ import Foundation
  map_tangentSpaceNormal old_planks_02_nor_2k.png
  */
 
-
 /*
  # Blender MTL File: 'None'
  # Material Count: 1

@@ -8,7 +8,6 @@
 import MetalKit
 
 class Skybox {
-
     let mesh: MTKMesh
     var texture: MTLTexture?
     var mipmappedTexture: MTLTexture
@@ -28,26 +27,26 @@ class Skybox {
         pipelineState = Self.buildPipelineState(vertexDescriptor: cube.vertexDescriptor)
         depthStencilState = Self.buildDepthStencilState()
         /*
-        let sky = MDLSkyCubeTexture(name: nil,
-                channelEncoding: MDLTextureChannelEncoding.uInt8,
-                textureDimensions: [Int32(160), Int32(160)],
-                turbidity: 0,
-                sunElevation: 30,
-                upperAtmosphereScattering: 0,
-                groundAlbedo: 0)
-        do {
-            let textureLoader = MTKTextureLoader(device: device)
-            texture = try textureLoader.newTexture(texture: sky, options: nil)
-          } catch {
-            fatalError("failed to create skybox texture")
-          }
-     //   texture = Self.createSkycubeTexture(name: textureName)
-        */
+            let sky = MDLSkyCubeTexture(name: nil,
+                    channelEncoding: MDLTextureChannelEncoding.uInt8,
+                    textureDimensions: [Int32(160), Int32(160)],
+                    turbidity: 0,
+                    sunElevation: 30,
+                    upperAtmosphereScattering: 0,
+                    groundAlbedo: 0)
+            do {
+                let textureLoader = MTKTextureLoader(device: device)
+                texture = try textureLoader.newTexture(texture: sky, options: nil)
+              } catch {
+                fatalError("failed to create skybox texture")
+              }
+         //   texture = Self.createSkycubeTexture(name: textureName)
+            */
         texture = Self.loadHDR(name: textureName)
         samplerState = Self.createSamplerState()
         mipmappedTexture = Descriptor.build2DTexture(pixelFormat: .rgba16Float, size: CGSize(width: texture!.width, height: texture!.height), label: "skyboxMipmapped", mipmapped: true)
     }
-    
+
     private static func buildPipelineState(vertexDescriptor: MDLVertexDescriptor) -> MTLRenderPipelineState {
         let descriptor = MTLRenderPipelineDescriptor()
         descriptor.colorAttachments[0].pixelFormat = Constants.pixelFormat
@@ -57,7 +56,7 @@ class Skybox {
         descriptor.fragmentFunction =
             Device.sharedDevice.library?.makeFunction(name: "skyboxFragmentShader")
         descriptor.vertexDescriptor =
-        MTKMetalVertexDescriptorFromModelIO(vertexDescriptor)
+            MTKMetalVertexDescriptorFromModelIO(vertexDescriptor)
         do {
             let pipelineState = try Device.sharedDevice.device!.makeRenderPipelineState(descriptor: descriptor)
             return pipelineState
@@ -65,18 +64,18 @@ class Skybox {
             fatalError(error.localizedDescription)
         }
     }
-    
+
     private static func buildDepthStencilState() -> MTLDepthStencilState? {
         let descriptor = MTLDepthStencilDescriptor()
         descriptor.depthCompareFunction = .lessEqual
         descriptor.isDepthWriteEnabled = true
-        return Device.sharedDevice.device!.makeDepthStencilState(descriptor:  descriptor)
+        return Device.sharedDevice.device!.makeDepthStencilState(descriptor: descriptor)
     }
-    
+
     static func createSkycubeTexture(name: String) -> MTLTexture? {
         let device = Device.sharedDevice.device!
         let textureLoader = MTKTextureLoader(device: device)
-        let options: [MTKTextureLoader.Option : Any] = [:]
+        let options: [MTKTextureLoader.Option: Any] = [:]
         do {
             let textureURL = Bundle.main.url(forResource: name, withExtension: "jpg")!
             let texture = try textureLoader.newTexture(URL: textureURL, options: options)
@@ -85,17 +84,17 @@ class Skybox {
             fatalError("Could not load irradiance map from asset catalog: \(error)")
         }
     }
-    
+
     static func createSamplerState() -> MTLSamplerState? {
         let device = Device.sharedDevice.device
         let samplerDescriptor = MTLSamplerDescriptor()
-            samplerDescriptor.normalizedCoordinates = true
-            samplerDescriptor.minFilter = .linear
-            samplerDescriptor.magFilter = .linear
-            samplerDescriptor.mipFilter = .linear
+        samplerDescriptor.normalizedCoordinates = true
+        samplerDescriptor.minFilter = .linear
+        samplerDescriptor.magFilter = .linear
+        samplerDescriptor.mipFilter = .linear
         return device?.makeSamplerState(descriptor: samplerDescriptor)
     }
-    
+
     static func loadHDR(name: String, fileExtension: String = "hdr") -> MTLTexture? {
         let url = Bundle.main.url(forResource: name, withExtension: fileExtension)!
         let device = Device.sharedDevice.device!
@@ -109,13 +108,13 @@ class Skybox {
         guard let cgImage = CGImageSourceCreateImageAtIndex(cgImageSource, 0, nil) else {
             fatalError("Failed to create CGImage")
         }
-        
+
         print(cgImage.width)
         print(cgImage.height)
         print(cgImage.bitsPerComponent)
         print(cgImage.bytesPerRow)
         print(cgImage.byteOrderInfo)
-        
+
         guard let colorSpace = CGColorSpace(name: CGColorSpace.extendedLinearSRGB) else { return nil }
         let bitmapInfo = CGImageAlphaInfo.noneSkipLast.rawValue | CGBitmapInfo.floatComponents.rawValue | CGImageByteOrderInfo.order16Little.rawValue
         guard let bitmapContext = CGContext(data: nil,
@@ -125,9 +124,9 @@ class Skybox {
                                             bytesPerRow: cgImage.width * 2 * 4,
                                             space: colorSpace,
                                             bitmapInfo: bitmapInfo) else { return nil }
-        
+
         bitmapContext.draw(cgImage, in: CGRect(x: 0, y: 0, width: cgImage.width, height: cgImage.height))
-        
+
         let descriptor = MTLTextureDescriptor()
         descriptor.pixelFormat = .rgba16Float
         descriptor.width = cgImage.width
@@ -136,10 +135,10 @@ class Skybox {
         descriptor.usage = .shaderRead
         descriptor.sampleCount = 1
         descriptor.textureType = .type2D
-        
+
         guard let texture = device.makeTexture(descriptor: descriptor) else { return nil }
         texture.replace(region: MTLRegionMake2D(0, 0, cgImage.width, cgImage.height), mipmapLevel: 0, withBytes: bitmapContext.data!, bytesPerRow: cgImage.width * 2 * 4)
-        
+
         return texture
     }
 }

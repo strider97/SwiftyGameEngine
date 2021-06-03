@@ -14,11 +14,11 @@ class GameTimer {
     var deltaTime: Float = 0.0
     var startTime: Float = 0.0
     private init() {}
-    
+
     func updateTime() {
-        deltaTime = max(Float(CACurrentMediaTime()) - startTime - time, 1.0/60)
+        deltaTime = max(Float(CACurrentMediaTime()) - startTime - time, 1.0 / 60)
         time += deltaTime
-    //    print("FPS: \(1/deltaTime)")
+        //    print("FPS: \(1/deltaTime)")
     }
 }
 
@@ -28,8 +28,8 @@ class Input {
     var deltaMouse: Float2 = Float2(0, 0)
     var firstMouseInteraction = true
     var mouseClicked = false
-    private init () {}
-    
+    private init() {}
+
     func updateMousePosition(pos: Float2) {
         if !firstMouseInteraction {
             deltaMouse = pos - mousePosition
@@ -38,7 +38,7 @@ class Input {
         }
         mousePosition = pos
     }
-    
+
     func updateMouseClicked(clicked: Bool) {
         mouseClicked = clicked
     }
