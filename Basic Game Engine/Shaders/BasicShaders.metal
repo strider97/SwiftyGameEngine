@@ -37,7 +37,8 @@ enum {
     rsmPos,
     rsmNormal,
     rsmFlux,
-    rsmDepth
+    rsmDepth,
+    textureDDGI
 };
 
 constant float2 invPi = float2(0.15915, 0.31831);
@@ -45,6 +46,16 @@ constant float pi = 3.1415926;
 
 constexpr sampler s(coord::normalized, address::repeat, filter::linear, mip_filter::linear);
 constexpr sampler s1(coord::normalized, address::clamp_to_edge, filter::linear, mip_filter::linear);
+
+constant int AMBIENT_DIR_COUNT = 6;
+constant float3 ambientCubeDir[] = {
+    float3(1, 0, 0),
+    float3(0, 1, 0),
+    float3(0, 0, 1),
+    float3(-1, 0, 0),
+    float3(0, -1, 0),
+    float3(0, 0, -1)
+};
 
 struct VertexIn {
     float3 position [[attribute(0)]];
@@ -73,6 +84,13 @@ struct Material {
     float roughness;
     float metallic;
     int mipmapCount;
+};
+
+struct LightProbeData {
+    float3 gridEdge;
+    float3 gridOrigin;
+    int probeGridWidth;
+    int probeGridHeight;
 };
 
 float2 sampleSphericalMap_(float3 dir) {
@@ -352,6 +370,24 @@ float3 getRSMGlobalIllumination (float4 fragPosLightSpace, float3 pos, float3 sm
     return radiance;
 }
 
+ushort2 gridPosToTex(float3 pos, LightProbeData probe) {
+    float3 texPos_ = (pos - probe.gridOrigin)/probe.gridEdge;
+    int3 texPos = int3(rint(texPos_.x), rint(texPos_.y), rint(texPos_.z));
+    return ushort2(texPos.y * probe.probeGridWidth + texPos.x, texPos.z);
+}
+
+float3 getDDGI(float3 position, float3 smoothNormal, texture3d<float, access::read> lightProbeTexture, LightProbeData probe) {
+    ushort2 texPos = gridPosToTex(position - smoothNormal * 0.2, probe);
+    float3 col1 = lightProbeTexture.read(ushort3(texPos, 0)).rgb;
+    float3 col2 = lightProbeTexture.read(ushort3(texPos, 1)).rgb;
+    float colors[6] = {col1.x, col1.y, col1.z, col2.x, col2.y, col2.z};
+    float3 color = 0;
+    for (int i = 0; i<AMBIENT_DIR_COUNT; i++) {
+        color += max(0.0, dot(colors[i] * ambientCubeDir[i], smoothNormal));
+    }
+  return color;
+}
+
 vertex VertexOut basicVertexShader(const VertexIn vIn [[ stage_in ]], constant Uniforms &uniforms [[buffer(1)]], constant ShadowUniforms &shadowUniforms [[buffer(2)]])  {
     VertexOut vOut;
     float4x4 VM = uniforms.V*uniforms.M;
@@ -371,7 +407,7 @@ vertex VertexOut basicVertexShader(const VertexIn vIn [[ stage_in ]], constant U
     return vOut;
 }
 
-fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], constant float3 *lightPolygon[[buffer(1)]], texture2d<float, access::sample> preFilterEnvMap [[texture(textureIndexPreFilterEnvMap)]], texture2d<float, access::sample> DFGlut [[texture(textureIndexDFGlut)]], texture2d<float, access::sample> irradianceMap [[texture(textureIndexirradianceMap)]], texture2d<float, access::sample> baseColor [[texture(textureIndexBaseColor)]], texture2d<float, access::sample> roughnessMap [[texture(textureIndexRoughness)]], texture2d<float, access::sample> metallicMap [[texture(textureIndexMetallic)]], texture2d<float, access::sample> normalMap [[texture(normalMap)]], texture2d<float, access::sample> aoTexture [[texture(ao)]], texture2d<float, access::sample> ltc_mat [[texture(ltc_mat)]], texture2d<float, access::sample> ltc_mag [[texture(ltc_mag)]], depth2d<float, access::sample> shadowMap [[texture(shadowMap)]], texture2d<float, access::sample> worldPos [[texture(rsmPos)]], texture2d<float, access::sample> worldNormal [[texture(rsmNormal)]], texture2d<float, access::sample> flux [[texture(rsmFlux)]]){
+fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], constant float3 *lightPolygon[[buffer(1)]], constant LightProbeData &probe [[buffer(2)]], texture2d<float, access::sample> preFilterEnvMap [[texture(textureIndexPreFilterEnvMap)]], texture2d<float, access::sample> DFGlut [[texture(textureIndexDFGlut)]], texture2d<float, access::sample> irradianceMap [[texture(textureIndexirradianceMap)]], texture2d<float, access::sample> baseColor [[texture(textureIndexBaseColor)]], texture2d<float, access::sample> roughnessMap [[texture(textureIndexRoughness)]], texture2d<float, access::sample> metallicMap [[texture(textureIndexMetallic)]], texture2d<float, access::sample> normalMap [[texture(normalMap)]], texture2d<float, access::sample> aoTexture [[texture(ao)]], texture2d<float, access::sample> ltc_mat [[texture(ltc_mat)]], texture2d<float, access::sample> ltc_mag [[texture(ltc_mag)]], depth2d<float, access::sample> shadowMap [[texture(shadowMap)]], texture2d<float, access::sample> worldPos [[texture(rsmPos)]], texture2d<float, access::sample> worldNormal [[texture(rsmNormal)]], texture2d<float, access::sample> flux [[texture(rsmFlux)]],  texture3d<float, access::read> lightProbeTexture [[texture(15)]]){
     
     float3 albedo = material.baseColor;
     albedo *= pow(baseColor.sample(s, vOut.texCoords).rgb, 3.0);
@@ -379,17 +415,17 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     metallic *= metallicMap.sample(s, vOut.texCoords).b;
     float roughness = material.roughness;
     roughness *= roughnessMap.sample(s, vOut.texCoords).g;
-    float3 eyeDir = normalize(vOut.eye - vOut.position);
+//    float3 eyeDir = normalize(vOut.eye - vOut.position);
     
     float3 smoothN = vOut.smoothNormal;
 //    float3 tangentNormal = normalMap.sample(s, vOut.texCoords).xyz * 2.0 - 1.0;
 //    float3x3 TBN(vOut.tangent, vOut.bitangent, vOut.smoothNormal);
 //    float3 N = normalize(TBN * tangentNormal);
 //    float3 N = getNormalFromMap(vOut.position.xyz, smoothN, vOut.texCoords, tangentNormal);
-    float3 V = eyeDir;
+//    float3 V = eyeDir;
     float3 l = vOut.sunDirection;
     bool inShadow = insideShadow(vOut.lightFragPosition, smoothN, l, shadowMap);
-    float3 ambient = 0.021 * albedo;
+    float3 ambient = getDDGI(vOut.position, vOut.smoothNormal, lightProbeTexture, probe) * albedo;
     float3 diffuse = inShadow ? 0 : albedo * saturate(dot(smoothN, l));
     float3 color = diffuse + ambient;
     

@@ -39,7 +39,7 @@ class Raytracer {
         MemoryLayout<MPSRayOriginMinDistanceDirectionMaxDistance>.stride
             + MemoryLayout<Float3>.stride
 
-    let maxFramesInFlight = 1
+    let maxFramesInFlight = 3
     let alignedUniformsSize = (MemoryLayout<Uniforms>.size + 255) & ~255
     var semaphore: DispatchSemaphore!
     var semaphoreAccumulate: DispatchSemaphore!
@@ -177,7 +177,7 @@ class Raytracer {
     }
 
     func update() {
-        GameTimer.sharedTimer.updateTime()
+    //    GameTimer.sharedTimer.updateTime()
         updateUniforms()
         //   updateRandomBuffer()
         uniformBufferIndex = (uniformBufferIndex + 1) % maxFramesInFlight

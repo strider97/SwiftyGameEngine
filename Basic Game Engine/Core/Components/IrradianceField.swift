@@ -38,7 +38,7 @@ class IrradianceField {
         height = h
         depth = d
         probeCount = w * h * d
-        ambientCubeTexture = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: 2, label: "Irradiance Field", pixelFormat: .rgba32Float)
+        ambientCubeTexture = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: 2*Constants.probeReso * Constants.probeReso, label: "Irradiance Field", pixelFormat: .rgba32Float)
         ambientCubeTextureFinal = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: 2, label: "Irradiance Field final", pixelFormat: .rgba32Float)
         gridEdge = gridSize / Float3(Float(w - 1), Float(h - 1), Float(d - 1))
         origin = centre - gridSize / 2

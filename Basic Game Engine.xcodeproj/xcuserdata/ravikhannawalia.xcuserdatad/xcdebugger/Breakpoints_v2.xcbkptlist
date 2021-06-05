@@ -46,8 +46,8 @@
             filePath = "Basic Game Engine/Core/Components/Renderer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "64"
-            endingLineNumber = "64"
+            startingLineNumber = "65"
+            endingLineNumber = "65"
             landmarkName = "init(_:_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -62,8 +62,8 @@
             filePath = "Basic Game Engine/Shaders/BasicShaders.metal"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "314"
-            endingLineNumber = "314"
+            startingLineNumber = "332"
+            endingLineNumber = "332"
             landmarkName = "insideShadow(float4 fragPosLightSpace, float3 normal, float3 l, depth2d&lt;float, access::sample&gt; shadowMap [[texture(shadowMap)]])"
             landmarkType = "9">
          </BreakpointContent>

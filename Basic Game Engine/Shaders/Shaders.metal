@@ -191,17 +191,23 @@ float sumVec(float3 a) {
     return a.r + a.g + a.b;
 }
 
-kernel void accumulateKernel(constant Uniforms_ & uniforms, texture3d<float, access::read_write> lightProbeTexture, texture3d<float, access::read_write> lightProbeTextureFinal, uint2 tid [[thread_position_in_grid]])
+kernel void accumulateKernel(constant Uniforms_ & uniforms, texture3d<float, access::read_write> lightProbeTexture, texture3d<float, access::write> lightProbeTextureFinal, uint2 tid [[thread_position_in_grid]])
 {
   if (int(tid.x) < (uniforms.probeGridWidth * uniforms.probeGridHeight) && int(tid.y) < uniforms.probeGridHeight) {
       
     if (uniforms.frameIndex > 0) {
-      float4 oldValue1 = lightProbeTexture.read(ushort3(tid.x, tid.y, 0));
-      float4 oldValue2 = lightProbeTexture.read(ushort3(tid.x, tid.y, 1));
-      lightProbeTextureFinal.write(oldValue1, ushort3(tid.x, tid.y, 0));
-      lightProbeTextureFinal.write(oldValue2, ushort3(tid.x, tid.y, 1));
-      lightProbeTexture.write(float4(0, 0, 0, 1), ushort3(tid.x, tid.y, 0));
-      lightProbeTexture.write(float4(0, 0, 0, 1), ushort3(tid.x, tid.y, 1));
+        float3 newValue1 = 0;
+        float3 newValue2 = 0;
+        for(int i = 0; i < uniforms.probeWidth * uniforms.probeHeight; i++) {
+            float3 oldValue1 = lightProbeTexture.read(ushort3(tid.x, tid.y, 2*i)).rgb;
+            float3 oldValue2 = lightProbeTexture.read(ushort3(tid.x, tid.y, 2*i+1)).rgb;
+            newValue1 += oldValue1;
+            newValue2 += oldValue2;
+            lightProbeTexture.write(float4(0, 0, 0, 1), ushort3(tid.x, tid.y, 2*i));
+            lightProbeTexture.write(float4(0, 0, 0, 1), ushort3(tid.x, tid.y, 2*i+1));
+        }
+        lightProbeTextureFinal.write(float4(newValue1, 1), ushort3(tid.x, tid.y, 0));
+        lightProbeTextureFinal.write(float4(newValue2, 1), ushort3(tid.x, tid.y, 1));
     }
   }
 }
