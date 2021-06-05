@@ -78,6 +78,7 @@ struct LightProbeData {
     float3 gridOrigin;
     int probeGridWidth;
     int probeGridHeight;
+    int3 probeCount;
 };
 
 constant int AMBIENT_DIR_COUNT = 6;
@@ -156,29 +157,10 @@ fragment float4 lightProbeFragmentShader(VertexOut vOut [[stage_in]], constant L
     float3 col2 = lightProbeTexture.read(ushort3(texPos, 1)).rgb;
     float colors[6] = {col1.x, col1.y, col1.z, col2.x, col2.y, col2.z};
     float3 color = 0;
-    /*
-    float colors[6] = {0, 0, 0, 0, 0, 0};
-    float3 color = 0;
-    float3 dirs[6] = {
-        normalize(float3(1, 1, 1)),
-        normalize(float3(1, 10, 1)),
-        normalize(float3(4, 1, 2)),
-        normalize(float3(7, 6, 0)),
-        normalize(float3(1, 0, 0)),
-        normalize(float3(-0.0001, 0, 1)),
-    };
-    for (int i = 0; i<6; i++) {
-        for (int j = 0; j<AMBIENT_DIR_COUNT; j++) {
-            colors[j] += max(0.0, (dot(ambientCubeDir[j], dirs[i])));
-        }
-    }
-     */
     for (int i = 0; i<AMBIENT_DIR_COUNT; i++) {
-    //    color += saturate(dot(colors[i] * ambientCubeDir[i], vOut.smoothNormal));
-        color += max(0.0, dot(colors[i] * ambientCubeDir[i], vOut.smoothNormal));
+        color += saturate(dot(colors[i] * ambientCubeDir[i], vOut.smoothNormal));
     }
- //   int col = rint(0.50);
-  return float4(color, 1.0);
+  return float4(color * 10, 1.0);
 }
 
 uint2 indexToTexPos__(int index, int width, int height){
@@ -191,10 +173,14 @@ float sumVec(float3 a) {
     return a.r + a.g + a.b;
 }
 
-kernel void accumulateKernel(constant Uniforms_ & uniforms, texture3d<float, access::read_write> lightProbeTexture, texture3d<float, access::write> lightProbeTextureFinal, uint2 tid [[thread_position_in_grid]])
+float3 lerp(float3 a, float3 b, float t) {
+    return a*t + b*(1-t);
+}
+
+kernel void accumulateKernel(constant Uniforms_ & uniforms, texture3d<float, access::read_write> lightProbeTexture, texture3d<float, access::read_write> lightProbeTextureFinal, uint2 tid [[thread_position_in_grid]])
 {
   if (int(tid.x) < (uniforms.probeGridWidth * uniforms.probeGridHeight) && int(tid.y) < uniforms.probeGridHeight) {
-      
+      float t = 0.9;
     if (uniforms.frameIndex > 0) {
         float3 newValue1 = 0;
         float3 newValue2 = 0;
@@ -206,6 +192,10 @@ kernel void accumulateKernel(constant Uniforms_ & uniforms, texture3d<float, acc
             lightProbeTexture.write(float4(0, 0, 0, 1), ushort3(tid.x, tid.y, 2*i));
             lightProbeTexture.write(float4(0, 0, 0, 1), ushort3(tid.x, tid.y, 2*i+1));
         }
+    //    float3 oldValue1 = lightProbeTextureFinal.read(ushort3(tid.x, tid.y, 0)).rgb;
+    //    float3 oldValue2 = lightProbeTextureFinal.read(ushort3(tid.x, tid.y, 1)).rgb;
+    //    lightProbeTextureFinal.write(float4(lerp(oldValue1, newValue1, 0.1), 1), ushort3(tid.x, tid.y, 0));
+    //    lightProbeTextureFinal.write(float4(lerp(oldValue2, newValue2, 0.1), 1), ushort3(tid.x, tid.y, 1));
         lightProbeTextureFinal.write(float4(newValue1, 1), ushort3(tid.x, tid.y, 0));
         lightProbeTextureFinal.write(float4(newValue2, 1), ushort3(tid.x, tid.y, 1));
     }

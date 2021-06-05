@@ -1,15 +1,5 @@
-# Blender MTL File: 'sponza.blend'
-# Material Count: 15
-
-newmtl monkey
-Ns 225.000000
-Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.006832 0.004309
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.450000
-d 1.000000
-illum 2
+# Blender MTL File: 'None'
+# Material Count: 14
 
 newmtl sponza:Material__300
 Ns 179.999996
@@ -30,7 +20,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 3
-map_Kd /Sponza_Arch_diffuse.png
+map_Kd Sponza_Arch_diffuse.png
 
 newmtl sponza:bricks1
 Ns 107.999996
@@ -41,7 +31,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 3
-map_Kd /Sponza_Bricks_a_Albedo.png
+map_Kd Sponza_Bricks_a_Albedo.png
 
 newmtl sponza:ceiling1
 Ns 107.999996
@@ -52,7 +42,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 3
-map_Kd /Sponza_Ceiling_diffuse.png
+map_Kd Sponza_Ceiling_diffuse.png
 
 newmtl sponza:chain1
 Ns 107.999996
@@ -63,7 +53,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 3
-map_Kd /ChainTexture_Albedo.png
+map_Kd ChainTexture_Albedo.png
 
 newmtl sponza:column_a1
 Ns 107.999996
@@ -74,7 +64,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 3
-map_Kd /Sponza_Column_a_diffuse.png
+map_Kd Sponza_Column_a_diffuse.png
 
 newmtl sponza:column_b1
 Ns 107.999996
@@ -85,7 +75,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 3
-map_Kd /Sponza_Column_b_diffuse.png
+map_Kd Sponza_Column_b_diffuse.png
 
 newmtl sponza:column_c1
 Ns 107.999996
@@ -96,7 +86,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 3
-map_Kd /Sponza_Column_c_diffuse.png
+map_Kd Sponza_Column_c_diffuse.png
 
 newmtl sponza:details1
 Ns 107.999996
@@ -107,7 +97,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 3
-map_Kd /Sponza_Details_diffuse.png
+map_Kd Sponza_Details_diffuse.png
 
 newmtl sponza:flagpole1
 Ns 107.999996
@@ -118,7 +108,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 3
-map_Kd /Sponza_FlagPole_diffuse.png
+map_Kd Sponza_FlagPole_diffuse.png
 
 newmtl sponza:floor1
 Ns 107.999996
@@ -129,7 +119,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 3
-map_Kd /Sponza_Floor_diffuse.png
+map_Kd Sponza_Floor_diffuse.png
 
 newmtl sponza:roof1
 Ns 107.999996
@@ -140,7 +130,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 3
-map_Kd /Sponza_Roof_diffuse.png
+map_Kd Sponza_Roof_diffuse.png
 
 newmtl sponza:vase1
 Ns 107.999996
@@ -151,7 +141,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 3
-map_Kd /Vase_diffuse.png
+map_Kd Vase_diffuse.png
 
 newmtl sponza:vase_hanging1
 Ns 107.999996
@@ -162,4 +152,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 3
-map_Kd /VaseHanging_diffuse.png
+map_Kd VaseHanging_diffuse.png

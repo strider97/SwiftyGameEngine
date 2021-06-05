@@ -13,6 +13,7 @@ struct LightProbeData {
     let gridOrigin: Float3
     let probeGridWidth: Int
     let probeGridHeight: Int
+    let probeGridCount: Int3
 }
 
 class IrradianceField {

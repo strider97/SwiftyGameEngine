@@ -91,6 +91,7 @@ struct LightProbeData {
     float3 gridOrigin;
     int probeGridWidth;
     int probeGridHeight;
+    int3 probeCount;
 };
 
 float2 sampleSphericalMap_(float3 dir) {
@@ -372,18 +373,73 @@ float3 getRSMGlobalIllumination (float4 fragPosLightSpace, float3 pos, float3 sm
 
 ushort2 gridPosToTex(float3 pos, LightProbeData probe) {
     float3 texPos_ = (pos - probe.gridOrigin)/probe.gridEdge;
-    int3 texPos = int3(rint(texPos_.x), rint(texPos_.y), rint(texPos_.z));
+    int3 texPos = int3(texPos_);
     return ushort2(texPos.y * probe.probeGridWidth + texPos.x, texPos.z);
 }
 
 float3 getDDGI(float3 position, float3 smoothNormal, texture3d<float, access::read> lightProbeTexture, LightProbeData probe) {
-    ushort2 texPos = gridPosToTex(position - smoothNormal * 0.2, probe);
-    float3 col1 = lightProbeTexture.read(ushort3(texPos, 0)).rgb;
-    float3 col2 = lightProbeTexture.read(ushort3(texPos, 1)).rgb;
-    float colors[6] = {col1.x, col1.y, col1.z, col2.x, col2.y, col2.z};
+    ushort2 texPos = gridPosToTex(position, probe);
+    float3 transformedPos = (position - probe.gridOrigin)/probe.gridEdge;
+    transformedPos -= float3(int3(transformedPos));
+    float x = transformedPos.x;
+    float y = transformedPos.y;
+    float z = transformedPos.z;
+    /*
+     Vxyz =    V000 (1 - x) (1 - y) (1 - z) +
+     V100 x (1 - y) (1 - z) +
+     V010 (1 - x) y (1 - z) +
+     V001 (1 - x) (1 - y) z +
+     
+     V101 x (1 - y) z +
+     V011 (1 - x) y z +
+     V110 x y (1 - z) +
+     V111 x y z
+     */
+    float trilinearWeights[8] = {
+        (1 - x)*(1 - y)*(1 - z),
+        x*(1 - y)*(1 - z),
+        (1 - x)*y*(1 - z),
+        x*y*(1 - z),
+        
+        (1 - x)*(1 - y)*z,
+        x*(1 - y)*z,
+        (1 - x)*y*z,
+        x*y*z,
+    };
+    
+    float trilinearWeights_[8] = {
+        (1 - x)*(1 - y)*(1 - z),
+        x*(1 - y)*(1 - z),
+        (1 - x)*(1 - y)*z,
+        x*(1 - y)*z,
+        
+        (1 - x)*y*(1 - z),
+        x*y*(1 - z),
+        (1 - x)*y*z,
+        x*y*z,
+    };
+    
+    ushort2 lightProbeTexCoeff[8] = {
+        ushort2(0, 0),
+        ushort2(1, 0),
+        ushort2(probe.probeCount.x, 0),
+        ushort2(probe.probeCount.x + 1, 0),
+        ushort2(0, 1),
+        ushort2(1, 1),
+        ushort2(probe.probeCount.x, 1),
+        ushort2(probe.probeCount.x + 1, 1)
+    };
     float3 color = 0;
-    for (int i = 0; i<AMBIENT_DIR_COUNT; i++) {
-        color += max(0.0, dot(colors[i] * ambientCubeDir[i], smoothNormal));
+    for (int iCoeff = 0; iCoeff < 8; iCoeff++) {
+        float3 color_ = 0;
+        float3 col1 = lightProbeTexture.read(ushort3(texPos + lightProbeTexCoeff[iCoeff], 0)).rgb;
+        float3 col2 = lightProbeTexture.read(ushort3(texPos + lightProbeTexCoeff[iCoeff], 1)).rgb;
+        float colors[6] = {col1.x, col1.y, col1.z, col2.x, col2.y, col2.z};
+        for (int i = 0; i<AMBIENT_DIR_COUNT; i++) {
+            color_ += max(0.0, dot(colors[i] * ambientCubeDir[i], smoothNormal));
+        }
+        color += color_ * trilinearWeights[iCoeff];
+    //    color += color_ * (1.0/8);
     }
   return color;
 }
@@ -411,10 +467,11 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     
     float3 albedo = material.baseColor;
     albedo *= pow(baseColor.sample(s, vOut.texCoords).rgb, 3.0);
-    float metallic = material.metallic;
-    metallic *= metallicMap.sample(s, vOut.texCoords).b;
-    float roughness = material.roughness;
-    roughness *= roughnessMap.sample(s, vOut.texCoords).g;
+//    albedo = 1;
+//    float metallic = material.metallic;
+//    metallic *= metallicMap.sample(s, vOut.texCoords).b;
+//    float roughness = material.roughness;
+//    roughness *= roughnessMap.sample(s, vOut.texCoords).g;
 //    float3 eyeDir = normalize(vOut.eye - vOut.position);
     
     float3 smoothN = vOut.smoothNormal;
@@ -425,7 +482,7 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
 //    float3 V = eyeDir;
     float3 l = vOut.sunDirection;
     bool inShadow = insideShadow(vOut.lightFragPosition, smoothN, l, shadowMap);
-    float3 ambient = getDDGI(vOut.position, vOut.smoothNormal, lightProbeTexture, probe) * albedo;
+    float3 ambient = (getDDGI(vOut.position, vOut.smoothNormal, lightProbeTexture, probe) + 0.0000) * albedo;
     float3 diffuse = inShadow ? 0 : albedo * saturate(dot(smoothN, l));
     float3 color = diffuse + ambient;
     

@@ -42,8 +42,6 @@ class Raytracer {
     let maxFramesInFlight = 3
     let alignedUniformsSize = (MemoryLayout<Uniforms>.size + 255) & ~255
     var semaphore: DispatchSemaphore!
-    var semaphoreAccumulate: DispatchSemaphore!
-    var semaphoreRaytrace: DispatchSemaphore!
     var size = CGSize.zero
     var randomBufferOffset = 0
     var uniformBufferOffset = 0
@@ -77,8 +75,6 @@ class Raytracer {
     init(metalView: MTKView) {
         device = Device.sharedDevice.device!
         semaphore = DispatchSemaphore(value: maxFramesInFlight)
-        semaphoreAccumulate = DispatchSemaphore(value: 1)
-        semaphoreRaytrace = DispatchSemaphore(value: 1)
         fence = device.makeFence()
         library = Device.sharedDevice.library!
         commandQueue = Device.sharedDevice.commandQueue!
@@ -87,7 +83,7 @@ class Raytracer {
         createBuffers()
         buildIntersector()
         buildAccelerationStructure()
-        irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 7.5, 0), Float3(30, 15, 15))
+        irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 7.5, 0), Float3(30, 14, 15))
     }
 
     func buildAccelerationStructure() {
@@ -190,31 +186,31 @@ class Raytracer {
 
         var camera = Camera_()
         //    camera.position = float3(8*sin(GameTimer.sharedTimer.time/10.0), 1.0, 8*cos(GameTimer.sharedTimer.time/10.0))
-        camera.position = Float3(-17, 5, 0)
-        camera.forward = self.camera.front
-        camera.right = self.camera.right
-        camera.up = self.camera.up
+     //   camera.position = Float3(-17, 5, 0)
+     //   camera.forward = self.camera.front
+     //   camera.right = self.camera.right
+     //   camera.up = self.camera.up
 
         //    camera.position = Float3(0, 1, -10)
         //    camera.forward = Float3(0.0, 0.0, -1.0)
         //    camera.right = Float3(1.0, 0.0, 0.0)
         //    camera.up = Float3(0.0, 1.0, 0.0)
 
-        let fieldOfView = 45.0 * (Float.pi / 180.0)
-        let aspectRatio = Float(Constants.probeReso) / Float(Constants.probeReso)
-        let imagePlaneHeight = tanf(fieldOfView / 2.0)
-        let imagePlaneWidth = aspectRatio * imagePlaneHeight
+     //   let fieldOfView = 45.0 * (Float.pi / 180.0)
+     //   let aspectRatio = Float(Constants.probeReso) / Float(Constants.probeReso)
+     //   let imagePlaneHeight = tanf(fieldOfView / 2.0)
+     //   let imagePlaneWidth = aspectRatio * imagePlaneHeight
 
-        camera.right *= imagePlaneWidth
-        camera.up *= imagePlaneHeight
+     //   camera.right *= imagePlaneWidth
+     //   camera.up *= imagePlaneHeight
 
         //     print(camera.right!)
         var light = AreaLight()
-        light.position = Float3(5000, 10000, 5000)
-        light.forward = Float3(0.0, 0.0, -1.0)
-        light.right = Float3(1.0, 0.0, 0.0)
-        light.up = Float3(0.0, 1.0, 0.0)
-        light.color = Float3(4.0, 4.0, 4.0)
+     //   light.position = Float3(5000, 10000, 5000)
+     //   light.forward = Float3(0.0, 0.0, -1.0)
+     //   light.right = Float3(1.0, 0.0, 0.0)
+     //   light.up = Float3(0.0, 1.0, 0.0)
+     //   light.color = Float3(4.0, 4.0, 4.0)
 
         uniforms.pointee.camera = camera
         uniforms.pointee.light = light
@@ -270,10 +266,6 @@ extension Raytracer {
         guard let commandBuffer = commandBuffer else {
             return
         }
-        semaphoreRaytrace.wait()
-        commandBuffer.addCompletedHandler { [weak self] _ in
-            self?.semaphoreAccumulate.signal()
-        }
         let threadsPerGroup_ = MTLSizeMake(8, 4, 1)
         let probeCount = Constants.probeGrid.0 * Constants.probeGrid.1
         let threadGroups_ = MTLSizeMake(
@@ -291,7 +283,6 @@ extension Raytracer {
                                              threadsPerThreadgroup: threadsPerGroup_)
         computeEncoder?.memoryBarrier(scope: MTLBarrierScope.textures)
         computeEncoder?.endEncoding()
-        commandBuffer.commit()
     }
 
     func draw(in _: MTKView, commandBuffer: MTLCommandBuffer?) {
@@ -302,7 +293,6 @@ extension Raytracer {
         }
         commandBuffer.addCompletedHandler { [weak self] _ in
             self?.semaphore.signal()
-            self?.semaphoreRaytrace.signal()
         }
         update()
 
@@ -416,7 +406,6 @@ extension Raytracer {
 //        return
 //      }
 //      commandBuffer.present(drawable)
-        commandBuffer.commit()
     }
 }
 

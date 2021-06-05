@@ -121,7 +121,7 @@ kernel void primaryRays(constant Uniforms_ & uniforms [[buffer(0)]],
      //    pixel += r;
       float2 uv = (float2)pixel / float2(uniforms.probeWidth, uniforms.probeHeight);
     uv = uv * 2.0 - 1.0;
-    constant Camera_ & camera = uniforms.camera;
+//    constant Camera_ & camera = uniforms.camera;
     unsigned int rayIdx = tid.y * uniforms.width + tid.x;
     device Ray & ray = rays[rayIdx];
       
@@ -130,13 +130,14 @@ kernel void primaryRays(constant Uniforms_ & uniforms [[buffer(0)]],
   //    ray.direction = normalize(float3(0, 1, 0));
       int rayDirIndex = tid.y*uniforms.probeWidth + tid.x % uniforms.probeWidth;
       ray.direction = probeDirections[rayDirIndex];
+  //    ray.direction = sphericalFibonacci(rayDirIndex, uniforms.probeWidth * uniforms.probeHeight);
 //      ray.direction = normalize(ray.direction);
 //    ray.origin = camera.position;
 //    ray.direction = normalize(uv.x * camera.right + uv.y * camera.up + camera.forward);
     ray.minDistance = 0;
     ray.maxDistance = INFINITY;
     ray.color = float3(0.0);
-    t.write(float4(0.0), tid);
+//    t.write(float4(0.0), tid);
   }
 }
 
@@ -288,19 +289,19 @@ kernel void shadowKernel(uint2 tid [[thread_position_in_grid]], device Uniforms_
         float3 color = 0;
         if ((shadowRay.maxDistance >= 0.0 && intersectionDistance < 0.0)) {
             color = shadowRay.color;
-      //    color += renderTarget.read(tid).xyz;
-      //    renderTarget.write(float4(color, 1.0), tid);
-            
             int index = tid.x / uniforms.probeWidth;
             int rayDirIndex = tid.y*uniforms.probeWidth + tid.x % uniforms.probeWidth;
             float3 direction = probeDirections[rayDirIndex];
+        //    float3 direction = sphericalFibonacci(rayDirIndex, uniforms.probeWidth * uniforms.probeHeight);
             uint2 texPos = indexToTexPos(index, uniforms.probeGridWidth, uniforms.probeGridHeight);
             int raycount = uniforms.probeWidth * uniforms.probeHeight;
             float oldValues[6];
-            for (int i = 0; i<AMBIENT_DIR_COUNT; i++) {
-                float newValue = saturate(dot(direction, ambientCubeDir[i]))/raycount;
-                oldValues[i] = newValue;
-            }
+            oldValues[0] = saturate(dot(direction, ambientCubeDir[0]))/raycount;
+            oldValues[1] = saturate(dot(direction, ambientCubeDir[1]))/raycount;
+            oldValues[2] = saturate(dot(direction, ambientCubeDir[2]))/raycount;
+            oldValues[3] = saturate(dot(direction, ambientCubeDir[3]))/raycount;
+            oldValues[4] = saturate(dot(direction, ambientCubeDir[4]))/raycount;
+            oldValues[5] = saturate(dot(direction, ambientCubeDir[5]))/raycount;
             lightProbeTexture.write(float4(oldValues[0], oldValues[1], oldValues[2], 1), ushort3(texPos.x, texPos.y, rayDirIndex*2));
             lightProbeTexture.write(float4(oldValues[3], oldValues[4], oldValues[5], 1), ushort3(texPos.x, texPos.y, rayDirIndex*2 + 1));
         }

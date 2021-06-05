@@ -9,6 +9,7 @@ import MetalKit
 
 typealias Float3 = SIMD3<Float>
 typealias Float4 = SIMD4<Float>
+typealias Int3 = SIMD3<Int>
 
 struct Vertex {
     var position: Float3

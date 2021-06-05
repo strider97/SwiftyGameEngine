@@ -18,7 +18,7 @@ struct Colors {
 struct Constants {
     static let pixelFormat: MTLPixelFormat = .bgra8Unorm
     static let smoothNormal: String = "newNormal"
-    static let probeGrid = (10, 8, 8)
-    static let probeCount = 640
-    static let probeReso = 16
+    static let probeGrid = (16, 12, 10)
+    static let probeCount = 1920
+    static let probeReso = 32
 }
