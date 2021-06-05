@@ -37,7 +37,7 @@ class Raytracer {
     var intersector: MPSRayIntersector!
     let rayStride =
         MemoryLayout<MPSRayOriginMinDistanceDirectionMaxDistance>.stride
-            + MemoryLayout<Float3>.stride
+        + 2 * MemoryLayout<Float3>.stride
 
     let maxFramesInFlight = 3
     let alignedUniformsSize = (MemoryLayout<Uniforms>.size + 255) & ~255
@@ -211,10 +211,15 @@ class Raytracer {
      //   light.right = Float3(1.0, 0.0, 0.0)
      //   light.up = Float3(0.0, 1.0, 0.0)
      //   light.color = Float3(4.0, 4.0, 4.0)
+        var lightProbe = LightProbeData_()
+        lightProbe.gridEdge = irradianceField.gridEdge
+        lightProbe.gridOrigin = irradianceField.origin
+        lightProbe.probeCount = SIMD3<Int32>(Int32(Constants.probeGrid.0), Int32(Constants.probeGrid.1), Int32(Constants.probeGrid.2))
 
         uniforms.pointee.camera = camera
         uniforms.pointee.light = light
         uniforms.pointee.sunDirection = scene.sunDirection.normalized
+        uniforms.pointee.probeData = lightProbe
 
         uniforms.pointee.probeWidth = Int32(Constants.probeReso)
         uniforms.pointee.probeHeight = Int32(Constants.probeReso)
@@ -348,7 +353,7 @@ extension Raytracer {
             computeEncoder?.setBuffer(vertexNormalBuffer, offset: 0, index: 5)
             computeEncoder?.setBuffer(randomBuffer, offset: randomBufferOffset,
                                       index: 6)
-            computeEncoder?.setTexture(renderTarget, index: 0)
+            computeEncoder?.setTexture(irradianceField.ambientCubeTextureFinal, index: 0)
             computeEncoder?.setComputePipelineState(shadePipelineState!)
             computeEncoder?.dispatchThreadgroups(
                 threadGroups,

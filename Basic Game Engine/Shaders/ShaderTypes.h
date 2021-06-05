@@ -49,8 +49,12 @@ struct AreaLight {
   vector_float3 color;
 };
 
-struct LightProbe_ {
-    vector_float3 position;
+struct LightProbeData_ {
+    vector_float3 gridEdge;
+    vector_float3 gridOrigin;
+    int probeGridWidth;
+    int probeGridHeight;
+    vector_int3 probeCount;
 };
 
 struct IrradianceField_ {
@@ -75,6 +79,7 @@ struct Uniforms_
     int probeHeight;
     int probeGridWidth;
     int probeGridHeight;
+    struct LightProbeData_ probeData;
 };
 
 #endif /* ShaderTypes_h */

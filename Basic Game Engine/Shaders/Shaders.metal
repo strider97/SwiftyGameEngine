@@ -192,12 +192,12 @@ kernel void accumulateKernel(constant Uniforms_ & uniforms, texture3d<float, acc
             lightProbeTexture.write(float4(0, 0, 0, 1), ushort3(tid.x, tid.y, 2*i));
             lightProbeTexture.write(float4(0, 0, 0, 1), ushort3(tid.x, tid.y, 2*i+1));
         }
-    //    float3 oldValue1 = lightProbeTextureFinal.read(ushort3(tid.x, tid.y, 0)).rgb;
-    //    float3 oldValue2 = lightProbeTextureFinal.read(ushort3(tid.x, tid.y, 1)).rgb;
-    //    lightProbeTextureFinal.write(float4(lerp(oldValue1, newValue1, 0.1), 1), ushort3(tid.x, tid.y, 0));
-    //    lightProbeTextureFinal.write(float4(lerp(oldValue2, newValue2, 0.1), 1), ushort3(tid.x, tid.y, 1));
-        lightProbeTextureFinal.write(float4(newValue1, 1), ushort3(tid.x, tid.y, 0));
-        lightProbeTextureFinal.write(float4(newValue2, 1), ushort3(tid.x, tid.y, 1));
+        float3 oldValue1 = lightProbeTextureFinal.read(ushort3(tid.x, tid.y, 0)).rgb;
+        float3 oldValue2 = lightProbeTextureFinal.read(ushort3(tid.x, tid.y, 1)).rgb;
+        lightProbeTextureFinal.write(float4(lerp(newValue1, oldValue1, t), 1), ushort3(tid.x, tid.y, 0));
+        lightProbeTextureFinal.write(float4(lerp(newValue2, oldValue2, t), 1), ushort3(tid.x, tid.y, 1));
+    //    lightProbeTextureFinal.write(float4(newValue1, 1), ushort3(tid.x, tid.y, 0));
+    //    lightProbeTextureFinal.write(float4(newValue2, 1), ushort3(tid.x, tid.y, 1));
     }
   }
 }

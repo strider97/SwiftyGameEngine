@@ -384,17 +384,7 @@ float3 getDDGI(float3 position, float3 smoothNormal, texture3d<float, access::re
     float x = transformedPos.x;
     float y = transformedPos.y;
     float z = transformedPos.z;
-    /*
-     Vxyz =    V000 (1 - x) (1 - y) (1 - z) +
-     V100 x (1 - y) (1 - z) +
-     V010 (1 - x) y (1 - z) +
-     V001 (1 - x) (1 - y) z +
-     
-     V101 x (1 - y) z +
-     V011 (1 - x) y z +
-     V110 x y (1 - z) +
-     V111 x y z
-     */
+    
     float trilinearWeights[8] = {
         (1 - x)*(1 - y)*(1 - z),
         x*(1 - y)*(1 - z),
@@ -403,18 +393,6 @@ float3 getDDGI(float3 position, float3 smoothNormal, texture3d<float, access::re
         
         (1 - x)*(1 - y)*z,
         x*(1 - y)*z,
-        (1 - x)*y*z,
-        x*y*z,
-    };
-    
-    float trilinearWeights_[8] = {
-        (1 - x)*(1 - y)*(1 - z),
-        x*(1 - y)*(1 - z),
-        (1 - x)*(1 - y)*z,
-        x*(1 - y)*z,
-        
-        (1 - x)*y*(1 - z),
-        x*y*(1 - z),
         (1 - x)*y*z,
         x*y*z,
     };
