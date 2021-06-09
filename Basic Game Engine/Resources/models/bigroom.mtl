@@ -1,5 +1,25 @@
-# Blender MTL File: 'classroom.blend'
-# Material Count: 1
+# Blender MTL File: 'bigroom.blend'
+# Material Count: 3
+
+newmtl Material
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl Material.001
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
 
 newmtl None
 Ns 500
@@ -8,8 +28,3 @@ Kd 0.8 0.8 0.8
 Ks 0.8 0.8 0.8
 d 1
 illum 2
-map_Kd ukmmbb3fw_4K_Albedo.jpg
-map_roughness ukmmbb3fw_4K_Roughness.jpg
-map_metallic ukmmbb3fw_4K_Metalness_2k.jpg
-map_tangentSpaceNormal ukmmbb3fw_4K_Normal.jpg
-map_ao ukmmbb3fw_4K_AO.jpg

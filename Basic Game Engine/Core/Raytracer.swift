@@ -83,7 +83,8 @@ class Raytracer {
         createBuffers()
         buildIntersector()
         buildAccelerationStructure()
-        irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 7.5, 0), Float3(30, 14, 15))
+    //    irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 7.5, 1), Float3(30, 14, 14))
+        irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 1.5, 0), Float3(16, 2.8, 8.2))
     }
 
     func buildAccelerationStructure() {
@@ -151,7 +152,7 @@ class Raytracer {
     }
 
     func createScene() {
-        loadAsset(name: "sponza")
+        loadAsset(name: "bigroom")
     }
 
     func createBuffers() {
@@ -281,8 +282,12 @@ extension Raytracer {
         computeEncoder?.label = "Accumulation"
         computeEncoder?.setBuffer(uniformBuffer, offset: uniformBufferOffset,
                                   index: 0)
-        computeEncoder?.setTexture(irradianceField.ambientCubeTexture, index: 0)
-        computeEncoder?.setTexture(irradianceField.ambientCubeTextureFinal, index: 1)
+        computeEncoder?.setTexture(irradianceField.ambientCubeTextureR, index: 0)
+        computeEncoder?.setTexture(irradianceField.ambientCubeTextureG, index: 1)
+        computeEncoder?.setTexture(irradianceField.ambientCubeTextureB, index: 2)
+        computeEncoder?.setTexture(irradianceField.ambientCubeTextureFinalR, index: 3)
+        computeEncoder?.setTexture(irradianceField.ambientCubeTextureFinalG, index: 4)
+        computeEncoder?.setTexture(irradianceField.ambientCubeTextureFinalB, index: 5)
         computeEncoder?.setComputePipelineState(accumulatePipeline)
         computeEncoder?.dispatchThreadgroups(threadGroups_,
                                              threadsPerThreadgroup: threadsPerGroup_)
@@ -353,7 +358,9 @@ extension Raytracer {
             computeEncoder?.setBuffer(vertexNormalBuffer, offset: 0, index: 5)
             computeEncoder?.setBuffer(randomBuffer, offset: randomBufferOffset,
                                       index: 6)
-            computeEncoder?.setTexture(irradianceField.ambientCubeTextureFinal, index: 0)
+            computeEncoder?.setTexture(irradianceField.ambientCubeTextureFinalR, index: 0)
+            computeEncoder?.setTexture(irradianceField.ambientCubeTextureFinalG, index: 1)
+            computeEncoder?.setTexture(irradianceField.ambientCubeTextureFinalB, index: 2)
             computeEncoder?.setComputePipelineState(shadePipelineState!)
             computeEncoder?.dispatchThreadgroups(
                 threadGroups,
@@ -386,7 +393,9 @@ extension Raytracer {
             computeEncoder?.setBuffer(irradianceField.probeLocations, offset: 0, index: 3)
             computeEncoder?.setBuffer(irradianceField.probeDirections, offset: Constants.probeReso * Constants.probeReso, index: 4)
             computeEncoder?.setTexture(renderTarget, index: 0)
-            computeEncoder?.setTexture(irradianceField.ambientCubeTexture!, index: 1)
+            computeEncoder?.setTexture(irradianceField.ambientCubeTextureR!, index: 1)
+            computeEncoder?.setTexture(irradianceField.ambientCubeTextureG!, index: 2)
+            computeEncoder?.setTexture(irradianceField.ambientCubeTextureB!, index: 3)
             computeEncoder?.setComputePipelineState(shadowPipeline!)
             computeEncoder?.dispatchThreadgroups(
                 threadGroups,
@@ -428,13 +437,16 @@ extension Raytracer {
         } catch let error as NSError {
             fatalError(error.description)
         }
+        let subMeshesMDL = meshesMDL.map { mdlMesh in
+            return mdlMesh.submeshes as! [MDLSubmesh]
+        }
         //    return (meshesMDL, meshes)
-        for mesh in meshes {
+        for (meshIndex, mesh) in meshes.enumerated() {
             for vertexBuffer in mesh.vertexBuffers {
                 let count = vertexBuffer.buffer.length / MemoryLayout<VertexIn>.stride
                 let ptr = vertexBuffer.buffer.contents().bindMemory(to: VertexIn.self, capacity: count)
 
-                for submesh in mesh.submeshes {
+                for (mdlIndex, submesh) in mesh.submeshes.enumerated() {
                     let indexBuffer = submesh.indexBuffer.buffer
                     let offset = submesh.indexBuffer.offset
                     let indexPtr = indexBuffer.contents().advanced(by: offset)
@@ -445,7 +457,13 @@ extension Raytracer {
                         //    vertices_.append(ptr[index])
                         vertices.append(vertex.position * scale + position)
                         normals.append(vertex.normal)
-                        colors.append(Float3(repeating: 1))
+                        var color = Float3(1, 1, 1)
+                        let mdlSubmesh = subMeshesMDL[meshIndex][mdlIndex]
+                        if let baseColor = mdlSubmesh.material?.property(with: .baseColor),
+                          baseColor.type == .float3 {
+                          color = baseColor.float3Value
+                        }
+                        colors.append(color)
                         indices = indices.advanced(by: 1)
                     }
                 }

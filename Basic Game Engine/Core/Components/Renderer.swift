@@ -31,7 +31,9 @@ enum TextureIndex: Int {
     case normal
     case flux
     case depth
-    case textureDDGI
+    case textureDDGIR
+    case textureDDGIG
+    case textureDDGIB
 }
 
 class Material {

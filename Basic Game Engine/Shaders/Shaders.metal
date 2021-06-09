@@ -177,25 +177,52 @@ float3 lerp(float3 a, float3 b, float t) {
     return a*t + b*(1-t);
 }
 
-kernel void accumulateKernel(constant Uniforms_ & uniforms, texture3d<float, access::read_write> lightProbeTexture, texture3d<float, access::read_write> lightProbeTextureFinal, uint2 tid [[thread_position_in_grid]])
+kernel void accumulateKernel(constant Uniforms_ & uniforms, texture3d<float, access::read_write> lightProbeTextureR, texture3d<float, access::read_write> lightProbeTextureG, texture3d<float, access::read_write> lightProbeTextureB, texture3d<float, access::read_write> lightProbeTextureFinalR, texture3d<float, access::read_write> lightProbeTextureFinalG, texture3d<float, access::read_write> lightProbeTextureFinalB, uint2 tid [[thread_position_in_grid]])
 {
   if (int(tid.x) < (uniforms.probeGridWidth * uniforms.probeGridHeight) && int(tid.y) < uniforms.probeGridHeight) {
       float t = 0.9;
     if (uniforms.frameIndex > 0) {
         float3 newValue1 = 0;
         float3 newValue2 = 0;
+        float3 newValue3 = 0;
+        float3 newValue4 = 0;
+        float3 newValue5= 0;
+        float3 newValue6 = 0;
         for(int i = 0; i < uniforms.probeWidth * uniforms.probeHeight; i++) {
-            float3 oldValue1 = lightProbeTexture.read(ushort3(tid.x, tid.y, 2*i)).rgb;
-            float3 oldValue2 = lightProbeTexture.read(ushort3(tid.x, tid.y, 2*i+1)).rgb;
+            float3 oldValue1 = lightProbeTextureR.read(ushort3(tid.x, tid.y, 2*i)).rgb;
+            float3 oldValue2 = lightProbeTextureR.read(ushort3(tid.x, tid.y, 2*i+1)).rgb;
+            float3 oldValue3 = lightProbeTextureG.read(ushort3(tid.x, tid.y, 2*i)).rgb;
+            float3 oldValue4 = lightProbeTextureG.read(ushort3(tid.x, tid.y, 2*i+1)).rgb;
+            float3 oldValue5 = lightProbeTextureB.read(ushort3(tid.x, tid.y, 2*i)).rgb;
+            float3 oldValue6 = lightProbeTextureB.read(ushort3(tid.x, tid.y, 2*i+1)).rgb;
             newValue1 += oldValue1;
             newValue2 += oldValue2;
-            lightProbeTexture.write(float4(0, 0, 0, 1), ushort3(tid.x, tid.y, 2*i));
-            lightProbeTexture.write(float4(0, 0, 0, 1), ushort3(tid.x, tid.y, 2*i+1));
+            newValue3 += oldValue3;
+            newValue4 += oldValue4;
+            newValue5 += oldValue5;
+            newValue6 += oldValue6;
+            lightProbeTextureR.write(float4(0, 0, 0, 1), ushort3(tid.x, tid.y, 2*i));
+            lightProbeTextureR.write(float4(0, 0, 0, 1), ushort3(tid.x, tid.y, 2*i+1));
+            lightProbeTextureG.write(float4(0, 0, 0, 1), ushort3(tid.x, tid.y, 2*i));
+            lightProbeTextureG.write(float4(0, 0, 0, 1), ushort3(tid.x, tid.y, 2*i+1));
+            lightProbeTextureB.write(float4(0, 0, 0, 1), ushort3(tid.x, tid.y, 2*i));
+            lightProbeTextureB.write(float4(0, 0, 0, 1), ushort3(tid.x, tid.y, 2*i+1));
         }
-        float3 oldValue1 = lightProbeTextureFinal.read(ushort3(tid.x, tid.y, 0)).rgb;
-        float3 oldValue2 = lightProbeTextureFinal.read(ushort3(tid.x, tid.y, 1)).rgb;
-        lightProbeTextureFinal.write(float4(lerp(newValue1, oldValue1, t), 1), ushort3(tid.x, tid.y, 0));
-        lightProbeTextureFinal.write(float4(lerp(newValue2, oldValue2, t), 1), ushort3(tid.x, tid.y, 1));
+        float3 oldValue1 = lightProbeTextureFinalR.read(ushort3(tid.x, tid.y, 0)).rgb;
+        float3 oldValue2 = lightProbeTextureFinalR.read(ushort3(tid.x, tid.y, 1)).rgb;
+        float3 oldValue3 = lightProbeTextureFinalG.read(ushort3(tid.x, tid.y, 0)).rgb;
+        float3 oldValue4 = lightProbeTextureFinalG.read(ushort3(tid.x, tid.y, 1)).rgb;
+        float3 oldValue5 = lightProbeTextureFinalB.read(ushort3(tid.x, tid.y, 0)).rgb;
+        float3 oldValue6 = lightProbeTextureFinalB.read(ushort3(tid.x, tid.y, 1)).rgb;
+        
+        lightProbeTextureFinalR.write(float4(lerp(newValue1, oldValue1, t), 1), ushort3(tid.x, tid.y, 0));
+        lightProbeTextureFinalR.write(float4(lerp(newValue2, oldValue2, t), 1), ushort3(tid.x, tid.y, 1));
+        
+        lightProbeTextureFinalG.write(float4(lerp(newValue3, oldValue3, t), 1), ushort3(tid.x, tid.y, 0));
+        lightProbeTextureFinalG.write(float4(lerp(newValue4, oldValue4, t), 1), ushort3(tid.x, tid.y, 1));
+        
+        lightProbeTextureFinalB.write(float4(lerp(newValue5, oldValue5, t), 1), ushort3(tid.x, tid.y, 0));
+        lightProbeTextureFinalB.write(float4(lerp(newValue6, oldValue6, t), 1), ushort3(tid.x, tid.y, 1));
     //    lightProbeTextureFinal.write(float4(newValue1, 1), ushort3(tid.x, tid.y, 0));
     //    lightProbeTextureFinal.write(float4(newValue2, 1), ushort3(tid.x, tid.y, 1));
     }

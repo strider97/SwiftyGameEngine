@@ -377,7 +377,7 @@ ushort2 gridPosToTex(float3 pos, LightProbeData probe) {
     return ushort2(texPos.y * probe.probeGridWidth + texPos.x, texPos.z);
 }
 
-float3 getDDGI(float3 position, float3 smoothNormal, texture3d<float, access::read> lightProbeTexture, LightProbeData probe) {
+float getDDGI(float3 position, float3 smoothNormal, texture3d<float, access::read> lightProbeTexture, LightProbeData probe) {
     ushort2 texPos = gridPosToTex(position, probe);
     float3 transformedPos = (position - probe.gridOrigin)/probe.gridEdge;
     transformedPos -= float3(int3(transformedPos));
@@ -407,9 +407,9 @@ float3 getDDGI(float3 position, float3 smoothNormal, texture3d<float, access::re
         ushort2(probe.probeCount.x, 1),
         ushort2(probe.probeCount.x + 1, 1)
     };
-    float3 color = 0;
+    float color = 0;
     for (int iCoeff = 0; iCoeff < 8; iCoeff++) {
-        float3 color_ = 0;
+        float color_ = 0;
         float3 col1 = lightProbeTexture.read(ushort3(texPos + lightProbeTexCoeff[iCoeff], 0)).rgb;
         float3 col2 = lightProbeTexture.read(ushort3(texPos + lightProbeTexCoeff[iCoeff], 1)).rgb;
         float colors[6] = {col1.x, col1.y, col1.z, col2.x, col2.y, col2.z};
@@ -441,7 +441,7 @@ vertex VertexOut basicVertexShader(const VertexIn vIn [[ stage_in ]], constant U
     return vOut;
 }
 
-fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], constant float3 *lightPolygon[[buffer(1)]], constant LightProbeData &probe [[buffer(2)]], texture2d<float, access::sample> preFilterEnvMap [[texture(textureIndexPreFilterEnvMap)]], texture2d<float, access::sample> DFGlut [[texture(textureIndexDFGlut)]], texture2d<float, access::sample> irradianceMap [[texture(textureIndexirradianceMap)]], texture2d<float, access::sample> baseColor [[texture(textureIndexBaseColor)]], texture2d<float, access::sample> roughnessMap [[texture(textureIndexRoughness)]], texture2d<float, access::sample> metallicMap [[texture(textureIndexMetallic)]], texture2d<float, access::sample> normalMap [[texture(normalMap)]], texture2d<float, access::sample> aoTexture [[texture(ao)]], texture2d<float, access::sample> ltc_mat [[texture(ltc_mat)]], texture2d<float, access::sample> ltc_mag [[texture(ltc_mag)]], depth2d<float, access::sample> shadowMap [[texture(shadowMap)]], texture2d<float, access::sample> worldPos [[texture(rsmPos)]], texture2d<float, access::sample> worldNormal [[texture(rsmNormal)]], texture2d<float, access::sample> flux [[texture(rsmFlux)]],  texture3d<float, access::read> lightProbeTexture [[texture(15)]]){
+fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], constant float3 *lightPolygon[[buffer(1)]], constant LightProbeData &probe [[buffer(2)]], texture2d<float, access::sample> preFilterEnvMap [[texture(textureIndexPreFilterEnvMap)]], texture2d<float, access::sample> DFGlut [[texture(textureIndexDFGlut)]], texture2d<float, access::sample> irradianceMap [[texture(textureIndexirradianceMap)]], texture2d<float, access::sample> baseColor [[texture(textureIndexBaseColor)]], texture2d<float, access::sample> roughnessMap [[texture(textureIndexRoughness)]], texture2d<float, access::sample> metallicMap [[texture(textureIndexMetallic)]], texture2d<float, access::sample> normalMap [[texture(normalMap)]], texture2d<float, access::sample> aoTexture [[texture(ao)]], texture2d<float, access::sample> ltc_mat [[texture(ltc_mat)]], texture2d<float, access::sample> ltc_mag [[texture(ltc_mag)]], depth2d<float, access::sample> shadowMap [[texture(shadowMap)]], texture2d<float, access::sample> worldPos [[texture(rsmPos)]], texture2d<float, access::sample> worldNormal [[texture(rsmNormal)]], texture2d<float, access::sample> flux [[texture(rsmFlux)]], texture3d<float, access::read> lightProbeTextureR [[texture(15)]], texture3d<float, access::read> lightProbeTextureG [[texture(16)]], texture3d<float, access::read> lightProbeTextureB [[texture(17)]]){
     
     float3 albedo = material.baseColor;
     albedo *= pow(baseColor.sample(s, vOut.texCoords).rgb, 3.0);
@@ -460,9 +460,12 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
 //    float3 V = eyeDir;
     float3 l = vOut.sunDirection;
     bool inShadow = insideShadow(vOut.lightFragPosition, smoothN, l, shadowMap);
-    float3 ambient = (getDDGI(vOut.position, vOut.smoothNormal, lightProbeTexture, probe) + 0.0000) * albedo;
-    float3 diffuse = inShadow ? 0 : albedo * saturate(dot(smoothN, l));
-    float3 color = diffuse + ambient;
+    float3 ambient = 0;
+    ambient.r = (getDDGI(vOut.position, vOut.smoothNormal, lightProbeTextureR, probe) + 0.0000);
+    ambient.g = (getDDGI(vOut.position, vOut.smoothNormal, lightProbeTextureG, probe) + 0.0000);
+    ambient.b = (getDDGI(vOut.position, vOut.smoothNormal, lightProbeTextureB, probe) + 0.0000);
+    float3 diffuse = inShadow ? 0 : 4 * albedo * saturate(dot(smoothN, l));
+    float3 color = 0*diffuse + 2.6 * ambient * albedo.r;
     
     float exposure = max(0.01, vOut.exposure);
     color = 1 - exp(-color * exposure);

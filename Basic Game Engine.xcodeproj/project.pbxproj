@@ -335,6 +335,8 @@
 		729B14F625D91AFF00129165 /* garden.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 729B14F525D91AFF00129165 /* garden.hdr */; };
 		729B14FB25D91D8100129165 /* park_green.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 729B14FA25D91D8100129165 /* park_green.hdr */; };
 		72C1736925DED90800B75C4D /* ring.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72C1736825DED90800B75C4D /* ring.usd */; };
+		72CBB801266E7B1D00D927F9 /* bigroom.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72CBB7FF266E7B1D00D927F9 /* bigroom.obj */; };
+		72CBB802266E7B1D00D927F9 /* bigroom.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 72CBB800266E7B1D00D927F9 /* bigroom.mtl */; };
 		72D1449425F53ED80047A93D /* brdfFitShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 72D1449325F53ED80047A93D /* brdfFitShader.metal */; };
 		72DAC96025DDD87500DB3C50 /* plane.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72DAC95F25DDD87500DB3C50 /* plane.usd */; };
 		72DACABC25DE6AED00DB3C50 /* IrradianceMap_.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DACABB25DE6AED00DB3C50 /* IrradianceMap_.swift */; };
@@ -730,6 +732,8 @@
 		729B14F525D91AFF00129165 /* garden.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = garden.hdr; path = "Basic Game Engine/HDRI/garden.hdr"; sourceTree = SOURCE_ROOT; };
 		729B14FA25D91D8100129165 /* park_green.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = park_green.hdr; path = "Basic Game Engine/HDRI/park_green.hdr"; sourceTree = SOURCE_ROOT; };
 		72C1736825DED90800B75C4D /* ring.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = ring.usd; path = "Basic Game Engine/Resources/teapot/ring.usd"; sourceTree = SOURCE_ROOT; };
+		72CBB7FF266E7B1D00D927F9 /* bigroom.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bigroom.obj; sourceTree = "<group>"; };
+		72CBB800266E7B1D00D927F9 /* bigroom.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bigroom.mtl; sourceTree = "<group>"; };
 		72D1449325F53ED80047A93D /* brdfFitShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = brdfFitShader.metal; sourceTree = "<group>"; };
 		72DAC95F25DDD87500DB3C50 /* plane.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = plane.usd; path = "Basic Game Engine/Resources/teapot/plane.usd"; sourceTree = SOURCE_ROOT; };
 		72DACABB25DE6AED00DB3C50 /* IrradianceMap_.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IrradianceMap_.swift; sourceTree = "<group>"; };
@@ -1491,6 +1495,8 @@
 		72E3999925BF0C8300927B17 /* models */ = {
 			isa = PBXGroup;
 			children = (
+				72CBB800266E7B1D00D927F9 /* bigroom.mtl */,
+				72CBB7FF266E7B1D00D927F9 /* bigroom.obj */,
 				724157F426657CBF00821A7C /* sphere.mtl */,
 				724157F526657CBF00821A7C /* sphere.obj */,
 				7229EAA02626448B00112F1A /* room.mtl */,
@@ -1724,6 +1730,7 @@
 				721650DB25EAF9A000511342 /* vcwlfcgv_4K_AO.jpg in Resources */,
 				72164FC725E8CD6400511342 /* heliBlades.usd in Resources */,
 				7216521325ED571E00511342 /* Head_withpaint_BaseColor.jpeg in Resources */,
+				72CBB801266E7B1D00D927F9 /* bigroom.obj in Resources */,
 				7216521225ED571E00511342 /* Head_Roughness.jpeg in Resources */,
 				72164FFD25EA561000511342 /* Cerberus_N.tga in Resources */,
 				7216503525EA877300511342 /* daizi_normal.jpeg in Resources */,
@@ -1809,6 +1816,7 @@
 				72583F80262266E000ADD5BD /* Sponza_Bricks_a_Albedo.png in Resources */,
 				72583FA0262266E000ADD5BD /* ChainTexture_Roughness.png in Resources */,
 				72583F96262266E000ADD5BD /* Sponza_Details_roughness.png in Resources */,
+				72CBB802266E7B1D00D927F9 /* bigroom.mtl in Resources */,
 				7216508125EAE81200511342 /* denim_fabric_rough_2k.png in Resources */,
 				7216523225ED63B000511342 /* Bot_Albedo.png in Resources */,
 				7216506D25EAE70E00511342 /* green_rough_planks_ao_2k.png in Resources */,

@@ -13,7 +13,7 @@ class SimpleScene: Scene {
     var model2: GameObject!
 
     override func getGameObjects() -> [GameObject] {
-        model = GameObject(modelName: "sponza")
+        model = GameObject(modelName: "bigroom")
         model2 = GameObject(modelName: "plane")
         model2.transform.position = Float3(10, 10, 0)
         let scale = Float(Constants.probeCount)
@@ -35,6 +35,6 @@ class SimpleScene: Scene {
     }
 
     override func getCamera() -> Camera {
-        return Camera(position: Float3(0, 10, 15), target: Float3(0, 10, 0))
+        return Camera(position: Float3(0, 2, 4), target: Float3(0, 2, 0))
     }
 }

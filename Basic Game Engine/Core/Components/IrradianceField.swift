@@ -20,8 +20,12 @@ class IrradianceField {
     let width: Int
     let height: Int
     let depth: Int
-    var ambientCubeTexture: MTLTexture!
-    var ambientCubeTextureFinal: MTLTexture!
+    var ambientCubeTextureR: MTLTexture!
+    var ambientCubeTextureG: MTLTexture!
+    var ambientCubeTextureB: MTLTexture!
+    var ambientCubeTextureFinalR: MTLTexture!
+    var ambientCubeTextureFinalG: MTLTexture!
+    var ambientCubeTextureFinalB: MTLTexture!
     var probeLocations: MTLBuffer!
     var probeDirections: MTLBuffer!
     var probeCount: Int
@@ -39,8 +43,14 @@ class IrradianceField {
         height = h
         depth = d
         probeCount = w * h * d
-        ambientCubeTexture = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: 2*Constants.probeReso * Constants.probeReso, label: "Irradiance Field", pixelFormat: .rgba32Float)
-        ambientCubeTextureFinal = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: 2, label: "Irradiance Field final", pixelFormat: .rgba32Float)
+        ambientCubeTextureR = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: 2*Constants.probeReso * Constants.probeReso, label: "Irradiance Field", pixelFormat: .rgba32Float)
+        ambientCubeTextureFinalR = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: 2, label: "Irradiance Field final", pixelFormat: .rgba32Float)
+        
+        ambientCubeTextureG = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: 2*Constants.probeReso * Constants.probeReso, label: "Irradiance Field", pixelFormat: .rgba32Float)
+        ambientCubeTextureFinalG = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: 2, label: "Irradiance Field final", pixelFormat: .rgba32Float)
+        
+        ambientCubeTextureB = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: 2*Constants.probeReso * Constants.probeReso, label: "Irradiance Field", pixelFormat: .rgba32Float)
+        ambientCubeTextureFinalB = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: 2, label: "Irradiance Field final", pixelFormat: .rgba32Float)
         gridEdge = gridSize / Float3(Float(w - 1), Float(h - 1), Float(d - 1))
         origin = centre - gridSize / 2
         makeBuffer(origin, gridEdge)

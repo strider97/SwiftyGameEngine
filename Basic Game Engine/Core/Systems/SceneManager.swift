@@ -26,7 +26,7 @@ class Scene: NSObject {
     static let W: Float = 1280
     static let H: Float = 720
     final let P = Matrix4(projectionFov: MathConstants.PI.rawValue / 3, near: 0.01, far: 500, aspect: Scene.W / Scene.H)
-    var sunDirection = Float3(8, 20, 5)
+    var sunDirection = Float3(8, 8, 1)
     var orthoGraphicP = Matrix4(orthoLeft: -10, right: 10, bottom: -10, top: 10, near: 0.01, far: 100)
     lazy var shadowViewMatrix = Matrix4.viewMatrix(position: sunDirection, target: Float3(0, 0, 0), up: Camera.WorldUp)
     final let timer = GameTimer.sharedTimer
@@ -217,10 +217,12 @@ extension Scene {
         renderCommandEncoder?.setFragmentTexture(gBufferData.worldPos, index: TextureIndex.worldPos.rawValue)
         renderCommandEncoder?.setFragmentTexture(gBufferData.normal, index: TextureIndex.normal.rawValue)
         renderCommandEncoder?.setFragmentTexture(gBufferData.flux, index: TextureIndex.flux.rawValue)
-        renderCommandEncoder?.setFragmentTexture(rayTracer?.irradianceField.ambientCubeTextureFinal, index: TextureIndex.textureDDGI.rawValue)
+        renderCommandEncoder?.setFragmentTexture(rayTracer?.irradianceField.ambientCubeTextureFinalR, index: TextureIndex.textureDDGIR.rawValue)
+        renderCommandEncoder?.setFragmentTexture(rayTracer?.irradianceField.ambientCubeTextureFinalG, index: TextureIndex.textureDDGIG.rawValue)
+        renderCommandEncoder?.setFragmentTexture(rayTracer?.irradianceField.ambientCubeTextureFinalB, index: TextureIndex.textureDDGIB.rawValue)
         renderCommandEncoder?.setCullMode(.front)
         drawGameObjects(renderCommandEncoder: renderCommandEncoder)
-     //   drawLightProbes(renderCommandEncoder: renderCommandEncoder)
+    //    drawLightProbes(renderCommandEncoder: renderCommandEncoder)
         drawSkybox(renderCommandEncoder: renderCommandEncoder)
         renderCommandEncoder?.endEncoding()
 
@@ -327,7 +329,7 @@ extension Scene {
         let irradianceField = rayTracer!.irradianceField!
         var lightProbeData = LightProbeData(gridEdge: irradianceField.gridEdge, gridOrigin: irradianceField.origin, probeGridWidth: irradianceField.width, probeGridHeight: irradianceField.height, probeGridCount: Int3(0, 0, 0))
         renderCommandEncoder?.setFragmentBytes(&lightProbeData, length: MemoryLayout<LightProbeData>.stride, index: 0)
-        renderCommandEncoder?.setFragmentTexture(irradianceField.ambientCubeTextureFinal, index: 0)
+        renderCommandEncoder?.setFragmentTexture(irradianceField.ambientCubeTextureFinalR, index: 0)
         for (index, _) in rayTracer!.irradianceField.probeLocationsArray.enumerated() {
             var u = getLightProbeUniformData(index)
             renderCommandEncoder?.setVertexBytes(&u, length: MemoryLayout<Uniforms>.stride, index: 1)
@@ -371,7 +373,7 @@ extension Scene {
         //    for i in 0..<lightPolygon.count {
         //        lightPolygon[i] = lightPolygonInitial[i] + Float3(sin(GameTimer.sharedTimer.time) * 20, 0, 0)
         //    }
-        sunDirection.z = 11 * cos(GameTimer.sharedTimer.time / 3)
+        sunDirection.x = abs(40 * cos(GameTimer.sharedTimer.time / 3)) - 2
         shadowViewMatrix = Matrix4.viewMatrix(position: sunDirection, target: Float3(0, 0, 0), up: Camera.WorldUp)
     }
 
