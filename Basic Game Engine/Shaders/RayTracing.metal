@@ -236,6 +236,12 @@ ushort2 gridPosToTex_(float3 pos, LightProbeData_ probe) {
     return ushort2(texPos.y * probe.probeGridWidth + texPos.x, texPos.z);
 }
 
+float4 SHProjectLinear__(float3 dir) {
+    float l0 = 0.282095;
+    float l1 = 0.488603;
+    return float4(l0, dir.y * l1, dir.z*l1, dir.x*l1);
+}
+
 float getDDGI_(float3 position, float3 smoothNormal, texture3d<float, access::read> lightProbeTexture, LightProbeData_ probe) {
     ushort2 texPos = gridPosToTex_(position, probe);
     float3 transformedPos = (position - probe.gridOrigin)/probe.gridEdge;
@@ -266,14 +272,15 @@ float getDDGI_(float3 position, float3 smoothNormal, texture3d<float, access::re
         ushort2(probe.probeCount.x, 1),
         ushort2(probe.probeCount.x + 1, 1)
     };
+    
     float color = 0;
+    float4 shCoeff = SHProjectLinear__(smoothNormal);
+    float aCap[4] = { 3.141593, 2.094395, 2.094395, 2.094395 };
     for (int iCoeff = 0; iCoeff < 8; iCoeff++) {
         float color_ = 0;
-        float3 col1 = lightProbeTexture.read(ushort3(texPos + lightProbeTexCoeff[iCoeff], 0)).rgb;
-        float3 col2 = lightProbeTexture.read(ushort3(texPos + lightProbeTexCoeff[iCoeff], 1)).rgb;
-        float colors[6] = {col1.x, col1.y, col1.z, col2.x, col2.y, col2.z};
-        for (int i = 0; i<AMBIENT_DIR_COUNT; i++) {
-            color_ += max(0.0, dot(colors[i] * ambientCubeDir[i], smoothNormal));
+        float4 coeff = lightProbeTexture.read(ushort3(texPos + lightProbeTexCoeff[iCoeff], 0));
+        for (int i = 0; i<4; i++) {
+            color_ += max(0.0, aCap[i] * coeff[i] * shCoeff[i]);
         }
         color += color_ * trilinearWeights[iCoeff];
     //    color += color_ * (1.0/8);
@@ -299,6 +306,7 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
     device Ray & shadowRay = shadowRays[rayIdx];
     device Intersection & intersection = intersections[rayIdx];
     float3 color = ray.color;
+      shadowRay.indirectColor = 0;
     if (ray.maxDistance >= 0.0 && intersection.distance >= 0.0) {
         float3 intersectionPoint = ray.origin + ray.direction
       * intersection.distance;
@@ -318,9 +326,9 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
         shadowRay.maxDistance = lightDistance;
         shadowRay.color = 10 * lightColor * color;// / max(1.0,intersection.distance * intersection.distance);
    //     shadowRay.color = float3(0, 0, 10);
-        shadowRay.indirectColor.r = 2 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureR, uniforms.probeData);
-        shadowRay.indirectColor.g = 2 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureG, uniforms.probeData);
-        shadowRay.indirectColor.b = 2 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureB, uniforms.probeData);
+        shadowRay.indirectColor.r = 1 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureR, uniforms.probeData);
+        shadowRay.indirectColor.g = 1 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureG, uniforms.probeData);
+        shadowRay.indirectColor.b = 1 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureB, uniforms.probeData);
    //     shadowRay.indirectColor = 0;
       
   //    float3 sampleDirection = sampleCosineWeightedHemisphere(r);
@@ -346,9 +354,9 @@ kernel void shadowKernel(uint2 tid [[thread_position_in_grid]], device Uniforms_
         float intersectionDistance = intersections[rayIdx];
         float3 color = 0;
         color += shadowRay.indirectColor;
-        float oldValuesR[6] = { 0, 0, 0, 0, 0, 0 };
-        float oldValuesG[6] = { 0, 0, 0, 0, 0, 0 };
-        float oldValuesB[6] = { 0, 0, 0, 0, 0, 0 };
+        float oldValuesR[4] = { 0, 0, 0, 0 };
+        float oldValuesG[4] = { 0, 0, 0, 0 };
+        float oldValuesB[4] = { 0, 0, 0, 0 };
         if ((shadowRay.maxDistance >= 0.0 && intersectionDistance < 0.0)) {
             color += shadowRay.color;
             //    float3 direction = sphericalFibonacci(rayDirIndex, uniforms.probeWidth * uniforms.probeHeight);
@@ -356,41 +364,35 @@ kernel void shadowKernel(uint2 tid [[thread_position_in_grid]], device Uniforms_
         //    float3 oldValue2 = lightProbeTexture.read(ushort3(tid.x, tid.y, rayDirIndex*2 + 1)).rgb;
         //    float oldValues[6] = { oldValue1.x, oldValue1.y, oldValue1.z, oldValue2.x, oldValue2.y, oldValue2.z};
         }
-    //    if (dot(color, color) <= 0.0) { return; }
+        
         int index = tid.x / uniforms.probeWidth;
         int rayDirIndex = tid.y*uniforms.probeWidth + tid.x % uniforms.probeWidth;
         float3 direction = probeDirections[rayDirIndex];
         uint2 texPos = indexToTexPos(index, uniforms.probeGridWidth, uniforms.probeGridHeight);
         int raycount = uniforms.probeWidth * uniforms.probeHeight;
+    //    color = float3(1.0, 1.0, 0);
+        oldValuesR[0] = direction.x;
+        oldValuesR[1] = direction.y;
+        oldValuesR[2] = direction.z;
+        oldValuesR[3] = color.r;
         
-        oldValuesR[0] = saturate(dot(direction * color.r, ambientCubeDir[0]))/raycount;
-        oldValuesR[1] = saturate(dot(direction * color.r, ambientCubeDir[1]))/raycount;
-        oldValuesR[2] = saturate(dot(direction * color.r, ambientCubeDir[2]))/raycount;
-        oldValuesR[3] = saturate(dot(direction * color.r, ambientCubeDir[3]))/raycount;
-        oldValuesR[4] = saturate(dot(direction * color.r, ambientCubeDir[4]))/raycount;
-        oldValuesR[5] = saturate(dot(direction * color.r, ambientCubeDir[5]))/raycount;
+        oldValuesG[0] = direction.x;
+        oldValuesG[1] = direction.y;
+        oldValuesG[2] = direction.z;
+        oldValuesG[3] = color.g;
         
-        oldValuesG[0] = saturate(dot(direction * color.g, ambientCubeDir[0]))/raycount;
-        oldValuesG[1] = saturate(dot(direction * color.g, ambientCubeDir[1]))/raycount;
-        oldValuesG[2] = saturate(dot(direction * color.g, ambientCubeDir[2]))/raycount;
-        oldValuesG[3] = saturate(dot(direction * color.g, ambientCubeDir[3]))/raycount;
-        oldValuesG[4] = saturate(dot(direction * color.g, ambientCubeDir[4]))/raycount;
-        oldValuesG[5] = saturate(dot(direction * color.g, ambientCubeDir[5]))/raycount;
+        oldValuesB[0] = direction.x;
+        oldValuesB[1] = direction.y;
+        oldValuesB[2] = direction.z;
+        oldValuesB[3] = color.b;
         
-        oldValuesB[0] = saturate(dot(direction * color.b, ambientCubeDir[0]))/raycount;
-        oldValuesB[1] = saturate(dot(direction * color.b, ambientCubeDir[1]))/raycount;
-        oldValuesB[2] = saturate(dot(direction * color.b, ambientCubeDir[2]))/raycount;
-        oldValuesB[3] = saturate(dot(direction * color.b, ambientCubeDir[3]))/raycount;
-        oldValuesB[4] = saturate(dot(direction * color.b, ambientCubeDir[4]))/raycount;
-        oldValuesB[5] = saturate(dot(direction * color.b, ambientCubeDir[5]))/raycount;
+        lightProbeTextureR.write(float4(oldValuesR[0], oldValuesR[1], oldValuesR[2], oldValuesR[3]), ushort3(texPos.x, texPos.y, rayDirIndex));
+     //   lightProbeTextureR.write(float4(oldValuesR[3], oldValuesR[4], oldValuesR[5], 1), ushort3(texPos.x, texPos.y, rayDirIndex*2 + 1));
         
-        lightProbeTextureR.write(float4(oldValuesR[0], oldValuesR[1], oldValuesR[2], 1), ushort3(texPos.x, texPos.y, rayDirIndex*2));
-        lightProbeTextureR.write(float4(oldValuesR[3], oldValuesR[4], oldValuesR[5], 1), ushort3(texPos.x, texPos.y, rayDirIndex*2 + 1));
+        lightProbeTextureG.write(float4(oldValuesG[0], oldValuesG[1], oldValuesG[2], oldValuesG[3]), ushort3(texPos.x, texPos.y, rayDirIndex));
+     //   lightProbeTextureG.write(float4(oldValuesG[3], oldValuesG[4], oldValuesG[5], 1), ushort3(texPos.x, texPos.y, rayDirIndex*2 + 1));
         
-        lightProbeTextureG.write(float4(oldValuesG[0], oldValuesG[1], oldValuesG[2], 1), ushort3(texPos.x, texPos.y, rayDirIndex*2));
-        lightProbeTextureG.write(float4(oldValuesG[3], oldValuesG[4], oldValuesG[5], 1), ushort3(texPos.x, texPos.y, rayDirIndex*2 + 1));
-        
-        lightProbeTextureB.write(float4(oldValuesB[0], oldValuesB[1], oldValuesB[2], 1), ushort3(texPos.x, texPos.y, rayDirIndex*2));
-        lightProbeTextureB.write(float4(oldValuesB[3], oldValuesB[4], oldValuesB[5], 1), ushort3(texPos.x, texPos.y, rayDirIndex*2 + 1));
+        lightProbeTextureB.write(float4(oldValuesB[0], oldValuesB[1], oldValuesB[2], oldValuesB[3]), ushort3(texPos.x, texPos.y, rayDirIndex));
+     //   lightProbeTextureB.write(float4(oldValuesB[3], oldValuesB[4], oldValuesB[5], 1), ushort3(texPos.x, texPos.y, rayDirIndex*2 + 1));
     }
 }

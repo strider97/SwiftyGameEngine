@@ -84,7 +84,8 @@ class Raytracer {
         buildIntersector()
         buildAccelerationStructure()
     //    irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 7.5, 1), Float3(30, 14, 14))
-        irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 1.5, 0), Float3(16, 2.8, 8.2))
+        irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 7.5, 0), Float3(30, 14, 15))
+    //    irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 1.5, 0), Float3(16, 2.8, 8.2))
     }
 
     func buildAccelerationStructure() {
@@ -152,7 +153,7 @@ class Raytracer {
     }
 
     func createScene() {
-        loadAsset(name: "bigroom")
+        loadAsset(name: "sponza")
     }
 
     func createBuffers() {

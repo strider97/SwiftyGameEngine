@@ -377,6 +377,12 @@ ushort2 gridPosToTex(float3 pos, LightProbeData probe) {
     return ushort2(texPos.y * probe.probeGridWidth + texPos.x, texPos.z);
 }
 
+float4 SHProjectLinear_(float3 dir) {
+    float l0 = 0.282095;
+    float l1 = 0.488603;
+    return float4(l0, dir.y * l1, dir.z*l1, dir.x*l1);
+}
+
 float getDDGI(float3 position, float3 smoothNormal, texture3d<float, access::read> lightProbeTexture, LightProbeData probe) {
     ushort2 texPos = gridPosToTex(position, probe);
     float3 transformedPos = (position - probe.gridOrigin)/probe.gridEdge;
@@ -408,13 +414,13 @@ float getDDGI(float3 position, float3 smoothNormal, texture3d<float, access::rea
         ushort2(probe.probeCount.x + 1, 1)
     };
     float color = 0;
+    float4 shCoeff = SHProjectLinear_(smoothNormal);
+    float aCap[4] = { 3.141593, 2.094395, 2.094395, 2.094395 };
     for (int iCoeff = 0; iCoeff < 8; iCoeff++) {
         float color_ = 0;
-        float3 col1 = lightProbeTexture.read(ushort3(texPos + lightProbeTexCoeff[iCoeff], 0)).rgb;
-        float3 col2 = lightProbeTexture.read(ushort3(texPos + lightProbeTexCoeff[iCoeff], 1)).rgb;
-        float colors[6] = {col1.x, col1.y, col1.z, col2.x, col2.y, col2.z};
-        for (int i = 0; i<AMBIENT_DIR_COUNT; i++) {
-            color_ += max(0.0, dot(colors[i] * ambientCubeDir[i], smoothNormal));
+        float4 coeff = lightProbeTexture.read(ushort3(texPos + lightProbeTexCoeff[iCoeff], 0));
+        for (int i = 0; i<4; i++) {
+            color_ += max(0.0, aCap[i] * coeff[i] * shCoeff[i]);
         }
         color += color_ * trilinearWeights[iCoeff];
     //    color += color_ * (1.0/8);
