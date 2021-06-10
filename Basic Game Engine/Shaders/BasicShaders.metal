@@ -377,10 +377,24 @@ ushort2 gridPosToTex(float3 pos, LightProbeData probe) {
     return ushort2(texPos.y * probe.probeGridWidth + texPos.x, texPos.z);
 }
 
-float4 SHProjectLinear_(float3 dir) {
-    float l0 = 0.282095;
-    float l1 = 0.488603;
-    return float4(l0, dir.y * l1, dir.z*l1, dir.x*l1);
+void SHProjectLinear_(float3 dir, float coeff[9]) {
+    float x = dir.x, y = dir.y, z = dir.z;
+    float l[9] = {
+        0.282095,
+        0.488603, 0.488603, 0.488603,
+        1.092548, 1.092548, 0.315392, 1.092548, 0.546274
+    };
+    coeff[0] = l[0];
+    
+    coeff[1] = l[1]*y;
+    coeff[2] = l[2]*z;
+    coeff[3] = l[3]*x;
+    
+    coeff[4] = l[4]*x*y;
+    coeff[5] = l[5]*y*z;
+    coeff[6] = l[6]*(3*z*z-1);
+    coeff[7] = l[7]*x*z;
+    coeff[8] = l[8]*(x*x - y*y);
 }
 
 float getDDGI(float3 position, float3 smoothNormal, texture3d<float, access::read> lightProbeTexture, LightProbeData probe) {
@@ -414,12 +428,25 @@ float getDDGI(float3 position, float3 smoothNormal, texture3d<float, access::rea
         ushort2(probe.probeCount.x + 1, 1)
     };
     float color = 0;
-    float4 shCoeff = SHProjectLinear_(smoothNormal);
-    float aCap[4] = { 3.141593, 2.094395, 2.094395, 2.094395 };
+    float shCoeff[9] = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    SHProjectLinear_(smoothNormal, shCoeff);
+    float aCap[9] = {
+        3.141593,
+        2.094395, 2.094395, 2.094395,
+        0.785398, 0.785398, 0.785398, 0.785398, 0.785398
+    };
     for (int iCoeff = 0; iCoeff < 8; iCoeff++) {
         float color_ = 0;
-        float4 coeff = lightProbeTexture.read(ushort3(texPos + lightProbeTexCoeff[iCoeff], 0));
-        for (int i = 0; i<4; i++) {
+        float4 coeff0 = lightProbeTexture.read(ushort3(texPos + lightProbeTexCoeff[iCoeff], 0));
+        float4 coeff1 = lightProbeTexture.read(ushort3(texPos + lightProbeTexCoeff[iCoeff], 1));
+        float4 coeff2 = lightProbeTexture.read(ushort3(texPos + lightProbeTexCoeff[iCoeff], 2));
+        
+        float coeff[9] = {
+            coeff0.r, coeff0.g, coeff0.b,
+            coeff1.r, coeff1.g, coeff1.b,
+            coeff2.r, coeff2.g, coeff2.b,
+        };
+        for (int i = 0; i<9; i++) {
             color_ += max(0.0, aCap[i] * coeff[i] * shCoeff[i]);
         }
         color += color_ * trilinearWeights[iCoeff];

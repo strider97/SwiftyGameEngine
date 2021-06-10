@@ -43,14 +43,14 @@ class IrradianceField {
         height = h
         depth = d
         probeCount = w * h * d
-        ambientCubeTextureR = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: 2*Constants.probeReso * Constants.probeReso, label: "Irradiance Field", pixelFormat: .rgba32Float)
-        ambientCubeTextureFinalR = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: 2, label: "Irradiance Field final", pixelFormat: .rgba32Float)
+        ambientCubeTextureR = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: Constants.probeReso * Constants.probeReso, label: "Irradiance Field", pixelFormat: .rgba32Float)
+        ambientCubeTextureFinalR = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: 3, label: "Irradiance Field final", pixelFormat: .rgba32Float)
         
-        ambientCubeTextureG = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: 2*Constants.probeReso * Constants.probeReso, label: "Irradiance Field", pixelFormat: .rgba32Float)
-        ambientCubeTextureFinalG = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: 2, label: "Irradiance Field final", pixelFormat: .rgba32Float)
+        ambientCubeTextureG = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: Constants.probeReso * Constants.probeReso, label: "Irradiance Field", pixelFormat: .rgba32Float)
+        ambientCubeTextureFinalG = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: 3, label: "Irradiance Field final", pixelFormat: .rgba32Float)
         
-        ambientCubeTextureB = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: 2*Constants.probeReso * Constants.probeReso, label: "Irradiance Field", pixelFormat: .rgba32Float)
-        ambientCubeTextureFinalB = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: 2, label: "Irradiance Field final", pixelFormat: .rgba32Float)
+        ambientCubeTextureB = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: Constants.probeReso * Constants.probeReso, label: "Irradiance Field", pixelFormat: .rgba32Float)
+        ambientCubeTextureFinalB = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: 3, label: "Irradiance Field final", pixelFormat: .rgba32Float)
         gridEdge = gridSize / Float3(Float(w - 1), Float(h - 1), Float(d - 1))
         origin = centre - gridSize / 2
         makeBuffer(origin, gridEdge)
@@ -100,17 +100,17 @@ class IrradianceField {
         }
         print(probeLocationsArray)
         probeLocations = device.makeBuffer(bytes: probeLocationsArray, length: MemoryLayout<Float3>.stride * probeCount, options: .storageModeManaged)!
-        let numRays = Constants.probeReso * Constants.probeReso
+        let numRays = Constants.probeReso * Constants.probeReso * 30
         for i in 0 ..< numRays {
             let dir = Self.sphericalFibonacci9(Float(i), Float(numRays))
             probeDirectionsArray.append(dir)
         }
         //    print(probeDirectionsArray)
         probeDirections = device.makeBuffer(bytes: probeDirectionsArray, length: MemoryLayout<Float3>.stride * numRays, options: .storageModeManaged)!
-        print(self.origin)
+    //    print(self.origin)
         for val in probeLocationsArray {
             let i = gridPosToTex(pos: val)
-            print(i, indexToTexPos_(index: i), gridPosToTex_(pos: val))
+        //    print(i, indexToTexPos_(index: i), gridPosToTex_(pos: val))
         }
     }
 }

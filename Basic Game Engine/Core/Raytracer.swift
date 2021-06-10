@@ -83,9 +83,8 @@ class Raytracer {
         createBuffers()
         buildIntersector()
         buildAccelerationStructure()
-    //    irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 7.5, 1), Float3(30, 14, 14))
-        irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 7.5, 0), Float3(30, 14, 15))
-    //    irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 1.5, 0), Float3(16, 2.8, 8.2))
+    //    irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 7.5, 0), Float3(30, 14, 15))
+        irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 1.5, 0), Float3(16, 2.8, 8.2))
     }
 
     func buildAccelerationStructure() {
@@ -153,7 +152,7 @@ class Raytracer {
     }
 
     func createScene() {
-        loadAsset(name: "sponza")
+        loadAsset(name: "bigroom")
     }
 
     func createBuffers() {
@@ -229,7 +228,7 @@ class Raytracer {
         uniforms.pointee.probeGridHeight = Int32(Constants.probeGrid.1)
         uniforms.pointee.width = UInt32(size.width)
         uniforms.pointee.height = UInt32(size.height)
-        uniforms.pointee.blocksWide = (uniforms.pointee.width + 15) / 16
+        uniforms.pointee.blocksWide = (uniforms.pointee.width + 7) / 8
         uniforms.pointee.frameIndex = frameIndex
         frameIndex += 1
         //  print(self.camera.position)

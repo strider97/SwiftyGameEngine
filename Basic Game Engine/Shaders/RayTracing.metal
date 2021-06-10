@@ -130,7 +130,7 @@ kernel void primaryRays(constant Uniforms_ & uniforms [[buffer(0)]],
        ray.origin = probeLocations[index];
   //    ray.direction = normalize(float3(0, 1, 0));
       int rayDirIndex = tid.y*uniforms.probeWidth + tid.x % uniforms.probeWidth;
-      ray.direction = probeDirections[rayDirIndex];
+      ray.direction = probeDirections[rayDirIndex * ((uniforms.frameIndex + 1) % 30)];
   //    ray.direction = sphericalFibonacci(rayDirIndex, uniforms.probeWidth * uniforms.probeHeight);
 //      ray.direction = normalize(ray.direction);
 //    ray.origin = camera.position;
@@ -236,10 +236,24 @@ ushort2 gridPosToTex_(float3 pos, LightProbeData_ probe) {
     return ushort2(texPos.y * probe.probeGridWidth + texPos.x, texPos.z);
 }
 
-float4 SHProjectLinear__(float3 dir) {
-    float l0 = 0.282095;
-    float l1 = 0.488603;
-    return float4(l0, dir.y * l1, dir.z*l1, dir.x*l1);
+void SHProjectLinear__(float3 dir, float coeff[9]) {
+    float x = dir.x, y = dir.y, z = dir.z;
+    float l[9] = {
+        0.282095,
+        0.488603, 0.488603, 0.488603,
+        1.092548, 1.092548, 0.315392, 1.092548, 0.546274
+    };
+    coeff[0] = l[0];
+    
+    coeff[1] = l[1]*y;
+    coeff[2] = l[2]*z;
+    coeff[3] = l[3]*x;
+    
+    coeff[4] = l[4]*x*y;
+    coeff[5] = l[5]*y*z;
+    coeff[6] = l[6]*(3*z*z-1);
+    coeff[7] = l[7]*x*z;
+    coeff[8] = l[8]*(x*x - y*y);
 }
 
 float getDDGI_(float3 position, float3 smoothNormal, texture3d<float, access::read> lightProbeTexture, LightProbeData_ probe) {
@@ -274,12 +288,25 @@ float getDDGI_(float3 position, float3 smoothNormal, texture3d<float, access::re
     };
     
     float color = 0;
-    float4 shCoeff = SHProjectLinear__(smoothNormal);
-    float aCap[4] = { 3.141593, 2.094395, 2.094395, 2.094395 };
+    float shCoeff[9] = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    SHProjectLinear__(smoothNormal, shCoeff);
+    float aCap[9] = {
+        3.141593,
+        2.094395, 2.094395, 2.094395,
+        0.785398, 0.785398, 0.785398, 0.785398, 0.785398
+    };
     for (int iCoeff = 0; iCoeff < 8; iCoeff++) {
         float color_ = 0;
-        float4 coeff = lightProbeTexture.read(ushort3(texPos + lightProbeTexCoeff[iCoeff], 0));
-        for (int i = 0; i<4; i++) {
+        float4 coeff0 = lightProbeTexture.read(ushort3(texPos + lightProbeTexCoeff[iCoeff], 0));
+        float4 coeff1 = lightProbeTexture.read(ushort3(texPos + lightProbeTexCoeff[iCoeff], 1));
+        float4 coeff2 = lightProbeTexture.read(ushort3(texPos + lightProbeTexCoeff[iCoeff], 2));
+        
+        float coeff[9] = {
+            coeff0.r, coeff0.g, coeff0.b,
+            coeff1.r, coeff1.g, coeff1.b,
+            coeff2.r, coeff2.g, coeff2.b,
+        };
+        for (int i = 0; i<9; i++) {
             color_ += max(0.0, aCap[i] * coeff[i] * shCoeff[i]);
         }
         color += color_ * trilinearWeights[iCoeff];
@@ -326,9 +353,9 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
         shadowRay.maxDistance = lightDistance;
         shadowRay.color = 10 * lightColor * color;// / max(1.0,intersection.distance * intersection.distance);
    //     shadowRay.color = float3(0, 0, 10);
-        shadowRay.indirectColor.r = 1 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureR, uniforms.probeData);
-        shadowRay.indirectColor.g = 1 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureG, uniforms.probeData);
-        shadowRay.indirectColor.b = 1 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureB, uniforms.probeData);
+        shadowRay.indirectColor.r = 2 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureR, uniforms.probeData);
+        shadowRay.indirectColor.g = 2 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureG, uniforms.probeData);
+        shadowRay.indirectColor.b = 2 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureB, uniforms.probeData);
    //     shadowRay.indirectColor = 0;
       
   //    float3 sampleDirection = sampleCosineWeightedHemisphere(r);
@@ -367,7 +394,7 @@ kernel void shadowKernel(uint2 tid [[thread_position_in_grid]], device Uniforms_
         
         int index = tid.x / uniforms.probeWidth;
         int rayDirIndex = tid.y*uniforms.probeWidth + tid.x % uniforms.probeWidth;
-        float3 direction = probeDirections[rayDirIndex];
+        float3 direction = probeDirections[rayDirIndex * ((uniforms.frameIndex + 1) % 30)];
         uint2 texPos = indexToTexPos(index, uniforms.probeGridWidth, uniforms.probeGridHeight);
         int raycount = uniforms.probeWidth * uniforms.probeHeight;
     //    color = float3(1.0, 1.0, 0);
