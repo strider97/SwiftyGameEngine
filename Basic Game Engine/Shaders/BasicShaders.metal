@@ -49,12 +49,12 @@ constexpr sampler s1(coord::normalized, address::clamp_to_edge, filter::linear, 
 
 constant int AMBIENT_DIR_COUNT = 6;
 constant float3 ambientCubeDir[] = {
-    float3(1, 0, 0),
+    float3(0.7071, 0, 0.7071),
     float3(0, 1, 0),
-    float3(0, 0, 1),
-    float3(-1, 0, 0),
+    float3(0.7071, 0, -0.7071),
+    float3(-0.7071, 0, 0.7071),
     float3(0, -1, 0),
-    float3(0, 0, -1)
+    float3(-0.7071, 0, -0.7071)
 };
 
 struct VertexIn {
@@ -464,8 +464,8 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     ambient.r = (getDDGI(vOut.position, vOut.smoothNormal, lightProbeTextureR, probe) + 0.0000);
     ambient.g = (getDDGI(vOut.position, vOut.smoothNormal, lightProbeTextureG, probe) + 0.0000);
     ambient.b = (getDDGI(vOut.position, vOut.smoothNormal, lightProbeTextureB, probe) + 0.0000);
-    float3 diffuse = inShadow ? 0 : 4 * albedo * saturate(dot(smoothN, l));
-    float3 color = 0*diffuse + 2.6 * ambient * albedo.r;
+    float3 diffuse = inShadow ? 0 : 10 * albedo * saturate(dot(smoothN, l));
+    float3 color = diffuse + 2 * ambient * albedo;
     
     float exposure = max(0.01, vOut.exposure);
     color = 1 - exp(-color * exposure);

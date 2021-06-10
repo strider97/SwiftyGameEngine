@@ -180,7 +180,7 @@ float3 lerp(float3 a, float3 b, float t) {
 kernel void accumulateKernel(constant Uniforms_ & uniforms, texture3d<float, access::read_write> lightProbeTextureR, texture3d<float, access::read_write> lightProbeTextureG, texture3d<float, access::read_write> lightProbeTextureB, texture3d<float, access::read_write> lightProbeTextureFinalR, texture3d<float, access::read_write> lightProbeTextureFinalG, texture3d<float, access::read_write> lightProbeTextureFinalB, uint2 tid [[thread_position_in_grid]])
 {
   if (int(tid.x) < (uniforms.probeGridWidth * uniforms.probeGridHeight) && int(tid.y) < uniforms.probeGridHeight) {
-      float t = 0.9;
+      float t = 0.5;
     if (uniforms.frameIndex > 0) {
         float3 newValue1 = 0;
         float3 newValue2 = 0;
