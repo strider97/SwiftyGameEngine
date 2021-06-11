@@ -43,13 +43,13 @@ class IrradianceField {
         height = h
         depth = d
         probeCount = w * h * d
-        ambientCubeTextureR = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: 2*Constants.probeReso * Constants.probeReso, label: "Irradiance Field", pixelFormat: .rgba32Float)
+        ambientCubeTextureR = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: Constants.probeReso * Constants.probeReso, label: "Irradiance Field", pixelFormat: .rgba32Float)
         ambientCubeTextureFinalR = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: 2, label: "Irradiance Field final", pixelFormat: .rgba32Float)
         
-        ambientCubeTextureG = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: 2*Constants.probeReso * Constants.probeReso, label: "Irradiance Field", pixelFormat: .rgba32Float)
+        ambientCubeTextureG = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: Constants.probeReso * Constants.probeReso, label: "Irradiance Field", pixelFormat: .rgba32Float)
         ambientCubeTextureFinalG = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: 2, label: "Irradiance Field final", pixelFormat: .rgba32Float)
         
-        ambientCubeTextureB = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: 2*Constants.probeReso * Constants.probeReso, label: "Irradiance Field", pixelFormat: .rgba32Float)
+        ambientCubeTextureB = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: Constants.probeReso * Constants.probeReso, label: "Irradiance Field", pixelFormat: .rgba32Float)
         ambientCubeTextureFinalB = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: 2, label: "Irradiance Field final", pixelFormat: .rgba32Float)
         gridEdge = gridSize / Float3(Float(w - 1), Float(h - 1), Float(d - 1))
         origin = centre - gridSize / 2
@@ -70,6 +70,19 @@ class IrradianceField {
         let theta = 2 * MathConstants.PI.rawValue * i / goldenRatio
         let phi = acos(1 - 2 * (i + 0.5) / n)
         return Float3(cos(theta) * sin(phi), sin(theta) * sin(phi), cos(phi))
+    }
+    
+    static func getRandomDirection() -> Float3 {
+        let theta = 2.0 * Double(MathConstants.PI.rawValue) * Double.random(in: 0...1);
+        // corrrect
+        let phi = acos(2*Double.random(in: 0...1)-1.0);
+        // incorrect
+        //phi = PI*irand(0,1);
+        return Float3 (
+            Float(cos(theta)*sin(phi)),
+            Float(sin(theta)*sin(phi)),
+            Float(cos(phi))
+        )
     }
 
     func indexToTexPos_(index: Int) -> Float2 {
@@ -100,9 +113,10 @@ class IrradianceField {
         }
         print(probeLocationsArray)
         probeLocations = device.makeBuffer(bytes: probeLocationsArray, length: MemoryLayout<Float3>.stride * probeCount, options: .storageModeManaged)!
-        let numRays = Constants.probeReso * Constants.probeReso
-        for i in 0 ..< numRays {
-            let dir = Self.sphericalFibonacci9(Float(i), Float(numRays))
+        let numRays = Constants.probeReso * Constants.probeReso * 1000
+        for _ in 0 ..< numRays {
+        //    let dir = Self.sphericalFibonacci9(Float(i), Float(numRays))
+            let dir = Self.getRandomDirection()
             probeDirectionsArray.append(dir)
         }
         //    print(probeDirectionsArray)

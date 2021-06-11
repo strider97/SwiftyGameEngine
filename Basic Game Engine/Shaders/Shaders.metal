@@ -190,7 +190,7 @@ float4 SHProjectLinear(float3 dir) {
 kernel void accumulateKernel(constant Uniforms_ & uniforms, texture3d<float, access::read_write> lightProbeTextureR, texture3d<float, access::read_write> lightProbeTextureG, texture3d<float, access::read_write> lightProbeTextureB, texture3d<float, access::read_write> lightProbeTextureFinalR, texture3d<float, access::read_write> lightProbeTextureFinalG, texture3d<float, access::read_write> lightProbeTextureFinalB, uint2 tid [[thread_position_in_grid]])
 {
   if (int(tid.x) < (uniforms.probeGridWidth * uniforms.probeGridHeight) && int(tid.y) < uniforms.probeGridHeight) {
-      float t = 0.5;
+      float t = 0.02;
     if (uniforms.frameIndex > 0) {
         float4 coeffR = 0;
         float4 coeffG = 0;
@@ -234,3 +234,14 @@ kernel void accumulateKernel(constant Uniforms_ & uniforms, texture3d<float, acc
     }
   }
 }
+
+/*
+ int frame = uniforms.frameIndex;
+ lightProbeTextureFinalR.write(((frame - 1)*oldCoeffR + coeffR)/frame , ushort3(tid.x, tid.y, 0));
+//    lightProbeTextureFinalR.write(float4(lerp(newValue2, oldValue2, t), 1), ushort3(tid.x, tid.y, 1));
+ 
+ lightProbeTextureFinalG.write(((frame - 1)*oldCoeffR + coeffR)/frame, ushort3(tid.x, tid.y, 0));
+//    lightProbeTextureFinalG.write(float4(lerp(newValue4, oldValue4, t), 1), ushort3(tid.x, tid.y, 1));
+ 
+ lightProbeTextureFinalB.write(((frame - 1)*oldCoeffB + coeffB)/frame, ushort3(tid.x, tid.y, 0));
+ */

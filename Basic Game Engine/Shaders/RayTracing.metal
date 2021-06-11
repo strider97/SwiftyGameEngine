@@ -44,6 +44,7 @@ struct Ray {
   float maxDistance;
   float3 color;
     float3 indirectColor;
+    float3 prevDirection;
 };
 
 struct Intersection {
@@ -130,7 +131,7 @@ kernel void primaryRays(constant Uniforms_ & uniforms [[buffer(0)]],
        ray.origin = probeLocations[index];
   //    ray.direction = normalize(float3(0, 1, 0));
       int rayDirIndex = tid.y*uniforms.probeWidth + tid.x % uniforms.probeWidth;
-      ray.direction = probeDirections[rayDirIndex];
+      ray.direction = probeDirections[rayDirIndex*((uniforms.frameIndex + 1) % 1000)];
   //    ray.direction = sphericalFibonacci(rayDirIndex, uniforms.probeWidth * uniforms.probeHeight);
 //      ray.direction = normalize(ray.direction);
 //    ray.origin = camera.position;
@@ -307,6 +308,7 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
     device Intersection & intersection = intersections[rayIdx];
     float3 color = ray.color;
       shadowRay.indirectColor = 0;
+      shadowRay.prevDirection = ray.direction;
     if (ray.maxDistance >= 0.0 && intersection.distance >= 0.0) {
         float3 intersectionPoint = ray.origin + ray.direction
       * intersection.distance;
@@ -367,9 +369,9 @@ kernel void shadowKernel(uint2 tid [[thread_position_in_grid]], device Uniforms_
         
         int index = tid.x / uniforms.probeWidth;
         int rayDirIndex = tid.y*uniforms.probeWidth + tid.x % uniforms.probeWidth;
-        float3 direction = probeDirections[rayDirIndex];
-        uint2 texPos = indexToTexPos(index, uniforms.probeGridWidth, uniforms.probeGridHeight);
         int raycount = uniforms.probeWidth * uniforms.probeHeight;
+        float3 direction = shadowRay.prevDirection;
+        uint2 texPos = indexToTexPos(index, uniforms.probeGridWidth, uniforms.probeGridHeight);
     //    color = float3(1.0, 1.0, 0);
         oldValuesR[0] = direction.x;
         oldValuesR[1] = direction.y;
