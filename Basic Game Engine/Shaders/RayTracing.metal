@@ -130,7 +130,7 @@ kernel void primaryRays(constant Uniforms_ & uniforms [[buffer(0)]],
        ray.origin = probeLocations[index];
   //    ray.direction = normalize(float3(0, 1, 0));
       int rayDirIndex = tid.y*uniforms.probeWidth + tid.x % uniforms.probeWidth;
-      ray.direction = probeDirections[rayDirIndex];
+      ray.direction = probeDirections[rayDirIndex + rayDirIndex*(uniforms.frameIndex % 1000)];
   //    ray.direction = sphericalFibonacci(rayDirIndex, uniforms.probeWidth * uniforms.probeHeight);
 //      ray.direction = normalize(ray.direction);
 //    ray.origin = camera.position;
@@ -359,7 +359,7 @@ kernel void shadowKernel(uint2 tid [[thread_position_in_grid]], device Uniforms_
     //    if (dot(color, color) <= 0.0) { return; }
         int index = tid.x / uniforms.probeWidth;
         int rayDirIndex = tid.y*uniforms.probeWidth + tid.x % uniforms.probeWidth;
-        float3 direction = probeDirections[rayDirIndex];
+        float3 direction = probeDirections[rayDirIndex + rayDirIndex*(uniforms.frameIndex % 1000)];
         uint2 texPos = indexToTexPos(index, uniforms.probeGridWidth, uniforms.probeGridHeight);
         int raycount = uniforms.probeWidth * uniforms.probeHeight;
         

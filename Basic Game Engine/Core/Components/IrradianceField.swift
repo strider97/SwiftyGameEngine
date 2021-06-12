@@ -72,6 +72,19 @@ class IrradianceField {
         return Float3(cos(theta) * sin(phi), sin(theta) * sin(phi), cos(phi))
     }
 
+    static func getRandomDirection() -> Float3 {
+        let theta = 2.0 * Double(MathConstants.PI.rawValue) * Double.random(in: 0...1);
+        // corrrect
+        let phi = acos(2*Double.random(in: 0...1)-1.0);
+        // incorrect
+        //phi = PI*irand(0,1);
+        return Float3 (
+            Float(cos(theta)*sin(phi)),
+            Float(sin(theta)*sin(phi)),
+            Float(cos(phi))
+        )
+    }
+
     func indexToTexPos_(index: Int) -> Float2 {
         let indexD = index / (width * height)
         let indexH = (index % (width * height))
@@ -98,19 +111,16 @@ class IrradianceField {
             let pos = indexToGridPos(i, origin, gridEdge)
             probeLocationsArray.append(pos)
         }
-        print(probeLocationsArray)
+    //    print(probeLocationsArray)
         probeLocations = device.makeBuffer(bytes: probeLocationsArray, length: MemoryLayout<Float3>.stride * probeCount, options: .storageModeManaged)!
-        let numRays = Constants.probeReso * Constants.probeReso
-        for i in 0 ..< numRays {
-            let dir = Self.sphericalFibonacci9(Float(i), Float(numRays))
+        let numRays = Constants.probeReso * Constants.probeReso * 1000
+        for _ in 0 ..< numRays {
+        //    let dir = Self.sphericalFibonacci9(Float(i), Float(numRays))
+            let dir = Self.getRandomDirection()
             probeDirectionsArray.append(dir)
         }
         //    print(probeDirectionsArray)
         probeDirections = device.makeBuffer(bytes: probeDirectionsArray, length: MemoryLayout<Float3>.stride * numRays, options: .storageModeManaged)!
-        print(self.origin)
-        for val in probeLocationsArray {
-            let i = gridPosToTex(pos: val)
-            print(i, indexToTexPos_(index: i), gridPosToTex_(pos: val))
-        }
+     //   print(self.origin)
     }
 }

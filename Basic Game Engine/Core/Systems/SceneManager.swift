@@ -373,7 +373,7 @@ extension Scene {
         //    for i in 0..<lightPolygon.count {
         //        lightPolygon[i] = lightPolygonInitial[i] + Float3(sin(GameTimer.sharedTimer.time) * 20, 0, 0)
         //    }
-        sunDirection.x = abs(40 * cos(GameTimer.sharedTimer.time / 3)) - 2
+        sunDirection.x = abs(40 * cos(GameTimer.sharedTimer.time / 6)) - 2
         shadowViewMatrix = Matrix4.viewMatrix(position: sunDirection, target: Float3(0, 0, 0), up: Camera.WorldUp)
     }
 

@@ -465,7 +465,7 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     ambient.g = (getDDGI(vOut.position, vOut.smoothNormal, lightProbeTextureG, probe) + 0.0000);
     ambient.b = (getDDGI(vOut.position, vOut.smoothNormal, lightProbeTextureB, probe) + 0.0000);
     float3 diffuse = inShadow ? 0 : 10 * albedo * saturate(dot(smoothN, l));
-    float3 color = diffuse + 2 * ambient * albedo;
+    float3 color = diffuse + 3 * ambient * albedo;
     
     float exposure = max(0.01, vOut.exposure);
     color = 1 - exp(-color * exposure);
