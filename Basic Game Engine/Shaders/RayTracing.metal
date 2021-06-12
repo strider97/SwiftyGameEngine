@@ -54,6 +54,7 @@ struct Intersection {
 };
 
 constant float PI = 3.14159265;
+constexpr sampler s__(coord::normalized, address::repeat, filter::linear, mip_filter::linear);
 
 constant unsigned int primes[] = {
     2,   3,  5,  7,
@@ -231,6 +232,21 @@ inline float3 alignHemisphereWithNormal(float3 sample, float3 normal) {
   return sample.x * right + sample.y * up + sample.z * forward;
 }
 
+constant float2 invPi_ = float2(0.15915, 0.31831);
+
+float2 sampleSphericalMap__(float3 dir) {
+    float3 v = normalize(dir);
+    float2 uv = float2(atan(-v.z/v.x), acos(v.y));
+    if (v.x < 0) {
+        uv.x += M_PI_F;
+    }
+    if (v.x >= 0 && -v.z < 0) {
+        uv.x += 2*M_PI_F;
+    }
+    uv *= invPi_;
+    return uv;
+}
+
 ushort2 gridPosToTex_(float3 pos, LightProbeData_ probe) {
     float3 texPos_ = (pos - probe.gridOrigin)/probe.gridEdge;
     int3 texPos = int3(texPos_);
@@ -299,7 +315,8 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
                         device float2 *random,
                         texture3d<float, access::read> lightProbeTextureR,
                         texture3d<float, access::read> lightProbeTextureG,
-                        texture3d<float, access::read> lightProbeTextureB)
+                        texture3d<float, access::read> lightProbeTextureB,
+                        texture2d<float, access::sample> irradianceMap)
 {
   if (tid.x < uniforms.width && tid.y < uniforms.height && uniforms.frameIndex) {
     unsigned int rayIdx = tid.y * uniforms.width + tid.x;
@@ -328,10 +345,11 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
         shadowRay.maxDistance = lightDistance;
         shadowRay.color = 10 * lightColor * color;// / max(1.0,intersection.distance * intersection.distance);
    //     shadowRay.color = float3(0, 0, 10);
-        shadowRay.indirectColor.r = 1 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureR, uniforms.probeData);
-        shadowRay.indirectColor.g = 1 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureG, uniforms.probeData);
-        shadowRay.indirectColor.b = 1 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureB, uniforms.probeData);
-   //     shadowRay.indirectColor = 0;
+        shadowRay.indirectColor.r = 2 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureR, uniforms.probeData);
+        shadowRay.indirectColor.g = 2 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureG, uniforms.probeData);
+        shadowRay.indirectColor.b = 2 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureB, uniforms.probeData);
+        shadowRay.indirectColor *= color;
+  //      shadowRay.indirectColor = 0;
       
   //    float3 sampleDirection = sampleCosineWeightedHemisphere(r);
   //    sampleDirection = alignHemisphereWithNormal(sampleDirection,
@@ -343,7 +361,11 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
     else {
         ray.maxDistance = -1.0;
         shadowRay.maxDistance = -1.0;
-    //    shadowRay.color = saturate(dot(ray.direction, uniforms.sunDirection));
+        float3 R = ray.direction;
+        R.x = -R.x;
+        R.z = -R.z;
+        float3 irradiance = irradianceMap.sample(s__, sampleSphericalMap__(R)).rgb;
+        shadowRay.indirectColor += irradiance;
     //    shadowRay.color = 0;
     }
   }
@@ -372,7 +394,6 @@ kernel void shadowKernel(uint2 tid [[thread_position_in_grid]], device Uniforms_
         int raycount = uniforms.probeWidth * uniforms.probeHeight;
         float3 direction = shadowRay.prevDirection;
         uint2 texPos = indexToTexPos(index, uniforms.probeGridWidth, uniforms.probeGridHeight);
-    //    color = float3(1.0, 1.0, 0);
         oldValuesR[0] = direction.x;
         oldValuesR[1] = direction.y;
         oldValuesR[2] = direction.z;

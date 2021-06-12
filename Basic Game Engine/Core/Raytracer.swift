@@ -83,9 +83,10 @@ class Raytracer {
         createBuffers()
         buildIntersector()
         buildAccelerationStructure()
-    //    irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 7.5, 1), Float3(30, 14, 14))
-    //    irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 7.5, 0), Float3(30, 14, 15))
-        irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 1.5, 0), Float3(16, 3.2, 8.2))
+        irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 7.5, 1), Float3(30, 14, 14))
+   //     irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 7, 0), Float3(20, 14, 50))
+   //     irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 1.5, 0), Float3(16, 2.5, 8.2))
+   //     irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 10, 0), Float3(25, 25, 15))
     }
 
     func buildAccelerationStructure() {
@@ -153,7 +154,7 @@ class Raytracer {
     }
 
     func createScene() {
-        loadAsset(name: "bigroom")
+        loadAsset(name: "sponza")
     }
 
     func createBuffers() {
@@ -362,6 +363,7 @@ extension Raytracer {
             computeEncoder?.setTexture(irradianceField.ambientCubeTextureFinalR, index: 0)
             computeEncoder?.setTexture(irradianceField.ambientCubeTextureFinalG, index: 1)
             computeEncoder?.setTexture(irradianceField.ambientCubeTextureFinalB, index: 2)
+            computeEncoder?.setTexture(scene.irradianceMap.texture, index: 3)
             computeEncoder?.setComputePipelineState(shadePipelineState!)
             computeEncoder?.dispatchThreadgroups(
                 threadGroups,
@@ -464,6 +466,7 @@ extension Raytracer {
                           baseColor.type == .float3 {
                           color = baseColor.float3Value
                         }
+                    //    color = Float3(1, 1, 1);
                         colors.append(color)
                         indices = indices.advanced(by: 1)
                     }

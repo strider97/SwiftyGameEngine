@@ -26,8 +26,8 @@ class Scene: NSObject {
     static let W: Float = 1280
     static let H: Float = 720
     final let P = Matrix4(projectionFov: MathConstants.PI.rawValue / 3, near: 0.01, far: 500, aspect: Scene.W / Scene.H)
-//    var sunDirection = Float3(8, 20, 5)
-    var sunDirection = Float3(18, 8, 2)
+//    var sunDirection = Float3(5, 3, 5) * 2
+    var sunDirection = Float3(2, 18, 4)
     var orthoGraphicP = Matrix4(orthoLeft: -10, right: 10, bottom: -10, top: 10, near: 0.01, far: 100)
     lazy var shadowViewMatrix = Matrix4.viewMatrix(position: sunDirection, target: Float3(0, 0, 0), up: Camera.WorldUp)
     final let timer = GameTimer.sharedTimer
@@ -209,15 +209,15 @@ extension Scene {
 
         let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         renderCommandEncoder?.setDepthStencilState(depthStencilState)
-        renderCommandEncoder?.setFragmentTexture(preFilterEnvMap.texture, index: TextureIndex.preFilterEnvMap.rawValue)
-        renderCommandEncoder?.setFragmentTexture(dfgLut.texture, index: TextureIndex.DFGlut.rawValue)
-        renderCommandEncoder?.setFragmentTexture(irradianceMap.texture, index: TextureIndex.irradianceMap.rawValue)
-        renderCommandEncoder?.setFragmentTexture(ltcMat, index: TextureIndex.ltc_mat.rawValue)
-        renderCommandEncoder?.setFragmentTexture(ltcMag, index: TextureIndex.ltc_mag.rawValue)
+//        renderCommandEncoder?.setFragmentTexture(preFilterEnvMap.texture, index: TextureIndex.preFilterEnvMap.rawValue)
+//        renderCommandEncoder?.setFragmentTexture(dfgLut.texture, index: TextureIndex.DFGlut.rawValue)
+//        renderCommandEncoder?.setFragmentTexture(irradianceMap.texture, index: TextureIndex.irradianceMap.rawValue)
+//        renderCommandEncoder?.setFragmentTexture(ltcMat, index: TextureIndex.ltc_mat.rawValue)
+//        renderCommandEncoder?.setFragmentTexture(ltcMag, index: TextureIndex.ltc_mag.rawValue)
         renderCommandEncoder?.setFragmentTexture(shadowTexture, index: TextureIndex.shadowMap.rawValue)
-        renderCommandEncoder?.setFragmentTexture(gBufferData.worldPos, index: TextureIndex.worldPos.rawValue)
-        renderCommandEncoder?.setFragmentTexture(gBufferData.normal, index: TextureIndex.normal.rawValue)
-        renderCommandEncoder?.setFragmentTexture(gBufferData.flux, index: TextureIndex.flux.rawValue)
+//        renderCommandEncoder?.setFragmentTexture(gBufferData.worldPos, index: TextureIndex.worldPos.rawValue)
+//        renderCommandEncoder?.setFragmentTexture(gBufferData.normal, index: TextureIndex.normal.rawValue)
+//        renderCommandEncoder?.setFragmentTexture(gBufferData.flux, index: TextureIndex.flux.rawValue)
         renderCommandEncoder?.setFragmentTexture(rayTracer?.irradianceField.ambientCubeTextureFinalR, index: TextureIndex.textureDDGIR.rawValue)
         renderCommandEncoder?.setFragmentTexture(rayTracer?.irradianceField.ambientCubeTextureFinalG, index: TextureIndex.textureDDGIG.rawValue)
         renderCommandEncoder?.setFragmentTexture(rayTracer?.irradianceField.ambientCubeTextureFinalB, index: TextureIndex.textureDDGIB.rawValue)
@@ -281,16 +281,16 @@ extension Scene {
                             let mat = meshNode.material
                             var material = ShaderMaterial(baseColor: mat.baseColor, roughness: mat.roughness, metallic: mat.metallic, mipmapCount: preFilterEnvMap.mipMapCount)
                             renderCommandEncoder?.setFragmentBytes(&material, length: MemoryLayout<ShaderMaterial>.size, index: 0)
-                            renderCommandEncoder?.setFragmentBytes(&lightPolygon, length: MemoryLayout<Float3>.size * 4, index: 1)
+                        //    renderCommandEncoder?.setFragmentBytes(&lightPolygon, length: MemoryLayout<Float3>.size * 4, index: 1)
                             renderCommandEncoder?.setFragmentTexture(mat.textureSet.baseColor, index: TextureIndex.baseColor.rawValue)
                             if i == 1 {
                                 renderCommandEncoder?.setFragmentTexture(rayTracer?.renderTarget!, index: TextureIndex.baseColor.rawValue)
                             }
                             if renderPassType == .shading {
-                                renderCommandEncoder?.setFragmentTexture(mat.textureSet.roughness, index: TextureIndex.roughness.rawValue)
-                                renderCommandEncoder?.setFragmentTexture(mat.textureSet.metallic, index: TextureIndex.metallic.rawValue)
-                                renderCommandEncoder?.setFragmentTexture(mat.textureSet.normalMap, index: TextureIndex.normalMap.rawValue)
-                                renderCommandEncoder?.setFragmentTexture(mat.textureSet.ao, index: TextureIndex.ao.rawValue)
+                            //    renderCommandEncoder?.setFragmentTexture(mat.textureSet.roughness, index: TextureIndex.roughness.rawValue)
+                            //    renderCommandEncoder?.setFragmentTexture(mat.textureSet.metallic, index: TextureIndex.metallic.rawValue)
+                            //    renderCommandEncoder?.setFragmentTexture(mat.textureSet.normalMap, index: TextureIndex.normalMap.rawValue)
+                            //    renderCommandEncoder?.setFragmentTexture(mat.textureSet.ao, index: TextureIndex.ao.rawValue)
                             }
                         }
                         let submesh = meshNode.mesh
@@ -374,8 +374,8 @@ extension Scene {
         //    for i in 0..<lightPolygon.count {
         //        lightPolygon[i] = lightPolygonInitial[i] + Float3(sin(GameTimer.sharedTimer.time) * 20, 0, 0)
         //    }
-    //    sunDirection.z = 11 * cos(GameTimer.sharedTimer.time / 3)
-        sunDirection.x = abs(40 * cos(GameTimer.sharedTimer.time / 10)) - 1
+        sunDirection.z = 22 * cos(GameTimer.sharedTimer.time / 6)
+    //    sunDirection.x = abs(40 * cos(GameTimer.sharedTimer.time / 10)) - 1
         shadowViewMatrix = Matrix4.viewMatrix(position: sunDirection, target: Float3(0, 0, 0), up: Camera.WorldUp)
     }
 

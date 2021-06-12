@@ -237,6 +237,126 @@
 		7243911B265EDE7E0066F3B4 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 7243911A265EDE7E0066F3B4 /* Shaders.metal */; };
 		72439121265EDECE0066F3B4 /* RayTracing.metal in Sources */ = {isa = PBXBuildFile; fileRef = 72439120265EDECE0066F3B4 /* RayTracing.metal */; };
 		7244840C25C6F42300294331 /* SimpleScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7244840B25C6F42300294331 /* SimpleScene.swift */; };
+		7254B21E267390580053B4F4 /* classroom.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 7254B21C267390580053B4F4 /* classroom.mtl */; };
+		7254B21F267390580053B4F4 /* classroom.obj in Resources */ = {isa = PBXBuildFile; fileRef = 7254B21D267390580053B4F4 /* classroom.obj */; };
+		7254B22526739BD70053B4F4 /* city.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 7254B22326739BD70053B4F4 /* city.mtl */; };
+		7254B22626739BD70053B4F4 /* city.obj in Resources */ = {isa = PBXBuildFile; fileRef = 7254B22426739BD70053B4F4 /* city.obj */; };
+		7254B2382673A0E80053B4F4 /* facades_normal.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254B22B2673A0E80053B4F4 /* facades_normal.jpg */; };
+		7254B2392673A0E80053B4F4 /* vehicles_lights.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254B22C2673A0E80053B4F4 /* vehicles_lights.jpg */; };
+		7254B23A2673A0E80053B4F4 /* vehicles.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254B22D2673A0E80053B4F4 /* vehicles.jpg */; };
+		7254B23C2673A0E80053B4F4 /* fasades_fasades2_BaseColor.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254B22F2673A0E80053B4F4 /* fasades_fasades2_BaseColor.jpg */; };
+		7254B23E2673A0E80053B4F4 /* floor_Material.001_Normal.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254B2312673A0E80053B4F4 /* floor_Material.001_Normal.jpg */; };
+		7254B23F2673A0E80053B4F4 /* floor_Material.001_Roughness.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254B2322673A0E80053B4F4 /* floor_Material.001_Roughness.jpg */; };
+		7254B2402673A0E80053B4F4 /* fasades_fasades2_Roughness.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254B2332673A0E80053B4F4 /* fasades_fasades2_Roughness.jpg */; };
+		7254B2412673A0E80053B4F4 /* facades_roughness.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254B2342673A0E80053B4F4 /* facades_roughness.jpg */; };
+		7254B2422673A0E80053B4F4 /* fasades_fasades2_Height.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254B2352673A0E80053B4F4 /* fasades_fasades2_Height.jpg */; };
+		7254B2432673A0E80053B4F4 /* Rails0014_1_350.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254B2362673A0E80053B4F4 /* Rails0014_1_350.jpg */; };
+		7254B2442673A0E80053B4F4 /* floor_Material.001_BaseColor.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254B2372673A0E80053B4F4 /* floor_Material.001_BaseColor.jpg */; };
+		7254F9A32673B5C4000F5738 /* facades.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9A12673B5C3000F5738 /* facades.jpg */; };
+		7254F9A42673B5C4000F5738 /* details.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9A22673B5C4000F5738 /* details.jpg */; };
+		7254F9AA2673BB41000F5738 /* tokyo.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9A82673BB41000F5738 /* tokyo.mtl */; };
+		7254F9AB2673BB41000F5738 /* tokyo.obj in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9A92673BB41000F5738 /* tokyo.obj */; };
+		7254FA152673BBC4000F5738 /* CobbleWall.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9B02673BBC0000F5738 /* CobbleWall.jpg */; };
+		7254FA162673BBC4000F5738 /* Alley_unique_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9B12673BBC0000F5738 /* Alley_unique_tex.jpg */; };
+		7254FA172673BBC4000F5738 /* Water.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9B22673BBC0000F5738 /* Water.jpg */; };
+		7254FA182673BBC4000F5738 /* 2_Walls_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9B32673BBC0000F5738 /* 2_Walls_tex.jpg */; };
+		7254FA192673BBC4000F5738 /* prop_airco_diffuse.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9B42673BBC0000F5738 /* prop_airco_diffuse.jpg */; };
+		7254FA1A2673BBC4000F5738 /* Railroad_Bar.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9B52673BBC0000F5738 /* Railroad_Bar.jpg */; };
+		7254FA1B2673BBC4000F5738 /* PlasterWall.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9B62673BBC0000F5738 /* PlasterWall.jpg */; };
+		7254FA1C2673BBC4000F5738 /* prop_BakerySign_diffuse.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9B72673BBC0000F5738 /* prop_BakerySign_diffuse.jpg */; };
+		7254FA1D2673BBC4000F5738 /* Railroad_Cobble.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9B82673BBC0000F5738 /* Railroad_Cobble.jpg */; };
+		7254FA1E2673BBC4000F5738 /* Concrete.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9B92673BBC0000F5738 /* Concrete.jpg */; };
+		7254FA1F2673BBC4000F5738 /* Railroad_ElectirictyPole_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9BA2673BBC0000F5738 /* Railroad_ElectirictyPole_tex.jpg */; };
+		7254FA202673BBC4000F5738 /* Tree2_Opacity.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9BB2673BBC1000F5738 /* Tree2_Opacity.jpg */; };
+		7254FA212673BBC4000F5738 /* TreePlot_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9BC2673BBC1000F5738 /* TreePlot_tex.jpg */; };
+		7254FA222673BBC4000F5738 /* 4_wall_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9BD2673BBC1000F5738 /* 4_wall_tex.jpg */; };
+		7254FA232673BBC4000F5738 /* 8_unique2_longwindow.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9BE2673BBC1000F5738 /* 8_unique2_longwindow.jpg */; };
+		7254FA242673BBC4000F5738 /* Tree1_leaves_op.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9BF2673BBC1000F5738 /* Tree1_leaves_op.jpg */; };
+		7254FA252673BBC4000F5738 /* TileablePlanks.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9C02673BBC1000F5738 /* TileablePlanks.jpg */; };
+		7254FA262673BBC4000F5738 /* WoodenFence.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9C12673BBC1000F5738 /* WoodenFence.jpg */; };
+		7254FA272673BBC4000F5738 /* TrafficSignTrain_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9C22673BBC1000F5738 /* TrafficSignTrain_tex.jpg */; };
+		7254FA282673BBC4000F5738 /* PlantFlower2_flowers.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9C32673BBC1000F5738 /* PlantFlower2_flowers.jpg */; };
+		7254FA292673BBC4000F5738 /* Wood.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9C42673BBC1000F5738 /* Wood.jpg */; };
+		7254FA2A2673BBC4000F5738 /* Tree2_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9C52673BBC1000F5738 /* Tree2_tex.jpg */; };
+		7254FA2B2673BBC4000F5738 /* VendingMachine2_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9C62673BBC1000F5738 /* VendingMachine2_tex.jpg */; };
+		7254FA2C2673BBC4000F5738 /* BlackRoofTiles2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9C72673BBC1000F5738 /* BlackRoofTiles2.jpg */; };
+		7254FA2D2673BBC4000F5738 /* Railroad_ElectirictyPole_op.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9C82673BBC1000F5738 /* Railroad_ElectirictyPole_op.jpg */; };
+		7254FA2E2673BBC4000F5738 /* 11_wallLeaking_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9C92673BBC1000F5738 /* 11_wallLeaking_tex.jpg */; };
+		7254FA2F2673BBC4000F5738 /* PlantStore_Decals.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9CA2673BBC1000F5738 /* PlantStore_Decals.jpg */; };
+		7254FA302673BBC4000F5738 /* Opacity_opacitymap.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9CB2673BBC1000F5738 /* Opacity_opacitymap.jpg */; };
+		7254FA312673BBC4000F5738 /* VendingMachine3_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9CC2673BBC1000F5738 /* VendingMachine3_tex.jpg */; };
+		7254FA322673BBC4000F5738 /* ElectricityCables_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9CD2673BBC1000F5738 /* ElectricityCables_tex.jpg */; };
+		7254FA332673BBC4000F5738 /* 6_Opacity_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9CE2673BBC1000F5738 /* 6_Opacity_tex.jpg */; };
+		7254FA342673BBC4000F5738 /* Posters_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9CF2673BBC1000F5738 /* Posters_tex.jpg */; };
+		7254FA352673BBC4000F5738 /* Hedge_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9D02673BBC1000F5738 /* Hedge_tex.jpg */; };
+		7254FA362673BBC4000F5738 /* Plant3_Leave_Op.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9D12673BBC1000F5738 /* Plant3_Leave_Op.jpg */; };
+		7254FA372673BBC4000F5738 /* Plant1_leaves_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9D22673BBC2000F5738 /* Plant1_leaves_tex.jpg */; };
+		7254FA382673BBC4000F5738 /* Pebbles.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9D32673BBC2000F5738 /* Pebbles.jpg */; };
+		7254FA392673BBC4000F5738 /* Railroad_concrete.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9D42673BBC2000F5738 /* Railroad_concrete.jpg */; };
+		7254FA3A2673BBC4000F5738 /* Alley_Plants_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9D52673BBC2000F5738 /* Alley_Plants_tex.jpg */; };
+		7254FA3B2673BBC4000F5738 /* TrafficSign_Tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9D62673BBC2000F5738 /* TrafficSign_Tex.jpg */; };
+		7254FA3C2673BBC4000F5738 /* ConcreteBlocks.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9D72673BBC2000F5738 /* ConcreteBlocks.jpg */; };
+		7254FA3D2673BBC4000F5738 /* SquarePlain.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9D82673BBC2000F5738 /* SquarePlain.jpg */; };
+		7254FA3E2673BBC4000F5738 /* TileableBricks.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9D92673BBC2000F5738 /* TileableBricks.jpg */; };
+		7254FA3F2673BBC4000F5738 /* PlantFlower2_flowers_Opacity.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9DA2673BBC2000F5738 /* PlantFlower2_flowers_Opacity.jpg */; };
+		7254FA402673BBC4000F5738 /* Plant3_Leave_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9DB2673BBC2000F5738 /* Plant3_Leave_tex.jpg */; };
+		7254FA412673BBC4000F5738 /* 2_unique_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9DC2673BBC2000F5738 /* 2_unique_tex.jpg */; };
+		7254FA422673BBC4000F5738 /* Plant1_Leaves_op.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9DD2673BBC2000F5738 /* Plant1_Leaves_op.jpg */; };
+		7254FA432673BBC4000F5738 /* Cables.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9DE2673BBC2000F5738 /* Cables.jpg */; };
+		7254FA442673BBC4000F5738 /* PlantStore_decals_Opacity.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9DF2673BBC2000F5738 /* PlantStore_decals_Opacity.jpg */; };
+		7254FA452673BBC4000F5738 /* Alley_TopNet_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9E02673BBC2000F5738 /* Alley_TopNet_tex.jpg */; };
+		7254FA462673BBC4000F5738 /* TileableWood.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9E12673BBC2000F5738 /* TileableWood.jpg */; };
+		7254FA472673BBC4000F5738 /* Railroad_Ballast.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9E22673BBC2000F5738 /* Railroad_Ballast.jpg */; };
+		7254FA482673BBC4000F5738 /* 3_Roofs_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9E32673BBC2000F5738 /* 3_Roofs_tex.jpg */; };
+		7254FA492673BBC4000F5738 /* prop_bamboofence_diffuse.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9E42673BBC2000F5738 /* prop_bamboofence_diffuse.jpg */; };
+		7254FA4A2673BBC4000F5738 /* SoilHard.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9E52673BBC2000F5738 /* SoilHard.jpg */; };
+		7254FA4B2673BBC4000F5738 /* TrainGate_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9E62673BBC2000F5738 /* TrainGate_tex.jpg */; };
+		7254FA4C2673BBC4000F5738 /* BalconyOpacity.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9E72673BBC2000F5738 /* BalconyOpacity.jpg */; };
+		7254FA4D2673BBC4000F5738 /* WoodenFence_Opacity.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9E82673BBC2000F5738 /* WoodenFence_Opacity.jpg */; };
+		7254FA4E2673BBC4000F5738 /* Alley_Fence_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9E92673BBC2000F5738 /* Alley_Fence_tex.jpg */; };
+		7254FA4F2673BBC4000F5738 /* Hedge_Leaves_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9EA2673BBC3000F5738 /* Hedge_Leaves_tex.jpg */; };
+		7254FA502673BBC4000F5738 /* 1_Unique_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9EB2673BBC3000F5738 /* 1_Unique_tex.jpg */; };
+		7254FA512673BBC4000F5738 /* Alley_Plants_opacity.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9EC2673BBC3000F5738 /* Alley_Plants_opacity.jpg */; };
+		7254FA522673BBC4000F5738 /* Railroad_Tracks_op.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9ED2673BBC3000F5738 /* Railroad_Tracks_op.jpg */; };
+		7254FA532673BBC4000F5738 /* BalconyRoof_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9EE2673BBC3000F5738 /* BalconyRoof_tex.jpg */; };
+		7254FA542673BBC4000F5738 /* VendingMachine2_Opacity.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9EF2673BBC3000F5738 /* VendingMachine2_Opacity.jpg */; };
+		7254FA552673BBC4000F5738 /* Plant3_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9F02673BBC3000F5738 /* Plant3_tex.jpg */; };
+		7254FA562673BBC4000F5738 /* UniqueTex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9F12673BBC3000F5738 /* UniqueTex.jpg */; };
+		7254FA572673BBC4000F5738 /* leaves_Opacity.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9F22673BBC3000F5738 /* leaves_Opacity.jpg */; };
+		7254FA582673BBC4000F5738 /* leaves_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9F32673BBC3000F5738 /* leaves_tex.jpg */; };
+		7254FA592673BBC4000F5738 /* ivy_Opacity.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9F42673BBC3000F5738 /* ivy_Opacity.jpg */; };
+		7254FA5A2673BBC4000F5738 /* Tree1_trunk_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9F52673BBC3000F5738 /* Tree1_trunk_tex.jpg */; };
+		7254FA5B2673BBC4000F5738 /* Alley_Net_opacity.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9F62673BBC3000F5738 /* Alley_Net_opacity.jpg */; };
+		7254FA5C2673BBC4000F5738 /* Railroad_Bricks.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9F72673BBC3000F5738 /* Railroad_Bricks.jpg */; };
+		7254FA5D2673BBC4000F5738 /* Alley_TopNet_opacity.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9F82673BBC3000F5738 /* Alley_TopNet_opacity.jpg */; };
+		7254FA5E2673BBC4000F5738 /* OpacityMap.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9F92673BBC3000F5738 /* OpacityMap.jpg */; };
+		7254FA5F2673BBC4000F5738 /* Opacity_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9FA2673BBC3000F5738 /* Opacity_tex.jpg */; };
+		7254FA602673BBC4000F5738 /* 6_Opacity_op.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9FB2673BBC3000F5738 /* 6_Opacity_op.jpg */; };
+		7254FA612673BBC4000F5738 /* 5_LongTileable2_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9FC2673BBC3000F5738 /* 5_LongTileable2_tex.jpg */; };
+		7254FA622673BBC4000F5738 /* Prop_Gate_Tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9FD2673BBC3000F5738 /* Prop_Gate_Tex.jpg */; };
+		7254FA632673BBC4000F5738 /* Alley_Fence_opacity.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9FE2673BBC3000F5738 /* Alley_Fence_opacity.jpg */; };
+		7254FA642673BBC4000F5738 /* TileableID6.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254F9FF2673BBC3000F5738 /* TileableID6.jpg */; };
+		7254FA652673BBC4000F5738 /* Alley_Net_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254FA002673BBC3000F5738 /* Alley_Net_tex.jpg */; };
+		7254FA662673BBC4000F5738 /* Water_Opacity.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254FA012673BBC3000F5738 /* Water_Opacity.jpg */; };
+		7254FA672673BBC4000F5738 /* StreetDecals_Opacity.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254FA022673BBC3000F5738 /* StreetDecals_Opacity.jpg */; };
+		7254FA682673BBC4000F5738 /* Dumpster_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254FA032673BBC3000F5738 /* Dumpster_tex.jpg */; };
+		7254FA692673BBC4000F5738 /* CobbleWall2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254FA042673BBC3000F5738 /* CobbleWall2.jpg */; };
+		7254FA6A2673BBC4000F5738 /* StreetDecals.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254FA052673BBC4000F5738 /* StreetDecals.jpg */; };
+		7254FA6B2673BBC4000F5738 /* Car_ToyotaTownace_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254FA062673BBC4000F5738 /* Car_ToyotaTownace_tex.jpg */; };
+		7254FA6C2673BBC4000F5738 /* Plant1_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254FA072673BBC4000F5738 /* Plant1_tex.jpg */; };
+		7254FA6D2673BBC4000F5738 /* Lantern_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254FA082673BBC4000F5738 /* Lantern_tex.jpg */; };
+		7254FA6E2673BBC4000F5738 /* BakeryFlag_Opacity.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254FA092673BBC4000F5738 /* BakeryFlag_Opacity.jpg */; };
+		7254FA6F2673BBC4000F5738 /* Railroad_Track.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254FA0A2673BBC4000F5738 /* Railroad_Track.jpg */; };
+		7254FA702673BBC4000F5738 /* Tree1_leaves_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254FA0B2673BBC4000F5738 /* Tree1_leaves_tex.jpg */; };
+		7254FA712673BBC4000F5738 /* Road.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254FA0C2673BBC4000F5738 /* Road.jpg */; };
+		7254FA722673BBC4000F5738 /* VendingMachine3_Opacity.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254FA0D2673BBC4000F5738 /* VendingMachine3_Opacity.jpg */; };
+		7254FA732673BBC4000F5738 /* 7_long_tileable.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254FA0E2673BBC4000F5738 /* 7_long_tileable.jpg */; };
+		7254FA742673BBC4000F5738 /* 4_LongTileable_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254FA0F2673BBC4000F5738 /* 4_LongTileable_tex.jpg */; };
+		7254FA752673BBC4000F5738 /* ivy_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254FA102673BBC4000F5738 /* ivy_tex.jpg */; };
+		7254FA762673BBC4000F5738 /* PlantFlower2_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254FA112673BBC4000F5738 /* PlantFlower2_tex.jpg */; };
+		7254FA772673BBC4000F5738 /* TileableRooftiles.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254FA122673BBC4000F5738 /* TileableRooftiles.jpg */; };
+		7254FA782673BBC4000F5738 /* BakeryFlag_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254FA132673BBC4000F5738 /* BakeryFlag_tex.jpg */; };
+		7254FA792673BBC4000F5738 /* ElectricityPole_tex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7254FA142673BBC4000F5738 /* ElectricityPole_tex.jpg */; };
 		72583F1D26225AEE00ADD5BD /* sponza.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72583F1B26225AEE00ADD5BD /* sponza.obj */; };
 		72583F1E26225AEE00ADD5BD /* sponza.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 72583F1C26225AEE00ADD5BD /* sponza.mtl */; };
 		72583F6E262266E000ADD5BD /* VaseHanging_diffuse.png in Resources */ = {isa = PBXBuildFile; fileRef = 72583F23262266DD00ADD5BD /* VaseHanging_diffuse.png */; };
@@ -634,6 +754,126 @@
 		7243911F265EDE9F0066F3B4 /* ShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShaderTypes.h; sourceTree = "<group>"; };
 		72439120265EDECE0066F3B4 /* RayTracing.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = RayTracing.metal; sourceTree = "<group>"; };
 		7244840B25C6F42300294331 /* SimpleScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleScene.swift; sourceTree = "<group>"; };
+		7254B21C267390580053B4F4 /* classroom.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = classroom.mtl; sourceTree = "<group>"; };
+		7254B21D267390580053B4F4 /* classroom.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = classroom.obj; sourceTree = "<group>"; };
+		7254B22326739BD70053B4F4 /* city.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = city.mtl; sourceTree = "<group>"; };
+		7254B22426739BD70053B4F4 /* city.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = city.obj; sourceTree = "<group>"; };
+		7254B22B2673A0E80053B4F4 /* facades_normal.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = facades_normal.jpg; path = ../../../../../Downloads/city/textures/facades_normal.jpg; sourceTree = "<group>"; };
+		7254B22C2673A0E80053B4F4 /* vehicles_lights.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = vehicles_lights.jpg; path = ../../../../../Downloads/city/textures/vehicles_lights.jpg; sourceTree = "<group>"; };
+		7254B22D2673A0E80053B4F4 /* vehicles.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = vehicles.jpg; path = ../../../../../Downloads/city/textures/vehicles.jpg; sourceTree = "<group>"; };
+		7254B22F2673A0E80053B4F4 /* fasades_fasades2_BaseColor.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = fasades_fasades2_BaseColor.jpg; path = ../../../../../Downloads/city/textures/fasades_fasades2_BaseColor.jpg; sourceTree = "<group>"; };
+		7254B2312673A0E80053B4F4 /* floor_Material.001_Normal.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = floor_Material.001_Normal.jpg; path = ../../../../../Downloads/city/textures/floor_Material.001_Normal.jpg; sourceTree = "<group>"; };
+		7254B2322673A0E80053B4F4 /* floor_Material.001_Roughness.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = floor_Material.001_Roughness.jpg; path = ../../../../../Downloads/city/textures/floor_Material.001_Roughness.jpg; sourceTree = "<group>"; };
+		7254B2332673A0E80053B4F4 /* fasades_fasades2_Roughness.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = fasades_fasades2_Roughness.jpg; path = ../../../../../Downloads/city/textures/fasades_fasades2_Roughness.jpg; sourceTree = "<group>"; };
+		7254B2342673A0E80053B4F4 /* facades_roughness.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = facades_roughness.jpg; path = ../../../../../Downloads/city/textures/facades_roughness.jpg; sourceTree = "<group>"; };
+		7254B2352673A0E80053B4F4 /* fasades_fasades2_Height.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = fasades_fasades2_Height.jpg; path = ../../../../../Downloads/city/textures/fasades_fasades2_Height.jpg; sourceTree = "<group>"; };
+		7254B2362673A0E80053B4F4 /* Rails0014_1_350.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Rails0014_1_350.jpg; path = ../../../../../Downloads/city/textures/Rails0014_1_350.jpg; sourceTree = "<group>"; };
+		7254B2372673A0E80053B4F4 /* floor_Material.001_BaseColor.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = floor_Material.001_BaseColor.jpg; path = ../../../../../Downloads/city/textures/floor_Material.001_BaseColor.jpg; sourceTree = "<group>"; };
+		7254F9A12673B5C3000F5738 /* facades.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = facades.jpg; path = ../../../../../Downloads/city/textures/facades.jpg; sourceTree = "<group>"; };
+		7254F9A22673B5C4000F5738 /* details.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = details.jpg; path = ../../../../../Downloads/city/textures/details.jpg; sourceTree = "<group>"; };
+		7254F9A82673BB41000F5738 /* tokyo.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = tokyo.mtl; sourceTree = "<group>"; };
+		7254F9A92673BB41000F5738 /* tokyo.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = tokyo.obj; sourceTree = "<group>"; };
+		7254F9B02673BBC0000F5738 /* CobbleWall.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = CobbleWall.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/CobbleWall.jpg"; sourceTree = "<group>"; };
+		7254F9B12673BBC0000F5738 /* Alley_unique_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Alley_unique_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Alley_unique_tex.jpg"; sourceTree = "<group>"; };
+		7254F9B22673BBC0000F5738 /* Water.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Water.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Water.jpg"; sourceTree = "<group>"; };
+		7254F9B32673BBC0000F5738 /* 2_Walls_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = 2_Walls_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/2_Walls_tex.jpg"; sourceTree = "<group>"; };
+		7254F9B42673BBC0000F5738 /* prop_airco_diffuse.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = prop_airco_diffuse.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/prop_airco_diffuse.jpg"; sourceTree = "<group>"; };
+		7254F9B52673BBC0000F5738 /* Railroad_Bar.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Railroad_Bar.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Railroad_Bar.jpg"; sourceTree = "<group>"; };
+		7254F9B62673BBC0000F5738 /* PlasterWall.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = PlasterWall.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/PlasterWall.jpg"; sourceTree = "<group>"; };
+		7254F9B72673BBC0000F5738 /* prop_BakerySign_diffuse.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = prop_BakerySign_diffuse.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/prop_BakerySign_diffuse.jpg"; sourceTree = "<group>"; };
+		7254F9B82673BBC0000F5738 /* Railroad_Cobble.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Railroad_Cobble.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Railroad_Cobble.jpg"; sourceTree = "<group>"; };
+		7254F9B92673BBC0000F5738 /* Concrete.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Concrete.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Concrete.jpg"; sourceTree = "<group>"; };
+		7254F9BA2673BBC0000F5738 /* Railroad_ElectirictyPole_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Railroad_ElectirictyPole_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Railroad_ElectirictyPole_tex.jpg"; sourceTree = "<group>"; };
+		7254F9BB2673BBC1000F5738 /* Tree2_Opacity.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Tree2_Opacity.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Tree2_Opacity.jpg"; sourceTree = "<group>"; };
+		7254F9BC2673BBC1000F5738 /* TreePlot_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = TreePlot_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/TreePlot_tex.jpg"; sourceTree = "<group>"; };
+		7254F9BD2673BBC1000F5738 /* 4_wall_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = 4_wall_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/4_wall_tex.jpg"; sourceTree = "<group>"; };
+		7254F9BE2673BBC1000F5738 /* 8_unique2_longwindow.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = 8_unique2_longwindow.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/8_unique2_longwindow.jpg"; sourceTree = "<group>"; };
+		7254F9BF2673BBC1000F5738 /* Tree1_leaves_op.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Tree1_leaves_op.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Tree1_leaves_op.jpg"; sourceTree = "<group>"; };
+		7254F9C02673BBC1000F5738 /* TileablePlanks.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = TileablePlanks.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/TileablePlanks.jpg"; sourceTree = "<group>"; };
+		7254F9C12673BBC1000F5738 /* WoodenFence.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = WoodenFence.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/WoodenFence.jpg"; sourceTree = "<group>"; };
+		7254F9C22673BBC1000F5738 /* TrafficSignTrain_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = TrafficSignTrain_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/TrafficSignTrain_tex.jpg"; sourceTree = "<group>"; };
+		7254F9C32673BBC1000F5738 /* PlantFlower2_flowers.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = PlantFlower2_flowers.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/PlantFlower2_flowers.jpg"; sourceTree = "<group>"; };
+		7254F9C42673BBC1000F5738 /* Wood.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Wood.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Wood.jpg"; sourceTree = "<group>"; };
+		7254F9C52673BBC1000F5738 /* Tree2_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Tree2_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Tree2_tex.jpg"; sourceTree = "<group>"; };
+		7254F9C62673BBC1000F5738 /* VendingMachine2_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = VendingMachine2_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/VendingMachine2_tex.jpg"; sourceTree = "<group>"; };
+		7254F9C72673BBC1000F5738 /* BlackRoofTiles2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = BlackRoofTiles2.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/BlackRoofTiles2.jpg"; sourceTree = "<group>"; };
+		7254F9C82673BBC1000F5738 /* Railroad_ElectirictyPole_op.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Railroad_ElectirictyPole_op.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Railroad_ElectirictyPole_op.jpg"; sourceTree = "<group>"; };
+		7254F9C92673BBC1000F5738 /* 11_wallLeaking_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = 11_wallLeaking_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/11_wallLeaking_tex.jpg"; sourceTree = "<group>"; };
+		7254F9CA2673BBC1000F5738 /* PlantStore_Decals.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = PlantStore_Decals.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/PlantStore_Decals.jpg"; sourceTree = "<group>"; };
+		7254F9CB2673BBC1000F5738 /* Opacity_opacitymap.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Opacity_opacitymap.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Opacity_opacitymap.jpg"; sourceTree = "<group>"; };
+		7254F9CC2673BBC1000F5738 /* VendingMachine3_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = VendingMachine3_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/VendingMachine3_tex.jpg"; sourceTree = "<group>"; };
+		7254F9CD2673BBC1000F5738 /* ElectricityCables_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ElectricityCables_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/ElectricityCables_tex.jpg"; sourceTree = "<group>"; };
+		7254F9CE2673BBC1000F5738 /* 6_Opacity_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = 6_Opacity_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/6_Opacity_tex.jpg"; sourceTree = "<group>"; };
+		7254F9CF2673BBC1000F5738 /* Posters_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Posters_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Posters_tex.jpg"; sourceTree = "<group>"; };
+		7254F9D02673BBC1000F5738 /* Hedge_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Hedge_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Hedge_tex.jpg"; sourceTree = "<group>"; };
+		7254F9D12673BBC1000F5738 /* Plant3_Leave_Op.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Plant3_Leave_Op.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Plant3_Leave_Op.jpg"; sourceTree = "<group>"; };
+		7254F9D22673BBC2000F5738 /* Plant1_leaves_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Plant1_leaves_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Plant1_leaves_tex.jpg"; sourceTree = "<group>"; };
+		7254F9D32673BBC2000F5738 /* Pebbles.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Pebbles.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Pebbles.jpg"; sourceTree = "<group>"; };
+		7254F9D42673BBC2000F5738 /* Railroad_concrete.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Railroad_concrete.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Railroad_concrete.jpg"; sourceTree = "<group>"; };
+		7254F9D52673BBC2000F5738 /* Alley_Plants_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Alley_Plants_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Alley_Plants_tex.jpg"; sourceTree = "<group>"; };
+		7254F9D62673BBC2000F5738 /* TrafficSign_Tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = TrafficSign_Tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/TrafficSign_Tex.jpg"; sourceTree = "<group>"; };
+		7254F9D72673BBC2000F5738 /* ConcreteBlocks.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ConcreteBlocks.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/ConcreteBlocks.jpg"; sourceTree = "<group>"; };
+		7254F9D82673BBC2000F5738 /* SquarePlain.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SquarePlain.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/SquarePlain.jpg"; sourceTree = "<group>"; };
+		7254F9D92673BBC2000F5738 /* TileableBricks.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = TileableBricks.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/TileableBricks.jpg"; sourceTree = "<group>"; };
+		7254F9DA2673BBC2000F5738 /* PlantFlower2_flowers_Opacity.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = PlantFlower2_flowers_Opacity.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/PlantFlower2_flowers_Opacity.jpg"; sourceTree = "<group>"; };
+		7254F9DB2673BBC2000F5738 /* Plant3_Leave_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Plant3_Leave_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Plant3_Leave_tex.jpg"; sourceTree = "<group>"; };
+		7254F9DC2673BBC2000F5738 /* 2_unique_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = 2_unique_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/2_unique_tex.jpg"; sourceTree = "<group>"; };
+		7254F9DD2673BBC2000F5738 /* Plant1_Leaves_op.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Plant1_Leaves_op.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Plant1_Leaves_op.jpg"; sourceTree = "<group>"; };
+		7254F9DE2673BBC2000F5738 /* Cables.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Cables.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Cables.jpg"; sourceTree = "<group>"; };
+		7254F9DF2673BBC2000F5738 /* PlantStore_decals_Opacity.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = PlantStore_decals_Opacity.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/PlantStore_decals_Opacity.jpg"; sourceTree = "<group>"; };
+		7254F9E02673BBC2000F5738 /* Alley_TopNet_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Alley_TopNet_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Alley_TopNet_tex.jpg"; sourceTree = "<group>"; };
+		7254F9E12673BBC2000F5738 /* TileableWood.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = TileableWood.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/TileableWood.jpg"; sourceTree = "<group>"; };
+		7254F9E22673BBC2000F5738 /* Railroad_Ballast.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Railroad_Ballast.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Railroad_Ballast.jpg"; sourceTree = "<group>"; };
+		7254F9E32673BBC2000F5738 /* 3_Roofs_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = 3_Roofs_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/3_Roofs_tex.jpg"; sourceTree = "<group>"; };
+		7254F9E42673BBC2000F5738 /* prop_bamboofence_diffuse.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = prop_bamboofence_diffuse.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/prop_bamboofence_diffuse.jpg"; sourceTree = "<group>"; };
+		7254F9E52673BBC2000F5738 /* SoilHard.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SoilHard.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/SoilHard.jpg"; sourceTree = "<group>"; };
+		7254F9E62673BBC2000F5738 /* TrainGate_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = TrainGate_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/TrainGate_tex.jpg"; sourceTree = "<group>"; };
+		7254F9E72673BBC2000F5738 /* BalconyOpacity.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = BalconyOpacity.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/BalconyOpacity.jpg"; sourceTree = "<group>"; };
+		7254F9E82673BBC2000F5738 /* WoodenFence_Opacity.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = WoodenFence_Opacity.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/WoodenFence_Opacity.jpg"; sourceTree = "<group>"; };
+		7254F9E92673BBC2000F5738 /* Alley_Fence_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Alley_Fence_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Alley_Fence_tex.jpg"; sourceTree = "<group>"; };
+		7254F9EA2673BBC3000F5738 /* Hedge_Leaves_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Hedge_Leaves_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Hedge_Leaves_tex.jpg"; sourceTree = "<group>"; };
+		7254F9EB2673BBC3000F5738 /* 1_Unique_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = 1_Unique_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/1_Unique_tex.jpg"; sourceTree = "<group>"; };
+		7254F9EC2673BBC3000F5738 /* Alley_Plants_opacity.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Alley_Plants_opacity.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Alley_Plants_opacity.jpg"; sourceTree = "<group>"; };
+		7254F9ED2673BBC3000F5738 /* Railroad_Tracks_op.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Railroad_Tracks_op.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Railroad_Tracks_op.jpg"; sourceTree = "<group>"; };
+		7254F9EE2673BBC3000F5738 /* BalconyRoof_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = BalconyRoof_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/BalconyRoof_tex.jpg"; sourceTree = "<group>"; };
+		7254F9EF2673BBC3000F5738 /* VendingMachine2_Opacity.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = VendingMachine2_Opacity.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/VendingMachine2_Opacity.jpg"; sourceTree = "<group>"; };
+		7254F9F02673BBC3000F5738 /* Plant3_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Plant3_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Plant3_tex.jpg"; sourceTree = "<group>"; };
+		7254F9F12673BBC3000F5738 /* UniqueTex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = UniqueTex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/UniqueTex.jpg"; sourceTree = "<group>"; };
+		7254F9F22673BBC3000F5738 /* leaves_Opacity.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = leaves_Opacity.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/leaves_Opacity.jpg"; sourceTree = "<group>"; };
+		7254F9F32673BBC3000F5738 /* leaves_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = leaves_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/leaves_tex.jpg"; sourceTree = "<group>"; };
+		7254F9F42673BBC3000F5738 /* ivy_Opacity.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ivy_Opacity.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/ivy_Opacity.jpg"; sourceTree = "<group>"; };
+		7254F9F52673BBC3000F5738 /* Tree1_trunk_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Tree1_trunk_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Tree1_trunk_tex.jpg"; sourceTree = "<group>"; };
+		7254F9F62673BBC3000F5738 /* Alley_Net_opacity.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Alley_Net_opacity.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Alley_Net_opacity.jpg"; sourceTree = "<group>"; };
+		7254F9F72673BBC3000F5738 /* Railroad_Bricks.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Railroad_Bricks.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Railroad_Bricks.jpg"; sourceTree = "<group>"; };
+		7254F9F82673BBC3000F5738 /* Alley_TopNet_opacity.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Alley_TopNet_opacity.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Alley_TopNet_opacity.jpg"; sourceTree = "<group>"; };
+		7254F9F92673BBC3000F5738 /* OpacityMap.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = OpacityMap.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/OpacityMap.jpg"; sourceTree = "<group>"; };
+		7254F9FA2673BBC3000F5738 /* Opacity_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Opacity_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Opacity_tex.jpg"; sourceTree = "<group>"; };
+		7254F9FB2673BBC3000F5738 /* 6_Opacity_op.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = 6_Opacity_op.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/6_Opacity_op.jpg"; sourceTree = "<group>"; };
+		7254F9FC2673BBC3000F5738 /* 5_LongTileable2_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = 5_LongTileable2_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/5_LongTileable2_tex.jpg"; sourceTree = "<group>"; };
+		7254F9FD2673BBC3000F5738 /* Prop_Gate_Tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Prop_Gate_Tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Prop_Gate_Tex.jpg"; sourceTree = "<group>"; };
+		7254F9FE2673BBC3000F5738 /* Alley_Fence_opacity.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Alley_Fence_opacity.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Alley_Fence_opacity.jpg"; sourceTree = "<group>"; };
+		7254F9FF2673BBC3000F5738 /* TileableID6.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = TileableID6.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/TileableID6.jpg"; sourceTree = "<group>"; };
+		7254FA002673BBC3000F5738 /* Alley_Net_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Alley_Net_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Alley_Net_tex.jpg"; sourceTree = "<group>"; };
+		7254FA012673BBC3000F5738 /* Water_Opacity.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Water_Opacity.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Water_Opacity.jpg"; sourceTree = "<group>"; };
+		7254FA022673BBC3000F5738 /* StreetDecals_Opacity.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = StreetDecals_Opacity.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/StreetDecals_Opacity.jpg"; sourceTree = "<group>"; };
+		7254FA032673BBC3000F5738 /* Dumpster_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Dumpster_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Dumpster_tex.jpg"; sourceTree = "<group>"; };
+		7254FA042673BBC3000F5738 /* CobbleWall2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = CobbleWall2.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/CobbleWall2.jpg"; sourceTree = "<group>"; };
+		7254FA052673BBC4000F5738 /* StreetDecals.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = StreetDecals.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/StreetDecals.jpg"; sourceTree = "<group>"; };
+		7254FA062673BBC4000F5738 /* Car_ToyotaTownace_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Car_ToyotaTownace_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Car_ToyotaTownace_tex.jpg"; sourceTree = "<group>"; };
+		7254FA072673BBC4000F5738 /* Plant1_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Plant1_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Plant1_tex.jpg"; sourceTree = "<group>"; };
+		7254FA082673BBC4000F5738 /* Lantern_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Lantern_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Lantern_tex.jpg"; sourceTree = "<group>"; };
+		7254FA092673BBC4000F5738 /* BakeryFlag_Opacity.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = BakeryFlag_Opacity.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/BakeryFlag_Opacity.jpg"; sourceTree = "<group>"; };
+		7254FA0A2673BBC4000F5738 /* Railroad_Track.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Railroad_Track.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Railroad_Track.jpg"; sourceTree = "<group>"; };
+		7254FA0B2673BBC4000F5738 /* Tree1_leaves_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Tree1_leaves_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Tree1_leaves_tex.jpg"; sourceTree = "<group>"; };
+		7254FA0C2673BBC4000F5738 /* Road.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Road.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/Road.jpg"; sourceTree = "<group>"; };
+		7254FA0D2673BBC4000F5738 /* VendingMachine3_Opacity.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = VendingMachine3_Opacity.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/VendingMachine3_Opacity.jpg"; sourceTree = "<group>"; };
+		7254FA0E2673BBC4000F5738 /* 7_long_tileable.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = 7_long_tileable.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/7_long_tileable.jpg"; sourceTree = "<group>"; };
+		7254FA0F2673BBC4000F5738 /* 4_LongTileable_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = 4_LongTileable_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/4_LongTileable_tex.jpg"; sourceTree = "<group>"; };
+		7254FA102673BBC4000F5738 /* ivy_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ivy_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/ivy_tex.jpg"; sourceTree = "<group>"; };
+		7254FA112673BBC4000F5738 /* PlantFlower2_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = PlantFlower2_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/PlantFlower2_tex.jpg"; sourceTree = "<group>"; };
+		7254FA122673BBC4000F5738 /* TileableRooftiles.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = TileableRooftiles.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/TileableRooftiles.jpg"; sourceTree = "<group>"; };
+		7254FA132673BBC4000F5738 /* BakeryFlag_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = BakeryFlag_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/BakeryFlag_tex.jpg"; sourceTree = "<group>"; };
+		7254FA142673BBC4000F5738 /* ElectricityPole_tex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ElectricityPole_tex.jpg; path = "../../../../../Downloads/city-scene-tokyo/source/WIP City Scene Tokyo.zip/ElectricityPole_tex.jpg"; sourceTree = "<group>"; };
 		72583F1B26225AEE00ADD5BD /* sponza.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sponza.obj; sourceTree = "<group>"; };
 		72583F1C26225AEE00ADD5BD /* sponza.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sponza.mtl; sourceTree = "<group>"; };
 		72583F23262266DD00ADD5BD /* VaseHanging_diffuse.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = VaseHanging_diffuse.png; path = "../../../../../Downloads/DeferredTexturing-master/Content/Models/Sponza/VaseHanging_diffuse.png"; sourceTree = "<group>"; };
@@ -865,6 +1105,8 @@
 		7216504725EAE35500511342 /* Textures */ = {
 			isa = PBXGroup;
 			children = (
+				7254F9AF2673BB8F000F5738 /* Tokyo */,
+				7254B22A2673A0950053B4F4 /* City */,
 				72583F22262266B700ADD5BD /* Sponza */,
 				72E3503925FC013B0012E6D1 /* marbleWhite */,
 				7274A99625F91FDA00F716AF /* starTile */,
@@ -1228,6 +1470,134 @@
 			path = Scenes;
 			sourceTree = "<group>";
 		};
+		7254B22A2673A0950053B4F4 /* City */ = {
+			isa = PBXGroup;
+			children = (
+				7254F9A22673B5C4000F5738 /* details.jpg */,
+				7254F9A12673B5C3000F5738 /* facades.jpg */,
+				7254B22B2673A0E80053B4F4 /* facades_normal.jpg */,
+				7254B2342673A0E80053B4F4 /* facades_roughness.jpg */,
+				7254B22F2673A0E80053B4F4 /* fasades_fasades2_BaseColor.jpg */,
+				7254B2352673A0E80053B4F4 /* fasades_fasades2_Height.jpg */,
+				7254B2332673A0E80053B4F4 /* fasades_fasades2_Roughness.jpg */,
+				7254B2372673A0E80053B4F4 /* floor_Material.001_BaseColor.jpg */,
+				7254B2312673A0E80053B4F4 /* floor_Material.001_Normal.jpg */,
+				7254B2322673A0E80053B4F4 /* floor_Material.001_Roughness.jpg */,
+				7254B2362673A0E80053B4F4 /* Rails0014_1_350.jpg */,
+				7254B22C2673A0E80053B4F4 /* vehicles_lights.jpg */,
+				7254B22D2673A0E80053B4F4 /* vehicles.jpg */,
+			);
+			path = City;
+			sourceTree = "<group>";
+		};
+		7254F9AF2673BB8F000F5738 /* Tokyo */ = {
+			isa = PBXGroup;
+			children = (
+				7254F9EB2673BBC3000F5738 /* 1_Unique_tex.jpg */,
+				7254F9DC2673BBC2000F5738 /* 2_unique_tex.jpg */,
+				7254F9B32673BBC0000F5738 /* 2_Walls_tex.jpg */,
+				7254F9E32673BBC2000F5738 /* 3_Roofs_tex.jpg */,
+				7254FA0F2673BBC4000F5738 /* 4_LongTileable_tex.jpg */,
+				7254F9BD2673BBC1000F5738 /* 4_wall_tex.jpg */,
+				7254F9FC2673BBC3000F5738 /* 5_LongTileable2_tex.jpg */,
+				7254F9FB2673BBC3000F5738 /* 6_Opacity_op.jpg */,
+				7254F9CE2673BBC1000F5738 /* 6_Opacity_tex.jpg */,
+				7254FA0E2673BBC4000F5738 /* 7_long_tileable.jpg */,
+				7254F9BE2673BBC1000F5738 /* 8_unique2_longwindow.jpg */,
+				7254F9C92673BBC1000F5738 /* 11_wallLeaking_tex.jpg */,
+				7254F9FE2673BBC3000F5738 /* Alley_Fence_opacity.jpg */,
+				7254F9E92673BBC2000F5738 /* Alley_Fence_tex.jpg */,
+				7254F9F62673BBC3000F5738 /* Alley_Net_opacity.jpg */,
+				7254FA002673BBC3000F5738 /* Alley_Net_tex.jpg */,
+				7254F9EC2673BBC3000F5738 /* Alley_Plants_opacity.jpg */,
+				7254F9D52673BBC2000F5738 /* Alley_Plants_tex.jpg */,
+				7254F9F82673BBC3000F5738 /* Alley_TopNet_opacity.jpg */,
+				7254F9E02673BBC2000F5738 /* Alley_TopNet_tex.jpg */,
+				7254F9B12673BBC0000F5738 /* Alley_unique_tex.jpg */,
+				7254FA092673BBC4000F5738 /* BakeryFlag_Opacity.jpg */,
+				7254FA132673BBC4000F5738 /* BakeryFlag_tex.jpg */,
+				7254F9E72673BBC2000F5738 /* BalconyOpacity.jpg */,
+				7254F9EE2673BBC3000F5738 /* BalconyRoof_tex.jpg */,
+				7254F9C72673BBC1000F5738 /* BlackRoofTiles2.jpg */,
+				7254F9DE2673BBC2000F5738 /* Cables.jpg */,
+				7254FA062673BBC4000F5738 /* Car_ToyotaTownace_tex.jpg */,
+				7254F9B02673BBC0000F5738 /* CobbleWall.jpg */,
+				7254FA042673BBC3000F5738 /* CobbleWall2.jpg */,
+				7254F9B92673BBC0000F5738 /* Concrete.jpg */,
+				7254F9D72673BBC2000F5738 /* ConcreteBlocks.jpg */,
+				7254FA032673BBC3000F5738 /* Dumpster_tex.jpg */,
+				7254F9CD2673BBC1000F5738 /* ElectricityCables_tex.jpg */,
+				7254FA142673BBC4000F5738 /* ElectricityPole_tex.jpg */,
+				7254F9EA2673BBC3000F5738 /* Hedge_Leaves_tex.jpg */,
+				7254F9D02673BBC1000F5738 /* Hedge_tex.jpg */,
+				7254F9F42673BBC3000F5738 /* ivy_Opacity.jpg */,
+				7254FA102673BBC4000F5738 /* ivy_tex.jpg */,
+				7254FA082673BBC4000F5738 /* Lantern_tex.jpg */,
+				7254F9F22673BBC3000F5738 /* leaves_Opacity.jpg */,
+				7254F9F32673BBC3000F5738 /* leaves_tex.jpg */,
+				7254F9CB2673BBC1000F5738 /* Opacity_opacitymap.jpg */,
+				7254F9FA2673BBC3000F5738 /* Opacity_tex.jpg */,
+				7254F9F92673BBC3000F5738 /* OpacityMap.jpg */,
+				7254F9D32673BBC2000F5738 /* Pebbles.jpg */,
+				7254F9DD2673BBC2000F5738 /* Plant1_Leaves_op.jpg */,
+				7254F9D22673BBC2000F5738 /* Plant1_leaves_tex.jpg */,
+				7254FA072673BBC4000F5738 /* Plant1_tex.jpg */,
+				7254F9D12673BBC1000F5738 /* Plant3_Leave_Op.jpg */,
+				7254F9DB2673BBC2000F5738 /* Plant3_Leave_tex.jpg */,
+				7254F9F02673BBC3000F5738 /* Plant3_tex.jpg */,
+				7254F9DA2673BBC2000F5738 /* PlantFlower2_flowers_Opacity.jpg */,
+				7254F9C32673BBC1000F5738 /* PlantFlower2_flowers.jpg */,
+				7254FA112673BBC4000F5738 /* PlantFlower2_tex.jpg */,
+				7254F9DF2673BBC2000F5738 /* PlantStore_decals_Opacity.jpg */,
+				7254F9CA2673BBC1000F5738 /* PlantStore_Decals.jpg */,
+				7254F9B62673BBC0000F5738 /* PlasterWall.jpg */,
+				7254F9CF2673BBC1000F5738 /* Posters_tex.jpg */,
+				7254F9B42673BBC0000F5738 /* prop_airco_diffuse.jpg */,
+				7254F9B72673BBC0000F5738 /* prop_BakerySign_diffuse.jpg */,
+				7254F9E42673BBC2000F5738 /* prop_bamboofence_diffuse.jpg */,
+				7254F9FD2673BBC3000F5738 /* Prop_Gate_Tex.jpg */,
+				7254F9E22673BBC2000F5738 /* Railroad_Ballast.jpg */,
+				7254F9B52673BBC0000F5738 /* Railroad_Bar.jpg */,
+				7254F9F72673BBC3000F5738 /* Railroad_Bricks.jpg */,
+				7254F9B82673BBC0000F5738 /* Railroad_Cobble.jpg */,
+				7254F9D42673BBC2000F5738 /* Railroad_concrete.jpg */,
+				7254F9C82673BBC1000F5738 /* Railroad_ElectirictyPole_op.jpg */,
+				7254F9BA2673BBC0000F5738 /* Railroad_ElectirictyPole_tex.jpg */,
+				7254FA0A2673BBC4000F5738 /* Railroad_Track.jpg */,
+				7254F9ED2673BBC3000F5738 /* Railroad_Tracks_op.jpg */,
+				7254FA0C2673BBC4000F5738 /* Road.jpg */,
+				7254F9E52673BBC2000F5738 /* SoilHard.jpg */,
+				7254F9D82673BBC2000F5738 /* SquarePlain.jpg */,
+				7254FA022673BBC3000F5738 /* StreetDecals_Opacity.jpg */,
+				7254FA052673BBC4000F5738 /* StreetDecals.jpg */,
+				7254F9D92673BBC2000F5738 /* TileableBricks.jpg */,
+				7254F9FF2673BBC3000F5738 /* TileableID6.jpg */,
+				7254F9C02673BBC1000F5738 /* TileablePlanks.jpg */,
+				7254FA122673BBC4000F5738 /* TileableRooftiles.jpg */,
+				7254F9E12673BBC2000F5738 /* TileableWood.jpg */,
+				7254F9D62673BBC2000F5738 /* TrafficSign_Tex.jpg */,
+				7254F9C22673BBC1000F5738 /* TrafficSignTrain_tex.jpg */,
+				7254F9E62673BBC2000F5738 /* TrainGate_tex.jpg */,
+				7254F9BF2673BBC1000F5738 /* Tree1_leaves_op.jpg */,
+				7254FA0B2673BBC4000F5738 /* Tree1_leaves_tex.jpg */,
+				7254F9F52673BBC3000F5738 /* Tree1_trunk_tex.jpg */,
+				7254F9BB2673BBC1000F5738 /* Tree2_Opacity.jpg */,
+				7254F9C52673BBC1000F5738 /* Tree2_tex.jpg */,
+				7254F9BC2673BBC1000F5738 /* TreePlot_tex.jpg */,
+				7254F9F12673BBC3000F5738 /* UniqueTex.jpg */,
+				7254F9EF2673BBC3000F5738 /* VendingMachine2_Opacity.jpg */,
+				7254F9C62673BBC1000F5738 /* VendingMachine2_tex.jpg */,
+				7254FA0D2673BBC4000F5738 /* VendingMachine3_Opacity.jpg */,
+				7254F9CC2673BBC1000F5738 /* VendingMachine3_tex.jpg */,
+				7254FA012673BBC3000F5738 /* Water_Opacity.jpg */,
+				7254F9B22673BBC0000F5738 /* Water.jpg */,
+				7254F9C42673BBC1000F5738 /* Wood.jpg */,
+				7254F9E82673BBC2000F5738 /* WoodenFence_Opacity.jpg */,
+				7254F9C12673BBC1000F5738 /* WoodenFence.jpg */,
+			);
+			path = Tokyo;
+			sourceTree = "<group>";
+		};
 		72583F22262266B700ADD5BD /* Sponza */ = {
 			isa = PBXGroup;
 			children = (
@@ -1495,6 +1865,12 @@
 		72E3999925BF0C8300927B17 /* models */ = {
 			isa = PBXGroup;
 			children = (
+				7254F9A82673BB41000F5738 /* tokyo.mtl */,
+				7254F9A92673BB41000F5738 /* tokyo.obj */,
+				7254B22326739BD70053B4F4 /* city.mtl */,
+				7254B22426739BD70053B4F4 /* city.obj */,
+				7254B21C267390580053B4F4 /* classroom.mtl */,
+				7254B21D267390580053B4F4 /* classroom.obj */,
 				72CBB800266E7B1D00D927F9 /* bigroom.mtl */,
 				72CBB7FF266E7B1D00D927F9 /* bigroom.obj */,
 				724157F426657CBF00821A7C /* sphere.mtl */,
@@ -1668,7 +2044,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				729B14FB25D91D8100129165 /* park_green.hdr in Resources */,
+				7254FA4E2673BBC4000F5738 /* Alley_Fence_tex.jpg in Resources */,
 				7216501125EA611200511342 /* text_glow.jpg in Resources */,
+				7254FA1E2673BBC4000F5738 /* Concrete.jpg in Resources */,
+				7254FA382673BBC4000F5738 /* Pebbles.jpg in Resources */,
 				7216523325ED63B000511342 /* Bot_Specular.png in Resources */,
 				72E3503F25FC01550012E6D1 /* tfxkehvg_4K_AO.jpg in Resources */,
 				72583F1E26225AEE00ADD5BD /* sponza.mtl in Resources */,
@@ -1676,6 +2055,7 @@
 				7216514B25EBA48800511342 /* ucsjfain_2K_Albedo.jpg in Resources */,
 				721650CF25EAF75C00511342 /* ub1gfbwew_2K_Albedo.jpg in Resources */,
 				7216512B25EB083700511342 /* tkdicbgew_4K_Normal.jpg in Resources */,
+				7254FA442673BBC4000F5738 /* PlantStore_decals_Opacity.jpg in Resources */,
 				72583F74262266E000ADD5BD /* Sponza_Ceiling_normal.png in Resources */,
 				7216507125EAE70E00511342 /* green_rough_planks_spec_2k.png in Resources */,
 				7216525725EDABA400511342 /* helmet_normal.jpg in Resources */,
@@ -1683,30 +2063,41 @@
 				7216503125EA877300511342 /* material_metallicRoughness.png in Resources */,
 				72583F7D262266E000ADD5BD /* VaseRound_normal.png in Resources */,
 				72FB906225F7A771008D71C5 /* ltc_mat.hdr in Resources */,
+				7254FA472673BBC4000F5738 /* Railroad_Ballast.jpg in Resources */,
 				7216520D25ED571E00511342 /* Trousers_skirt_Normal.jpeg in Resources */,
 				721650FC25EAFD8400511342 /* uk0ocizfw_4K_Normal.jpg in Resources */,
 				7216515A25EBA5DB00511342 /* bricks_0013_ao_4k.jpg in Resources */,
 				72583FA1262266E000ADD5BD /* Sponza_Ceiling_diffuse.png in Resources */,
 				7216520125ED571E00511342 /* Arm_Normal.jpeg in Resources */,
+				7254FA152673BBC4000F5738 /* CobbleWall.jpg in Resources */,
 				7216500925EA60CB00511342 /* bookWaterfall.obj in Resources */,
 				72583F94262266E000ADD5BD /* Sponza_Curtain_Green_diffuse.png in Resources */,
+				7254FA6C2673BBC4000F5738 /* Plant1_tex.jpg in Resources */,
 				7216520C25ED571E00511342 /* Accessoires_Roughness.jpeg in Resources */,
+				7254FA652673BBC4000F5738 /* Alley_Net_tex.jpg in Resources */,
 				7216521825ED571E00511342 /* Coat_Fur_Roughness.jpeg in Resources */,
 				721651A425EBB37F00511342 /* 01-Default_AO.jpg in Resources */,
+				7254FA742673BBC4000F5738 /* 4_LongTileable_tex.jpg in Resources */,
+				7254FA252673BBC4000F5738 /* TileablePlanks.jpg in Resources */,
+				7254FA332673BBC4000F5738 /* 6_Opacity_tex.jpg in Resources */,
 				721650F325EAFC9100511342 /* uk0ocizfw_2K_AO.jpg in Resources */,
 				7216522525ED637800511342 /* wavingchibirobot.obj in Resources */,
+				7254FA772673BBC4000F5738 /* TileableRooftiles.jpg in Resources */,
 				72583FA6262266E000ADD5BD /* Background_Albedo.png in Resources */,
+				7254FA2B2673BBC4000F5738 /* VendingMachine2_tex.jpg in Resources */,
 				7274A87625F80D5D00F716AF /* ltc_mat2.tiff in Resources */,
 				721651BA25ED56CC00511342 /* Winter Girl.obj in Resources */,
 				7216521525ED571E00511342 /* Tools_Normal.jpeg in Resources */,
 				72583F79262266E000ADD5BD /* Sponza_Fabric_roughness.png in Resources */,
 				7216514E25EBA48800511342 /* ucsjfain_2K_Normal.jpg in Resources */,
 				721650D025EAF75C00511342 /* ub1gfbwew_2K_Roughness.jpg in Resources */,
+				7254FA732673BBC4000F5738 /* 7_long_tileable.jpg in Resources */,
 				721651F725ED571E00511342 /* Hair_BaseColor.jpeg in Resources */,
 				7216515825EBA5DB00511342 /* bricks_0013_base_color_4k.jpg in Resources */,
 				72164FDF25EA45D700511342 /* helmet.obj in Resources */,
 				7216521625ED571E00511342 /* Coat_Metallic.jpeg in Resources */,
 				729B14D125D8841A00129165 /* park.jpg in Resources */,
+				7254FA232673BBC4000F5738 /* 8_unique2_longwindow.jpg in Resources */,
 				7216517125EBAA2600511342 /* tiles_0015_roughness_4k.jpg in Resources */,
 				72583F93262266E000ADD5BD /* VaseRound_roughness.png in Resources */,
 				7216523125ED63B000511342 /* Bot_Normal.png in Resources */,
@@ -1715,25 +2106,35 @@
 				7216517425EBAA2600511342 /* tiles_0015_basecolor_4k.jpg in Resources */,
 				72583FB2262266E000ADD5BD /* Sponza_Curtain_Blue_normal.png in Resources */,
 				72E3998D25BEF35100927B17 /* Face_04.png in Resources */,
+				7254FA592673BBC4000F5738 /* ivy_Opacity.jpg in Resources */,
 				72164FBD25E859C700511342 /* studio.hdr in Resources */,
 				7216523025ED63B000511342 /* Bot_Gloss.png in Resources */,
+				7254FA222673BBC4000F5738 /* 4_wall_tex.jpg in Resources */,
 				721651F825ED571E00511342 /* Chest_BaseColor.jpeg in Resources */,
+				7254B22626739BD70053B4F4 /* city.obj in Resources */,
 				7216521125ED571E00511342 /* Shoes_Normal.jpeg in Resources */,
 				721651F325ED571E00511342 /* Tools_Roughness.jpeg in Resources */,
+				7254FA432673BBC4000F5738 /* Cables.jpg in Resources */,
 				72583F71262266E000ADD5BD /* Vase_diffuse.png in Resources */,
 				729B14E325D8966000129165 /* room.hdr in Resources */,
 				72583F1D26225AEE00ADD5BD /* sponza.obj in Resources */,
 				72164FCE25E99CCE00511342 /* f1.obj in Resources */,
 				7229EA9C26263A8600112F1A /* house.obj in Resources */,
+				7254FA282673BBC4000F5738 /* PlantFlower2_flowers.jpg in Resources */,
 				729B14DE25D8941600129165 /* ground.hdr in Resources */,
+				7254FA412673BBC4000F5738 /* 2_unique_tex.jpg in Resources */,
 				721651B025EBB3AC00511342 /* microscope.obj in Resources */,
 				721650DB25EAF9A000511342 /* vcwlfcgv_4K_AO.jpg in Resources */,
 				72164FC725E8CD6400511342 /* heliBlades.usd in Resources */,
+				7254FA5B2673BBC4000F5738 /* Alley_Net_opacity.jpg in Resources */,
 				7216521325ED571E00511342 /* Head_withpaint_BaseColor.jpeg in Resources */,
+				7254FA1F2673BBC4000F5738 /* Railroad_ElectirictyPole_tex.jpg in Resources */,
 				72CBB801266E7B1D00D927F9 /* bigroom.obj in Resources */,
 				7216521225ED571E00511342 /* Head_Roughness.jpeg in Resources */,
 				72164FFD25EA561000511342 /* Cerberus_N.tga in Resources */,
+				7254FA1D2673BBC4000F5738 /* Railroad_Cobble.jpg in Resources */,
 				7216503525EA877300511342 /* daizi_normal.jpeg in Resources */,
+				7254FA422673BBC4000F5738 /* Plant1_Leaves_op.jpg in Resources */,
 				7216509925EAE9A900511342 /* floor_tiles_06_AO_2k.png in Resources */,
 				72583F70262266E000ADD5BD /* Dielectric_metallic.png in Resources */,
 				72583F85262266E000ADD5BD /* Metallic_metallic.png in Resources */,
@@ -1741,11 +2142,15 @@
 				7274A88025F81A9600F716AF /* night.hdr in Resources */,
 				72583F7C262266E000ADD5BD /* Sponza_Thorn_normal.png in Resources */,
 				721651F225ED571E00511342 /* Coat_Fur_BaseColor.jpeg in Resources */,
+				7254FA3D2673BBC4000F5738 /* SquarePlain.jpg in Resources */,
 				72164FCD25E99CCE00511342 /* f1.mtl in Resources */,
 				729B14E825D896EC00129165 /* kiara.hdr in Resources */,
+				7254FA402673BBC4000F5738 /* Plant3_Leave_tex.jpg in Resources */,
+				7254FA1C2673BBC4000F5738 /* prop_BakerySign_diffuse.jpg in Resources */,
 				7274A99C25F91FED00F716AF /* ubkncbzew_2K_Roughness2.jpg in Resources */,
 				72583F9E262266E000ADD5BD /* Sponza_FlagPole_normal.png in Resources */,
 				72583F9D262266E000ADD5BD /* Sponza_Curtain_Red_diffuse.png in Resources */,
+				7254FA792673BBC4000F5738 /* ElectricityPole_tex.jpg in Resources */,
 				7216509725EAE9A900511342 /* floor_tiles_06_disp_2k.png in Resources */,
 				721650C425EAF31600511342 /* schvfgwp_4K_Roughness.jpg in Resources */,
 				72E0477325E5A71200E48A54 /* robotArm.usd in Resources */,
@@ -1766,42 +2171,59 @@
 				72583FA9262266E000ADD5BD /* VasePlant_roughness.png in Resources */,
 				72E3503E25FC01550012E6D1 /* tfxkehvg_4K_Roughness.jpg in Resources */,
 				7216509A25EAE9A900511342 /* floor_tiles_06_diff_2k.png in Resources */,
+				7254FA662673BBC4000F5738 /* Water_Opacity.jpg in Resources */,
 				7274EF4625DFDE850026C80B /* cambridge.hdr in Resources */,
 				7216511325EB02A700511342 /* gym.hdr in Resources */,
+				7254FA562673BBC4000F5738 /* UniqueTex.jpg in Resources */,
+				7254FA482673BBC4000F5738 /* 3_Roofs_tex.jpg in Resources */,
 				7216521725ED571E00511342 /* Luggage_Metallic.jpeg in Resources */,
 				72E0478225E7069100E48A54 /* f1.usd in Resources */,
 				7216507025EAE70E00511342 /* green_rough_planks_disp_2k.png in Resources */,
 				7216501225EA611200511342 /* texture.jpg in Resources */,
+				7254FA462673BBC4000F5738 /* TileableWood.jpg in Resources */,
+				7254FA372673BBC4000F5738 /* Plant1_leaves_tex.jpg in Resources */,
 				72583F78262266E000ADD5BD /* Sponza_Column_a_diffuse.png in Resources */,
+				7254FA6D2673BBC4000F5738 /* Lantern_tex.jpg in Resources */,
 				725D993225F8065F00404C74 /* ltc_mat.tiff in Resources */,
+				7254FA4C2673BBC4000F5738 /* BalconyOpacity.jpg in Resources */,
 				729B14F625D91AFF00129165 /* garden.hdr in Resources */,
+				7254FA452673BBC4000F5738 /* Alley_TopNet_tex.jpg in Resources */,
 				721650CE25EAF75C00511342 /* ub1gfbwew_2K_AO.jpg in Resources */,
 				721650F225EAFC9100511342 /* uk0ocizfw_2K_Albedo.jpg in Resources */,
+				7254FA6B2673BBC4000F5738 /* Car_ToyotaTownace_tex.jpg in Resources */,
 				7216505125EAE3C300511342 /* old_planks_02_ao_2k.png in Resources */,
 				7216514C25EBA48800511342 /* ucsjfain_2K_AO.jpg in Resources */,
+				7254B2432673A0E80053B4F4 /* Rails0014_1_350.jpg in Resources */,
 				72583FAE262266E000ADD5BD /* Background_Normal.png in Resources */,
 				72E0477D25E7020F00E48A54 /* carLowPoly.usd in Resources */,
 				72583FB6262266E000ADD5BD /* Sponza_Column_b_diffuse.png in Resources */,
 				7216514D25EBA48800511342 /* ucsjfain_2K_Roughness.jpg in Resources */,
 				7216517325EBAA2600511342 /* tiles_0015_ao_4k.jpg in Resources */,
 				721651FF25ED571E00511342 /* Trousers_skirt_Roughness.jpeg in Resources */,
+				7254FA4A2673BBC4000F5738 /* SoilHard.jpg in Resources */,
 				7216501D25EA859A00511342 /* backpack.mtl in Resources */,
 				721650F025EAFC9100511342 /* uk0ocizfw_2K_Normal.jpg in Resources */,
 				7229EA9B26263A8600112F1A /* house.mtl in Resources */,
 				7216508025EAE81200511342 /* denim_fabric_nor_2k.png in Resources */,
 				7216521B25ED571E00511342 /* Mask_Roughness.jpg in Resources */,
+				7254B2382673A0E80053B4F4 /* facades_normal.jpg in Resources */,
 				7216520625ED571E00511342 /* Head_withpaint_Normal.jpeg in Resources */,
+				7254FA512673BBC4000F5738 /* Alley_Plants_opacity.jpg in Resources */,
 				7216507F25EAE81200511342 /* denim_fabric_ao_2k.png in Resources */,
 				72583FB8262266E000ADD5BD /* VasePlant_normal.png in Resources */,
 				7216521925ED571E00511342 /* Mask_BaseColor.jpeg in Resources */,
 				7216524525ED653600511342 /* Low_Mech1_Normal.png in Resources */,
 				72583FA8262266E000ADD5BD /* Vase_roughness.png in Resources */,
+				7254FA3F2673BBC4000F5738 /* PlantFlower2_flowers_Opacity.jpg in Resources */,
 				72164FF325EA55F500511342 /* cerberus.mtl in Resources */,
 				7216508325EAE81200511342 /* denim_fabric_diff_2k.png in Resources */,
+				7254FA292673BBC4000F5738 /* Wood.jpg in Resources */,
+				7254FA4D2673BBC4000F5738 /* WoodenFence_Opacity.jpg in Resources */,
 				721650C225EAF31600511342 /* schvfgwp_4K_Metalness.jpg in Resources */,
 				72583F88262266E000ADD5BD /* Background_Roughness.png in Resources */,
 				724157F626657CBF00821A7C /* sphere.mtl in Resources */,
 				7216505B25EAE45D00511342 /* cylinder.mtl in Resources */,
+				7254B2442673A0E80053B4F4 /* floor_Material.001_BaseColor.jpg in Resources */,
 				7216503225EA877300511342 /* daizi_baseColor.jpeg in Resources */,
 				72583FB5262266E000ADD5BD /* ChainTexture_Metallic.png in Resources */,
 				72583FAC262266E000ADD5BD /* Sponza_Details_normal.png in Resources */,
@@ -1811,28 +2233,38 @@
 				7216511F25EB043B00511342 /* ukmmbb3fw_4K_Normal.jpg in Resources */,
 				72164FD525EA21B600511342 /* formula1_DefaultMaterial_Diffuse.png in Resources */,
 				7216520025ED571E00511342 /* Accessoires_Normal.jpeg in Resources */,
+				7254FA3C2673BBC4000F5738 /* ConcreteBlocks.jpg in Resources */,
 				7216521025ED571E00511342 /* Mask_Normal.jpg in Resources */,
 				7216517225EBAA2600511342 /* tiles_0015_normal_4k.jpg in Resources */,
 				72583F80262266E000ADD5BD /* Sponza_Bricks_a_Albedo.png in Resources */,
 				72583FA0262266E000ADD5BD /* ChainTexture_Roughness.png in Resources */,
 				72583F96262266E000ADD5BD /* Sponza_Details_roughness.png in Resources */,
+				7254FA692673BBC4000F5738 /* CobbleWall2.jpg in Resources */,
 				72CBB802266E7B1D00D927F9 /* bigroom.mtl in Resources */,
 				7216508125EAE81200511342 /* denim_fabric_rough_2k.png in Resources */,
+				7254B23F2673A0E80053B4F4 /* floor_Material.001_Roughness.jpg in Resources */,
 				7216523225ED63B000511342 /* Bot_Albedo.png in Resources */,
+				7254FA2C2673BBC4000F5738 /* BlackRoofTiles2.jpg in Resources */,
 				7216506D25EAE70E00511342 /* green_rough_planks_ao_2k.png in Resources */,
 				72583F8F262266E000ADD5BD /* Sponza_Column_a_normal.png in Resources */,
 				72583F77262266E000ADD5BD /* Lion_Roughness.png in Resources */,
 				721650C525EAF31600511342 /* schvfgwp_4K_Normal.jpg in Resources */,
+				7254FA342673BBC4000F5738 /* Posters_tex.jpg in Resources */,
 				7229EAA32626448C00112F1A /* room.obj in Resources */,
 				72164FEA25EA48C000511342 /* helmet_metallic.jpg in Resources */,
+				7254FA492673BBC4000F5738 /* prop_bamboofence_diffuse.jpg in Resources */,
 				721F5B5625E2DC5A0000EA4C /* cloudy.hdr in Resources */,
 				7216501325EA611200511342 /* text_alpha.jpg in Resources */,
 				7216506E25EAE70E00511342 /* green_rough_planks_bump_2k.png in Resources */,
+				7254FA602673BBC4000F5738 /* 6_Opacity_op.jpg in Resources */,
 				72583F98262266E000ADD5BD /* Sponza_Arch_diffuse.png in Resources */,
 				72583FAA262266E000ADD5BD /* Sponza_Roof_diffuse.png in Resources */,
 				72164FFF25EA561000511342 /* Cerberus_A.tga in Resources */,
+				7254FA622673BBC4000F5738 /* Prop_Gate_Tex.jpg in Resources */,
 				72583F86262266E000ADD5BD /* Sponza_Column_b_roughness.png in Resources */,
+				7254FA4F2673BBC4000F5738 /* Hedge_Leaves_tex.jpg in Resources */,
 				721650DE25EAF9A000511342 /* vcwlfcgv_4K_Metalness.jpg in Resources */,
+				7254FA752673BBC4000F5738 /* ivy_tex.jpg in Resources */,
 				72583F8A262266E000ADD5BD /* Sponza_Curtain_Blue_diffuse.png in Resources */,
 				721651A325EBB37F00511342 /* 01-Default_roughness.jpg in Resources */,
 				7216521D25ED571E00511342 /* Chest_Roughness.jpeg in Resources */,
@@ -1842,15 +2274,20 @@
 				7216510325EB012000511342 /* circus.hdr in Resources */,
 				7274A9A325F920AB00F716AF /* ubkncbzew_2K_Roughness.jpg in Resources */,
 				72583F84262266E000ADD5BD /* Sponza_Bricks_a_Normal.png in Resources */,
+				7254FA1A2673BBC4000F5738 /* Railroad_Bar.jpg in Resources */,
+				7254FA522673BBC4000F5738 /* Railroad_Tracks_op.jpg in Resources */,
+				7254FA5D2673BBC4000F5738 /* Alley_TopNet_opacity.jpg in Resources */,
 				7216502F25EA877300511342 /* material_baseColor.png in Resources */,
 				72583F8D262266E000ADD5BD /* Sponza_Details_diffuse.png in Resources */,
 				721650FD25EAFD8400511342 /* uk0ocizfw_4K_Albedo.jpg in Resources */,
 				72583FB3262266E000ADD5BD /* Sponza_Arch_normal.png in Resources */,
 				7216514225EB9EA500511342 /* vbwkdallw_4K_Normal.jpg in Resources */,
 				7216516625EBA8B900511342 /* fabric_0017_normal_4k.jpg in Resources */,
+				7254FA722673BBC4000F5738 /* VendingMachine3_Opacity.jpg in Resources */,
 				721650A325EAEBA300511342 /* vbikfjt_2K_Normal.jpg in Resources */,
 				7216500A25EA60CB00511342 /* bookWaterfall.mtl in Resources */,
 				7216503025EA877300511342 /* daizi_metallicRoughness.png in Resources */,
+				7254FA182673BBC4000F5738 /* 2_Walls_tex.jpg in Resources */,
 				721651FB25ED571E00511342 /* Hair_Normal.jpeg in Resources */,
 				72E399A625BF176C00927B17 /* teapot2.obj in Resources */,
 				7216503425EA877300511342 /* kouzi_metallicRoughness.png in Resources */,
@@ -1860,6 +2297,8 @@
 				721650A525EAEBA300511342 /* vbikfjt_2K_Roughness.jpg in Resources */,
 				721651FA25ED571E00511342 /* Trousers_skirt_Metallic.jpeg in Resources */,
 				7216509825EAE9A900511342 /* floor_tiles_06_spec_2k.png in Resources */,
+				7254B23E2673A0E80053B4F4 /* floor_Material.001_Normal.jpg in Resources */,
+				7254FA242673BBC4000F5738 /* Tree1_leaves_op.jpg in Resources */,
 				7216513325EB08F000511342 /* music_hall.hdr in Resources */,
 				72C1736925DED90800B75C4D /* ring.usd in Resources */,
 				72E3504125FC01550012E6D1 /* tfxkehvg_4K_Normal.jpg in Resources */,
@@ -1867,15 +2306,20 @@
 				7274A88C25F8A29E00F716AF /* plane.obj in Resources */,
 				72E398AC25BB4ECB00927B17 /* Assets.xcassets in Resources */,
 				72583F99262266E000ADD5BD /* Sponza_Details_metallic.png in Resources */,
+				7254FA212673BBC4000F5738 /* TreePlot_tex.jpg in Resources */,
 				72583FA2262266E000ADD5BD /* Sponza_Curtain_Red_normal.png in Resources */,
 				7216520925ED571E00511342 /* Shoes_Roughness.jpeg in Resources */,
 				721650DC25EAF9A000511342 /* vcwlfcgv_4K_Roughness.jpg in Resources */,
+				7254FA672673BBC4000F5738 /* StreetDecals_Opacity.jpg in Resources */,
 				7216520A25ED571E00511342 /* Coat_Roughness.jpeg in Resources */,
 				72583F6E262266E000ADD5BD /* VaseHanging_diffuse.png in Resources */,
 				72583FB1262266E000ADD5BD /* Sponza_Fabric_Green_normal.png in Resources */,
+				7254FA352673BBC4000F5738 /* Hedge_tex.jpg in Resources */,
 				721651F525ED571E00511342 /* Coat_Normal.jpeg in Resources */,
+				7254B21E267390580053B4F4 /* classroom.mtl in Resources */,
 				7216518C25EBAF5C00511342 /* sefmegyc_4K_Roughness.jpg in Resources */,
 				7216521E25ED571E00511342 /* Coat_Fur_Opacity.jpg in Resources */,
+				7254B2402673A0E80053B4F4 /* fasades_fasades2_Roughness.jpg in Resources */,
 				7216514125EB9EA500511342 /* vbwkdallw_4K_Albedo.jpg in Resources */,
 				7216524425ED653600511342 /* Low_Mech1_BaseColor.png in Resources */,
 				7216521425ED571E00511342 /* Shoes_Metallic.jpeg in Resources */,
@@ -1883,8 +2327,10 @@
 				7216505425EAE3C300511342 /* old_planks_02_diff_2k.png in Resources */,
 				72583F89262266E000ADD5BD /* Sponza_Curtain_roughness.png in Resources */,
 				72E3504025FC01550012E6D1 /* tfxkehvg_4K_Albedo.jpg in Resources */,
+				7254F9AB2673BB41000F5738 /* tokyo.obj in Resources */,
 				72164FFC25EA561000511342 /* Cerberus_R.tga in Resources */,
 				7216515725EBA5DB00511342 /* bricks_0013_normal_4k.jpg in Resources */,
+				7254FA5E2673BBC4000F5738 /* OpacityMap.jpg in Resources */,
 				7216524125ED653600511342 /* Low_Mech2_Normal.png in Resources */,
 				721650B425EAF09500511342 /* uh1lafuv_2K_AO.jpg in Resources */,
 				7216520725ED571E00511342 /* Hair_Roughness.jpeg in Resources */,
@@ -1893,17 +2339,26 @@
 				7216513F25EB9EA500511342 /* vbwkdallw_4K_Roughness.jpg in Resources */,
 				7216505C25EAE45D00511342 /* cylinder.obj in Resources */,
 				7216505025EAE3C300511342 /* old_planks_02_spec_2k.png in Resources */,
+				7254FA2F2673BBC4000F5738 /* PlantStore_Decals.jpg in Resources */,
+				7254FA2D2673BBC4000F5738 /* Railroad_ElectirictyPole_op.jpg in Resources */,
 				72583FAB262266E000ADD5BD /* VaseHanging_roughness.png in Resources */,
 				7216516525EBA8B900511342 /* fabric_0017_roughness_4k.jpg in Resources */,
+				7254FA262673BBC4000F5738 /* WoodenFence.jpg in Resources */,
 				72E399D025BF611100927B17 /* teapot.usd in Resources */,
+				7254FA5A2673BBC4000F5738 /* Tree1_trunk_tex.jpg in Resources */,
+				7254FA612673BBC4000F5738 /* 5_LongTileable2_tex.jpg in Resources */,
 				72583F7E262266E000ADD5BD /* Sponza_Column_c_roughness.png in Resources */,
 				72583FAF262266E000ADD5BD /* Sponza_Curtain_Green_normal.png in Resources */,
 				7216501C25EA859A00511342 /* backpack.obj in Resources */,
 				7216518025EBAC5B00511342 /* Tiles_Moroccan_001_basecolor.jpg in Resources */,
 				7216512225EB043B00511342 /* ukmmbb3fw_4K_Roughness.jpg in Resources */,
+				7254F9A42673B5C4000F5738 /* details.jpg in Resources */,
+				7254B2422673A0E80053B4F4 /* fasades_fasades2_Height.jpg in Resources */,
 				7216503825EA877300511342 /* material_normal.png in Resources */,
+				7254B23C2673A0E80053B4F4 /* fasades_fasades2_BaseColor.jpg in Resources */,
 				7216521F25ED571E00511342 /* Luggage_Normal.jpeg in Resources */,
 				72583FAD262266E000ADD5BD /* Lion_Normal.png in Resources */,
+				7254FA302673BBC4000F5738 /* Opacity_opacitymap.jpg in Resources */,
 				7274A98F25F91A9400F716AF /* uk0ocizfw_4K_Roughness2.jpg in Resources */,
 				72583FB0262266E000ADD5BD /* Sponza_Column_b_normal.png in Resources */,
 				721650B925EAF25600511342 /* vbikfjt_2K_AO.jpg in Resources */,
@@ -1914,7 +2369,10 @@
 				7229EAA22626448B00112F1A /* room.mtl in Resources */,
 				721651B125EBB3AC00511342 /* microscope.mtl in Resources */,
 				72583FB7262266E000ADD5BD /* ChainTexture_Normal.png in Resources */,
+				7254FA2A2673BBC4000F5738 /* Tree2_tex.jpg in Resources */,
 				7216517D25EBAC5B00511342 /* Tiles_Moroccan_001_roughness.jpg in Resources */,
+				7254FA2E2673BBC4000F5738 /* 11_wallLeaking_tex.jpg in Resources */,
+				7254FA392673BBC4000F5738 /* Railroad_concrete.jpg in Resources */,
 				7216524225ED653600511342 /* Low_Mech1_Roughness.png in Resources */,
 				7216521A25ED571E00511342 /* Mask_Metallic.jpg in Resources */,
 				72E0476925E45B2A00E48A54 /* shield.usd in Resources */,
@@ -1924,8 +2382,10 @@
 				72583F9F262266E000ADD5BD /* Sponza_Floor_normal.png in Resources */,
 				7274EF4B25E03DD40026C80B /* cliff.hdr in Resources */,
 				72E399BA25BF3ECD00927B17 /* planet.obj in Resources */,
+				7254FA532673BBC4000F5738 /* BalconyRoof_tex.jpg in Resources */,
 				721F5B4025E2A7920000EA4C /* sphere.usd in Resources */,
 				721650D125EAF75C00511342 /* ub1gfbwew_2K_Normal.jpg in Resources */,
+				7254FA272673BBC4000F5738 /* TrafficSignTrain_tex.jpg in Resources */,
 				7216516425EBA8B900511342 /* fabric_0017_metallic_4k.jpg in Resources */,
 				72583F8C262266E000ADD5BD /* Sponza_Arch_roughness.png in Resources */,
 				72E0476E25E59B1200E48A54 /* mug.usd in Resources */,
@@ -1933,57 +2393,80 @@
 				7216502E25EA877300511342 /* material_3_normal.png in Resources */,
 				7216517E25EBAC5B00511342 /* Tiles_Moroccan_001_normal.jpg in Resources */,
 				7216520525ED571E00511342 /* Arm_Roughness.jpeg in Resources */,
+				7254FA4B2673BBC4000F5738 /* TrainGate_tex.jpg in Resources */,
+				7254FA572673BBC4000F5738 /* leaves_Opacity.jpg in Resources */,
 				72583F87262266E000ADD5BD /* Sponza_FlagPole_roughness.png in Resources */,
+				7254FA312673BBC4000F5738 /* VendingMachine3_tex.jpg in Resources */,
 				721651BB25ED56CC00511342 /* Winter Girl.mtl in Resources */,
 				7274A88D25F8A29E00F716AF /* plane.mtl in Resources */,
 				72164FDE25EA45D700511342 /* helmet.mtl in Resources */,
 				721651F925ED571E00511342 /* Shoes_BaseColor.jpeg in Resources */,
 				721650AF25EAEE7500511342 /* uh1lafuv_2K_Roughness.jpg in Resources */,
 				7216512E25EB083700511342 /* tkdicbgew_4K_Albedo.jpg in Resources */,
+				7254B21F267390580053B4F4 /* classroom.obj in Resources */,
 				72583FA3262266E000ADD5BD /* Sponza_Curtain_metallic.png in Resources */,
 				72583F97262266E000ADD5BD /* Sponza_Floor_diffuse.png in Resources */,
 				7216507225EAE70E00511342 /* green_rough_planks_diff_2k.png in Resources */,
 				72583F91262266E000ADD5BD /* VaseRound_diffuse.png in Resources */,
 				72E0478725E7089800E48A54 /* weapons.usd in Resources */,
+				7254FA362673BBC4000F5738 /* Plant3_Leave_Op.jpg in Resources */,
 				7216517F25EBAC5B00511342 /* Tiles_Moroccan_001_ambientOcclusion.jpg in Resources */,
 				7216516825EBA8B900511342 /* fabric_0017_base_color_4k.jpg in Resources */,
+				7254FA3B2673BBC4000F5738 /* TrafficSign_Tex.jpg in Resources */,
 				72164FC225E860AD00511342 /* heli.usd in Resources */,
 				7216518925EBAF5C00511342 /* sefmegyc_4K_Normal.jpg in Resources */,
 				7216515925EBA5DB00511342 /* bricks_0013_roughness_4k.jpg in Resources */,
+				7254B2392673A0E80053B4F4 /* vehicles_lights.jpg in Resources */,
 				7216521C25ED571E00511342 /* Chest_Metallic.jpeg in Resources */,
 				72583F7A262266E000ADD5BD /* Sponza_Fabric_Blue_diffuse.png in Resources */,
 				7216505325EAE3C300511342 /* old_planks_02_nor_2k.png in Resources */,
 				721650DF25EAF9A000511342 /* vcwlfcgv_4K_Albedo.jpg in Resources */,
 				72583F81262266E000ADD5BD /* Sponza_Bricks_a_Roughness.png in Resources */,
 				7216505225EAE3C300511342 /* old_planks_02_disp_2k.png in Resources */,
+				7254FA202673BBC4000F5738 /* Tree2_Opacity.jpg in Resources */,
 				72164FF425EA55F500511342 /* cerberus.obj in Resources */,
+				7254B22526739BD70053B4F4 /* city.mtl in Resources */,
 				721651FE25ED571E00511342 /* internal_ground_ao_texture.jpeg in Resources */,
+				7254FA642673BBC4000F5738 /* TileableID6.jpg in Resources */,
+				7254FA3E2673BBC4000F5738 /* TileableBricks.jpg in Resources */,
 				724157F726657CBF00821A7C /* sphere.obj in Resources */,
 				721650A425EAEBA300511342 /* vbikfjt_2K_Albedo.jpg in Resources */,
 				7216503625EA877300511342 /* material_3_baseColor.jpeg in Resources */,
 				7216514025EB9EA500511342 /* vbwkdallw_4K_AO.jpg in Resources */,
 				7274A99B25F91FED00F716AF /* ubkncbzew_2K_AO.jpg in Resources */,
 				72583F8B262266E000ADD5BD /* Lion_Albedo.png in Resources */,
+				7254FA552673BBC4000F5738 /* Plant3_tex.jpg in Resources */,
 				721651FD25ED571E00511342 /* Tools_Metallic.jpeg in Resources */,
+				7254FA502673BBC4000F5738 /* 1_Unique_tex.jpg in Resources */,
 				7216510B25EB019100511342 /* fireplace.hdr in Resources */,
 				721650AE25EAEE7500511342 /* uh1lafuv_2K_Normal.jpg in Resources */,
+				7254FA3A2673BBC4000F5738 /* Alley_Plants_tex.jpg in Resources */,
 				7274A99D25F91FED00F716AF /* ubkncbzew_2K_Normal.jpg in Resources */,
 				7216518A25EBAF5C00511342 /* sefmegyc_4K_Albedo.jpg in Resources */,
+				7254FA5C2673BBC4000F5738 /* Railroad_Bricks.jpg in Resources */,
+				7254FA172673BBC4000F5738 /* Water.jpg in Resources */,
 				721651A725EBB37F00511342 /* 01-Default_normal.jpg in Resources */,
+				7254FA6F2673BBC4000F5738 /* Railroad_Track.jpg in Resources */,
 				72583FB4262266E000ADD5BD /* Sponza_Column_a_roughness.png in Resources */,
 				7216520225ED571E00511342 /* Arm_Metallic.jpeg in Resources */,
+				7254FA1B2673BBC4000F5738 /* PlasterWall.jpg in Resources */,
 				7216509625EAE9A900511342 /* floor_tiles_06_nor_2k.png in Resources */,
 				72E3998B25BEF35100927B17 /* legoMan.mtl in Resources */,
 				72583F9A262266E000ADD5BD /* Sponza_Fabric_Red_diffuse.png in Resources */,
+				7254FA782673BBC4000F5738 /* BakeryFlag_tex.jpg in Resources */,
 				7216520425ED571E00511342 /* Hair_Opacity.png in Resources */,
 				72583F73262266E000ADD5BD /* gi_flag.png in Resources */,
 				7216512025EB043B00511342 /* ukmmbb3fw_4K_AO.jpg in Resources */,
 				72583F9C262266E000ADD5BD /* Sponza_Column_c_diffuse.png in Resources */,
+				7254F9AA2673BB41000F5738 /* tokyo.mtl in Resources */,
 				72583FA7262266E000ADD5BD /* VasePlant_diffuse.png in Resources */,
 				721650AD25EAEE7500511342 /* uh1lafuv_2K_Albedo.jpg in Resources */,
 				7216516725EBA8B900511342 /* fabric_0017_ao_4k.jpg in Resources */,
 				72583F8E262266E000ADD5BD /* ChainTexture_Albedo.png in Resources */,
+				7254FA322673BBC4000F5738 /* ElectricityCables_tex.jpg in Resources */,
+				7254FA6E2673BBC4000F5738 /* BakeryFlag_Opacity.jpg in Resources */,
 				72E398AF25BB4ECB00927B17 /* Main.storyboard in Resources */,
+				7254FA582673BBC4000F5738 /* leaves_tex.jpg in Resources */,
 				722830B925C5706000C9CCF4 /* spheres.usd in Resources */,
 				721651F625ED571E00511342 /* Chest_Normal.jpeg in Resources */,
 				72583F7F262266E000ADD5BD /* Sponza_Fabric_Green_diffuse.png in Resources */,
@@ -1991,22 +2474,35 @@
 				7216524F25ED655000511342 /* Low.mtl in Resources */,
 				7216506F25EAE70E00511342 /* green_rough_planks_rough_2k.png in Resources */,
 				7216520E25ED571E00511342 /* Tools_BaseColor.jpeg in Resources */,
+				7254B23A2673A0E80053B4F4 /* vehicles.jpg in Resources */,
 				72E3998C25BEF35100927B17 /* legoMan.obj in Resources */,
 				72583F72262266E000ADD5BD /* Sponza_Column_c_normal.png in Resources */,
+				7254FA542673BBC4000F5738 /* VendingMachine2_Opacity.jpg in Resources */,
+				7254FA712673BBC4000F5738 /* Road.jpg in Resources */,
+				7254B2412673A0E80053B4F4 /* facades_roughness.jpg in Resources */,
 				721650C325EAF31600511342 /* schvfgwp_4K_Albedo.jpg in Resources */,
+				7254FA5F2673BBC4000F5738 /* Opacity_tex.jpg in Resources */,
+				7254FA702673BBC4000F5738 /* Tree1_leaves_tex.jpg in Resources */,
+				7254FA6A2673BBC4000F5738 /* StreetDecals.jpg in Resources */,
 				7274A99E25F91FED00F716AF /* ubkncbzew_2K_Albedo.jpg in Resources */,
 				7216523425ED63B000511342 /* Bot_Emissive_Blue.png in Resources */,
 				72E0477825E6F9AB00E48A54 /* car.usd in Resources */,
 				7216520F25ED571E00511342 /* Luggage_BaseColor.jpeg in Resources */,
 				7216507325EAE70E00511342 /* green_rough_planks_nor_2k.png in Resources */,
 				7216524825ED653600511342 /* Low_Mech2_Roughness.png in Resources */,
+				7254FA682673BBC4000F5738 /* Dumpster_tex.jpg in Resources */,
+				7254FA632673BBC4000F5738 /* Alley_Fence_opacity.jpg in Resources */,
+				7254FA162673BBC4000F5738 /* Alley_unique_tex.jpg in Resources */,
 				72583F9B262266E000ADD5BD /* Vase_normal.png in Resources */,
 				72164FEB25EA48C000511342 /* helmet_roughness.jpg in Resources */,
+				7254FA192673BBC4000F5738 /* prop_airco_diffuse.jpg in Resources */,
 				72583FA4262266E000ADD5BD /* Sponza_Floor_roughness.png in Resources */,
 				721651F125ED571E00511342 /* Arm_BaseColor.jpeg in Resources */,
 				72583F75262266E000ADD5BD /* Sponza_Fabric_metallic.png in Resources */,
+				7254FA762673BBC4000F5738 /* PlantFlower2_tex.jpg in Resources */,
 				721651F425ED571E00511342 /* Accessoires_BaseColor.jpeg in Resources */,
 				7274A87B25F8104D00F716AF /* ltc_mat2.hdr in Resources */,
+				7254F9A32673B5C4000F5738 /* facades.jpg in Resources */,
 				72FB906325F7A771008D71C5 /* ltc_mag.hdr in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

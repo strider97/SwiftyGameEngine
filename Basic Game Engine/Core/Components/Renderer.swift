@@ -77,6 +77,7 @@ class TextureSet {
     var roughness: MTLTexture!
     var normalMap: MTLTexture!
     var ao: MTLTexture!
+    static var textures: [String : MTLTexture] = [:]
 //    var normal: MTLTexture?
 //    var emissive: MTLTexture?
     static let defaultTexture = getDefautTexture()
@@ -98,12 +99,19 @@ class TextureSet {
          print(material.property(with: .userDefined)?.float3Value)
           */
         guard let sourceTexture = materialProperty.textureSamplerValue?.texture else { return nil }
+        let textureName = material.name + "_" + materialProperty.name
+        if let texture = Self.textures[textureName] {
+            print(textureName)
+            return texture
+        }
         //    let wantMips = materialProperty.semantic != .tangentSpaceNormal
         var options: [MTKTextureLoader.Option: Any] = [:]
         if semantic == .baseColor {
             options[.SRGB] = true
         }
-        return try? textureLoader.newTexture(texture: sourceTexture, options: options)
+        guard let texture = try? textureLoader.newTexture(texture: sourceTexture, options: options) else { return nil }
+        Self.textures[textureName] = texture
+        return texture
     }
 
     init(material sourceMaterial: MDLMaterial, textureLoader: MTKTextureLoader) {

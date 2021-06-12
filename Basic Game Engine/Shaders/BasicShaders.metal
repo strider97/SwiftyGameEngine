@@ -450,7 +450,8 @@ vertex VertexOut basicVertexShader(const VertexIn vIn [[ stage_in ]], constant U
 fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], constant float3 *lightPolygon[[buffer(1)]], constant LightProbeData &probe [[buffer(2)]], texture2d<float, access::sample> preFilterEnvMap [[texture(textureIndexPreFilterEnvMap)]], texture2d<float, access::sample> DFGlut [[texture(textureIndexDFGlut)]], texture2d<float, access::sample> irradianceMap [[texture(textureIndexirradianceMap)]], texture2d<float, access::sample> baseColor [[texture(textureIndexBaseColor)]], texture2d<float, access::sample> roughnessMap [[texture(textureIndexRoughness)]], texture2d<float, access::sample> metallicMap [[texture(textureIndexMetallic)]], texture2d<float, access::sample> normalMap [[texture(normalMap)]], texture2d<float, access::sample> aoTexture [[texture(ao)]], texture2d<float, access::sample> ltc_mat [[texture(ltc_mat)]], texture2d<float, access::sample> ltc_mag [[texture(ltc_mag)]], depth2d<float, access::sample> shadowMap [[texture(shadowMap)]], texture2d<float, access::sample> worldPos [[texture(rsmPos)]], texture2d<float, access::sample> worldNormal [[texture(rsmNormal)]], texture2d<float, access::sample> flux [[texture(rsmFlux)]], texture3d<float, access::read> lightProbeTextureR [[texture(15)]], texture3d<float, access::read> lightProbeTextureG [[texture(16)]], texture3d<float, access::read> lightProbeTextureB [[texture(17)]]){
     
     float3 albedo = material.baseColor;
-    albedo *= pow(baseColor.sample(s, vOut.texCoords).rgb, 3.0);
+//    albedo = 1;
+//    albedo *= pow(baseColor.sample(s, vOut.texCoords).rgb, 3.0);
 //    albedo = 1;
 //    float metallic = material.metallic;
 //    metallic *= metallicMap.sample(s, vOut.texCoords).b;
@@ -470,8 +471,8 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     ambient.r = (getDDGI(vOut.position, vOut.smoothNormal, lightProbeTextureR, probe) + 0.0000);
     ambient.g = (getDDGI(vOut.position, vOut.smoothNormal, lightProbeTextureG, probe) + 0.0000);
     ambient.b = (getDDGI(vOut.position, vOut.smoothNormal, lightProbeTextureB, probe) + 0.0000);
-    float3 diffuse = inShadow ? 0 : 10 * albedo * saturate(dot(smoothN, l));
-    float3 color = diffuse + 2 * ambient * albedo;
+    float3 diffuse = inShadow ? 0 : 2 * albedo * saturate(dot(smoothN, l));
+    float3 color = diffuse + 1 * ambient * albedo;
     
     float exposure = max(0.01, vOut.exposure);
     color = 1 - exp(-color * exposure);

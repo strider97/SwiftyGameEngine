@@ -111,7 +111,7 @@ class IrradianceField {
             let pos = indexToGridPos(i, origin, gridEdge)
             probeLocationsArray.append(pos)
         }
-        print(probeLocationsArray)
+    //    print(probeLocationsArray)
         probeLocations = device.makeBuffer(bytes: probeLocationsArray, length: MemoryLayout<Float3>.stride * probeCount, options: .storageModeManaged)!
         let numRays = Constants.probeReso * Constants.probeReso * 1000
         for _ in 0 ..< numRays {
@@ -121,10 +121,10 @@ class IrradianceField {
         }
         //    print(probeDirectionsArray)
         probeDirections = device.makeBuffer(bytes: probeDirectionsArray, length: MemoryLayout<Float3>.stride * numRays, options: .storageModeManaged)!
-        print(self.origin)
+     //   print(self.origin)
         for val in probeLocationsArray {
             let i = gridPosToTex(pos: val)
-            print(i, indexToTexPos_(index: i), gridPosToTex_(pos: val))
+        //    print(i, indexToTexPos_(index: i), gridPosToTex_(pos: val))
         }
     }
 }

@@ -13,7 +13,7 @@ class SimpleScene: Scene {
     var model2: GameObject!
 
     override func getGameObjects() -> [GameObject] {
-        model = GameObject(modelName: "bigroom")
+        model = GameObject(modelName: "sponza")
         model2 = GameObject(modelName: "plane")
         model2.transform.position = Float3(10, 10, 0)
         let scale = Float(Constants.probeCount)
@@ -26,7 +26,7 @@ class SimpleScene: Scene {
     override func addPhysics() {}
 
     override func getSkybox() -> Skybox {
-        return Skybox(textureName: "park")
+        return Skybox(textureName: "cambridge")
     }
 
     override func addBehaviour() {
