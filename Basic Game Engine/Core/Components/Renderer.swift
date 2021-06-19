@@ -170,7 +170,7 @@ class TextureSet {
                                                                   mipmapped: false)
         descriptor.usage = .shaderRead
         let defaultTexture = Device.sharedDevice.device!.makeTexture(descriptor: descriptor)!
-        let defaultColor: [UInt8] = [128, 255, 128, 255]
+        let defaultColor: [UInt8] = [128, 128, 255, 255]
         defaultTexture.replace(region: bounds, mipmapLevel: 0, withBytes: defaultColor, bytesPerRow: 4)
         return defaultTexture
     }

@@ -515,6 +515,7 @@ fragment float4 DeferredRendererFS(VertexOutDR vOut [[ stage_in ]],
     float3 smoothN = worldNormal.sample(s, vOut.pos).rgb;
     float4 albedo_ = albedoTex.sample(s, vOut.pos);
     float3 albedo = albedo_.rgb;
+    albedo = 0.8;
     float3 l = shadowUniforms.sunDirection;
     float inShadow = albedo_.a;
     
@@ -522,10 +523,10 @@ fragment float4 DeferredRendererFS(VertexOutDR vOut [[ stage_in ]],
     ambient.r = (getDDGI(pos, smoothN, lightProbeTextureR, probe) + 0.0000);
 //    ambient.g = (getDDGI(pos, smoothN, lightProbeTextureG, probe) + 0.0000);
 //    ambient.b = (getDDGI(pos, smoothN, lightProbeTextureB, probe) + 0.0000);
-    float3 diffuse = inShadow * 4.0 * albedo * saturate(dot(smoothN, l));
-    float3 color = diffuse + 2 * ambient.r * albedo;
+    float3 diffuse = inShadow * 2.0 * albedo * saturate(dot(smoothN, l));
+    float3 color = diffuse + 1.5 * ambient.r * albedo;
     
-    float exposure = 1.4;
+    float exposure = 1.0;
     color = 1 - exp(-color * exposure);
     color = pow(color, float3(1.0/2.2));
     return float4(color, 1.0);

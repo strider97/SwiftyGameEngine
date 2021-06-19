@@ -344,7 +344,7 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
         shadowRay.direction = uniforms.sunDirection;
         shadowRay.maxDistance = lightDistance;
         shadowRay.color = 4 * lightColor * color;// / max(1.0,intersection.distance * intersection.distance);
-   //     shadowRay.color = float3(0, 0, 10);
+        shadowRay.color = float3(0, 0, 0);
         shadowRay.indirectColor.r = 2 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureR, uniforms.probeData);
         shadowRay.indirectColor.g = 2 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureG, uniforms.probeData);
         shadowRay.indirectColor.b = 2 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureB, uniforms.probeData);
@@ -363,8 +363,8 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
         float3 R = ray.direction;
         R.x = -R.x;
         R.z = -R.z;
-        float3 irradiance = irradianceMap.sample(s__, sampleSphericalMap__(R)).rgb;
-        shadowRay.indirectColor += irradiance;
+    //    float3 irradiance = irradianceMap.sample(s__, sampleSphericalMap__(R)).rgb;
+        shadowRay.indirectColor += 0.5 * float3(0.6, 0.6, 1)*saturate(dot(ray.direction, float3(0, 1, 0)));
     //    shadowRay.color = 0;
     }
   }

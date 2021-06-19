@@ -10,10 +10,10 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_tangentSpaceNormal Bath_low_UV_checker.001_Normal.png
-map_Kd Bath_low_UV_checker.001_BaseColor.png
-map_roughness Bath_low_UV_checker.001_Roughness.png
-map_metallic Bath_low_UV_checker.001_Metallic.png
+map_tangentSpaceNormal Bath_low_UV_checker001_Normal.png
+map_Kd Bath_low_UV_checker001_BaseColor.png
+map_roughness Bath_low_UV_checker001_Roughness.png
+map_metallic Bath_low_UV_checker001_Metallic.png
 
 newmtl Bathtube
 Ns 225.000000
@@ -52,7 +52,7 @@ illum 2
 newmtl Door_and_windows
 Ns 323.999994
 Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
+Kd 0.200000 0.100000 0.100000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.450000
@@ -90,7 +90,7 @@ map_metallic Floor_metallic.png
 newmtl Frames
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
+Kd 0.100000 0.100000 0.600000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.450000
@@ -134,7 +134,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_tangentSpaceNormal Wall_trim_normal_flat.png
+map_tangentSpaceNormal Wall_trim_normal.png
 map_Kd Wall_trim_basecolor.png
 map_roughness Wall_trim_roughness.png
 map_metallic Wall_trim_metallic.png

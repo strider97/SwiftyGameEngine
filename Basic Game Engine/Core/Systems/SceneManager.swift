@@ -28,7 +28,7 @@ class Scene: NSObject {
     final let P = Matrix4(projectionFov: MathConstants.PI.rawValue / 3, near: 0.01, far: 500, aspect: Scene.W / Scene.H)
 //    var sunDirection = Float3(5, 3, 5) * 2
     var sunDirection = Float3(2, 18, 4)
-    var orthoGraphicP = Matrix4(orthoLeft: -10, right: 10, bottom: -10, top: 10, near: 0.01, far: 100)
+    var orthoGraphicP = Matrix4(orthoLeft: -20, right: 20, bottom: -20, top: 20, near: 0.01, far: 100)
     lazy var shadowViewMatrix = Matrix4.viewMatrix(position: sunDirection, target: Float3(0, 0, 0), up: Camera.WorldUp)
     final let timer = GameTimer.sharedTimer
     final var camera: Camera!
@@ -199,7 +199,7 @@ extension Scene {
         rayTracer?.drawAccumulation(in: view, commandBuffer: commandBuffer)
         let shadowCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: shadowDescriptor)
         shadowCommandEncoder?.setDepthStencilState(depthStencilState)
-   //     shadowCommandEncoder?.setCullMode(.front)
+    //    shadowCommandEncoder?.setCullMode(.front)
         //    shadowCommandEncoder?.setDepthBias(0.001, slopeScale: 1.0, clamp: 0.01)
         drawGameObjects(renderCommandEncoder: shadowCommandEncoder, renderPassType: .shadow)
         shadowCommandEncoder?.endEncoding()
@@ -225,7 +225,7 @@ extension Scene {
         renderCommandEncoder?.setFragmentTexture(rayTracer?.irradianceField.ambientCubeTextureFinalR, index: TextureIndex.textureDDGIR.rawValue)
         renderCommandEncoder?.setFragmentTexture(rayTracer?.irradianceField.ambientCubeTextureFinalG, index: TextureIndex.textureDDGIG.rawValue)
         renderCommandEncoder?.setFragmentTexture(rayTracer?.irradianceField.ambientCubeTextureFinalB, index: TextureIndex.textureDDGIB.rawValue)
-        renderCommandEncoder?.setCullMode(.front)
+    //    renderCommandEncoder?.setCullMode(.front)
     //    drawGameObjects(renderCommandEncoder: renderCommandEncoder)
         drawDefferedRender(renderCommandEncoder: renderCommandEncoder)
     //    drawLightProbes(renderCommandEncoder: renderCommandEncoder)
@@ -391,7 +391,8 @@ extension Scene {
         //    for i in 0..<lightPolygon.count {
         //        lightPolygon[i] = lightPolygonInitial[i] + Float3(sin(GameTimer.sharedTimer.time) * 20, 0, 0)
         //    }
-        sunDirection.x = 22 * cos(GameTimer.sharedTimer.time / 6)
+    //    sunDirection.x = 5 * cos(GameTimer.sharedTimer.time / 20) + 12
+        sunDirection.x = -20
     //    sunDirection.x = abs(40 * cos(GameTimer.sharedTimer.time / 10)) - 1
         shadowViewMatrix = Matrix4.viewMatrix(position: sunDirection, target: Float3(0, 0, 0), up: Camera.WorldUp)
     }
