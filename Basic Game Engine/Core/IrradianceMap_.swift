@@ -80,8 +80,8 @@ class DFGLut {
     let vertexBuffer: MTLBuffer
     var vertices: [Vertex] = [
         Vertex(position: Float3(-1, -1, 0), color: Float4(0.0, 0.0, 0.0, 1)),
-        Vertex(position: Float3(-1, 1, 0), color: Float4(0.0, 1.0, 0.0, 1)),
         Vertex(position: Float3(1, 1, 0), color: Float4(1.0, 1.0, 0.0, 1)),
+        Vertex(position: Float3(-1, 1, 0), color: Float4(0.0, 1.0, 0.0, 1)),
         Vertex(position: Float3(1, 1, 0), color: Float4(1.0, 1.0, 0, 1)),
         Vertex(position: Float3(-1, -1, 0), color: Float4(0.0, 0.0, 0.0, 1)),
         Vertex(position: Float3(1, -1, 0), color: Float4(1.0, 0.0, 0.0, 1)),
@@ -93,6 +93,13 @@ class DFGLut {
         texture = Descriptor.build2DTexture(pixelFormat: .rgba16Float, size: CGSize(width: 512, height: 512))
         pipelineState = Descriptor.createDFGLUTPipelineState()
         renderPassDescriptor.setupColorAttachment(texture)
+    }
+}
+
+class DeferredRenderer: DFGLut {
+    override init() {
+        super.init()
+        pipelineState = Descriptor.createDeferredRendererPipelineState()
     }
 }
 

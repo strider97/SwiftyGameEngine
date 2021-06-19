@@ -152,6 +152,7 @@ float signum(float a) {
 }
 
 fragment float4 lightProbeFragmentShader(VertexOut vOut [[stage_in]], constant LightProbeData &probe [[buffer(0)]], texture3d<float, access::read> lightProbeTexture) {
+    return float4(1.0);
     ushort2 texPos = gridPosToTex(vOut.position - vOut.smoothNormal * 0.2, probe.gridEdge, probe.gridOrigin, probe.probeGridWidth, probe.probeGridHeight);
     float3 col1 = lightProbeTexture.read(ushort3(texPos, 0)).rgb;
     float3 col2 = lightProbeTexture.read(ushort3(texPos, 1)).rgb;

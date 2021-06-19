@@ -480,6 +480,58 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     return float4(color, 1.0);
 }
 
+struct SimpleVertexDR {
+    float3 position [[attribute(0)]];
+    float4 color [[attribute(1)]];
+};
+
+struct VertexOutDR {
+    float4 position [[position]];
+    float3 textureDir;
+    float2 pos;
+    float2 color;
+};
+
+vertex VertexOutDR DeferredRendererVS (const SimpleVertexDR vIn [[ stage_in ]]) {
+    VertexOutDR vOut;
+//    vOut.pos = (float2(vIn.position.x, vIn.position.y)+1.0)/2.0;
+    vOut.pos = float2(vIn.color.x, 1 - vIn.color.y);
+    vOut.position = float4(vIn.position, 1);
+    vOut.color = vIn.color.xy;
+    return vOut;
+}
+
+fragment float4 DeferredRendererFS(VertexOutDR vOut [[ stage_in ]],
+                                   constant ShadowUniforms &shadowUniforms [[buffer(0)]],
+                                   constant LightProbeData &probe [[buffer(1)]],
+                                   texture2d<float, access::sample> worldPos [[texture(rsmPos)]],
+                                   texture2d<float, access::sample> worldNormal [[texture(rsmNormal)]],
+                                   texture2d<float, access::sample> albedoTex [[texture(rsmFlux)]],
+                                   texture3d<float, access::read> lightProbeTextureR [[texture(15)]],
+                                   texture3d<float, access::read> lightProbeTextureG [[texture(16)]],
+                                   texture3d<float, access::read> lightProbeTextureB [[texture(17)]]){
+    
+    float3 pos = worldPos.sample(s, vOut.pos).rgb;
+    float3 smoothN = worldNormal.sample(s, vOut.pos).rgb;
+    float4 albedo_ = albedoTex.sample(s, vOut.pos);
+    float3 albedo = albedo_.rgb;
+    float3 l = shadowUniforms.sunDirection;
+    float inShadow = albedo_.a;
+    
+    float3 ambient = 0;
+    ambient.r = (getDDGI(pos, smoothN, lightProbeTextureR, probe) + 0.0000);
+//    ambient.g = (getDDGI(pos, smoothN, lightProbeTextureG, probe) + 0.0000);
+//    ambient.b = (getDDGI(pos, smoothN, lightProbeTextureB, probe) + 0.0000);
+    float3 diffuse = inShadow * 4.0 * albedo * saturate(dot(smoothN, l));
+    float3 color = diffuse + 2 * ambient.r * albedo;
+    
+    float exposure = 1.4;
+    color = 1 - exp(-color * exposure);
+    color = pow(color, float3(1.0/2.2));
+    return float4(color, 1.0);
+}
+
+
 fragment float4 fragmentRSM(VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], constant float3 *lightPolygon[[buffer(1)]], texture2d<float, access::sample> worldPos [[texture(rsmPos)]], texture2d<float, access::sample> worldNormal [[texture(rsmNormal)]], texture2d<float, access::sample> flux [[texture(rsmFlux)]], depth2d<float, access::sample> rsmDepth [[texture(rsmDepth)]]) {
     return float4(0);
 }

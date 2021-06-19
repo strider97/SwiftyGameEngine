@@ -71,6 +71,8 @@ class Raytracer {
     var vertices: [Float3] = []
     var normals: [Float3] = []
     var colors: [Float3] = []
+    var minPosition: Float3 = Float3.zero
+    var maxPosition: Float3 = Float3.zero
 
     init(metalView: MTKView) {
         device = Device.sharedDevice.device!
@@ -83,7 +85,7 @@ class Raytracer {
         createBuffers()
         buildIntersector()
         buildAccelerationStructure()
-        irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 7.5, 1), Float3(30, 14, 14))
+        irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, (minPosition + maxPosition)/2, (maxPosition - minPosition)*0.9)
    //     irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 7, 0), Float3(20, 14, 50))
    //     irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 1.5, 0), Float3(16, 2.5, 8.2))
    //     irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 10, 0), Float3(25, 25, 15))
@@ -154,7 +156,7 @@ class Raytracer {
     }
 
     func createScene() {
-        loadAsset(name: "sponza")
+        loadAsset(name: "bathroom")
     }
 
     func createBuffers() {
@@ -458,7 +460,10 @@ extension Raytracer {
                         let index = Int(indices.pointee)
                         let vertex = ptr[index]
                         //    vertices_.append(ptr[index])
-                        vertices.append(vertex.position * scale + position)
+                        let vPosition = vertex.position * scale + position
+                        minPosition = min(vPosition, minPosition)
+                        maxPosition = max(vPosition, maxPosition)
+                        vertices.append(vPosition)
                         normals.append(vertex.normal)
                         var color = Float3(1, 1, 1)
                         let mdlSubmesh = subMeshesMDL[meshIndex][mdlIndex]

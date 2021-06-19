@@ -38,6 +38,7 @@ class Scene: NSObject {
     var shadowTexture: MTLTexture!
     var shadowDescriptor = MTLRenderPassDescriptor()
     var shadowPipelineState: MTLRenderPipelineState?
+    let deferredRenderPipelineState = Descriptor.createDeferredRendererPipelineState()
     var preFilterEnvMap = PrefilterEnvMap()
     var dfgLut = DFGLut()
     var irradianceMap = IrradianceMap()
@@ -46,7 +47,7 @@ class Scene: NSObject {
     private var exposure: Float = 0.5
     var ltcMat: MTLTexture!
     var ltcMag: MTLTexture!
-    var gBufferData = GBufferData(size: CGSize(width: 256, height: 256))
+    var gBufferData = GBufferData(size: CGSize(width: 1920, height: 1080))
     var lightPolygon: [Float3] = [
         Float3(-6, -1.9, 20),
         Float3(0, 3, 20),
@@ -63,6 +64,7 @@ class Scene: NSObject {
 
     var light: PolygonLight
     var sphere = GameObject(modelName: "sphere")
+    var frame = 0
 
     override init() {
         light = PolygonLight(vertices: lightPolygon)
@@ -161,7 +163,7 @@ extension Scene {
         let commandBuffer = Device.sharedDevice.commandQueue?.makeCommandBuffer()
 
         // Generate irradiance maps and DFG lut if first draw
-        if firstDraw {
+        if false {
             let blitEncoder = commandBuffer?.makeBlitCommandEncoder()
             blitEncoder?.copy(from: skybox.texture!, sourceSlice: 0, sourceLevel: 0, to: skybox.mipmappedTexture, destinationSlice: 0, destinationLevel: 0, sliceCount: 1, levelCount: 1)
             blitEncoder?.generateMipmaps(for: skybox.mipmappedTexture)
@@ -197,37 +199,41 @@ extension Scene {
         rayTracer?.drawAccumulation(in: view, commandBuffer: commandBuffer)
         let shadowCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: shadowDescriptor)
         shadowCommandEncoder?.setDepthStencilState(depthStencilState)
-        shadowCommandEncoder?.setCullMode(.front)
+   //     shadowCommandEncoder?.setCullMode(.front)
         //    shadowCommandEncoder?.setDepthBias(0.001, slopeScale: 1.0, clamp: 0.01)
         drawGameObjects(renderCommandEncoder: shadowCommandEncoder, renderPassType: .shadow)
         shadowCommandEncoder?.endEncoding()
 
-//        let gBufferCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: gBufferData.gBufferRenderPassDescriptor)
-//        gBufferCommandEncoder?.setDepthStencilState(depthStencilState)
-//        drawGameObjects(renderCommandEncoder: gBufferCommandEncoder, renderPassType: .gBuffer)
-//        gBufferCommandEncoder?.endEncoding()
+        let gBufferCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: gBufferData.gBufferRenderPassDescriptor)
+   //     gBufferCommandEncoder?.setCullMode(.front)
+        gBufferCommandEncoder?.setDepthStencilState(depthStencilState)
+        gBufferCommandEncoder?.setFragmentTexture(shadowTexture, index: 0)
+        drawGameObjects(renderCommandEncoder: gBufferCommandEncoder, renderPassType: .gBuffer)
+        gBufferCommandEncoder?.endEncoding()
 
         let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
-        renderCommandEncoder?.setDepthStencilState(depthStencilState)
+   //     renderCommandEncoder?.setDepthStoreAction(.dontCare)
+   //     renderCommandEncoder?.setDepthStencilState(depthStencilState)
 //        renderCommandEncoder?.setFragmentTexture(preFilterEnvMap.texture, index: TextureIndex.preFilterEnvMap.rawValue)
 //        renderCommandEncoder?.setFragmentTexture(dfgLut.texture, index: TextureIndex.DFGlut.rawValue)
 //        renderCommandEncoder?.setFragmentTexture(irradianceMap.texture, index: TextureIndex.irradianceMap.rawValue)
 //        renderCommandEncoder?.setFragmentTexture(ltcMat, index: TextureIndex.ltc_mat.rawValue)
 //        renderCommandEncoder?.setFragmentTexture(ltcMag, index: TextureIndex.ltc_mag.rawValue)
-        renderCommandEncoder?.setFragmentTexture(shadowTexture, index: TextureIndex.shadowMap.rawValue)
-//        renderCommandEncoder?.setFragmentTexture(gBufferData.worldPos, index: TextureIndex.worldPos.rawValue)
-//        renderCommandEncoder?.setFragmentTexture(gBufferData.normal, index: TextureIndex.normal.rawValue)
-//        renderCommandEncoder?.setFragmentTexture(gBufferData.flux, index: TextureIndex.flux.rawValue)
+        renderCommandEncoder?.setFragmentTexture(gBufferData.worldPos, index: TextureIndex.worldPos.rawValue)
+        renderCommandEncoder?.setFragmentTexture(gBufferData.normal, index: TextureIndex.normal.rawValue)
+        renderCommandEncoder?.setFragmentTexture(gBufferData.flux, index: TextureIndex.flux.rawValue)
         renderCommandEncoder?.setFragmentTexture(rayTracer?.irradianceField.ambientCubeTextureFinalR, index: TextureIndex.textureDDGIR.rawValue)
         renderCommandEncoder?.setFragmentTexture(rayTracer?.irradianceField.ambientCubeTextureFinalG, index: TextureIndex.textureDDGIG.rawValue)
         renderCommandEncoder?.setFragmentTexture(rayTracer?.irradianceField.ambientCubeTextureFinalB, index: TextureIndex.textureDDGIB.rawValue)
         renderCommandEncoder?.setCullMode(.front)
-        drawGameObjects(renderCommandEncoder: renderCommandEncoder)
+    //    drawGameObjects(renderCommandEncoder: renderCommandEncoder)
+        drawDefferedRender(renderCommandEncoder: renderCommandEncoder)
     //    drawLightProbes(renderCommandEncoder: renderCommandEncoder)
-        drawSkybox(renderCommandEncoder: renderCommandEncoder)
+    //    drawSkybox(renderCommandEncoder: renderCommandEncoder)
         renderCommandEncoder?.endEncoding()
 
         firstDraw = false
+        frame += 1
         guard let drawable = view.currentDrawable else { return }
         commandBuffer?.present(drawable)
         commandBuffer?.commit()
@@ -260,13 +266,13 @@ extension Scene {
             if let renderPipelineStatus = renderPassType == .shadow ? shadowPipelineState : (renderPassType == .shading ? gameObject.renderPipelineState : gBufferData.renderPipelineState), let mesh_ = gameObject.getComponent(Mesh.self) {
                 renderCommandEncoder?.setRenderPipelineState(renderPipelineStatus)
 
-                var u = renderPassType == .shading ? getUniformData(gameObject.transform.modelMatrix) : getFarShadowUniformData(gameObject.transform.modelMatrix)
+                var u = (renderPassType == .shading || renderPassType == .gBuffer) ? getUniformData(gameObject.transform.modelMatrix) : getFarShadowUniformData(gameObject.transform.modelMatrix)
                 if renderPassType == .shading || renderPassType == .gBuffer {
                     var s = ShadowUniforms(P: orthoGraphicP, V: shadowViewMatrix, sunDirection: sunDirection.normalized)
                     renderCommandEncoder?.setVertexBytes(&s, length: MemoryLayout<ShadowUniforms>.stride, index: 2)
-                    let irradianceField = rayTracer!.irradianceField!
-                    var lightProbeData = LightProbeData(gridEdge: irradianceField.gridEdge, gridOrigin: irradianceField.origin, probeGridWidth: irradianceField.width, probeGridHeight: irradianceField.height, probeGridCount: Int3(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2))
-                    renderCommandEncoder?.setFragmentBytes(&lightProbeData, length: MemoryLayout<LightProbeData>.stride, index: 2)
+                //    let irradianceField = rayTracer!.irradianceField!
+                //    var lightProbeData = LightProbeData(gridEdge: irradianceField.gridEdge, gridOrigin: irradianceField.origin, probeGridWidth: irradianceField.width, probeGridHeight: irradianceField.height, probeGridCount: Int3(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2))
+                //    renderCommandEncoder?.setFragmentBytes(&lightProbeData, length: MemoryLayout<LightProbeData>.stride, index: 2)
                 }
                 renderCommandEncoder?.setVertexBytes(&u, length: MemoryLayout<Uniforms>.stride, index: 1)
 
@@ -286,11 +292,11 @@ extension Scene {
                             if i == 1 {
                                 renderCommandEncoder?.setFragmentTexture(rayTracer?.renderTarget!, index: TextureIndex.baseColor.rawValue)
                             }
-                            if renderPassType == .shading {
-                            //    renderCommandEncoder?.setFragmentTexture(mat.textureSet.roughness, index: TextureIndex.roughness.rawValue)
-                            //    renderCommandEncoder?.setFragmentTexture(mat.textureSet.metallic, index: TextureIndex.metallic.rawValue)
-                            //    renderCommandEncoder?.setFragmentTexture(mat.textureSet.normalMap, index: TextureIndex.normalMap.rawValue)
-                            //    renderCommandEncoder?.setFragmentTexture(mat.textureSet.ao, index: TextureIndex.ao.rawValue)
+                            if renderPassType != .shadow {
+                                renderCommandEncoder?.setFragmentTexture(mat.textureSet.roughness, index: TextureIndex.roughness.rawValue)
+                                renderCommandEncoder?.setFragmentTexture(mat.textureSet.metallic, index: TextureIndex.metallic.rawValue)
+                                renderCommandEncoder?.setFragmentTexture(mat.textureSet.normalMap, index: TextureIndex.normalMap.rawValue)
+                                renderCommandEncoder?.setFragmentTexture(mat.textureSet.ao, index: TextureIndex.ao.rawValue)
                             }
                         }
                         let submesh = meshNode.mesh
@@ -361,6 +367,17 @@ extension Scene {
         renderCommandEncoder?.setVertexBuffer(dfgLut.vertexBuffer, offset: 0, index: 0)
         renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: dfgLut.vertices.count)
     }
+    
+    func drawDefferedRender(renderCommandEncoder: MTLRenderCommandEncoder?) {
+        renderCommandEncoder?.setRenderPipelineState(deferredRenderPipelineState)
+        renderCommandEncoder?.setVertexBuffer(dfgLut.vertexBuffer, offset: 0, index: 0)
+        let irradianceField = rayTracer!.irradianceField!
+        var lightProbeData = LightProbeData(gridEdge: irradianceField.gridEdge, gridOrigin: irradianceField.origin, probeGridWidth: irradianceField.width, probeGridHeight: irradianceField.height, probeGridCount: Int3(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2))
+        var s = ShadowUniforms(P: orthoGraphicP, V: shadowViewMatrix, sunDirection: sunDirection.normalized)
+        renderCommandEncoder?.setFragmentBytes(&s, length: MemoryLayout<ShadowUniforms>.stride, index: 0)
+        renderCommandEncoder?.setFragmentBytes(&lightProbeData, length: MemoryLayout<LightProbeData>.stride, index: 1)
+        renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6)
+    }
 
     func drawIrradianceMap(renderCommandEncoder: MTLRenderCommandEncoder?) {
         renderCommandEncoder?.setRenderPipelineState(irradianceMap.pipelineState)
@@ -374,7 +391,7 @@ extension Scene {
         //    for i in 0..<lightPolygon.count {
         //        lightPolygon[i] = lightPolygonInitial[i] + Float3(sin(GameTimer.sharedTimer.time) * 20, 0, 0)
         //    }
-        sunDirection.z = 22 * cos(GameTimer.sharedTimer.time / 6)
+        sunDirection.x = 22 * cos(GameTimer.sharedTimer.time / 6)
     //    sunDirection.x = abs(40 * cos(GameTimer.sharedTimer.time / 10)) - 1
         shadowViewMatrix = Matrix4.viewMatrix(position: sunDirection, target: Float3(0, 0, 0), up: Camera.WorldUp)
     }

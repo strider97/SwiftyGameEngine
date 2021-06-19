@@ -109,6 +109,20 @@ extension Descriptor {
             fatalError(error.localizedDescription)
         }
     }
+    
+    static func createDeferredRendererPipelineState() -> MTLRenderPipelineState {
+        let descriptor = MTLRenderPipelineDescriptor()
+        descriptor.colorAttachments[0].pixelFormat = Constants.pixelFormat
+        descriptor.depthAttachmentPixelFormat = .depth32Float
+        descriptor.vertexFunction = Device.sharedDevice.library?.makeFunction(name: "DeferredRendererVS")
+        descriptor.fragmentFunction = Device.sharedDevice.library?.makeFunction(name: "DeferredRendererFS")
+        descriptor.vertexDescriptor = Descriptor.getSimpleVertexDescriptor()
+        do {
+            return try Device.sharedDevice.device!.makeRenderPipelineState(descriptor: descriptor)
+        } catch {
+            fatalError(error.localizedDescription)
+        }
+    }
 
     static func createLightPipelineState() -> MTLRenderPipelineState {
         let descriptor = MTLRenderPipelineDescriptor()

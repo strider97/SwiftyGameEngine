@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7208ADED267D638A00649138 /* sponza copy.obj in Resources */ = {isa = PBXBuildFile; fileRef = 7208ADEB267D638900649138 /* sponza copy.obj */; };
+		7208ADEE267D638A00649138 /* sponza copy.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 7208ADEC267D638A00649138 /* sponza copy.mtl */; };
 		720EC2EE25D7CCD300A83F1A /* Skybox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720EC2ED25D7CCD300A83F1A /* Skybox.swift */; };
 		720EC2F325D82F2500A83F1A /* SkyboxShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 720EC2F225D82F2500A83F1A /* SkyboxShader.metal */; };
 		720EC2FF25D8816B00A83F1A /* park.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 720EC2FE25D8816B00A83F1A /* park.hdr */; };
@@ -224,6 +226,47 @@
 		721F5B5625E2DC5A0000EA4C /* cloudy.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 721F5B5525E2DC5A0000EA4C /* cloudy.hdr */; };
 		7223E3EE2624EE630070CB9A /* rsmShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 7223E3ED2624EE630070CB9A /* rsmShader.metal */; };
 		722830B925C5706000C9CCF4 /* spheres.usd in Resources */ = {isa = PBXBuildFile; fileRef = 722830B825C5705F00C9CCF4 /* spheres.usd */; };
+		722946EC267E25E500B3E620 /* bathroom.obj in Resources */ = {isa = PBXBuildFile; fileRef = 722946EA267E25E400B3E620 /* bathroom.obj */; };
+		722946ED267E25E500B3E620 /* bathroom.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 722946EB267E25E400B3E620 /* bathroom.mtl */; };
+		72294716267E263200B3E620 /* Bath_low_UV_checker.001_Normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 722946EF267E263100B3E620 /* Bath_low_UV_checker.001_Normal.png */; };
+		72294717267E263200B3E620 /* Frame_low_Frames_Metallic.png in Resources */ = {isa = PBXBuildFile; fileRef = 722946F0267E263100B3E620 /* Frame_low_Frames_Metallic.png */; };
+		72294718267E263200B3E620 /* Frame_low_Frames_BaseColor.png in Resources */ = {isa = PBXBuildFile; fileRef = 722946F1267E263100B3E620 /* Frame_low_Frames_BaseColor.png */; };
+		72294719267E263200B3E620 /* Frame_low_Frames_Normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 722946F2267E263100B3E620 /* Frame_low_Frames_Normal.png */; };
+		7229471A267E263200B3E620 /* Wall_trim_roughness.png in Resources */ = {isa = PBXBuildFile; fileRef = 722946F3267E263100B3E620 /* Wall_trim_roughness.png */; };
+		7229471B267E263200B3E620 /* Bathtube_low_Bathtube_BaseColor.png in Resources */ = {isa = PBXBuildFile; fileRef = 722946F4267E263100B3E620 /* Bathtube_low_Bathtube_BaseColor.png */; };
+		7229471C267E263200B3E620 /* Candle_low_Candle_Emissive.png in Resources */ = {isa = PBXBuildFile; fileRef = 722946F5267E263100B3E620 /* Candle_low_Candle_Emissive.png */; };
+		7229471D267E263200B3E620 /* Bathtube_low_Bathtube_Normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 722946F6267E263100B3E620 /* Bathtube_low_Bathtube_Normal.png */; };
+		7229471E267E263200B3E620 /* Cups_low_Cups_BaseColor.png in Resources */ = {isa = PBXBuildFile; fileRef = 722946F7267E263100B3E620 /* Cups_low_Cups_BaseColor.png */; };
+		7229471F267E263200B3E620 /* Bath_low_UV_checker.001_BaseColor.png in Resources */ = {isa = PBXBuildFile; fileRef = 722946F8267E263100B3E620 /* Bath_low_UV_checker.001_BaseColor.png */; };
+		72294720267E263200B3E620 /* Wall_trim_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 722946F9267E263100B3E620 /* Wall_trim_normal.png */; };
+		72294721267E263200B3E620 /* WinDoorsheet_LOW_Wall_Trim_BaseColor.png in Resources */ = {isa = PBXBuildFile; fileRef = 722946FA267E263100B3E620 /* WinDoorsheet_LOW_Wall_Trim_BaseColor.png */; };
+		72294722267E263200B3E620 /* WinDoorsheet_LOW_Wall_Trim_Normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 722946FB267E263100B3E620 /* WinDoorsheet_LOW_Wall_Trim_Normal.png */; };
+		72294723267E263200B3E620 /* Frame_low_Frames_Roughness.png in Resources */ = {isa = PBXBuildFile; fileRef = 722946FC267E263100B3E620 /* Frame_low_Frames_Roughness.png */; };
+		72294724267E263200B3E620 /* Floor_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 722946FD267E263100B3E620 /* Floor_normal.png */; };
+		72294725267E263200B3E620 /* Selling_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 722946FE267E263100B3E620 /* Selling_normal.png */; };
+		72294726267E263200B3E620 /* Candle_low_Candle_Normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 722946FF267E263100B3E620 /* Candle_low_Candle_Normal.png */; };
+		72294727267E263200B3E620 /* Cups_low_Cups_Roughness.png in Resources */ = {isa = PBXBuildFile; fileRef = 72294700267E263100B3E620 /* Cups_low_Cups_Roughness.png */; };
+		72294728267E263200B3E620 /* Fabric_Fabric_BaseColor.png in Resources */ = {isa = PBXBuildFile; fileRef = 72294701267E263200B3E620 /* Fabric_Fabric_BaseColor.png */; };
+		72294729267E263200B3E620 /* Bath_low_UV_checker.001_Roughness.png in Resources */ = {isa = PBXBuildFile; fileRef = 72294702267E263200B3E620 /* Bath_low_UV_checker.001_Roughness.png */; };
+		7229472A267E263200B3E620 /* WinDoorsheet_LOW_Wall_Trim_Roughness.png in Resources */ = {isa = PBXBuildFile; fileRef = 72294703267E263200B3E620 /* WinDoorsheet_LOW_Wall_Trim_Roughness.png */; };
+		7229472B267E263200B3E620 /* Bathtube_low_Bathtube_Roughness.png in Resources */ = {isa = PBXBuildFile; fileRef = 72294704267E263200B3E620 /* Bathtube_low_Bathtube_Roughness.png */; };
+		7229472C267E263200B3E620 /* Opasity.png in Resources */ = {isa = PBXBuildFile; fileRef = 72294705267E263200B3E620 /* Opasity.png */; };
+		7229472D267E263200B3E620 /* Candle_low_Candle_Roughness.png in Resources */ = {isa = PBXBuildFile; fileRef = 72294706267E263200B3E620 /* Candle_low_Candle_Roughness.png */; };
+		7229472E267E263200B3E620 /* Wall_trim_basecolor.png in Resources */ = {isa = PBXBuildFile; fileRef = 72294707267E263200B3E620 /* Wall_trim_basecolor.png */; };
+		7229472F267E263200B3E620 /* Floor_metallic.png in Resources */ = {isa = PBXBuildFile; fileRef = 72294708267E263200B3E620 /* Floor_metallic.png */; };
+		72294730267E263200B3E620 /* WinDoorsheet_LOW_Wall_Trim_Metallic.png in Resources */ = {isa = PBXBuildFile; fileRef = 72294709267E263200B3E620 /* WinDoorsheet_LOW_Wall_Trim_Metallic.png */; };
+		72294731267E263200B3E620 /* Selling_roughness.png in Resources */ = {isa = PBXBuildFile; fileRef = 7229470A267E263200B3E620 /* Selling_roughness.png */; };
+		72294732267E263200B3E620 /* Fabric_Opasity.png in Resources */ = {isa = PBXBuildFile; fileRef = 7229470B267E263200B3E620 /* Fabric_Opasity.png */; };
+		72294733267E263200B3E620 /* Selling_basecolor.png in Resources */ = {isa = PBXBuildFile; fileRef = 7229470C267E263200B3E620 /* Selling_basecolor.png */; };
+		72294734267E263200B3E620 /* Cups_low_Cups_Normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 7229470D267E263200B3E620 /* Cups_low_Cups_Normal.png */; };
+		72294735267E263200B3E620 /* Floor_roughness.png in Resources */ = {isa = PBXBuildFile; fileRef = 7229470E267E263200B3E620 /* Floor_roughness.png */; };
+		72294736267E263200B3E620 /* Bathtube_low_Bathtube_Metallic.png in Resources */ = {isa = PBXBuildFile; fileRef = 7229470F267E263200B3E620 /* Bathtube_low_Bathtube_Metallic.png */; };
+		72294737267E263200B3E620 /* Candle_low_Candle_BaseColor.png in Resources */ = {isa = PBXBuildFile; fileRef = 72294710267E263200B3E620 /* Candle_low_Candle_BaseColor.png */; };
+		72294738267E263200B3E620 /* Fabric_Fabric_Normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 72294711267E263200B3E620 /* Fabric_Fabric_Normal.png */; };
+		72294739267E263200B3E620 /* Floor_basecolor.png in Resources */ = {isa = PBXBuildFile; fileRef = 72294712267E263200B3E620 /* Floor_basecolor.png */; };
+		7229473A267E263200B3E620 /* Candle_low_Candle_Metallic.png in Resources */ = {isa = PBXBuildFile; fileRef = 72294713267E263200B3E620 /* Candle_low_Candle_Metallic.png */; };
+		7229473B267E263200B3E620 /* Bath_low_UV_checker.001_Metallic.png in Resources */ = {isa = PBXBuildFile; fileRef = 72294714267E263200B3E620 /* Bath_low_UV_checker.001_Metallic.png */; };
+		7229473C267E263200B3E620 /* Fabric_Fabric_Roughness.png in Resources */ = {isa = PBXBuildFile; fileRef = 72294715267E263200B3E620 /* Fabric_Fabric_Roughness.png */; };
 		7229EA9B26263A8600112F1A /* house.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 7229EA9926263A8600112F1A /* house.mtl */; };
 		7229EA9C26263A8600112F1A /* house.obj in Resources */ = {isa = PBXBuildFile; fileRef = 7229EA9A26263A8600112F1A /* house.obj */; };
 		7229EAA22626448B00112F1A /* room.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 7229EAA02626448B00112F1A /* room.mtl */; };
@@ -523,6 +566,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7208ADEB267D638900649138 /* sponza copy.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "sponza copy.obj"; sourceTree = "<group>"; };
+		7208ADEC267D638A00649138 /* sponza copy.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "sponza copy.mtl"; sourceTree = "<group>"; };
 		720EC2ED25D7CCD300A83F1A /* Skybox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Skybox.swift; sourceTree = "<group>"; };
 		720EC2F225D82F2500A83F1A /* SkyboxShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = SkyboxShader.metal; sourceTree = "<group>"; };
 		720EC2FE25D8816B00A83F1A /* park.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = park.hdr; path = "Basic Game Engine/HDRI/park.hdr"; sourceTree = SOURCE_ROOT; };
@@ -740,6 +785,47 @@
 		721F5B5525E2DC5A0000EA4C /* cloudy.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = cloudy.hdr; path = "Basic Game Engine/HDRI/cloudy.hdr"; sourceTree = SOURCE_ROOT; };
 		7223E3ED2624EE630070CB9A /* rsmShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = rsmShader.metal; sourceTree = "<group>"; };
 		722830B825C5705F00C9CCF4 /* spheres.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = spheres.usd; path = "Basic Game Engine/Resources/teapot/spheres.usd"; sourceTree = SOURCE_ROOT; };
+		722946EA267E25E400B3E620 /* bathroom.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bathroom.obj; sourceTree = "<group>"; };
+		722946EB267E25E400B3E620 /* bathroom.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bathroom.mtl; sourceTree = "<group>"; };
+		722946EF267E263100B3E620 /* Bath_low_UV_checker.001_Normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Bath_low_UV_checker.001_Normal.png; path = "../../../../../Downloads/the-bathroom-free/textures/Bath_low_UV_checker.001_Normal.png"; sourceTree = "<group>"; };
+		722946F0267E263100B3E620 /* Frame_low_Frames_Metallic.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Frame_low_Frames_Metallic.png; path = "../../../../../Downloads/the-bathroom-free/textures/Frame_low_Frames_Metallic.png"; sourceTree = "<group>"; };
+		722946F1267E263100B3E620 /* Frame_low_Frames_BaseColor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Frame_low_Frames_BaseColor.png; path = "../../../../../Downloads/the-bathroom-free/textures/Frame_low_Frames_BaseColor.png"; sourceTree = "<group>"; };
+		722946F2267E263100B3E620 /* Frame_low_Frames_Normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Frame_low_Frames_Normal.png; path = "../../../../../Downloads/the-bathroom-free/textures/Frame_low_Frames_Normal.png"; sourceTree = "<group>"; };
+		722946F3267E263100B3E620 /* Wall_trim_roughness.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Wall_trim_roughness.png; path = "../../../../../Downloads/the-bathroom-free/textures/Wall_trim_roughness.png"; sourceTree = "<group>"; };
+		722946F4267E263100B3E620 /* Bathtube_low_Bathtube_BaseColor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Bathtube_low_Bathtube_BaseColor.png; path = "../../../../../Downloads/the-bathroom-free/textures/Bathtube_low_Bathtube_BaseColor.png"; sourceTree = "<group>"; };
+		722946F5267E263100B3E620 /* Candle_low_Candle_Emissive.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Candle_low_Candle_Emissive.png; path = "../../../../../Downloads/the-bathroom-free/textures/Candle_low_Candle_Emissive.png"; sourceTree = "<group>"; };
+		722946F6267E263100B3E620 /* Bathtube_low_Bathtube_Normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Bathtube_low_Bathtube_Normal.png; path = "../../../../../Downloads/the-bathroom-free/textures/Bathtube_low_Bathtube_Normal.png"; sourceTree = "<group>"; };
+		722946F7267E263100B3E620 /* Cups_low_Cups_BaseColor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Cups_low_Cups_BaseColor.png; path = "../../../../../Downloads/the-bathroom-free/textures/Cups_low_Cups_BaseColor.png"; sourceTree = "<group>"; };
+		722946F8267E263100B3E620 /* Bath_low_UV_checker.001_BaseColor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Bath_low_UV_checker.001_BaseColor.png; path = "../../../../../Downloads/the-bathroom-free/textures/Bath_low_UV_checker.001_BaseColor.png"; sourceTree = "<group>"; };
+		722946F9267E263100B3E620 /* Wall_trim_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Wall_trim_normal.png; path = "../../../../../Downloads/the-bathroom-free/textures/Wall_trim_normal.png"; sourceTree = "<group>"; };
+		722946FA267E263100B3E620 /* WinDoorsheet_LOW_Wall_Trim_BaseColor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = WinDoorsheet_LOW_Wall_Trim_BaseColor.png; path = "../../../../../Downloads/the-bathroom-free/textures/WinDoorsheet_LOW_Wall_Trim_BaseColor.png"; sourceTree = "<group>"; };
+		722946FB267E263100B3E620 /* WinDoorsheet_LOW_Wall_Trim_Normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = WinDoorsheet_LOW_Wall_Trim_Normal.png; path = "../../../../../Downloads/the-bathroom-free/textures/WinDoorsheet_LOW_Wall_Trim_Normal.png"; sourceTree = "<group>"; };
+		722946FC267E263100B3E620 /* Frame_low_Frames_Roughness.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Frame_low_Frames_Roughness.png; path = "../../../../../Downloads/the-bathroom-free/textures/Frame_low_Frames_Roughness.png"; sourceTree = "<group>"; };
+		722946FD267E263100B3E620 /* Floor_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Floor_normal.png; path = "../../../../../Downloads/the-bathroom-free/textures/Floor_normal.png"; sourceTree = "<group>"; };
+		722946FE267E263100B3E620 /* Selling_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Selling_normal.png; path = "../../../../../Downloads/the-bathroom-free/textures/Selling_normal.png"; sourceTree = "<group>"; };
+		722946FF267E263100B3E620 /* Candle_low_Candle_Normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Candle_low_Candle_Normal.png; path = "../../../../../Downloads/the-bathroom-free/textures/Candle_low_Candle_Normal.png"; sourceTree = "<group>"; };
+		72294700267E263100B3E620 /* Cups_low_Cups_Roughness.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Cups_low_Cups_Roughness.png; path = "../../../../../Downloads/the-bathroom-free/textures/Cups_low_Cups_Roughness.png"; sourceTree = "<group>"; };
+		72294701267E263200B3E620 /* Fabric_Fabric_BaseColor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Fabric_Fabric_BaseColor.png; path = "../../../../../Downloads/the-bathroom-free/textures/Fabric_Fabric_BaseColor.png"; sourceTree = "<group>"; };
+		72294702267E263200B3E620 /* Bath_low_UV_checker.001_Roughness.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Bath_low_UV_checker.001_Roughness.png; path = "../../../../../Downloads/the-bathroom-free/textures/Bath_low_UV_checker.001_Roughness.png"; sourceTree = "<group>"; };
+		72294703267E263200B3E620 /* WinDoorsheet_LOW_Wall_Trim_Roughness.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = WinDoorsheet_LOW_Wall_Trim_Roughness.png; path = "../../../../../Downloads/the-bathroom-free/textures/WinDoorsheet_LOW_Wall_Trim_Roughness.png"; sourceTree = "<group>"; };
+		72294704267E263200B3E620 /* Bathtube_low_Bathtube_Roughness.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Bathtube_low_Bathtube_Roughness.png; path = "../../../../../Downloads/the-bathroom-free/textures/Bathtube_low_Bathtube_Roughness.png"; sourceTree = "<group>"; };
+		72294705267E263200B3E620 /* Opasity.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Opasity.png; path = "../../../../../Downloads/the-bathroom-free/textures/Opasity.png"; sourceTree = "<group>"; };
+		72294706267E263200B3E620 /* Candle_low_Candle_Roughness.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Candle_low_Candle_Roughness.png; path = "../../../../../Downloads/the-bathroom-free/textures/Candle_low_Candle_Roughness.png"; sourceTree = "<group>"; };
+		72294707267E263200B3E620 /* Wall_trim_basecolor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Wall_trim_basecolor.png; path = "../../../../../Downloads/the-bathroom-free/textures/Wall_trim_basecolor.png"; sourceTree = "<group>"; };
+		72294708267E263200B3E620 /* Floor_metallic.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Floor_metallic.png; path = "../../../../../Downloads/the-bathroom-free/textures/Floor_metallic.png"; sourceTree = "<group>"; };
+		72294709267E263200B3E620 /* WinDoorsheet_LOW_Wall_Trim_Metallic.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = WinDoorsheet_LOW_Wall_Trim_Metallic.png; path = "../../../../../Downloads/the-bathroom-free/textures/WinDoorsheet_LOW_Wall_Trim_Metallic.png"; sourceTree = "<group>"; };
+		7229470A267E263200B3E620 /* Selling_roughness.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Selling_roughness.png; path = "../../../../../Downloads/the-bathroom-free/textures/Selling_roughness.png"; sourceTree = "<group>"; };
+		7229470B267E263200B3E620 /* Fabric_Opasity.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Fabric_Opasity.png; path = "../../../../../Downloads/the-bathroom-free/textures/Fabric_Opasity.png"; sourceTree = "<group>"; };
+		7229470C267E263200B3E620 /* Selling_basecolor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Selling_basecolor.png; path = "../../../../../Downloads/the-bathroom-free/textures/Selling_basecolor.png"; sourceTree = "<group>"; };
+		7229470D267E263200B3E620 /* Cups_low_Cups_Normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Cups_low_Cups_Normal.png; path = "../../../../../Downloads/the-bathroom-free/textures/Cups_low_Cups_Normal.png"; sourceTree = "<group>"; };
+		7229470E267E263200B3E620 /* Floor_roughness.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Floor_roughness.png; path = "../../../../../Downloads/the-bathroom-free/textures/Floor_roughness.png"; sourceTree = "<group>"; };
+		7229470F267E263200B3E620 /* Bathtube_low_Bathtube_Metallic.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Bathtube_low_Bathtube_Metallic.png; path = "../../../../../Downloads/the-bathroom-free/textures/Bathtube_low_Bathtube_Metallic.png"; sourceTree = "<group>"; };
+		72294710267E263200B3E620 /* Candle_low_Candle_BaseColor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Candle_low_Candle_BaseColor.png; path = "../../../../../Downloads/the-bathroom-free/textures/Candle_low_Candle_BaseColor.png"; sourceTree = "<group>"; };
+		72294711267E263200B3E620 /* Fabric_Fabric_Normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Fabric_Fabric_Normal.png; path = "../../../../../Downloads/the-bathroom-free/textures/Fabric_Fabric_Normal.png"; sourceTree = "<group>"; };
+		72294712267E263200B3E620 /* Floor_basecolor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Floor_basecolor.png; path = "../../../../../Downloads/the-bathroom-free/textures/Floor_basecolor.png"; sourceTree = "<group>"; };
+		72294713267E263200B3E620 /* Candle_low_Candle_Metallic.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Candle_low_Candle_Metallic.png; path = "../../../../../Downloads/the-bathroom-free/textures/Candle_low_Candle_Metallic.png"; sourceTree = "<group>"; };
+		72294714267E263200B3E620 /* Bath_low_UV_checker.001_Metallic.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Bath_low_UV_checker.001_Metallic.png; path = "../../../../../Downloads/the-bathroom-free/textures/Bath_low_UV_checker.001_Metallic.png"; sourceTree = "<group>"; };
+		72294715267E263200B3E620 /* Fabric_Fabric_Roughness.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Fabric_Fabric_Roughness.png; path = "../../../../../Downloads/the-bathroom-free/textures/Fabric_Fabric_Roughness.png"; sourceTree = "<group>"; };
 		7229EA9926263A8600112F1A /* house.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = house.mtl; sourceTree = "<group>"; };
 		7229EA9A26263A8600112F1A /* house.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = house.obj; sourceTree = "<group>"; };
 		7229EAA02626448B00112F1A /* room.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = room.mtl; sourceTree = "<group>"; };
@@ -1105,6 +1191,7 @@
 		7216504725EAE35500511342 /* Textures */ = {
 			isa = PBXGroup;
 			children = (
+				722946EE267E261C00B3E620 /* Bathroom */,
 				7254F9AF2673BB8F000F5738 /* Tokyo */,
 				7254B22A2673A0950053B4F4 /* City */,
 				72583F22262266B700ADD5BD /* Sponza */,
@@ -1459,6 +1546,52 @@
 				7216524025ED653600511342 /* Low_Mech2_Roughness.png */,
 			);
 			path = mech;
+			sourceTree = "<group>";
+		};
+		722946EE267E261C00B3E620 /* Bathroom */ = {
+			isa = PBXGroup;
+			children = (
+				722946F8267E263100B3E620 /* Bath_low_UV_checker.001_BaseColor.png */,
+				72294714267E263200B3E620 /* Bath_low_UV_checker.001_Metallic.png */,
+				722946EF267E263100B3E620 /* Bath_low_UV_checker.001_Normal.png */,
+				72294702267E263200B3E620 /* Bath_low_UV_checker.001_Roughness.png */,
+				722946F4267E263100B3E620 /* Bathtube_low_Bathtube_BaseColor.png */,
+				7229470F267E263200B3E620 /* Bathtube_low_Bathtube_Metallic.png */,
+				722946F6267E263100B3E620 /* Bathtube_low_Bathtube_Normal.png */,
+				72294704267E263200B3E620 /* Bathtube_low_Bathtube_Roughness.png */,
+				72294710267E263200B3E620 /* Candle_low_Candle_BaseColor.png */,
+				722946F5267E263100B3E620 /* Candle_low_Candle_Emissive.png */,
+				72294713267E263200B3E620 /* Candle_low_Candle_Metallic.png */,
+				722946FF267E263100B3E620 /* Candle_low_Candle_Normal.png */,
+				72294706267E263200B3E620 /* Candle_low_Candle_Roughness.png */,
+				722946F7267E263100B3E620 /* Cups_low_Cups_BaseColor.png */,
+				7229470D267E263200B3E620 /* Cups_low_Cups_Normal.png */,
+				72294700267E263100B3E620 /* Cups_low_Cups_Roughness.png */,
+				72294701267E263200B3E620 /* Fabric_Fabric_BaseColor.png */,
+				72294711267E263200B3E620 /* Fabric_Fabric_Normal.png */,
+				72294715267E263200B3E620 /* Fabric_Fabric_Roughness.png */,
+				7229470B267E263200B3E620 /* Fabric_Opasity.png */,
+				72294712267E263200B3E620 /* Floor_basecolor.png */,
+				72294708267E263200B3E620 /* Floor_metallic.png */,
+				722946FD267E263100B3E620 /* Floor_normal.png */,
+				7229470E267E263200B3E620 /* Floor_roughness.png */,
+				722946F1267E263100B3E620 /* Frame_low_Frames_BaseColor.png */,
+				722946F0267E263100B3E620 /* Frame_low_Frames_Metallic.png */,
+				722946F2267E263100B3E620 /* Frame_low_Frames_Normal.png */,
+				722946FC267E263100B3E620 /* Frame_low_Frames_Roughness.png */,
+				72294705267E263200B3E620 /* Opasity.png */,
+				7229470C267E263200B3E620 /* Selling_basecolor.png */,
+				722946FE267E263100B3E620 /* Selling_normal.png */,
+				7229470A267E263200B3E620 /* Selling_roughness.png */,
+				72294707267E263200B3E620 /* Wall_trim_basecolor.png */,
+				722946F9267E263100B3E620 /* Wall_trim_normal.png */,
+				722946F3267E263100B3E620 /* Wall_trim_roughness.png */,
+				722946FA267E263100B3E620 /* WinDoorsheet_LOW_Wall_Trim_BaseColor.png */,
+				72294709267E263200B3E620 /* WinDoorsheet_LOW_Wall_Trim_Metallic.png */,
+				722946FB267E263100B3E620 /* WinDoorsheet_LOW_Wall_Trim_Normal.png */,
+				72294703267E263200B3E620 /* WinDoorsheet_LOW_Wall_Trim_Roughness.png */,
+			);
+			path = Bathroom;
 			sourceTree = "<group>";
 		};
 		7230F99925C60F9200D9610A /* Scenes */ = {
@@ -1865,6 +1998,10 @@
 		72E3999925BF0C8300927B17 /* models */ = {
 			isa = PBXGroup;
 			children = (
+				722946EB267E25E400B3E620 /* bathroom.mtl */,
+				722946EA267E25E400B3E620 /* bathroom.obj */,
+				7208ADEC267D638A00649138 /* sponza copy.mtl */,
+				7208ADEB267D638900649138 /* sponza copy.obj */,
 				7254F9A82673BB41000F5738 /* tokyo.mtl */,
 				7254F9A92673BB41000F5738 /* tokyo.obj */,
 				7254B22326739BD70053B4F4 /* city.mtl */,
@@ -2052,6 +2189,7 @@
 				72E3503F25FC01550012E6D1 /* tfxkehvg_4K_AO.jpg in Resources */,
 				72583F1E26225AEE00ADD5BD /* sponza.mtl in Resources */,
 				721650F125EAFC9100511342 /* uk0ocizfw_2K_Roughness.jpg in Resources */,
+				72294734267E263200B3E620 /* Cups_low_Cups_Normal.png in Resources */,
 				7216514B25EBA48800511342 /* ucsjfain_2K_Albedo.jpg in Resources */,
 				721650CF25EAF75C00511342 /* ub1gfbwew_2K_Albedo.jpg in Resources */,
 				7216512B25EB083700511342 /* tkdicbgew_4K_Normal.jpg in Resources */,
@@ -2069,6 +2207,7 @@
 				7216515A25EBA5DB00511342 /* bricks_0013_ao_4k.jpg in Resources */,
 				72583FA1262266E000ADD5BD /* Sponza_Ceiling_diffuse.png in Resources */,
 				7216520125ED571E00511342 /* Arm_Normal.jpeg in Resources */,
+				72294736267E263200B3E620 /* Bathtube_low_Bathtube_Metallic.png in Resources */,
 				7254FA152673BBC4000F5738 /* CobbleWall.jpg in Resources */,
 				7216500925EA60CB00511342 /* bookWaterfall.obj in Resources */,
 				72583F94262266E000ADD5BD /* Sponza_Curtain_Green_diffuse.png in Resources */,
@@ -2081,6 +2220,7 @@
 				7254FA252673BBC4000F5738 /* TileablePlanks.jpg in Resources */,
 				7254FA332673BBC4000F5738 /* 6_Opacity_tex.jpg in Resources */,
 				721650F325EAFC9100511342 /* uk0ocizfw_2K_AO.jpg in Resources */,
+				7229471B267E263200B3E620 /* Bathtube_low_Bathtube_BaseColor.png in Resources */,
 				7216522525ED637800511342 /* wavingchibirobot.obj in Resources */,
 				7254FA772673BBC4000F5738 /* TileableRooftiles.jpg in Resources */,
 				72583FA6262266E000ADD5BD /* Background_Albedo.png in Resources */,
@@ -2099,6 +2239,7 @@
 				729B14D125D8841A00129165 /* park.jpg in Resources */,
 				7254FA232673BBC4000F5738 /* 8_unique2_longwindow.jpg in Resources */,
 				7216517125EBAA2600511342 /* tiles_0015_roughness_4k.jpg in Resources */,
+				72294726267E263200B3E620 /* Candle_low_Candle_Normal.png in Resources */,
 				72583F93262266E000ADD5BD /* VaseRound_roughness.png in Resources */,
 				7216523125ED63B000511342 /* Bot_Normal.png in Resources */,
 				72583F90262266E000ADD5BD /* Sponza_FlagPole_diffuse.png in Resources */,
@@ -2113,16 +2254,20 @@
 				721651F825ED571E00511342 /* Chest_BaseColor.jpeg in Resources */,
 				7254B22626739BD70053B4F4 /* city.obj in Resources */,
 				7216521125ED571E00511342 /* Shoes_Normal.jpeg in Resources */,
+				72294729267E263200B3E620 /* Bath_low_UV_checker.001_Roughness.png in Resources */,
 				721651F325ED571E00511342 /* Tools_Roughness.jpeg in Resources */,
 				7254FA432673BBC4000F5738 /* Cables.jpg in Resources */,
 				72583F71262266E000ADD5BD /* Vase_diffuse.png in Resources */,
 				729B14E325D8966000129165 /* room.hdr in Resources */,
 				72583F1D26225AEE00ADD5BD /* sponza.obj in Resources */,
 				72164FCE25E99CCE00511342 /* f1.obj in Resources */,
+				7208ADED267D638A00649138 /* sponza copy.obj in Resources */,
 				7229EA9C26263A8600112F1A /* house.obj in Resources */,
 				7254FA282673BBC4000F5738 /* PlantFlower2_flowers.jpg in Resources */,
+				72294739267E263200B3E620 /* Floor_basecolor.png in Resources */,
 				729B14DE25D8941600129165 /* ground.hdr in Resources */,
 				7254FA412673BBC4000F5738 /* 2_unique_tex.jpg in Resources */,
+				72294735267E263200B3E620 /* Floor_roughness.png in Resources */,
 				721651B025EBB3AC00511342 /* microscope.obj in Resources */,
 				721650DB25EAF9A000511342 /* vcwlfcgv_4K_AO.jpg in Resources */,
 				72164FC725E8CD6400511342 /* heliBlades.usd in Resources */,
@@ -2164,6 +2309,7 @@
 				721650FB25EAFD8400511342 /* uk0ocizfw_4K_Roughness.jpg in Resources */,
 				7216520825ED571E00511342 /* Trousers_skirt_BaseColor.jpeg in Resources */,
 				7216503725EA877300511342 /* material_3_metallicRoughness.png in Resources */,
+				7229471E267E263200B3E620 /* Cups_low_Cups_BaseColor.png in Resources */,
 				7216508225EAE81200511342 /* denim_fabric_rough_ao_2k.png in Resources */,
 				7216524325ED653600511342 /* Low_Mech2_Metallic.png in Resources */,
 				72583F82262266E000ADD5BD /* Sponza_Fabric_Red_normal.png in Resources */,
@@ -2174,6 +2320,8 @@
 				7254FA662673BBC4000F5738 /* Water_Opacity.jpg in Resources */,
 				7274EF4625DFDE850026C80B /* cambridge.hdr in Resources */,
 				7216511325EB02A700511342 /* gym.hdr in Resources */,
+				72294737267E263200B3E620 /* Candle_low_Candle_BaseColor.png in Resources */,
+				7229472F267E263200B3E620 /* Floor_metallic.png in Resources */,
 				7254FA562673BBC4000F5738 /* UniqueTex.jpg in Resources */,
 				7254FA482673BBC4000F5738 /* 3_Roofs_tex.jpg in Resources */,
 				7216521725ED571E00511342 /* Luggage_Metallic.jpeg in Resources */,
@@ -2186,13 +2334,16 @@
 				7254FA6D2673BBC4000F5738 /* Lantern_tex.jpg in Resources */,
 				725D993225F8065F00404C74 /* ltc_mat.tiff in Resources */,
 				7254FA4C2673BBC4000F5738 /* BalconyOpacity.jpg in Resources */,
+				72294720267E263200B3E620 /* Wall_trim_normal.png in Resources */,
 				729B14F625D91AFF00129165 /* garden.hdr in Resources */,
 				7254FA452673BBC4000F5738 /* Alley_TopNet_tex.jpg in Resources */,
 				721650CE25EAF75C00511342 /* ub1gfbwew_2K_AO.jpg in Resources */,
 				721650F225EAFC9100511342 /* uk0ocizfw_2K_Albedo.jpg in Resources */,
 				7254FA6B2673BBC4000F5738 /* Car_ToyotaTownace_tex.jpg in Resources */,
+				7229473C267E263200B3E620 /* Fabric_Fabric_Roughness.png in Resources */,
 				7216505125EAE3C300511342 /* old_planks_02_ao_2k.png in Resources */,
 				7216514C25EBA48800511342 /* ucsjfain_2K_AO.jpg in Resources */,
+				7229472A267E263200B3E620 /* WinDoorsheet_LOW_Wall_Trim_Roughness.png in Resources */,
 				7254B2432673A0E80053B4F4 /* Rails0014_1_350.jpg in Resources */,
 				72583FAE262266E000ADD5BD /* Background_Normal.png in Resources */,
 				72E0477D25E7020F00E48A54 /* carLowPoly.usd in Resources */,
@@ -2214,7 +2365,9 @@
 				7216521925ED571E00511342 /* Mask_BaseColor.jpeg in Resources */,
 				7216524525ED653600511342 /* Low_Mech1_Normal.png in Resources */,
 				72583FA8262266E000ADD5BD /* Vase_roughness.png in Resources */,
+				72294716267E263200B3E620 /* Bath_low_UV_checker.001_Normal.png in Resources */,
 				7254FA3F2673BBC4000F5738 /* PlantFlower2_flowers_Opacity.jpg in Resources */,
+				7229471A267E263200B3E620 /* Wall_trim_roughness.png in Resources */,
 				72164FF325EA55F500511342 /* cerberus.mtl in Resources */,
 				7216508325EAE81200511342 /* denim_fabric_diff_2k.png in Resources */,
 				7254FA292673BBC4000F5738 /* Wood.jpg in Resources */,
@@ -2225,6 +2378,7 @@
 				7216505B25EAE45D00511342 /* cylinder.mtl in Resources */,
 				7254B2442673A0E80053B4F4 /* floor_Material.001_BaseColor.jpg in Resources */,
 				7216503225EA877300511342 /* daizi_baseColor.jpeg in Resources */,
+				7208ADEE267D638A00649138 /* sponza copy.mtl in Resources */,
 				72583FB5262266E000ADD5BD /* ChainTexture_Metallic.png in Resources */,
 				72583FAC262266E000ADD5BD /* Sponza_Details_normal.png in Resources */,
 				7216502D25EA877300511342 /* kouzi_baseColor.jpeg in Resources */,
@@ -2240,6 +2394,8 @@
 				72583FA0262266E000ADD5BD /* ChainTexture_Roughness.png in Resources */,
 				72583F96262266E000ADD5BD /* Sponza_Details_roughness.png in Resources */,
 				7254FA692673BBC4000F5738 /* CobbleWall2.jpg in Resources */,
+				7229471D267E263200B3E620 /* Bathtube_low_Bathtube_Normal.png in Resources */,
+				72294724267E263200B3E620 /* Floor_normal.png in Resources */,
 				72CBB802266E7B1D00D927F9 /* bigroom.mtl in Resources */,
 				7216508125EAE81200511342 /* denim_fabric_rough_2k.png in Resources */,
 				7254B23F2673A0E80053B4F4 /* floor_Material.001_Roughness.jpg in Resources */,
@@ -2249,8 +2405,11 @@
 				72583F8F262266E000ADD5BD /* Sponza_Column_a_normal.png in Resources */,
 				72583F77262266E000ADD5BD /* Lion_Roughness.png in Resources */,
 				721650C525EAF31600511342 /* schvfgwp_4K_Normal.jpg in Resources */,
+				72294721267E263200B3E620 /* WinDoorsheet_LOW_Wall_Trim_BaseColor.png in Resources */,
 				7254FA342673BBC4000F5738 /* Posters_tex.jpg in Resources */,
+				7229472D267E263200B3E620 /* Candle_low_Candle_Roughness.png in Resources */,
 				7229EAA32626448C00112F1A /* room.obj in Resources */,
+				7229472B267E263200B3E620 /* Bathtube_low_Bathtube_Roughness.png in Resources */,
 				72164FEA25EA48C000511342 /* helmet_metallic.jpg in Resources */,
 				7254FA492673BBC4000F5738 /* prop_bamboofence_diffuse.jpg in Resources */,
 				721F5B5625E2DC5A0000EA4C /* cloudy.hdr in Resources */,
@@ -2265,6 +2424,7 @@
 				7254FA4F2673BBC4000F5738 /* Hedge_Leaves_tex.jpg in Resources */,
 				721650DE25EAF9A000511342 /* vcwlfcgv_4K_Metalness.jpg in Resources */,
 				7254FA752673BBC4000F5738 /* ivy_tex.jpg in Resources */,
+				72294730267E263200B3E620 /* WinDoorsheet_LOW_Wall_Trim_Metallic.png in Resources */,
 				72583F8A262266E000ADD5BD /* Sponza_Curtain_Blue_diffuse.png in Resources */,
 				721651A325EBB37F00511342 /* 01-Default_roughness.jpg in Resources */,
 				7216521D25ED571E00511342 /* Chest_Roughness.jpeg in Resources */,
@@ -2278,12 +2438,14 @@
 				7254FA522673BBC4000F5738 /* Railroad_Tracks_op.jpg in Resources */,
 				7254FA5D2673BBC4000F5738 /* Alley_TopNet_opacity.jpg in Resources */,
 				7216502F25EA877300511342 /* material_baseColor.png in Resources */,
+				7229473A267E263200B3E620 /* Candle_low_Candle_Metallic.png in Resources */,
 				72583F8D262266E000ADD5BD /* Sponza_Details_diffuse.png in Resources */,
 				721650FD25EAFD8400511342 /* uk0ocizfw_4K_Albedo.jpg in Resources */,
 				72583FB3262266E000ADD5BD /* Sponza_Arch_normal.png in Resources */,
 				7216514225EB9EA500511342 /* vbwkdallw_4K_Normal.jpg in Resources */,
 				7216516625EBA8B900511342 /* fabric_0017_normal_4k.jpg in Resources */,
 				7254FA722673BBC4000F5738 /* VendingMachine3_Opacity.jpg in Resources */,
+				72294728267E263200B3E620 /* Fabric_Fabric_BaseColor.png in Resources */,
 				721650A325EAEBA300511342 /* vbikfjt_2K_Normal.jpg in Resources */,
 				7216500A25EA60CB00511342 /* bookWaterfall.mtl in Resources */,
 				7216503025EA877300511342 /* daizi_metallicRoughness.png in Resources */,
@@ -2300,7 +2462,9 @@
 				7254B23E2673A0E80053B4F4 /* floor_Material.001_Normal.jpg in Resources */,
 				7254FA242673BBC4000F5738 /* Tree1_leaves_op.jpg in Resources */,
 				7216513325EB08F000511342 /* music_hall.hdr in Resources */,
+				722946ED267E25E500B3E620 /* bathroom.mtl in Resources */,
 				72C1736925DED90800B75C4D /* ring.usd in Resources */,
+				72294727267E263200B3E620 /* Cups_low_Cups_Roughness.png in Resources */,
 				72E3504125FC01550012E6D1 /* tfxkehvg_4K_Normal.jpg in Resources */,
 				72583F6F262266E000ADD5BD /* Sponza_Thorn_diffuse.png in Resources */,
 				7274A88C25F8A29E00F716AF /* plane.obj in Resources */,
@@ -2313,6 +2477,8 @@
 				7254FA672673BBC4000F5738 /* StreetDecals_Opacity.jpg in Resources */,
 				7216520A25ED571E00511342 /* Coat_Roughness.jpeg in Resources */,
 				72583F6E262266E000ADD5BD /* VaseHanging_diffuse.png in Resources */,
+				7229473B267E263200B3E620 /* Bath_low_UV_checker.001_Metallic.png in Resources */,
+				7229472C267E263200B3E620 /* Opasity.png in Resources */,
 				72583FB1262266E000ADD5BD /* Sponza_Fabric_Green_normal.png in Resources */,
 				7254FA352673BBC4000F5738 /* Hedge_tex.jpg in Resources */,
 				721651F525ED571E00511342 /* Coat_Normal.jpeg in Resources */,
@@ -2332,6 +2498,8 @@
 				7216515725EBA5DB00511342 /* bricks_0013_normal_4k.jpg in Resources */,
 				7254FA5E2673BBC4000F5738 /* OpacityMap.jpg in Resources */,
 				7216524125ED653600511342 /* Low_Mech2_Normal.png in Resources */,
+				7229471F267E263200B3E620 /* Bath_low_UV_checker.001_BaseColor.png in Resources */,
+				72294723267E263200B3E620 /* Frame_low_Frames_Roughness.png in Resources */,
 				721650B425EAF09500511342 /* uh1lafuv_2K_AO.jpg in Resources */,
 				7216520725ED571E00511342 /* Hair_Roughness.jpeg in Resources */,
 				721651A625EBB37F00511342 /* 01-Default_albedo.jpg in Resources */,
@@ -2360,8 +2528,10 @@
 				72583FAD262266E000ADD5BD /* Lion_Normal.png in Resources */,
 				7254FA302673BBC4000F5738 /* Opacity_opacitymap.jpg in Resources */,
 				7274A98F25F91A9400F716AF /* uk0ocizfw_4K_Roughness2.jpg in Resources */,
+				72294738267E263200B3E620 /* Fabric_Fabric_Normal.png in Resources */,
 				72583FB0262266E000ADD5BD /* Sponza_Column_b_normal.png in Resources */,
 				721650B925EAF25600511342 /* vbikfjt_2K_AO.jpg in Resources */,
+				722946EC267E25E500B3E620 /* bathroom.obj in Resources */,
 				7216524725ED653600511342 /* Low_Mech2_BaseColor.png in Resources */,
 				7216512125EB043B00511342 /* ukmmbb3fw_4K_Albedo.jpg in Resources */,
 				7216520325ED571E00511342 /* Coat_BaseColor.jpeg in Resources */,
@@ -2369,7 +2539,9 @@
 				7229EAA22626448B00112F1A /* room.mtl in Resources */,
 				721651B125EBB3AC00511342 /* microscope.mtl in Resources */,
 				72583FB7262266E000ADD5BD /* ChainTexture_Normal.png in Resources */,
+				72294722267E263200B3E620 /* WinDoorsheet_LOW_Wall_Trim_Normal.png in Resources */,
 				7254FA2A2673BBC4000F5738 /* Tree2_tex.jpg in Resources */,
+				7229472E267E263200B3E620 /* Wall_trim_basecolor.png in Resources */,
 				7216517D25EBAC5B00511342 /* Tiles_Moroccan_001_roughness.jpg in Resources */,
 				7254FA2E2673BBC4000F5738 /* 11_wallLeaking_tex.jpg in Resources */,
 				7254FA392673BBC4000F5738 /* Railroad_concrete.jpg in Resources */,
@@ -2384,6 +2556,7 @@
 				72E399BA25BF3ECD00927B17 /* planet.obj in Resources */,
 				7254FA532673BBC4000F5738 /* BalconyRoof_tex.jpg in Resources */,
 				721F5B4025E2A7920000EA4C /* sphere.usd in Resources */,
+				72294731267E263200B3E620 /* Selling_roughness.png in Resources */,
 				721650D125EAF75C00511342 /* ub1gfbwew_2K_Normal.jpg in Resources */,
 				7254FA272673BBC4000F5738 /* TrafficSignTrain_tex.jpg in Resources */,
 				7216516425EBA8B900511342 /* fabric_0017_metallic_4k.jpg in Resources */,
@@ -2397,15 +2570,18 @@
 				7254FA572673BBC4000F5738 /* leaves_Opacity.jpg in Resources */,
 				72583F87262266E000ADD5BD /* Sponza_FlagPole_roughness.png in Resources */,
 				7254FA312673BBC4000F5738 /* VendingMachine3_tex.jpg in Resources */,
+				72294718267E263200B3E620 /* Frame_low_Frames_BaseColor.png in Resources */,
 				721651BB25ED56CC00511342 /* Winter Girl.mtl in Resources */,
 				7274A88D25F8A29E00F716AF /* plane.mtl in Resources */,
 				72164FDE25EA45D700511342 /* helmet.mtl in Resources */,
 				721651F925ED571E00511342 /* Shoes_BaseColor.jpeg in Resources */,
 				721650AF25EAEE7500511342 /* uh1lafuv_2K_Roughness.jpg in Resources */,
 				7216512E25EB083700511342 /* tkdicbgew_4K_Albedo.jpg in Resources */,
+				72294732267E263200B3E620 /* Fabric_Opasity.png in Resources */,
 				7254B21F267390580053B4F4 /* classroom.obj in Resources */,
 				72583FA3262266E000ADD5BD /* Sponza_Curtain_metallic.png in Resources */,
 				72583F97262266E000ADD5BD /* Sponza_Floor_diffuse.png in Resources */,
+				7229471C267E263200B3E620 /* Candle_low_Candle_Emissive.png in Resources */,
 				7216507225EAE70E00511342 /* green_rough_planks_diff_2k.png in Resources */,
 				72583F91262266E000ADD5BD /* VaseRound_diffuse.png in Resources */,
 				72E0478725E7089800E48A54 /* weapons.usd in Resources */,
@@ -2421,6 +2597,7 @@
 				72583F7A262266E000ADD5BD /* Sponza_Fabric_Blue_diffuse.png in Resources */,
 				7216505325EAE3C300511342 /* old_planks_02_nor_2k.png in Resources */,
 				721650DF25EAF9A000511342 /* vcwlfcgv_4K_Albedo.jpg in Resources */,
+				72294725267E263200B3E620 /* Selling_normal.png in Resources */,
 				72583F81262266E000ADD5BD /* Sponza_Bricks_a_Roughness.png in Resources */,
 				7216505225EAE3C300511342 /* old_planks_02_disp_2k.png in Resources */,
 				7254FA202673BBC4000F5738 /* Tree2_Opacity.jpg in Resources */,
@@ -2446,6 +2623,7 @@
 				7254FA5C2673BBC4000F5738 /* Railroad_Bricks.jpg in Resources */,
 				7254FA172673BBC4000F5738 /* Water.jpg in Resources */,
 				721651A725EBB37F00511342 /* 01-Default_normal.jpg in Resources */,
+				72294717267E263200B3E620 /* Frame_low_Frames_Metallic.png in Resources */,
 				7254FA6F2673BBC4000F5738 /* Railroad_Track.jpg in Resources */,
 				72583FB4262266E000ADD5BD /* Sponza_Column_a_roughness.png in Resources */,
 				7216520225ED571E00511342 /* Arm_Metallic.jpeg in Resources */,
@@ -2462,6 +2640,7 @@
 				72583FA7262266E000ADD5BD /* VasePlant_diffuse.png in Resources */,
 				721650AD25EAEE7500511342 /* uh1lafuv_2K_Albedo.jpg in Resources */,
 				7216516725EBA8B900511342 /* fabric_0017_ao_4k.jpg in Resources */,
+				72294733267E263200B3E620 /* Selling_basecolor.png in Resources */,
 				72583F8E262266E000ADD5BD /* ChainTexture_Albedo.png in Resources */,
 				7254FA322673BBC4000F5738 /* ElectricityCables_tex.jpg in Resources */,
 				7254FA6E2673BBC4000F5738 /* BakeryFlag_Opacity.jpg in Resources */,
@@ -2493,6 +2672,7 @@
 				7254FA682673BBC4000F5738 /* Dumpster_tex.jpg in Resources */,
 				7254FA632673BBC4000F5738 /* Alley_Fence_opacity.jpg in Resources */,
 				7254FA162673BBC4000F5738 /* Alley_unique_tex.jpg in Resources */,
+				72294719267E263200B3E620 /* Frame_low_Frames_Normal.png in Resources */,
 				72583F9B262266E000ADD5BD /* Vase_normal.png in Resources */,
 				72164FEB25EA48C000511342 /* helmet_roughness.jpg in Resources */,
 				7254FA192673BBC4000F5738 /* prop_airco_diffuse.jpg in Resources */,

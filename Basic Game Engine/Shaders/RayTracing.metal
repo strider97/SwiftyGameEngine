@@ -343,12 +343,11 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
         shadowRay.origin = intersectionPoint + surfaceNormal * 1e-3;
         shadowRay.direction = uniforms.sunDirection;
         shadowRay.maxDistance = lightDistance;
-        shadowRay.color = 10 * lightColor * color;// / max(1.0,intersection.distance * intersection.distance);
+        shadowRay.color = 4 * lightColor * color;// / max(1.0,intersection.distance * intersection.distance);
    //     shadowRay.color = float3(0, 0, 10);
         shadowRay.indirectColor.r = 2 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureR, uniforms.probeData);
         shadowRay.indirectColor.g = 2 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureG, uniforms.probeData);
         shadowRay.indirectColor.b = 2 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureB, uniforms.probeData);
-        shadowRay.indirectColor *= color;
   //      shadowRay.indirectColor = 0;
       
   //    float3 sampleDirection = sampleCosineWeightedHemisphere(r);

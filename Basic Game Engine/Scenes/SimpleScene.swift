@@ -13,13 +13,7 @@ class SimpleScene: Scene {
     var model2: GameObject!
 
     override func getGameObjects() -> [GameObject] {
-        model = GameObject(modelName: "sponza")
-        model2 = GameObject(modelName: "plane")
-        model2.transform.position = Float3(10, 10, 0)
-        let scale = Float(Constants.probeCount)
-        model2.transform.scale(Float3(1, 5, 5 * scale))
-        model2.transform.rotate(angle: MathConstants.PI.rawValue / 2, axis: Float3(0, 0, 1))
-        model2.transform.rotate(angle: MathConstants.PI.rawValue / 2, axis: Float3(0, 1, 0))
+        model = GameObject(modelName: "bathroom")
         return [model]
     }
 
