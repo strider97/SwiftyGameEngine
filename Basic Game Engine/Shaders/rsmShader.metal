@@ -60,9 +60,10 @@ struct ShadowUniforms {
 };
 
 struct GbufferOut {
-    float4 normal [[ color(0) ]];
+    half4 normal [[ color(0) ]];
     float4 worldPos [[ color(1) ]];
-    float4 flux [[ color(2) ]];
+    half4 flux [[ color(2) ]];
+    float depth [[ color(3)]];
 };
 
 struct Material {
@@ -124,7 +125,7 @@ fragment GbufferOut fragmentRSMData (VertexOut vOut [[ stage_in ]],
                                      texture2d<float, access::sample> AO [[texture(ao)]]) {
     GbufferOut out;
     float inShadow = insideShadow_(vOut.lightFragPos, vOut.smoothNormal, shadowMap);
-    float3 baseColor = pow(baseColorTexture.sample(s, vOut.uv).rgb, 3.0);
+    float3 baseColor = baseColorTexture.sample(s, vOut.uv).rgb;
     baseColor *= material.baseColor;
 //    float4 normal = normalMapTexture.sample(s, vOut.uv);
     float roughness = roughnessTexture.sample(s, vOut.uv).r;
@@ -137,15 +138,16 @@ fragment GbufferOut fragmentRSMData (VertexOut vOut [[ stage_in ]],
     
 //    float4 ao = AO.sample(s, vOut.uv);
     out.worldPos = float4(vOut.worldPos, roughness);
-    out.normal = float4(normal, metallic);
-    out.flux = float4(baseColor.rgb, inShadow);
+    out.normal = half4(normal.x, normal.y, normal.z, inShadow);
+    out.flux = half4(baseColor.r, baseColor.g, baseColor.b, metallic);
+    out.depth = vOut.position.z;
     return out;
 }
 
-fragment GbufferOut lpvDataFragment (VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], texture2d<float, access::sample> baseColor [[texture(3)]], texture3d<float, access::write> volume [[texture(4)]]) {
-    GbufferOut out;
-    out.worldPos = float4(vOut.worldPos, 1);
-    out.normal = float4(vOut.smoothNormal, 1);
-    out.flux = float4(float3(15) * material.baseColor, 1);
-    return out;
-}
+//fragment GbufferOut lpvDataFragment (VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], texture2d<float, access::sample> baseColor [[texture(3)]], texture3d<float, access::write> volume [[texture(4)]]) {
+//    GbufferOut out;
+//    out.worldPos = float4(vOut.worldPos, 1);
+//    out.normal = float4(vOut.smoothNormal, 1);
+//    out.flux = float4(float3(15) * material.baseColor, 1);
+//    return out;
+//}

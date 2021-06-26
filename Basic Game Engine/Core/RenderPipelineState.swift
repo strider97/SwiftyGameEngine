@@ -32,9 +32,9 @@ class GBufferData {
 
     init(size: CGSize, fragmentFunction: String = "fragmentRSMData") {
         depth = Descriptor.build2DTexture(pixelFormat: .depth32Float, size: size)
-        normal = Descriptor.build2DTexture(pixelFormat: .rgba16Float, size: size)
-        worldPos = Descriptor.build2DTexture(pixelFormat: .rgba32Float, size: size)
-        flux = Descriptor.build2DTexture(pixelFormat: .rgba16Float, size: size)
+        normal = Descriptor.build2DTexture(pixelFormat: .rgba8Snorm, size: size)
+        worldPos = Descriptor.build2DTexture(pixelFormat: .rgba16Float, size: size)
+        flux = Descriptor.build2DTexture(pixelFormat: .rgba8Unorm_srgb, size: size)
         buildGBufferRenderPassDescriptor(size: size)
         buildGBufferPipelineState(fragmentFunction: fragmentFunction)
     }
@@ -49,9 +49,9 @@ class GBufferData {
 
     func buildGBufferPipelineState(fragmentFunction: String) {
         let descriptor = MTLRenderPipelineDescriptor()
-        descriptor.colorAttachments[0].pixelFormat = .rgba16Float
-        descriptor.colorAttachments[1].pixelFormat = .rgba32Float
-        descriptor.colorAttachments[2].pixelFormat = .rgba16Float
+        descriptor.colorAttachments[0].pixelFormat = .rgba8Snorm
+        descriptor.colorAttachments[1].pixelFormat = .rgba16Float
+        descriptor.colorAttachments[2].pixelFormat = .rgba8Unorm_srgb
         descriptor.depthAttachmentPixelFormat = .depth32Float
 
         descriptor.vertexFunction = Device.sharedDevice.library!.makeFunction(name: "vertexRSM")

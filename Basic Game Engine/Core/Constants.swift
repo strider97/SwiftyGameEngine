@@ -20,5 +20,5 @@ struct Constants {
     static let smoothNormal: String = "newNormal"
     static let probeGrid = (16, 8, 8)
     static var probeCount: Int { Self.probeGrid.0 * Self.probeGrid.1 * Self.probeGrid.2 }
-    static let probeReso = 16
+    static let probeReso = 32
 }

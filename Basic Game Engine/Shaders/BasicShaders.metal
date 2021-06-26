@@ -586,6 +586,7 @@ kernel void DefferedShadeKernel(uint2 tid [[thread_position_in_grid]],
                                 texture2d<float, access::sample> worldPos [[texture(rsmPos)]],
                                 texture2d<float, access::sample> worldNormal [[texture(rsmNormal)]],
                                 texture2d<float, access::sample> albedoTex [[texture(rsmFlux)]],
+                                depth2d<float, access::sample> depthTex [[texture(rsmDepth)]],
                                 texture2d<float, access::write> outputTex [[texture(0)]],
                                 texture3d<float, access::read> lightProbeTextureR [[texture(15)]],
                                 texture3d<float, access::read> lightProbeTextureG [[texture(16)]],
@@ -593,12 +594,13 @@ kernel void DefferedShadeKernel(uint2 tid [[thread_position_in_grid]],
     if (tid.x < uniforms.width && tid.y < uniforms.height) {
         float2 uv = float2(tid)/float2(uniforms.width, uniforms.height);
         float3 pos = worldPos.sample(s, uv).rgb;
-        float3 smoothN = worldNormal.sample(s, uv).rgb;
+        float4 normalShadow = worldNormal.sample(s, uv);
+        float3 smoothN = normalShadow.xyz;
         float4 albedo_ = albedoTex.sample(s, uv);
         float3 albedo = albedo_.rgb;
     //    albedo = 0.8;
         float3 l = shadowUniforms.sunDirection;
-        float inShadow = albedo_.a;
+        float inShadow = normalShadow.a;
         
         float3 ambient = 0;
         ambient.r = (getDDGI(pos, smoothN, lightProbeTextureR, probe) + 0.0000);

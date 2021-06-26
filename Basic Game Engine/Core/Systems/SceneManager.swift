@@ -115,6 +115,7 @@ extension Scene: MTKViewDelegate {
         renderTargetDescriptor.height = Int(size.height)
         renderTargetDescriptor.storageMode = .private
         renderTargetDescriptor.usage = [.shaderRead, .shaderWrite]
+        gBufferData = GBufferData(size: size)
         renderTarget = device!.makeTexture(descriptor: renderTargetDescriptor)
         //     rayTracer?.mtkView(view, drawableSizeWillChange: CGSize(width: Constants.probeReso * Constants.probeCount, height: Constants.probeReso * Constants.probeCount))
         rayTracer?.mtkView(view, drawableSizeWillChange: CGSize(width: Constants.probeCount * Constants.probeReso, height: Constants.probeReso))
@@ -432,6 +433,7 @@ extension Scene {
         computeEncoder?.setTexture(gBufferData.worldPos, index: TextureIndex.worldPos.rawValue)
         computeEncoder?.setTexture(gBufferData.normal, index: TextureIndex.normal.rawValue)
         computeEncoder?.setTexture(gBufferData.flux, index: TextureIndex.flux.rawValue)
+        computeEncoder?.setTexture(gBufferData.depth, index: TextureIndex.depth.rawValue)
         computeEncoder?.setTexture(rayTracer?.irradianceField.ambientCubeTextureFinalR, index: TextureIndex.textureDDGIR.rawValue)
         computeEncoder?.setTexture(rayTracer?.irradianceField.ambientCubeTextureFinalG, index: TextureIndex.textureDDGIG.rawValue)
         computeEncoder?.setTexture(rayTracer?.irradianceField.ambientCubeTextureFinalB, index: TextureIndex.textureDDGIB.rawValue)
