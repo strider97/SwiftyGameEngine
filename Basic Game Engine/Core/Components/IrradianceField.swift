@@ -113,7 +113,7 @@ class IrradianceField {
         }
     //    print(probeLocationsArray)
         probeLocations = device.makeBuffer(bytes: probeLocationsArray, length: MemoryLayout<Float3>.stride * probeCount, options: .storageModeManaged)!
-        let numRays = Constants.probeReso * Constants.probeReso * 1000
+        let numRays = Constants.probeReso * Constants.probeReso * 4000
         for _ in 0 ..< numRays {
         //    let dir = Self.sphericalFibonacci9(Float(i), Float(numRays))
             let dir = Self.getRandomDirection()

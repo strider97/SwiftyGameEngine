@@ -21,6 +21,9 @@ Ni 1.000000
 d 1.000000
 illum 3
 map_Kd Sponza_Arch_diffuse.png
+map_tangentSpaceNormal Sponza_Arch_normal.png
+map_roughness Sponza_Arch_roughness.png
+map_metallic Sponza_Arch_metallic.png
 
 newmtl sponza:bricks1
 Ns 107.999996
@@ -32,6 +35,8 @@ Ni 1.000000
 d 1.000000
 illum 3
 map_Kd Sponza_Bricks_a_Albedo.png
+map_tangentSpaceNormal Sponza_Bricks_a_Normal.png
+map_roughness Sponza_Bricks_a_Roughness.png
 
 newmtl sponza:ceiling1
 Ns 107.999996
@@ -43,6 +48,9 @@ Ni 1.000000
 d 1.000000
 illum 3
 map_Kd Sponza_Ceiling_diffuse.png
+map_tangentSpaceNormal Sponza_Ceiling_normal.png
+map_roughness Sponza_Ceiling_roughness.png
+map_metallic Sponza_Ceiling_metallic.png
 
 newmtl sponza:chain1
 Ns 107.999996
@@ -54,6 +62,9 @@ Ni 1.000000
 d 1.000000
 illum 3
 map_Kd ChainTexture_Albedo.png
+map_tangentSpaceNormal ChainTexture_Albedo_normal.png
+map_roughness ChainTexture_Albedo_roughness.png
+map_metallic ChainTexture_Albedo_metallic.png
 
 newmtl sponza:column_a1
 Ns 107.999996
@@ -65,6 +76,9 @@ Ni 1.000000
 d 1.000000
 illum 3
 map_Kd Sponza_Column_a_diffuse.png
+map_tangentSpaceNormal Sponza_Column_a_normal.png
+map_roughness Sponza_Column_a_roughness.png
+map_metallic Sponza_Column_a_metallic.png
 
 newmtl sponza:column_b1
 Ns 107.999996
@@ -76,6 +90,9 @@ Ni 1.000000
 d 1.000000
 illum 3
 map_Kd Sponza_Column_b_diffuse.png
+map_tangentSpaceNormal Sponza_Column_b_normal.png
+map_roughness Sponza_Column_b_roughness.png
+map_metallic Sponza_Column_b_metallic.png
 
 newmtl sponza:column_c1
 Ns 107.999996
@@ -87,6 +104,9 @@ Ni 1.000000
 d 1.000000
 illum 3
 map_Kd Sponza_Column_c_diffuse.png
+map_tangentSpaceNormal Sponza_Column_c_normal.png
+map_roughness Sponza_Column_c_roughness.png
+map_metallic Sponza_Column_c_metallic.png
 
 newmtl sponza:details1
 Ns 107.999996
@@ -98,6 +118,9 @@ Ni 1.000000
 d 1.000000
 illum 3
 map_Kd Sponza_Details_diffuse.png
+map_tangentSpaceNormal Sponza_Details_normal.png
+map_roughness Sponza_Details_roughness.png
+map_metallic Sponza_Details_metallic.png
 
 newmtl sponza:flagpole1
 Ns 107.999996
@@ -109,6 +132,9 @@ Ni 1.000000
 d 1.000000
 illum 3
 map_Kd Sponza_FlagPole_diffuse.png
+map_tangentSpaceNormal Sponza_FlagPole_normal.png
+map_roughness Sponza_FlagPole_roughness.png
+map_metallic Sponza_FlagPole_metallic.png
 
 newmtl sponza:floor1
 Ns 107.999996
@@ -120,6 +146,9 @@ Ni 1.000000
 d 1.000000
 illum 3
 map_Kd Sponza_Floor_diffuse.png
+map_tangentSpaceNormal Sponza_Floor_normal.png
+map_roughness Sponza_Floor_roughness.png
+map_metallic Sponza_Floor_metallic.png
 
 newmtl sponza:roof1
 Ns 107.999996
@@ -131,6 +160,9 @@ Ni 1.000000
 d 1.000000
 illum 3
 map_Kd Sponza_Roof_diffuse.png
+map_tangentSpaceNormal Sponza_Roof_normal.png
+map_roughness Sponza_Roof_roughness.png
+map_metallic Sponza_Roof_metallic.png
 
 newmtl sponza:vase1
 Ns 107.999996
@@ -142,6 +174,9 @@ Ni 1.000000
 d 1.000000
 illum 3
 map_Kd Vase_diffuse.png
+map_tangentSpaceNormal Vase_normal.png
+map_roughness Vase_roughness.png
+map_metallic Vase_metallic.png
 
 newmtl sponza:vase_hanging1
 Ns 107.999996
@@ -153,6 +188,9 @@ Ni 1.000000
 d 1.000000
 illum 3
 map_Kd VaseHanging_diffuse.png
+map_tangentSpaceNormal VaseHanging_diffuse_normal.png
+map_roughness VaseHanging_diffuse_roughness.png
+map_metallic VaseHanging_diffuse_metallic.png
 
 newmtl monkey
 Ns 225.000000

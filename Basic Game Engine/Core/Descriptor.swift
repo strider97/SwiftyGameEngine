@@ -115,7 +115,7 @@ extension Descriptor {
         descriptor.colorAttachments[0].pixelFormat = Constants.pixelFormat
         descriptor.depthAttachmentPixelFormat = .depth32Float
         descriptor.vertexFunction = Device.sharedDevice.library?.makeFunction(name: "DeferredRendererVS")
-        descriptor.fragmentFunction = Device.sharedDevice.library?.makeFunction(name: "DeferredRendererFS")
+        descriptor.fragmentFunction = Device.sharedDevice.library?.makeFunction(name: "DeferredRendererFS_")
         descriptor.vertexDescriptor = Descriptor.getSimpleVertexDescriptor()
         do {
             return try Device.sharedDevice.device!.makeRenderPipelineState(descriptor: descriptor)

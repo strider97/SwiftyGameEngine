@@ -42,8 +42,8 @@ struct Ray {
   float minDistance;
   packed_float3 direction;
   float maxDistance;
-  float3 color;
-    float3 indirectColor;
+  float3 color = 0;
+    float3 indirectColor = 0;
     float3 prevDirection;
 };
 
@@ -253,11 +253,27 @@ ushort2 gridPosToTex_(float3 pos, LightProbeData_ probe) {
     return ushort2(texPos.y * probe.probeGridWidth + texPos.x, texPos.z);
 }
 
+float signum__(float v) {
+    return v > 0 ? 1.0 : 0.0;
+}
+
 float4 SHProjectLinear__(float3 dir) {
     float l0 = 0.282095;
     float l1 = 0.488603;
     return float4(l0, dir.y * l1, dir.z*l1, dir.x*l1);
 }
+
+constant float3 probePos[8] = {
+    float3(0, 0, 0),
+    float3(1, 0, 0),
+    float3(0, 1, 0),
+    float3(1, 1, 0),
+    
+    float3(0, 0, 1),
+    float3(1, 0, 1),
+    float3(0, 1, 1),
+    float3(1, 1, 1),
+};
 
 float getDDGI_(float3 position, float3 smoothNormal, texture3d<float, access::read> lightProbeTexture, LightProbeData_ probe) {
     ushort2 texPos = gridPosToTex_(position, probe);
@@ -272,12 +288,30 @@ float getDDGI_(float3 position, float3 smoothNormal, texture3d<float, access::re
         x*(1 - y)*(1 - z),
         (1 - x)*y*(1 - z),
         x*y*(1 - z),
-        
+
         (1 - x)*(1 - y)*z,
         x*(1 - y)*z,
         (1 - x)*y*z,
         x*y*z,
     };
+    
+    for(int i = 0; i < 8; i++) {
+        float3 trueDirectionToProbe = normalize(probePos[i] - position);
+        float w = max(0.0001, (dot(trueDirectionToProbe, smoothNormal) + 1.0) * 0.5);
+        trilinearWeights[i] *= w*w + 0.2;
+    }
+    
+//    float trilinearWeights[8] = {
+//        (1 - x)*(1 - y)*(1 - z) * signum__(dot(smoothNormal, -transformedPos)),
+//        x*(1 - y)*(1 - z) * signum__(dot(smoothNormal, float3(1, 0, 0) - transformedPos)),
+//        (1 - x)*y*(1 - z) * signum__(dot(smoothNormal, float3(0, 1, 0) - transformedPos)),
+//        x*y*(1 - z) * signum__(dot(smoothNormal, float3(1, 1, 0) - transformedPos)),
+//
+//        (1 - x)*(1 - y)*z * signum__(dot(smoothNormal, float3(0, 0, 1) - transformedPos)),
+//        x*(1 - y)*z * signum__(dot(smoothNormal, float3(1, 0, 1) - transformedPos)),
+//        (1 - x)*y*z * signum__(dot(smoothNormal, float3(0, 1, 1) - transformedPos)),
+//        x*y*z * signum__(dot(smoothNormal, float3(1, 1, 1) - transformedPos)),
+//    };
     
     ushort2 lightProbeTexCoeff[8] = {
         ushort2(0, 0),
@@ -327,11 +361,13 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
       shadowRay.indirectColor = 0;
       shadowRay.prevDirection = ray.direction;
     if (ray.maxDistance >= 0.0 && intersection.distance >= 0.0) {
-        float3 intersectionPoint = ray.origin + ray.direction
-      * intersection.distance;
+        float3 intersectionPoint = ray.origin + ray.direction * intersection.distance;
         float3 surfaceNormal = interpolateVertexAttribute(vertexNormals,
                                                         intersection);
         surfaceNormal = normalize(surfaceNormal);
+        if (dot(surfaceNormal, ray.direction) >= 0)
+            return;
+  //      surfaceNormal = dot(surfaceNormal, ray.direction) < 0 ? surfaceNormal : -surfaceNormal;
   //    float2 r = random[(tid.y % 16) * 16 + (tid.x % 16)];
   //      r = 0;
         float3 lightDirection = uniforms.sunDirection;
@@ -344,7 +380,7 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
         shadowRay.direction = uniforms.sunDirection;
         shadowRay.maxDistance = lightDistance;
         shadowRay.color = 4 * lightColor * color;// / max(1.0,intersection.distance * intersection.distance);
-        shadowRay.color = float3(0, 0, 0);
+  //      shadowRay.color = float3(0, 0, 0);
         shadowRay.indirectColor.r = 2 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureR, uniforms.probeData);
         shadowRay.indirectColor.g = 2 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureG, uniforms.probeData);
         shadowRay.indirectColor.b = 2 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureB, uniforms.probeData);
@@ -364,7 +400,7 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
         R.x = -R.x;
         R.z = -R.z;
     //    float3 irradiance = irradianceMap.sample(s__, sampleSphericalMap__(R)).rgb;
-        shadowRay.indirectColor += 0.5 * float3(0.6, 0.6, 1)*saturate(dot(ray.direction, float3(0, 1, 0)));
+    //    shadowRay.indirectColor += 0.1 * float3(0.6, 0.6, 1)*saturate(dot(ray.direction, float3(0, 1, 0)));
     //    shadowRay.color = 0;
     }
   }

@@ -125,6 +125,7 @@ fragment GbufferOut fragmentRSMData (VertexOut vOut [[ stage_in ]],
     GbufferOut out;
     float inShadow = insideShadow_(vOut.lightFragPos, vOut.smoothNormal, shadowMap);
     float3 baseColor = pow(baseColorTexture.sample(s, vOut.uv).rgb, 3.0);
+    baseColor *= material.baseColor;
 //    float4 normal = normalMapTexture.sample(s, vOut.uv);
     float roughness = roughnessTexture.sample(s, vOut.uv).r;
     float metallic = metallicTexture.sample(s, vOut.uv).r;

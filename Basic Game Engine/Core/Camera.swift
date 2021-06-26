@@ -40,7 +40,7 @@ class Camera {
         lookAtMatrix = Matrix4.viewMatrix(position: position, target: position + front, up: Camera.WorldUp)
     }
 
-    var speed: Float = 20
+    var speed: Float = 4
     var mouseSpeed: Float = 0.2
     private var deltaMouse = Float2(0, 0)
 }

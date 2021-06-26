@@ -13,7 +13,7 @@ class SimpleScene: Scene {
     var model2: GameObject!
 
     override func getGameObjects() -> [GameObject] {
-        model = GameObject(modelName: "bathroom")
+        model = GameObject(modelName: "sponza")
         return [model]
     }
 

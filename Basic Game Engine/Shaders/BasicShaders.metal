@@ -94,6 +94,12 @@ struct LightProbeData {
     int3 probeCount;
 };
 
+struct FragmentUniform {
+    float exposure;
+    uint width;
+    uint height;
+};
+
 float2 sampleSphericalMap_(float3 dir) {
     float3 v = normalize(dir);
     float2 uv = float2(atan(-v.z/v.x), acos(v.y));
@@ -383,6 +389,22 @@ float4 SHProjectLinear_(float3 dir) {
     return float4(l0, dir.y * l1, dir.z*l1, dir.x*l1);
 }
 
+float signum_(float v) {
+    return v > 0 ? 1.0 : 0.0;
+}
+
+constant float3 probePos[8] = {
+    float3(0, 0, 0),
+    float3(1, 0, 0),
+    float3(0, 1, 0),
+    float3(1, 1, 0),
+    
+    float3(0, 0, 1),
+    float3(1, 0, 1),
+    float3(0, 1, 1),
+    float3(1, 1, 1),
+};
+
 float getDDGI(float3 position, float3 smoothNormal, texture3d<float, access::read> lightProbeTexture, LightProbeData probe) {
     ushort2 texPos = gridPosToTex(position, probe);
     float3 transformedPos = (position - probe.gridOrigin)/probe.gridEdge;
@@ -396,12 +418,30 @@ float getDDGI(float3 position, float3 smoothNormal, texture3d<float, access::rea
         x*(1 - y)*(1 - z),
         (1 - x)*y*(1 - z),
         x*y*(1 - z),
-        
+
         (1 - x)*(1 - y)*z,
         x*(1 - y)*z,
         (1 - x)*y*z,
         x*y*z,
     };
+    
+    for(int i = 0; i < 8; i++) {
+        float3 trueDirectionToProbe = normalize(probePos[i] - position);
+        float w = max(0.0001, (dot(trueDirectionToProbe, smoothNormal) + 1.0) * 0.5);
+        trilinearWeights[i] *= w*w + 0.2;
+    }
+    
+//    float trilinearWeights[8] = {
+//        (1 - x)*(1 - y)*(1 - z) * signum_(dot(smoothNormal, -transformedPos)),
+//        x*(1 - y)*(1 - z) * signum_(dot(smoothNormal, float3(1, 0, 0) - transformedPos)),
+//        (1 - x)*y*(1 - z) * signum_(dot(smoothNormal, float3(0, 1, 0) - transformedPos)),
+//        x*y*(1 - z) * signum_(dot(smoothNormal, float3(1, 1, 0) - transformedPos)),
+//
+//        (1 - x)*(1 - y)*z * signum_(dot(smoothNormal, float3(0, 0, 1) - transformedPos)),
+//        x*(1 - y)*z * signum_(dot(smoothNormal, float3(1, 0, 1) - transformedPos)),
+//        (1 - x)*y*z * signum_(dot(smoothNormal, float3(0, 1, 1) - transformedPos)),
+//        x*y*z * signum_(dot(smoothNormal, float3(1, 1, 1) - transformedPos)),
+//    };
     
     ushort2 lightProbeTexCoeff[8] = {
         ushort2(0, 0),
@@ -504,6 +544,7 @@ vertex VertexOutDR DeferredRendererVS (const SimpleVertexDR vIn [[ stage_in ]]) 
 fragment float4 DeferredRendererFS(VertexOutDR vOut [[ stage_in ]],
                                    constant ShadowUniforms &shadowUniforms [[buffer(0)]],
                                    constant LightProbeData &probe [[buffer(1)]],
+                                   constant FragmentUniform &fUniforms [[buffer(2)]],
                                    texture2d<float, access::sample> worldPos [[texture(rsmPos)]],
                                    texture2d<float, access::sample> worldNormal [[texture(rsmNormal)]],
                                    texture2d<float, access::sample> albedoTex [[texture(rsmFlux)]],
@@ -515,7 +556,7 @@ fragment float4 DeferredRendererFS(VertexOutDR vOut [[ stage_in ]],
     float3 smoothN = worldNormal.sample(s, vOut.pos).rgb;
     float4 albedo_ = albedoTex.sample(s, vOut.pos);
     float3 albedo = albedo_.rgb;
-    albedo = 0.8;
+//    albedo = 0.8;
     float3 l = shadowUniforms.sunDirection;
     float inShadow = albedo_.a;
     
@@ -523,10 +564,10 @@ fragment float4 DeferredRendererFS(VertexOutDR vOut [[ stage_in ]],
     ambient.r = (getDDGI(pos, smoothN, lightProbeTextureR, probe) + 0.0000);
 //    ambient.g = (getDDGI(pos, smoothN, lightProbeTextureG, probe) + 0.0000);
 //    ambient.b = (getDDGI(pos, smoothN, lightProbeTextureB, probe) + 0.0000);
-    float3 diffuse = inShadow * 2.0 * albedo * saturate(dot(smoothN, l));
-    float3 color = diffuse + 1.5 * ambient.r * albedo;
+    float3 diffuse = inShadow * 4.0 * albedo * saturate(dot(smoothN, l));
+    float3 color = diffuse + 2 * ambient.r * albedo;
     
-    float exposure = 1.0;
+    float exposure = fUniforms.exposure;
     color = 1 - exp(-color * exposure);
     color = pow(color, float3(1.0/2.2));
     return float4(color, 1.0);
@@ -535,4 +576,45 @@ fragment float4 DeferredRendererFS(VertexOutDR vOut [[ stage_in ]],
 
 fragment float4 fragmentRSM(VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], constant float3 *lightPolygon[[buffer(1)]], texture2d<float, access::sample> worldPos [[texture(rsmPos)]], texture2d<float, access::sample> worldNormal [[texture(rsmNormal)]], texture2d<float, access::sample> flux [[texture(rsmFlux)]], depth2d<float, access::sample> rsmDepth [[texture(rsmDepth)]]) {
     return float4(0);
+}
+
+
+kernel void DefferedShadeKernel(uint2 tid [[thread_position_in_grid]],
+                                constant ShadowUniforms &shadowUniforms [[buffer(0)]],
+                                constant LightProbeData &probe [[buffer(1)]],
+                                constant FragmentUniform &uniforms [[buffer(2)]],
+                                texture2d<float, access::sample> worldPos [[texture(rsmPos)]],
+                                texture2d<float, access::sample> worldNormal [[texture(rsmNormal)]],
+                                texture2d<float, access::sample> albedoTex [[texture(rsmFlux)]],
+                                texture2d<float, access::write> outputTex [[texture(0)]],
+                                texture3d<float, access::read> lightProbeTextureR [[texture(15)]],
+                                texture3d<float, access::read> lightProbeTextureG [[texture(16)]],
+                                texture3d<float, access::read> lightProbeTextureB [[texture(17)]]) {
+    if (tid.x < uniforms.width && tid.y < uniforms.height) {
+        float2 uv = float2(tid)/float2(uniforms.width, uniforms.height);
+        float3 pos = worldPos.sample(s, uv).rgb;
+        float3 smoothN = worldNormal.sample(s, uv).rgb;
+        float4 albedo_ = albedoTex.sample(s, uv);
+        float3 albedo = albedo_.rgb;
+    //    albedo = 0.8;
+        float3 l = shadowUniforms.sunDirection;
+        float inShadow = albedo_.a;
+        
+        float3 ambient = 0;
+        ambient.r = (getDDGI(pos, smoothN, lightProbeTextureR, probe) + 0.0000);
+        ambient.g = (getDDGI(pos, smoothN, lightProbeTextureG, probe) + 0.0000);
+        ambient.b = (getDDGI(pos, smoothN, lightProbeTextureB, probe) + 0.0000);
+        float3 diffuse = inShadow * 4.0 * albedo * saturate(dot(smoothN, l));
+        float3 color = diffuse + 2 * ambient * albedo;
+        
+        float exposure = uniforms.exposure;
+        color = 1 - exp(-color * exposure);
+        color = pow(color, float3(1.0/2.2));
+        outputTex.write(float4(color, 1), tid);
+    }
+}
+
+fragment float4 DeferredRendererFS_(VertexOutDR vOut [[ stage_in ]], texture2d<float, access::sample> radianceTex [[texture(0)]]) {
+    float4 radiance = radianceTex.sample(s, vOut.pos);
+    return radiance;
 }

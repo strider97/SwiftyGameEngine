@@ -12,7 +12,7 @@ class GameView: MTKView {
         super.init(coder: coder)
         device = Device.sharedDevice.device
         delegate = SceneManager.sharedManager.currentScene
-        delegate?.mtkView(self, drawableSizeWillChange: CGSize(width: drawableSize.width / 2, height: drawableSize.height / 2))
+        delegate?.mtkView(self, drawableSizeWillChange: CGSize(width: drawableSize.width, height: drawableSize.height))
         colorPixelFormat = Constants.pixelFormat
         depthStencilPixelFormat = .depth32Float
         clearColor = Colors.clearColor
