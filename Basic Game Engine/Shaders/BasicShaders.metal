@@ -377,6 +377,18 @@ ushort2 gridPosToTex(float3 pos, LightProbeData probe) {
     return ushort2(texPos.y * probe.probeGridWidth + texPos.x, texPos.z);
 }
 
+constant float3 probePos[8] = {
+    float3(0, 0, 0),
+    float3(1, 0, 0),
+    float3(0, 1, 0),
+    float3(1, 1, 0),
+    
+    float3(0, 0, 1),
+    float3(1, 0, 1),
+    float3(0, 1, 1),
+    float3(1, 1, 1),
+};
+
 float getDDGI(float3 position, float3 smoothNormal, texture3d<float, access::read> lightProbeTexture, LightProbeData probe) {
     ushort2 texPos = gridPosToTex(position, probe);
     float3 transformedPos = (position - probe.gridOrigin)/probe.gridEdge;
@@ -396,6 +408,12 @@ float getDDGI(float3 position, float3 smoothNormal, texture3d<float, access::rea
         (1 - x)*y*z,
         x*y*z,
     };
+    
+    for(int i = 0; i < 8; i++) {
+        float3 trueDirectionToProbe = normalize(probePos[i] - position);
+        float w = max(0.0001, (dot(trueDirectionToProbe, smoothNormal) + 1.0) * 0.5);
+        trilinearWeights[i] *= w*w + 0.2;
+    }
     
     ushort2 lightProbeTexCoeff[8] = {
         ushort2(0, 0),
