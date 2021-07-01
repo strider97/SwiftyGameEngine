@@ -26,8 +26,8 @@ class Scene: NSObject {
     static let W: Float = 1280
     static let H: Float = 720
     final let P = Matrix4(projectionFov: MathConstants.PI.rawValue / 3, near: 0.01, far: 500, aspect: Scene.W / Scene.H)
-//    var sunDirection = Float3(5, 3, 5) * 2
-    var sunDirection = Float3(5, 18, 4)
+    var sunDirection = Float3(35, 8, 2)
+//    var sunDirection = Float3(5, 18, 4)
     var orthoGraphicP = Matrix4(orthoLeft: -10, right: 10, bottom: -10, top: 10, near: 0.01, far: 100)
     lazy var shadowViewMatrix = Matrix4.viewMatrix(position: sunDirection, target: Float3(0, 0, 0), up: Camera.WorldUp)
     final let timer = GameTimer.sharedTimer
@@ -68,6 +68,8 @@ class Scene: NSObject {
     var size: CGSize!
     var computePipeline: MTLComputePipelineState!
     var renderTarget: MTLTexture!
+    var randomKernelAndNoise: [Float3] = []
+    let randomKernelSize = 64 + 16
 
     override init() {
         light = PolygonLight(vertices: lightPolygon)
@@ -84,6 +86,7 @@ class Scene: NSObject {
         sphere.transform.scale(Float3(repeating: 0.2))
         sphere.renderPipelineState = Descriptor.createLightProbePipelineState()
         createComputePipeline()
+        createRandomKernel()
         
     }
 
@@ -172,9 +175,28 @@ extension Scene {
                 reflection: nil
             )
         } catch {
-                print(error.localizedDescription)
-            }
+            print(error.localizedDescription)
         }
+    }
+    
+    func lerp(a: Float, b: Float, t: Float) -> Float {
+        return a * t + (1-t)*b
+    }
+    
+    func createRandomKernel() {
+        let kernelSize = randomKernelSize - 16
+        for i in 0..<kernelSize {
+            var dir = Float3.random(in: -1..<1)
+            dir.z = (dir.z + 1)/2
+            let scale = Float(i)/Float(kernelSize)
+            dir *= lerp(a: 0.1, b: 1.0, t: scale * scale)
+            randomKernelAndNoise.append(dir)
+        }
+        for _ in 0..<16 {
+            let noise = Float3(Float.random(in: 0..<1), Float.random(in: 0..<1), 0)
+            randomKernelAndNoise.append(noise.normalized)
+        }
+    }
 
     func getSkyboxUniformData() -> Uniforms {
         let M = Matrix4(1.0)
@@ -428,7 +450,7 @@ extension Scene {
     //    renderCommandEncoder?.setVertexBuffer(dfgLut.vertexBuffer, offset: 0, index: 0)
         let irradianceField = rayTracer!.irradianceField!
         var lightProbeData = LightProbeData(gridEdge: irradianceField.gridEdge, gridOrigin: irradianceField.origin, probeGridWidth: irradianceField.width, probeGridHeight: irradianceField.height, probeGridCount: Int3(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2))
-        var s = ShadowUniforms(P: orthoGraphicP, V: shadowViewMatrix, sunDirection: sunDirection.normalized)
+        var s = ShadowUniforms(P: P, V: camera.lookAtMatrix, sunDirection: sunDirection.normalized)
         var fragmentUniform = FragmentUniforms(exposure: exposure, width: UInt32(size.width), height: UInt32(size.height))
         computeEncoder?.setTexture(gBufferData.worldPos, index: TextureIndex.worldPos.rawValue)
         computeEncoder?.setTexture(gBufferData.normal, index: TextureIndex.normal.rawValue)
@@ -441,6 +463,7 @@ extension Scene {
         computeEncoder?.setBytes(&s, length: MemoryLayout<ShadowUniforms>.stride, index: 0)
         computeEncoder?.setBytes(&lightProbeData, length: MemoryLayout<LightProbeData>.stride, index: 1)
         computeEncoder?.setBytes(&fragmentUniform, length: MemoryLayout<FragmentUniforms>.stride, index: 2)
+        computeEncoder?.setBytes(&randomKernelAndNoise, length: MemoryLayout<Float3>.stride * randomKernelSize, index: 3)
         computeEncoder?.setComputePipelineState(computePipeline)
         computeEncoder?.dispatchThreadgroups(threadGroups,
                                              threadsPerThreadgroup: threadsPerGroup)

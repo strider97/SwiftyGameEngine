@@ -48,6 +48,7 @@ constexpr sampler s(coord::normalized, address::repeat, filter::linear, mip_filt
 constexpr sampler s1(coord::normalized, address::clamp_to_edge, filter::linear, mip_filter::linear);
 
 constant int AMBIENT_DIR_COUNT = 6;
+constant int RANDOM_KERNEL_SIZE = 64;
 constant float3 ambientCubeDir[] = {
     float3(0.7071, 0, 0.7071),
     float3(0, 1, 0),
@@ -468,6 +469,35 @@ float getDDGI(float3 position, float3 smoothNormal, texture3d<float, access::rea
   return color;
 }
 
+float getSSAO(float3 origin, float3 normal, float3 noise, float4x4 P, constant float3* uSampleKernel, depth2d<float, access::sample> depthTex) {
+    float3 rvec = noise;
+    float3 tangent = normalize(rvec - normal * dot(rvec, normal));
+    float3 bitangent = cross(normal, tangent);
+    float3x3 tbn = float3x3(tangent, bitangent, normal);
+    float occlusion = 0.0;
+    float uRadius = 0.5;
+    for (int i = 0; i < 16; i++) {
+    // get sample position:
+        float3 sample = tbn * uSampleKernel[i];
+        sample = sample * uRadius + origin;
+
+        // project sample position:
+        float4 offset = float4(sample, 1.0);
+        offset = P * offset;
+        offset.xy /= offset.w;
+        offset.xy = offset.xy * 0.5 + 0.5;
+
+        // get sample depth:
+        float sampleDepth = depthTex.sample(s, offset.xy);
+
+        // range check & accumulate:
+        float rangeCheck= abs(origin.z - sampleDepth) < uRadius ? 1.0 : 0.0;
+        occlusion += (sampleDepth <= sample.z ? 1.0 : 0.0) * rangeCheck;
+    }
+    occlusion = 1.0 - (occlusion / RANDOM_KERNEL_SIZE);
+    return occlusion;
+}
+
 vertex VertexOut basicVertexShader(const VertexIn vIn [[ stage_in ]], constant Uniforms &uniforms [[buffer(1)]], constant ShadowUniforms &shadowUniforms [[buffer(2)]])  {
     VertexOut vOut;
     float4x4 VM = uniforms.V*uniforms.M;
@@ -578,11 +608,11 @@ fragment float4 fragmentRSM(VertexOut vOut [[ stage_in ]], constant Material &ma
     return float4(0);
 }
 
-
 kernel void DefferedShadeKernel(uint2 tid [[thread_position_in_grid]],
                                 constant ShadowUniforms &shadowUniforms [[buffer(0)]],
                                 constant LightProbeData &probe [[buffer(1)]],
                                 constant FragmentUniform &uniforms [[buffer(2)]],
+                                constant float3 *kernelAndNoise [[buffer(3)]],
                                 texture2d<float, access::sample> worldPos [[texture(rsmPos)]],
                                 texture2d<float, access::sample> worldNormal [[texture(rsmNormal)]],
                                 texture2d<float, access::sample> albedoTex [[texture(rsmFlux)]],
@@ -608,10 +638,14 @@ kernel void DefferedShadeKernel(uint2 tid [[thread_position_in_grid]],
         ambient.b = (getDDGI(pos, smoothN, lightProbeTextureB, probe) + 0.0000);
         float3 diffuse = inShadow * 4.0 * albedo * saturate(dot(smoothN, l));
         float3 color = diffuse + 2 * ambient * albedo;
+    //    float4x4 PV = shadowUniforms.P * shadowUniforms.V;
+    //    float ssao = getSSAO(pos, smoothN, kernelAndNoise[64 + tid.x % 16], PV, kernelAndNoise, depthTex);
         
         float exposure = uniforms.exposure;
         color = 1 - exp(-color * exposure);
         color = pow(color, float3(1.0/2.2));
+    //    color = ssao * albedo;
+    //    color = float3(kernelAndNoise[64 + tid.x % 16].xy, 1);
         outputTex.write(float4(color, 1), tid);
     }
 }
