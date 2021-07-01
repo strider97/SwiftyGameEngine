@@ -180,7 +180,7 @@ float3 lerp(float3 a, float3 b, float t) {
 kernel void accumulateKernel(constant Uniforms_ & uniforms, texture3d<float, access::read_write> lightProbeTextureR, texture3d<float, access::read_write> lightProbeTextureG, texture3d<float, access::read_write> lightProbeTextureB, texture3d<float, access::read_write> lightProbeTextureFinalR, texture3d<float, access::read_write> lightProbeTextureFinalG, texture3d<float, access::read_write> lightProbeTextureFinalB, uint2 tid [[thread_position_in_grid]])
 {
   if (int(tid.x) < (uniforms.probeGridWidth * uniforms.probeGridHeight) && int(tid.y) < uniforms.probeGridHeight) {
-      float t = 0.08;
+      float t = 0.033;
     if (uniforms.frameIndex > 0) {
         float3 newValue1 = 0;
         float3 newValue2 = 0;
@@ -215,16 +215,25 @@ kernel void accumulateKernel(constant Uniforms_ & uniforms, texture3d<float, acc
         float3 oldValue5 = lightProbeTextureFinalB.read(ushort3(tid.x, tid.y, 0)).rgb;
         float3 oldValue6 = lightProbeTextureFinalB.read(ushort3(tid.x, tid.y, 1)).rgb;
         
-        lightProbeTextureFinalR.write(float4(lerp(newValue1, oldValue1, t), 1), ushort3(tid.x, tid.y, 0));
-        lightProbeTextureFinalR.write(float4(lerp(newValue2, oldValue2, t), 1), ushort3(tid.x, tid.y, 1));
+        int frame = uniforms.frameIndex - 1;
         
-        lightProbeTextureFinalG.write(float4(lerp(newValue3, oldValue3, t), 1), ushort3(tid.x, tid.y, 0));
-        lightProbeTextureFinalG.write(float4(lerp(newValue4, oldValue4, t), 1), ushort3(tid.x, tid.y, 1));
+        lightProbeTextureFinalR.write(float4((newValue1 + oldValue1*frame)/(frame+1), 1), ushort3(tid.x, tid.y, 0));
+        lightProbeTextureFinalR.write(float4((newValue2 + oldValue2*frame)/(frame+1), 1), ushort3(tid.x, tid.y, 1));
         
-        lightProbeTextureFinalB.write(float4(lerp(newValue5, oldValue5, t), 1), ushort3(tid.x, tid.y, 0));
-        lightProbeTextureFinalB.write(float4(lerp(newValue6, oldValue6, t), 1), ushort3(tid.x, tid.y, 1));
-    //    lightProbeTextureFinal.write(float4(newValue1, 1), ushort3(tid.x, tid.y, 0));
-    //    lightProbeTextureFinal.write(float4(newValue2, 1), ushort3(tid.x, tid.y, 1));
+        lightProbeTextureFinalG.write(float4((newValue3 + oldValue3*frame)/(frame+1), 1), ushort3(tid.x, tid.y, 0));
+        lightProbeTextureFinalG.write(float4((newValue4 + oldValue4*frame)/(frame+1), 1), ushort3(tid.x, tid.y, 1));
+        
+        lightProbeTextureFinalB.write(float4((newValue5 + oldValue5*frame)/(frame+1), 1), ushort3(tid.x, tid.y, 0));
+        lightProbeTextureFinalB.write(float4((newValue6 + oldValue6*frame)/(frame+1), 1), ushort3(tid.x, tid.y, 1));
+        
+//        lightProbeTextureFinalR.write(float4(lerp(newValue1, oldValue1, t), 1), ushort3(tid.x, tid.y, 0));
+//        lightProbeTextureFinalR.write(float4(lerp(newValue2, oldValue2, t), 1), ushort3(tid.x, tid.y, 1));
+//
+//        lightProbeTextureFinalG.write(float4(lerp(newValue3, oldValue3, t), 1), ushort3(tid.x, tid.y, 0));
+//        lightProbeTextureFinalG.write(float4(lerp(newValue4, oldValue4, t), 1), ushort3(tid.x, tid.y, 1));
+//
+//        lightProbeTextureFinalB.write(float4(lerp(newValue5, oldValue5, t), 1), ushort3(tid.x, tid.y, 0));
+//        lightProbeTextureFinalB.write(float4(lerp(newValue6, oldValue6, t), 1), ushort3(tid.x, tid.y, 1));
     }
   }
 }
