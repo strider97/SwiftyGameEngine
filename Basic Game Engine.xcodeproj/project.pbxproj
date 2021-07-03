@@ -1185,6 +1185,8 @@
 		72E399A625BF176C00927B17 /* teapot2.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72E399A525BF176C00927B17 /* teapot2.obj */; };
 		72E399BA25BF3ECD00927B17 /* planet.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72E399B925BF3ECD00927B17 /* planet.obj */; };
 		72E399D025BF611100927B17 /* teapot.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72E399CF25BF611100927B17 /* teapot.usd */; };
+		72E94FB12690767400170CB4 /* pillarRoom.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72E94FAF2690767400170CB4 /* pillarRoom.obj */; };
+		72E94FB22690767400170CB4 /* pillarRoom.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 72E94FB02690767400170CB4 /* pillarRoom.mtl */; };
 		72ED2D8C25DC33FF00F12F90 /* Descriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72ED2D8B25DC33FF00F12F90 /* Descriptor.swift */; };
 		72ED2D9125DC61F700F12F90 /* shadowShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 72ED2D9025DC61F700F12F90 /* shadowShader.metal */; };
 		72FB906225F7A771008D71C5 /* ltc_mat.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 72FB906025F7A771008D71C5 /* ltc_mat.hdr */; };
@@ -2395,6 +2397,8 @@
 		72E399A525BF176C00927B17 /* teapot2.obj */ = {isa = PBXFileReference; lastKnownFileType = text; name = teapot2.obj; path = "Basic Game Engine/Resources/teapot/teapot2.obj"; sourceTree = SOURCE_ROOT; };
 		72E399B925BF3ECD00927B17 /* planet.obj */ = {isa = PBXFileReference; lastKnownFileType = text; name = planet.obj; path = "Basic Game Engine/Resources/legoMan/planet.obj"; sourceTree = SOURCE_ROOT; };
 		72E399CF25BF611100927B17 /* teapot.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = teapot.usd; path = "Basic Game Engine/Resources/teapot/teapot.usd"; sourceTree = SOURCE_ROOT; };
+		72E94FAF2690767400170CB4 /* pillarRoom.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = pillarRoom.obj; sourceTree = "<group>"; };
+		72E94FB02690767400170CB4 /* pillarRoom.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = pillarRoom.mtl; sourceTree = "<group>"; };
 		72ED2D8B25DC33FF00F12F90 /* Descriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Descriptor.swift; sourceTree = "<group>"; };
 		72ED2D9025DC61F700F12F90 /* shadowShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = shadowShader.metal; sourceTree = "<group>"; };
 		72FB906025F7A771008D71C5 /* ltc_mat.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = ltc_mat.hdr; path = ../../../../../Downloads/fit/results/sampleFileCode/ltc_mat.hdr; sourceTree = "<group>"; };
@@ -3925,6 +3929,8 @@
 		72E3999925BF0C8300927B17 /* models */ = {
 			isa = PBXGroup;
 			children = (
+				72E94FB02690767400170CB4 /* pillarRoom.mtl */,
+				72E94FAF2690767400170CB4 /* pillarRoom.obj */,
 				72A765922686680B00E2B07D /* bathroomLowPoly.mtl */,
 				72A765912686680A00E2B07D /* bathroomLowPoly.obj */,
 				72A765932686680B00E2B07D /* sponzaLowPoly.mtl */,
@@ -4841,6 +4847,7 @@
 				721651A625EBB37F00511342 /* 01-Default_albedo.jpg in Resources */,
 				72583FA5262266E000ADD5BD /* VaseHanging_normal.png in Resources */,
 				7216513F25EB9EA500511342 /* vbwkdallw_4K_Roughness.jpg in Resources */,
+				72E94FB12690767400170CB4 /* pillarRoom.obj in Resources */,
 				72294B57267E7EEF00B3E620 /* Banner_Metal_BaseColor.dds in Resources */,
 				72294A28267E7EEF00B3E620 /* MASTER_Curtains_Normal.dds in Resources */,
 				722949C3267E7EEF00B3E620 /* NapkinHolder_Normal.dds in Resources */,
@@ -5054,6 +5061,7 @@
 				72583F81262266E000ADD5BD /* Sponza_Bricks_a_Roughness.png in Resources */,
 				7216505225EAE3C300511342 /* old_planks_02_disp_2k.png in Resources */,
 				7254FA202673BBC4000F5738 /* Tree2_Opacity.jpg in Resources */,
+				72E94FB22690767400170CB4 /* pillarRoom.mtl in Resources */,
 				72A765952686680B00E2B07D /* bathroomLowPoly.obj in Resources */,
 				72164FF425EA55F500511342 /* cerberus.obj in Resources */,
 				72294B21267E7EEF00B3E620 /* MASTER_Interior_01_White_Plastic_Normal.dds in Resources */,

@@ -26,7 +26,7 @@ class Scene: NSObject {
     static let W: Float = 1280
     static let H: Float = 720
     final let P = Matrix4(projectionFov: MathConstants.PI.rawValue / 3, near: 0.01, far: 500, aspect: Scene.W / Scene.H)
-    var sunDirection = Float3(35, 8, 2)
+    var sunDirection = Float3(25, 8, 2)
 //    var sunDirection = Float3(5, 18, 4)
     var orthoGraphicP = Matrix4(orthoLeft: -10, right: 10, bottom: -10, top: 10, near: 0.01, far: 100)
     lazy var shadowViewMatrix = Matrix4.viewMatrix(position: sunDirection, target: Float3(0, 0, 0), up: Camera.WorldUp)
@@ -482,7 +482,7 @@ extension Scene {
         //    for i in 0..<lightPolygon.count {
         //        lightPolygon[i] = lightPolygonInitial[i] + Float3(sin(GameTimer.sharedTimer.time) * 20, 0, 0)
         //    }
-        sunDirection.z = 15 * cos(GameTimer.sharedTimer.time / 20)
+    //    sunDirection.z = 15 * cos(GameTimer.sharedTimer.time / 20)
     //    sunDirection.x = -25
     //    sunDirection. = abs(40 * cos(GameTimer.sharedTimer.time / 10)) - 1
         shadowViewMatrix = Matrix4.viewMatrix(position: sunDirection, target: Float3(0, 0, 0), up: Camera.WorldUp)

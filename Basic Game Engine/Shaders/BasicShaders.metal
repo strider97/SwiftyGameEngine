@@ -406,6 +406,30 @@ constant float3 probePos[8] = {
     float3(1, 1, 1),
 };
 
+float ScTP(float3 a, float3 b, float3 c) {
+    return dot(cross(a, b), c);
+}
+
+float4 bary_tet(float3 a, float3 b, float3 c, float3 d, float3 p)
+{
+    float3 vap = p - a;
+    float3 vbp = p - b;
+
+    float3 vab = b - a;
+    float3 vac = c - a;
+    float3 vad = d - a;
+
+    float3 vbc = c - b;
+    float3 vbd = d - b;
+    // ScTP computes the scalar triple product
+    float va6 = ScTP(vbp, vbd, vbc);
+    float vb6 = ScTP(vap, vac, vad);
+    float vc6 = ScTP(vap, vad, vab);
+    float vd6 = ScTP(vap, vab, vac);
+    float v6 = 1 / ScTP(vab, vac, vad);
+    return float4(va6*v6, vb6*v6, vc6*v6, vd6*v6);
+}
+
 float getDDGI(float3 position, float3 smoothNormal, texture3d<float, access::read> lightProbeTexture, LightProbeData probe) {
     ushort2 texPos = gridPosToTex(position, probe);
     float3 transformedPos = (position - probe.gridOrigin)/probe.gridEdge;
@@ -628,6 +652,10 @@ kernel void DefferedShadeKernel(uint2 tid [[thread_position_in_grid]],
         float3 smoothN = normalShadow.xyz;
         float4 albedo_ = albedoTex.sample(s, uv);
         float3 albedo = albedo_.rgb;
+        if(albedo.r==0 && albedo.g==0 && albedo.b==0 ) {
+            outputTex.write(float4(113, 164, 243, 255)/255, tid);
+            return;
+        }
     //    albedo = 0.8;
         float3 l = shadowUniforms.sunDirection;
         float inShadow = normalShadow.a;

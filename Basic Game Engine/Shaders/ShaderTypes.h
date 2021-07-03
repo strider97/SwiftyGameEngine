@@ -82,5 +82,10 @@ struct Uniforms_
     struct LightProbeData_ probeData;
 };
 
+struct LightProbe {
+    vector_float3 location;
+    float shCoeff[9];
+};
+
 #endif /* ShaderTypes_h */
 

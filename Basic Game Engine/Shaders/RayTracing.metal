@@ -399,9 +399,10 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
         float3 R = ray.direction;
         R.x = -R.x;
         R.z = -R.z;
-    //    float3 irradiance = irradianceMap.sample(s__, sampleSphericalMap__(R)).rgb;
+        float3 irradiance = irradianceMap.sample(s__, sampleSphericalMap__(R)).rgb;
+        irradiance = float3(113, 164, 243)/255;
     //    shadowRay.indirectColor += 0.1 * float3(0.6, 0.6, 1)*saturate(dot(ray.direction, float3(0, 1, 0)));
-    //    shadowRay.color = 0;
+        shadowRay.indirectColor = irradiance;
     }
   }
 }

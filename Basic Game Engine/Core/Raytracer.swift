@@ -51,7 +51,6 @@ class Raytracer {
     weak var camera: Camera!
     weak var scene: Scene!
     var irradianceField: IrradianceField!
-    var fence: MTLFence!
 
     lazy var vertexDescriptor: MDLVertexDescriptor = {
         let vertexDescriptor = MDLVertexDescriptor()
@@ -77,7 +76,6 @@ class Raytracer {
     init(metalView: MTKView) {
         device = Device.sharedDevice.device!
         semaphore = DispatchSemaphore(value: maxFramesInFlight)
-        fence = device.makeFence()
         library = Device.sharedDevice.library!
         commandQueue = Device.sharedDevice.commandQueue!
         buildPipelines(view: metalView)
@@ -85,7 +83,7 @@ class Raytracer {
         createBuffers()
         buildIntersector()
         buildAccelerationStructure()
-        irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, (minPosition + maxPosition)/2, (maxPosition - minPosition)*0.9)
+        irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, (minPosition + maxPosition)/2, (maxPosition - minPosition)*0.8)
    //     irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 7.5, 0), Float3(30, 18, 14))
    //     irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 1.5, 0), Float3(16, 2.5, 8.2))
    //     irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 10, 0), Float3(25, 25, 15))
@@ -156,7 +154,7 @@ class Raytracer {
     }
 
     func createScene() {
-        loadAsset(name: "bigroom")
+        loadAsset(name: "pillarRoom")
     }
 
     func createBuffers() {
@@ -295,7 +293,6 @@ extension Raytracer {
         computeEncoder?.setComputePipelineState(accumulatePipeline)
         computeEncoder?.dispatchThreadgroups(threadGroups_,
                                              threadsPerThreadgroup: threadsPerGroup_)
-        computeEncoder?.memoryBarrier(scope: MTLBarrierScope.textures)
         computeEncoder?.endEncoding()
     }
 
@@ -314,7 +311,7 @@ extension Raytracer {
 
         let width = Int(size.width)
         let height = Int(size.height)
-        let threadsPerGroup = MTLSizeMake(16, 16, 1)
+        let threadsPerGroup = MTLSizeMake(8, 8, 1)
         let threadGroups = MTLSizeMake(
             (width + threadsPerGroup.width - 1) / threadsPerGroup.width,
             (height + threadsPerGroup.height - 1) / threadsPerGroup.height, 1
@@ -388,7 +385,6 @@ extension Raytracer {
                 accelerationStructure: accelerationStructure
             )
 
-            computeEncoder?.memoryBarrier(scope: MTLBarrierScope.textures)
             computeEncoder = commandBuffer.makeComputeCommandEncoder()
             computeEncoder?.label = "Shadows"
             computeEncoder?.setBuffer(uniformBuffer, offset: uniformBufferOffset,
@@ -396,7 +392,7 @@ extension Raytracer {
             computeEncoder?.setBuffer(shadowRayBuffer, offset: 0, index: 1)
             computeEncoder?.setBuffer(intersectionBuffer, offset: 0, index: 2)
             computeEncoder?.setBuffer(irradianceField.probeLocations, offset: 0, index: 3)
-            computeEncoder?.setBuffer(irradianceField.probeDirections, offset: Constants.probeReso * Constants.probeReso, index: 4)
+        //    computeEncoder?.setBuffer(irradianceField.probeDirections, offset: Constants.probeReso * Constants.probeReso, index: 4)
             computeEncoder?.setTexture(renderTarget, index: 0)
             computeEncoder?.setTexture(irradianceField.ambientCubeTextureR!, index: 1)
             computeEncoder?.setTexture(irradianceField.ambientCubeTextureG!, index: 2)
@@ -407,7 +403,6 @@ extension Raytracer {
                 threadsPerThreadgroup: threadsPerGroup
             )
             computeEncoder?.endEncoding()
-            computeEncoder?.memoryBarrier(scope: MTLBarrierScope.textures)
         }
 
 //      guard let descriptor = view.currentRenderPassDescriptor,
