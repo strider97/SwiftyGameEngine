@@ -113,7 +113,8 @@ uint2 indexToTexPos(int index, int width, int height){
 kernel void primaryRays(constant Uniforms_ & uniforms [[buffer(0)]],
                         device Ray *rays [[buffer(1)]],
                         device float2 *random [[buffer(2)]],
-                        constant float3 *probeLocations [[buffer(3)]], device float3 *probeDirections [[buffer(4)]],
+                        device LightProbe *probes [[buffer(3)]],
+                        device float3 *probeDirections [[buffer(4)]],
                         texture2d<float, access::write> t [[texture(0)]],
                         uint2 tid [[thread_position_in_grid]])
 {
@@ -129,7 +130,7 @@ kernel void primaryRays(constant Uniforms_ & uniforms [[buffer(0)]],
     device Ray & ray = rays[rayIdx];
       
          int index = tid.x / uniforms.probeWidth;
-       ray.origin = probeLocations[index];
+       ray.origin = probes[index].location;
   //    ray.direction = normalize(float3(0, 1, 0));
       int rayDirIndex = tid.y*uniforms.probeWidth + tid.x % uniforms.probeWidth;
       ray.direction = probeDirections[rayDirIndex*((uniforms.frameIndex + 1) % 1000)];
@@ -247,20 +248,36 @@ float2 sampleSphericalMap__(float3 dir) {
     return uv;
 }
 
-ushort2 gridPosToTex_(float3 pos, LightProbeData_ probe) {
+int gridPosToProbeIndex(float3 pos, LightProbeData_ probe) {
     float3 texPos_ = (pos - probe.gridOrigin)/probe.gridEdge;
     int3 texPos = int3(texPos_);
-    return ushort2(texPos.y * probe.probeGridWidth + texPos.x, texPos.z);
+    return  texPos.x +
+            texPos.y * probe.probeCount.x +
+            texPos.z * probe.probeCount.x * probe.probeCount.y;
 }
 
 float signum__(float v) {
     return v > 0 ? 1.0 : 0.0;
 }
 
-float4 SHProjectLinear__(float3 dir) {
+void SHProjectLinear__(float3 dir, float coeff[9]) {
     float l0 = 0.282095;
     float l1 = 0.488603;
-    return float4(l0, dir.y * l1, dir.z*l1, dir.x*l1);
+    float l20 = 1.092548;
+    float l21 = 0.315392;
+    float l22 = 0.546274;
+    float x = dir.x, y = dir.y, z = dir.z;
+    
+    coeff[0] = l0;
+    coeff[1] = y * l1;
+    coeff[2] = z * l1;
+    coeff[3] = x * l1;
+    
+    coeff[4] = x * y * l20;
+    coeff[5] = y * z * l20;
+    coeff[6] = (3*z*z - 1.0) * l21;
+    coeff[7] = x * z * l20;
+    coeff[8] = (x*x - y*y) * l22;
 }
 
 constant float3 probePos[8] = {
@@ -275,9 +292,12 @@ constant float3 probePos[8] = {
     float3(1, 1, 1),
 };
 
-float getDDGI_(float3 position, float3 smoothNormal, texture3d<float, access::read> lightProbeTexture, LightProbeData_ probe) {
-    ushort2 texPos = gridPosToTex_(position, probe);
-    float3 transformedPos = (position - probe.gridOrigin)/probe.gridEdge;
+float3 getDDGI_(float3 position,
+               float3 smoothNormal,
+               device LightProbe *probes,
+               LightProbeData_ probeData)
+{
+    float3 transformedPos = (position - probeData.gridOrigin)/probeData.gridEdge;
     transformedPos -= float3(int3(transformedPos));
     float x = transformedPos.x;
     float y = transformedPos.y;
@@ -295,43 +315,40 @@ float getDDGI_(float3 position, float3 smoothNormal, texture3d<float, access::re
         x*y*z,
     };
     
-    for(int i = 0; i < 8; i++) {
-        float3 trueDirectionToProbe = normalize(probePos[i] - position);
-        float w = max(0.0001, (dot(trueDirectionToProbe, smoothNormal) + 1.0) * 0.5);
-        trilinearWeights[i] *= w*w + 0.2;
-    }
+//    for(int i = 0; i < 8; i++) {
+//        float3 trueDirectionToProbe = normalize(probePos[i] - position);
+//        float w = max(0.0001, (dot(trueDirectionToProbe, smoothNormal) + 1.0) * 0.5);
+//        trilinearWeights[i] *= w*w + 0.2;
+//    }
     
-//    float trilinearWeights[8] = {
-//        (1 - x)*(1 - y)*(1 - z) * signum__(dot(smoothNormal, -transformedPos)),
-//        x*(1 - y)*(1 - z) * signum__(dot(smoothNormal, float3(1, 0, 0) - transformedPos)),
-//        (1 - x)*y*(1 - z) * signum__(dot(smoothNormal, float3(0, 1, 0) - transformedPos)),
-//        x*y*(1 - z) * signum__(dot(smoothNormal, float3(1, 1, 0) - transformedPos)),
-//
-//        (1 - x)*(1 - y)*z * signum__(dot(smoothNormal, float3(0, 0, 1) - transformedPos)),
-//        x*(1 - y)*z * signum__(dot(smoothNormal, float3(1, 0, 1) - transformedPos)),
-//        (1 - x)*y*z * signum__(dot(smoothNormal, float3(0, 1, 1) - transformedPos)),
-//        x*y*z * signum__(dot(smoothNormal, float3(1, 1, 1) - transformedPos)),
-//    };
+    int probeIndex = gridPosToProbeIndex(position, probeData);
     
     ushort2 lightProbeTexCoeff[8] = {
         ushort2(0, 0),
         ushort2(1, 0),
-        ushort2(probe.probeCount.x, 0),
-        ushort2(probe.probeCount.x + 1, 0),
+        ushort2(probeData.probeCount.x, 0),
+        ushort2(probeData.probeCount.x + 1, 0),
         ushort2(0, 1),
         ushort2(1, 1),
-        ushort2(probe.probeCount.x, 1),
-        ushort2(probe.probeCount.x + 1, 1)
+        ushort2(probeData.probeCount.x, 1),
+        ushort2(probeData.probeCount.x + 1, 1)
     };
     
-    float color = 0;
-    float4 shCoeff = SHProjectLinear__(smoothNormal);
-    float aCap[4] = { 3.141593, 2.094395, 2.094395, 2.094395 };
+    float3 color = 0;
+    float shCoeff[9];
+    SHProjectLinear__(smoothNormal, shCoeff);
+    float aCap[9] = {   3.141593,
+                        2.094395, 2.094395, 2.094395,
+                        0.785398, 0.785398, 0.785398, 0.785398, 0.785398, };
     for (int iCoeff = 0; iCoeff < 8; iCoeff++) {
-        float color_ = 0;
-        float4 coeff = lightProbeTexture.read(ushort3(texPos + lightProbeTexCoeff[iCoeff], 0));
-        for (int i = 0; i<4; i++) {
-            color_ += max(0.0, aCap[i] * coeff[i] * shCoeff[i]);
+        float3 color_ = 0;
+        device LightProbe &probe = probes[probeIndex + lightProbeTexCoeff[iCoeff][0] +
+                               lightProbeTexCoeff[iCoeff][1] * probeData.probeCount.x *
+                               probeData.probeCount.y];
+        for (int i = 0; i<9; i++) {
+            color_.r += max(0.0, aCap[i] * probe.shCoeffR[i] * shCoeff[i]);
+            color_.g += max(0.0, aCap[i] * probe.shCoeffG[i] * shCoeff[i]);
+            color_.b += max(0.0, aCap[i] * probe.shCoeffB[i] * shCoeff[i]);
         }
         color += color_ * trilinearWeights[iCoeff];
     //    color += color_ * (1.0/8);
@@ -346,13 +363,13 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
                         device Intersection *intersections,
                         device float3 *vertexColors,
                         device float3 *vertexNormals,
-                        device float2 *random,
+                        device LightProbe *probes,
                         texture3d<float, access::read> lightProbeTextureR,
                         texture3d<float, access::read> lightProbeTextureG,
                         texture3d<float, access::read> lightProbeTextureB,
                         texture2d<float, access::sample> irradianceMap)
 {
-  if (tid.x < uniforms.width && tid.y < uniforms.height && uniforms.frameIndex) {
+  if (tid.x < uniforms.width && tid.y < uniforms.height) {
     unsigned int rayIdx = tid.y * uniforms.width + tid.x;
     device Ray & ray = rays[rayIdx];
     device Ray & shadowRay = shadowRays[rayIdx];
@@ -380,10 +397,14 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
         shadowRay.direction = uniforms.sunDirection;
         shadowRay.maxDistance = lightDistance;
         shadowRay.color = 4 * lightColor * color;// / max(1.0,intersection.distance * intersection.distance);
-  //      shadowRay.color = float3(0, 0, 0);
-        shadowRay.indirectColor.r = 2 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureR, uniforms.probeData);
-        shadowRay.indirectColor.g = 2 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureG, uniforms.probeData);
-        shadowRay.indirectColor.b = 2 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureB, uniforms.probeData);
+  //      shadowRay.color = max((ray.origin);
+  //      shadowRay.color = 1;
+  //      shadowRay.indirectColor = 1;
+  //      shadowRay.color = float3(1, 0.1, 0);
+        shadowRay.indirectColor = 0 * getDDGI_(shadowRay.origin, surfaceNormal, probes, uniforms.probeData);
+  //      shadowRay.indirectColor = 0.1;
+  //      shadowRay.indirectColor.g = 2 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureG, uniforms.probeData);
+  //      shadowRay.indirectColor.b = 2 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureB, uniforms.probeData);
   //      shadowRay.indirectColor = 0;
       
   //    float3 sampleDirection = sampleCosineWeightedHemisphere(r);
@@ -402,12 +423,19 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
         float3 irradiance = irradianceMap.sample(s__, sampleSphericalMap__(R)).rgb;
         irradiance = float3(113, 164, 243)/255;
     //    shadowRay.indirectColor += 0.1 * float3(0.6, 0.6, 1)*saturate(dot(ray.direction, float3(0, 1, 0)));
-        shadowRay.indirectColor = irradiance;
+    //    shadowRay.indirectColor = irradiance;
     }
   }
 }
 
-kernel void shadowKernel(uint2 tid [[thread_position_in_grid]], device Uniforms_ & uniforms, device Ray *shadowRays, device float *intersections, device float3 *probeLocations [[buffer(3)]], device float3 *probeDirections [[buffer(4)]], texture2d<float, access::write> renderTarget, texture3d<float, access::write> lightProbeTextureR, texture3d<float, access::write> lightProbeTextureG, texture3d<float, access::write> lightProbeTextureB) {
+kernel void shadowKernel(uint2 tid [[thread_position_in_grid]],
+                         device Uniforms_ & uniforms,
+                         device Ray *shadowRays,
+                         device float *intersections,
+                         texture2d<float, access::write> renderTarget,
+                         texture3d<float, access::write> lightProbeTextureR,
+                         texture3d<float, access::write> lightProbeTextureG,
+                         texture3d<float, access::write> lightProbeTextureB) {
     if (tid.x < uniforms.width && tid.y < uniforms.height) {
         unsigned int rayIdx = tid.y * uniforms.width + tid.x;
         device Ray & shadowRay = shadowRays[rayIdx];
@@ -424,7 +452,7 @@ kernel void shadowKernel(uint2 tid [[thread_position_in_grid]], device Uniforms_
         //    float3 oldValue2 = lightProbeTexture.read(ushort3(tid.x, tid.y, rayDirIndex*2 + 1)).rgb;
         //    float oldValues[6] = { oldValue1.x, oldValue1.y, oldValue1.z, oldValue2.x, oldValue2.y, oldValue2.z};
         }
-        
+     //   color *= 100;
         int index = tid.x / uniforms.probeWidth;
         int rayDirIndex = tid.y*uniforms.probeWidth + tid.x % uniforms.probeWidth;
         int raycount = uniforms.probeWidth * uniforms.probeHeight;

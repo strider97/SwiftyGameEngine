@@ -11,8 +11,8 @@ import MetalKit
 struct LightProbeData {
     let gridEdge: Float3
     let gridOrigin: Float3
-    let probeGridWidth: Int
-    let probeGridHeight: Int
+    let probeGridWidth: Int32
+    let probeGridHeight: Int32
     let probeGridCount: Int3
 }
 
@@ -26,10 +26,10 @@ class IrradianceField {
     var ambientCubeTextureFinalR: MTLTexture!
     var ambientCubeTextureFinalG: MTLTexture!
     var ambientCubeTextureFinalB: MTLTexture!
-    var probeLocations: MTLBuffer!
+    var probes: MTLBuffer!
     var probeDirections: MTLBuffer!
     var probeCount: Int
-    var probeLocationsArray: [Float3] = []
+    var probesArray: [LightProbe] = []
     var probeDirectionsArray: [Float3] = []
     let origin: Float3
     let gridEdge: Float3
@@ -109,10 +109,29 @@ class IrradianceField {
         let device = Device.sharedDevice.device!
         for i in 0 ..< probeCount {
             let pos = indexToGridPos(i, origin, gridEdge)
-            probeLocationsArray.append(pos)
+            var probe = LightProbe()
+            probe.location = pos
+            probe.shCoeffR = (Float(0), Float(0), Float(0),
+                             Float(0), Float(0), Float(0),
+                             Float(0), Float(0), Float(0))
+            probe.shCoeffG = (Float(0), Float(0), Float(0),
+                             Float(0), Float(0), Float(0),
+                             Float(0), Float(0), Float(0))
+            probe.shCoeffB = (Float(0), Float(0), Float(0),
+                             Float(0), Float(0), Float(0),
+                             Float(0), Float(0), Float(0))
+            probesArray.append(probe)
         }
     //    print(probeLocationsArray)
-        probeLocations = device.makeBuffer(bytes: probeLocationsArray, length: MemoryLayout<Float3>.stride * probeCount, options: .storageModeManaged)!
+        let tempProbes = device.makeBuffer(bytes: probesArray, length: MemoryLayout<LightProbe>.stride * probeCount, options: .storageModeShared)!
+        probes = device.makeBuffer(length: MemoryLayout<LightProbe>.stride * probeCount, options: .storageModePrivate)
+        let commandQueue = device.makeCommandQueue()
+        let commandBuffer = commandQueue?.makeCommandBuffer()
+        let blitEncoder = commandBuffer?.makeBlitCommandEncoder()
+        blitEncoder?.copy(from: tempProbes, sourceOffset: 0, to: probes, destinationOffset: 0, size: MemoryLayout<LightProbe>.stride * probeCount)
+        blitEncoder?.endEncoding()
+        commandBuffer?.commit()
+        commandBuffer?.waitUntilCompleted()
         let numRays = Constants.probeReso * Constants.probeReso * 4000
         for _ in 0 ..< numRays {
         //    let dir = Self.sphericalFibonacci9(Float(i), Float(numRays))
@@ -121,10 +140,5 @@ class IrradianceField {
         }
         //    print(probeDirectionsArray)
         probeDirections = device.makeBuffer(bytes: probeDirectionsArray, length: MemoryLayout<Float3>.stride * numRays, options: .storageModeManaged)!
-     //   print(self.origin)
-        for val in probeLocationsArray {
-            let i = gridPosToTex(pos: val)
-        //    print(i, indexToTexPos_(index: i), gridPosToTex_(pos: val))
-        }
     }
 }

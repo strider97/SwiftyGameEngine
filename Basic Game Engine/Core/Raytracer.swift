@@ -83,7 +83,7 @@ class Raytracer {
         createBuffers()
         buildIntersector()
         buildAccelerationStructure()
-        irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, (minPosition + maxPosition)/2, (maxPosition - minPosition)*0.8)
+        irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, (minPosition + maxPosition)/2, (maxPosition - minPosition)*1.2)
    //     irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 7.5, 0), Float3(30, 18, 14))
    //     irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 1.5, 0), Float3(16, 2.5, 8.2))
    //     irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 10, 0), Float3(25, 25, 15))
@@ -284,12 +284,10 @@ extension Raytracer {
         computeEncoder?.label = "Accumulation"
         computeEncoder?.setBuffer(uniformBuffer, offset: uniformBufferOffset,
                                   index: 0)
+        computeEncoder?.setBuffer(irradianceField.probes, offset: 0, index: 1)
         computeEncoder?.setTexture(irradianceField.ambientCubeTextureR, index: 0)
         computeEncoder?.setTexture(irradianceField.ambientCubeTextureG, index: 1)
         computeEncoder?.setTexture(irradianceField.ambientCubeTextureB, index: 2)
-        computeEncoder?.setTexture(irradianceField.ambientCubeTextureFinalR, index: 3)
-        computeEncoder?.setTexture(irradianceField.ambientCubeTextureFinalG, index: 4)
-        computeEncoder?.setTexture(irradianceField.ambientCubeTextureFinalB, index: 5)
         computeEncoder?.setComputePipelineState(accumulatePipeline)
         computeEncoder?.dispatchThreadgroups(threadGroups_,
                                              threadsPerThreadgroup: threadsPerGroup_)
@@ -323,7 +321,7 @@ extension Raytracer {
         computeEncoder?.setBuffer(rayBuffer, offset: 0, index: 1)
         computeEncoder?.setBuffer(randomBuffer, offset: randomBufferOffset,
                                   index: 2)
-        computeEncoder?.setBuffer(irradianceField.probeLocations, offset: 0, index: 3)
+        computeEncoder?.setBuffer(irradianceField.probes, offset: 0, index: 3)
         computeEncoder?.setBuffer(irradianceField.probeDirections, offset: Constants.probeReso * Constants.probeReso, index: 4)
         computeEncoder?.setTexture(renderTarget, index: 0)
         computeEncoder?.setComputePipelineState(rayPipeline)
@@ -357,11 +355,7 @@ extension Raytracer {
             computeEncoder?.setBuffer(intersectionBuffer, offset: 0, index: 3)
             computeEncoder?.setBuffer(vertexColorBuffer, offset: 0, index: 4)
             computeEncoder?.setBuffer(vertexNormalBuffer, offset: 0, index: 5)
-            computeEncoder?.setBuffer(randomBuffer, offset: randomBufferOffset,
-                                      index: 6)
-            computeEncoder?.setTexture(irradianceField.ambientCubeTextureFinalR, index: 0)
-            computeEncoder?.setTexture(irradianceField.ambientCubeTextureFinalG, index: 1)
-            computeEncoder?.setTexture(irradianceField.ambientCubeTextureFinalB, index: 2)
+            computeEncoder?.setBuffer(irradianceField.probes, offset: 0, index: 6)
             computeEncoder?.setTexture(scene.irradianceMap.texture, index: 3)
             computeEncoder?.setComputePipelineState(shadePipelineState!)
             computeEncoder?.dispatchThreadgroups(
@@ -391,7 +385,7 @@ extension Raytracer {
                                       index: 0)
             computeEncoder?.setBuffer(shadowRayBuffer, offset: 0, index: 1)
             computeEncoder?.setBuffer(intersectionBuffer, offset: 0, index: 2)
-            computeEncoder?.setBuffer(irradianceField.probeLocations, offset: 0, index: 3)
+        //    computeEncoder?.setBuffer(irradianceField.probeLocations, offset: 0, index: 3)
         //    computeEncoder?.setBuffer(irradianceField.probeDirections, offset: Constants.probeReso * Constants.probeReso, index: 4)
             computeEncoder?.setTexture(renderTarget, index: 0)
             computeEncoder?.setTexture(irradianceField.ambientCubeTextureR!, index: 1)

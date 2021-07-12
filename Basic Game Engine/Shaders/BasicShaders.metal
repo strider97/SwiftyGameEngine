@@ -6,6 +6,7 @@
 //
 
 #include <metal_stdlib>
+#import "ShaderTypes.h"
 using namespace metal;
 
 struct Uniforms {
@@ -378,16 +379,32 @@ float3 getRSMGlobalIllumination (float4 fragPosLightSpace, float3 pos, float3 sm
     return radiance;
 }
 
-ushort2 gridPosToTex(float3 pos, LightProbeData probe) {
+int gridPosToProbeIndex_(float3 pos, LightProbeData probe) {
     float3 texPos_ = (pos - probe.gridOrigin)/probe.gridEdge;
     int3 texPos = int3(texPos_);
-    return ushort2(texPos.y * probe.probeGridWidth + texPos.x, texPos.z);
+    return  texPos.x +
+            texPos.y * probe.probeGridWidth +
+            texPos.z * probe.probeGridWidth * probe.probeGridHeight;
 }
 
-float4 SHProjectLinear_(float3 dir) {
+void SHProjectLinear_(float3 dir, float coeff[9]) {
     float l0 = 0.282095;
     float l1 = 0.488603;
-    return float4(l0, dir.y * l1, dir.z*l1, dir.x*l1);
+    float l20 = 1.092548;
+    float l21 = 0.315392;
+    float l22 = 0.546274;
+    float x = dir.x, y = dir.y, z = dir.z;
+    
+    coeff[0] = l0;
+    coeff[1] = y * l1;
+    coeff[2] = z * l1;
+    coeff[3] = x * l1;
+    
+    coeff[4] = x * y * l20;
+    coeff[5] = y * z * l20;
+    coeff[6] = (3*z*z - 1.0) * l21;
+    coeff[7] = x * z * l20;
+    coeff[8] = (x*x - y*y) * l22;
 }
 
 float signum_(float v) {
@@ -430,9 +447,12 @@ float4 bary_tet(float3 a, float3 b, float3 c, float3 d, float3 p)
     return float4(va6*v6, vb6*v6, vc6*v6, vd6*v6);
 }
 
-float getDDGI(float3 position, float3 smoothNormal, texture3d<float, access::read> lightProbeTexture, LightProbeData probe) {
-    ushort2 texPos = gridPosToTex(position, probe);
-    float3 transformedPos = (position - probe.gridOrigin)/probe.gridEdge;
+float3 getDDGI(float3 position,
+               float3 smoothNormal,
+               device LightProbe *probes,
+               LightProbeData probeData)
+{
+    float3 transformedPos = (position - probeData.gridOrigin)/probeData.gridEdge;
     transformedPos -= float3(int3(transformedPos));
     float x = transformedPos.x;
     float y = transformedPos.y;
@@ -450,42 +470,44 @@ float getDDGI(float3 position, float3 smoothNormal, texture3d<float, access::rea
         x*y*z,
     };
     
-    for(int i = 0; i < 8; i++) {
-        float3 trueDirectionToProbe = normalize(probePos[i] - position);
-        float w = max(0.0001, (dot(trueDirectionToProbe, smoothNormal) + 1.0) * 0.5);
-        trilinearWeights[i] *= w*w + 0.2;
-    }
+//    for(int i = 0; i < 8; i++) {
+//        float3 trueDirectionToProbe = normalize(probePos[i] - position);
+//        float w = max(0.0001, (dot(trueDirectionToProbe, smoothNormal) + 1.0) * 0.5);
+//        trilinearWeights[i] *= w*w + 0.2;
+//    }
     
-//    float trilinearWeights[8] = {
-//        (1 - x)*(1 - y)*(1 - z) * signum_(dot(smoothNormal, -transformedPos)),
-//        x*(1 - y)*(1 - z) * signum_(dot(smoothNormal, float3(1, 0, 0) - transformedPos)),
-//        (1 - x)*y*(1 - z) * signum_(dot(smoothNormal, float3(0, 1, 0) - transformedPos)),
-//        x*y*(1 - z) * signum_(dot(smoothNormal, float3(1, 1, 0) - transformedPos)),
-//
-//        (1 - x)*(1 - y)*z * signum_(dot(smoothNormal, float3(0, 0, 1) - transformedPos)),
-//        x*(1 - y)*z * signum_(dot(smoothNormal, float3(1, 0, 1) - transformedPos)),
-//        (1 - x)*y*z * signum_(dot(smoothNormal, float3(0, 1, 1) - transformedPos)),
-//        x*y*z * signum_(dot(smoothNormal, float3(1, 1, 1) - transformedPos)),
-//    };
+    int probeIndex = gridPosToProbeIndex_(position, probeData);
     
     ushort2 lightProbeTexCoeff[8] = {
         ushort2(0, 0),
         ushort2(1, 0),
-        ushort2(probe.probeCount.x, 0),
-        ushort2(probe.probeCount.x + 1, 0),
+        ushort2(probeData.probeCount.x, 0),
+        ushort2(probeData.probeCount.x + 1, 0),
         ushort2(0, 1),
         ushort2(1, 1),
-        ushort2(probe.probeCount.x, 1),
-        ushort2(probe.probeCount.x + 1, 1)
+        ushort2(probeData.probeCount.x, 1),
+        ushort2(probeData.probeCount.x + 1, 1)
     };
-    float color = 0;
-    float4 shCoeff = SHProjectLinear_(smoothNormal);
-    float aCap[4] = { 3.141593, 2.094395, 2.094395, 2.094395 };
+    
+    float3 color = 0;
+    float shCoeff[9];
+    SHProjectLinear_(smoothNormal, shCoeff);
+    float aCap[9] = {   3.141593,
+                        2.094395, 2.094395, 2.094395,
+                        0.785398, 0.785398, 0.785398, 0.785398, 0.785398, };
     for (int iCoeff = 0; iCoeff < 8; iCoeff++) {
-        float color_ = 0;
-        float4 coeff = lightProbeTexture.read(ushort3(texPos + lightProbeTexCoeff[iCoeff], 0));
-        for (int i = 0; i<4; i++) {
-            color_ += max(0.0, aCap[i] * coeff[i] * shCoeff[i]);
+        float3 color_ = 0;
+        device LightProbe &probe = probes[probeIndex + lightProbeTexCoeff[iCoeff][0] +
+                               lightProbeTexCoeff[iCoeff][1] * probeData.probeGridWidth *
+                               probeData.probeGridHeight];
+        for (int i = 0; i<9; i++) {
+            color_.r += max(0.0, aCap[i] * probe.shCoeffR[i] * shCoeff[i]);
+            color_.g += max(0.0, aCap[i] * probe.shCoeffG[i] * shCoeff[i]);
+            color_.b += max(0.0, aCap[i] * probe.shCoeffB[i] * shCoeff[i]);
+            
+//            color_.r += (probe.location.x);
+//            color_.g += (probe.location.y);
+//            color_.b += (probe.location.z);
         }
         color += color_ * trilinearWeights[iCoeff];
     //    color += color_ * (1.0/8);
@@ -541,39 +563,6 @@ vertex VertexOut basicVertexShader(const VertexIn vIn [[ stage_in ]], constant U
     return vOut;
 }
 
-fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], constant float3 *lightPolygon[[buffer(1)]], constant LightProbeData &probe [[buffer(2)]], texture2d<float, access::sample> preFilterEnvMap [[texture(textureIndexPreFilterEnvMap)]], texture2d<float, access::sample> DFGlut [[texture(textureIndexDFGlut)]], texture2d<float, access::sample> irradianceMap [[texture(textureIndexirradianceMap)]], texture2d<float, access::sample> baseColor [[texture(textureIndexBaseColor)]], texture2d<float, access::sample> roughnessMap [[texture(textureIndexRoughness)]], texture2d<float, access::sample> metallicMap [[texture(textureIndexMetallic)]], texture2d<float, access::sample> normalMap [[texture(normalMap)]], texture2d<float, access::sample> aoTexture [[texture(ao)]], texture2d<float, access::sample> ltc_mat [[texture(ltc_mat)]], texture2d<float, access::sample> ltc_mag [[texture(ltc_mag)]], depth2d<float, access::sample> shadowMap [[texture(shadowMap)]], texture2d<float, access::sample> worldPos [[texture(rsmPos)]], texture2d<float, access::sample> worldNormal [[texture(rsmNormal)]], texture2d<float, access::sample> flux [[texture(rsmFlux)]], texture3d<float, access::read> lightProbeTextureR [[texture(15)]], texture3d<float, access::read> lightProbeTextureG [[texture(16)]], texture3d<float, access::read> lightProbeTextureB [[texture(17)]]){
-    
-    float3 albedo = material.baseColor;
-//    albedo = 1;
-//    albedo *= pow(baseColor.sample(s, vOut.texCoords).rgb, 3.0);
-//    albedo = 1;
-//    float metallic = material.metallic;
-//    metallic *= metallicMap.sample(s, vOut.texCoords).b;
-//    float roughness = material.roughness;
-//    roughness *= roughnessMap.sample(s, vOut.texCoords).g;
-//    float3 eyeDir = normalize(vOut.eye - vOut.position);
-    
-    float3 smoothN = vOut.smoothNormal;
-//    float3 tangentNormal = normalMap.sample(s, vOut.texCoords).xyz * 2.0 - 1.0;
-//    float3x3 TBN(vOut.tangent, vOut.bitangent, vOut.smoothNormal);
-//    float3 N = normalize(TBN * tangentNormal);
-//    float3 N = getNormalFromMap(vOut.position.xyz, smoothN, vOut.texCoords, tangentNormal);
-//    float3 V = eyeDir;
-    float3 l = vOut.sunDirection;
-    bool inShadow = insideShadow(vOut.lightFragPosition, smoothN, l, shadowMap);
-    float3 ambient = 0;
-    ambient.r = (getDDGI(vOut.position, vOut.smoothNormal, lightProbeTextureR, probe) + 0.0000);
-    ambient.g = (getDDGI(vOut.position, vOut.smoothNormal, lightProbeTextureG, probe) + 0.0000);
-    ambient.b = (getDDGI(vOut.position, vOut.smoothNormal, lightProbeTextureB, probe) + 0.0000);
-    float3 diffuse = inShadow ? 0 : 2 * albedo * saturate(dot(smoothN, l));
-    float3 color = diffuse + 1 * ambient * albedo;
-    
-    float exposure = max(0.01, vOut.exposure);
-    color = 1 - exp(-color * exposure);
-    color = pow(color, float3(1.0/2.2));
-    return float4(color, 1.0);
-}
-
 struct SimpleVertexDR {
     float3 position [[attribute(0)]];
     float4 color [[attribute(1)]];
@@ -595,56 +584,17 @@ vertex VertexOutDR DeferredRendererVS (const SimpleVertexDR vIn [[ stage_in ]]) 
     return vOut;
 }
 
-fragment float4 DeferredRendererFS(VertexOutDR vOut [[ stage_in ]],
-                                   constant ShadowUniforms &shadowUniforms [[buffer(0)]],
-                                   constant LightProbeData &probe [[buffer(1)]],
-                                   constant FragmentUniform &fUniforms [[buffer(2)]],
-                                   texture2d<float, access::sample> worldPos [[texture(rsmPos)]],
-                                   texture2d<float, access::sample> worldNormal [[texture(rsmNormal)]],
-                                   texture2d<float, access::sample> albedoTex [[texture(rsmFlux)]],
-                                   texture3d<float, access::read> lightProbeTextureR [[texture(15)]],
-                                   texture3d<float, access::read> lightProbeTextureG [[texture(16)]],
-                                   texture3d<float, access::read> lightProbeTextureB [[texture(17)]]){
-    
-    float3 pos = worldPos.sample(s, vOut.pos).rgb;
-    float3 smoothN = worldNormal.sample(s, vOut.pos).rgb;
-    float4 albedo_ = albedoTex.sample(s, vOut.pos);
-    float3 albedo = albedo_.rgb;
-//    albedo = 0.8;
-    float3 l = shadowUniforms.sunDirection;
-    float inShadow = albedo_.a;
-    
-    float3 ambient = 0;
-    ambient.r = (getDDGI(pos, smoothN, lightProbeTextureR, probe) + 0.0000);
-//    ambient.g = (getDDGI(pos, smoothN, lightProbeTextureG, probe) + 0.0000);
-//    ambient.b = (getDDGI(pos, smoothN, lightProbeTextureB, probe) + 0.0000);
-    float3 diffuse = inShadow * 4.0 * albedo * saturate(dot(smoothN, l));
-    float3 color = diffuse + 2 * ambient.r * albedo;
-    
-    float exposure = fUniforms.exposure;
-    color = 1 - exp(-color * exposure);
-    color = pow(color, float3(1.0/2.2));
-    return float4(color, 1.0);
-}
-
-
-fragment float4 fragmentRSM(VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], constant float3 *lightPolygon[[buffer(1)]], texture2d<float, access::sample> worldPos [[texture(rsmPos)]], texture2d<float, access::sample> worldNormal [[texture(rsmNormal)]], texture2d<float, access::sample> flux [[texture(rsmFlux)]], depth2d<float, access::sample> rsmDepth [[texture(rsmDepth)]]) {
-    return float4(0);
-}
-
 kernel void DefferedShadeKernel(uint2 tid [[thread_position_in_grid]],
                                 constant ShadowUniforms &shadowUniforms [[buffer(0)]],
                                 constant LightProbeData &probe [[buffer(1)]],
                                 constant FragmentUniform &uniforms [[buffer(2)]],
                                 constant float3 *kernelAndNoise [[buffer(3)]],
+                                device LightProbe *probes [[buffer(4)]],
                                 texture2d<float, access::sample> worldPos [[texture(rsmPos)]],
                                 texture2d<float, access::sample> worldNormal [[texture(rsmNormal)]],
                                 texture2d<float, access::sample> albedoTex [[texture(rsmFlux)]],
                                 depth2d<float, access::sample> depthTex [[texture(rsmDepth)]],
-                                texture2d<float, access::write> outputTex [[texture(0)]],
-                                texture3d<float, access::read> lightProbeTextureR [[texture(15)]],
-                                texture3d<float, access::read> lightProbeTextureG [[texture(16)]],
-                                texture3d<float, access::read> lightProbeTextureB [[texture(17)]]) {
+                                texture2d<float, access::write> outputTex [[texture(0)]]) {
     if (tid.x < uniforms.width && tid.y < uniforms.height) {
         float2 uv = float2(tid)/float2(uniforms.width, uniforms.height);
         float3 pos = worldPos.sample(s, uv).rgb;
@@ -661,11 +611,9 @@ kernel void DefferedShadeKernel(uint2 tid [[thread_position_in_grid]],
         float inShadow = normalShadow.a;
         
         float3 ambient = 0;
-        ambient.r = (getDDGI(pos, smoothN, lightProbeTextureR, probe) + 0.0000);
-        ambient.g = (getDDGI(pos, smoothN, lightProbeTextureG, probe) + 0.0000);
-        ambient.b = (getDDGI(pos, smoothN, lightProbeTextureB, probe) + 0.0000);
+        ambient = (getDDGI(pos, smoothN, probes, probe) + 0.0000);
         float3 diffuse = inShadow * 4.0 * albedo * saturate(dot(smoothN, l));
-        float3 color = diffuse + 2 * ambient * albedo;
+        float3 color = diffuse + 4 * ambient * albedo;// * albedo;
     //    float4x4 PV = shadowUniforms.P * shadowUniforms.V;
     //    float ssao = getSSAO(pos, smoothN, kernelAndNoise[64 + tid.x % 16], PV, kernelAndNoise, depthTex);
         

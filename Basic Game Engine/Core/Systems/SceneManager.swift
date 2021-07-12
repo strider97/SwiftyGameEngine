@@ -156,7 +156,7 @@ extension Scene {
 
     func getLightProbeUniformData(_ index: Int) -> Uniforms {
         var M = sphere.transform.modelMatrix
-        let pos = rayTracer!.irradianceField.probeLocationsArray[index]
+        let pos = rayTracer!.irradianceField.probesArray[index].location
         M[3][0] = pos[0]
         M[3][1] = pos[1]
         M[3][2] = pos[2]
@@ -388,10 +388,10 @@ extension Scene {
         renderCommandEncoder?.setDepthStencilState(depthStencilState)
         renderCommandEncoder?.setRenderPipelineState(sphere.renderPipelineState!)
         let irradianceField = rayTracer!.irradianceField!
-        var lightProbeData = LightProbeData(gridEdge: irradianceField.gridEdge, gridOrigin: irradianceField.origin, probeGridWidth: irradianceField.width, probeGridHeight: irradianceField.height, probeGridCount: Int3(0, 0, 0))
+        var lightProbeData = LightProbeData(gridEdge: irradianceField.gridEdge, gridOrigin: irradianceField.origin, probeGridWidth: Int32(irradianceField.width), probeGridHeight: Int32(irradianceField.height), probeGridCount: Int3(0, 0, 0))
         renderCommandEncoder?.setFragmentBytes(&lightProbeData, length: MemoryLayout<LightProbeData>.stride, index: 0)
         renderCommandEncoder?.setFragmentTexture(irradianceField.ambientCubeTextureFinalR, index: 0)
-        for (index, _) in rayTracer!.irradianceField.probeLocationsArray.enumerated() {
+        for (index, _) in rayTracer!.irradianceField.probesArray.enumerated() {
             var u = getLightProbeUniformData(index)
             renderCommandEncoder?.setVertexBytes(&u, length: MemoryLayout<Uniforms>.stride, index: 1)
             for (mesh, meshNodes) in mesh_.meshNodes {
@@ -449,21 +449,19 @@ extension Scene {
     //    renderCommandEncoder?.setRenderPipelineState(deferredRenderPipelineState)
     //    renderCommandEncoder?.setVertexBuffer(dfgLut.vertexBuffer, offset: 0, index: 0)
         let irradianceField = rayTracer!.irradianceField!
-        var lightProbeData = LightProbeData(gridEdge: irradianceField.gridEdge, gridOrigin: irradianceField.origin, probeGridWidth: irradianceField.width, probeGridHeight: irradianceField.height, probeGridCount: Int3(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2))
+        var lightProbeData = LightProbeData(gridEdge: irradianceField.gridEdge, gridOrigin: irradianceField.origin, probeGridWidth: Int32(irradianceField.width), probeGridHeight: Int32(irradianceField.height), probeGridCount: Int3(Int32(Constants.probeGrid.0), Int32(Constants.probeGrid.1), Int32(Constants.probeGrid.2)))
         var s = ShadowUniforms(P: P, V: camera.lookAtMatrix, sunDirection: sunDirection.normalized)
         var fragmentUniform = FragmentUniforms(exposure: exposure, width: UInt32(size.width), height: UInt32(size.height))
         computeEncoder?.setTexture(gBufferData.worldPos, index: TextureIndex.worldPos.rawValue)
         computeEncoder?.setTexture(gBufferData.normal, index: TextureIndex.normal.rawValue)
         computeEncoder?.setTexture(gBufferData.flux, index: TextureIndex.flux.rawValue)
         computeEncoder?.setTexture(gBufferData.depth, index: TextureIndex.depth.rawValue)
-        computeEncoder?.setTexture(rayTracer?.irradianceField.ambientCubeTextureFinalR, index: TextureIndex.textureDDGIR.rawValue)
-        computeEncoder?.setTexture(rayTracer?.irradianceField.ambientCubeTextureFinalG, index: TextureIndex.textureDDGIG.rawValue)
-        computeEncoder?.setTexture(rayTracer?.irradianceField.ambientCubeTextureFinalB, index: TextureIndex.textureDDGIB.rawValue)
         computeEncoder?.setTexture(renderTarget, index: 0)
         computeEncoder?.setBytes(&s, length: MemoryLayout<ShadowUniforms>.stride, index: 0)
         computeEncoder?.setBytes(&lightProbeData, length: MemoryLayout<LightProbeData>.stride, index: 1)
         computeEncoder?.setBytes(&fragmentUniform, length: MemoryLayout<FragmentUniforms>.stride, index: 2)
         computeEncoder?.setBytes(&randomKernelAndNoise, length: MemoryLayout<Float3>.stride * randomKernelSize, index: 3)
+        computeEncoder?.setBuffer(irradianceField.probes, offset: 0, index: 4)
         computeEncoder?.setComputePipelineState(computePipeline)
         computeEncoder?.dispatchThreadgroups(threadGroups,
                                              threadsPerThreadgroup: threadsPerGroup)
@@ -482,7 +480,7 @@ extension Scene {
         //    for i in 0..<lightPolygon.count {
         //        lightPolygon[i] = lightPolygonInitial[i] + Float3(sin(GameTimer.sharedTimer.time) * 20, 0, 0)
         //    }
-    //    sunDirection.z = 15 * cos(GameTimer.sharedTimer.time / 20)
+        sunDirection.z = 15 * cos(GameTimer.sharedTimer.time / 6)
     //    sunDirection.x = -25
     //    sunDirection. = abs(40 * cos(GameTimer.sharedTimer.time / 10)) - 1
         shadowViewMatrix = Matrix4.viewMatrix(position: sunDirection, target: Float3(0, 0, 0), up: Camera.WorldUp)
