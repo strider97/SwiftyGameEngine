@@ -83,7 +83,7 @@ class Raytracer {
         createBuffers()
         buildIntersector()
         buildAccelerationStructure()
-        irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, (minPosition + maxPosition)/2, (maxPosition - minPosition)*1.2)
+        irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, (minPosition + maxPosition)/2, (maxPosition - minPosition)*0.8)
    //     irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 7.5, 0), Float3(30, 18, 14))
    //     irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 1.5, 0), Float3(16, 2.5, 8.2))
    //     irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 10, 0), Float3(25, 25, 15))
@@ -391,6 +391,7 @@ extension Raytracer {
             computeEncoder?.setTexture(irradianceField.ambientCubeTextureR!, index: 1)
             computeEncoder?.setTexture(irradianceField.ambientCubeTextureG!, index: 2)
             computeEncoder?.setTexture(irradianceField.ambientCubeTextureB!, index: 3)
+            computeEncoder?.setTexture(irradianceField.octaHedralMap!, index: 4)
             computeEncoder?.setComputePipelineState(shadowPipeline!)
             computeEncoder?.dispatchThreadgroups(
                 threadGroups,

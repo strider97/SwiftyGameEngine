@@ -17,6 +17,26 @@ class Descriptor {
         texture.label = label
         return texture
     }
+    
+    
+    static func build2DTextureForWrite(pixelFormat: MTLPixelFormat, size: CGSize, label: String = "texture", mipmapped: Bool = false, shaderWrite: Bool = false) -> MTLTexture {
+        let device = Device.sharedDevice.device!
+        let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat, width: Int(size.width), height: Int(size.height), mipmapped: mipmapped)
+        descriptor.usage = [.shaderRead, shaderWrite ? .shaderWrite : .renderTarget]
+    //    descriptor.storageMode = .private
+        guard let texture = device.makeTexture(descriptor: descriptor) else { fatalError("Could not make texture") }
+        texture.label = label
+        let dimW = Int(size.width)
+        let dimH = Int(size.height)
+        let values: [Float] = [Float](repeating: 0.0, count: dimW * dimH * 4)
+        texture.replace(region: MTLRegionMake2D(0, 0, dimW, dimH),
+                        mipmapLevel: 0,
+                        slice: 0,
+                        withBytes: values,
+                        bytesPerRow: dimW * MemoryLayout<Float>.size * 4,
+                        bytesPerImage: dimW * dimH * MemoryLayout<Float>.size * 4)
+        return texture
+    }
 
     static func buildTextureCube(size: Int, label: String = "") -> MTLTexture {
         let device = Device.sharedDevice.device!

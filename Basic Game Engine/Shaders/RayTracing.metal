@@ -72,6 +72,7 @@ constant float3 ambientCubeDir[] = {
     float3(0, -1, 0),
     float3(-0.7071, 0, -0.7071)
 };
+constant float infDist = 10000;
 
 float3 sphericalFibonacci(float i_, float n) {
     float i = i_ + 0.5;
@@ -133,7 +134,7 @@ kernel void primaryRays(constant Uniforms_ & uniforms [[buffer(0)]],
        ray.origin = probes[index].location;
   //    ray.direction = normalize(float3(0, 1, 0));
       int rayDirIndex = tid.y*uniforms.probeWidth + tid.x % uniforms.probeWidth;
-      ray.direction = probeDirections[rayDirIndex*((uniforms.frameIndex + 1) % 1000)];
+      ray.direction = probeDirections[rayDirIndex*((uniforms.frameIndex + 1) % 4000)];
   //    ray.direction = sphericalFibonacci(rayDirIndex, uniforms.probeWidth * uniforms.probeHeight);
 //      ray.direction = normalize(ray.direction);
 //    ray.origin = camera.position;
@@ -248,6 +249,38 @@ float2 sampleSphericalMap__(float3 dir) {
     return uv;
 }
 
+float2 octWrap( float2 v ) {
+    return ( 1.0 - abs( v.yx ) ) * ( (v.x >= 0.0 && v.y >=0) ? 1.0 : -1.0 );
+}
+
+float signNotZero(float k) {
+    return (k >= 0.0) ? 1.0 : -1.0;
+}
+
+float2 signNotZero(float2 v) {
+    return float2(signNotZero(v.x), signNotZero(v.y));
+}
+ 
+float2 octEncode( float3 v ) {
+    float l1norm = abs(v.x) + abs(v.y) + abs(v.z);
+    float2 result = v.xy * (1.0 / l1norm);
+    if (v.z < 0.0) {
+        result = (1.0 - abs(result.yx)) * signNotZero(result.xy);
+    }
+    result = result*0.5 + 0.5;
+    return result;
+}
+ 
+float3 octDecode( float2 f ) {
+    f = f * 2.0 - 1.0;
+ 
+    // https://twitter.com/Stubbesaurus/status/937994790553227264
+    float3 n = float3( f.x, f.y, 1.0 - abs( f.x ) - abs( f.y ) );
+    float t = saturate( -n.z );
+    n.xy += (n.x >= 0.0 && n.y >=0) ? -t : t;
+    return normalize( n );
+}
+
 int gridPosToProbeIndex(float3 pos, LightProbeData_ probe) {
     float3 texPos_ = (pos - probe.gridOrigin)/probe.gridEdge;
     int3 texPos = int3(texPos_);
@@ -316,7 +349,7 @@ float3 getDDGI_(float3 position,
     };
     
 //    for(int i = 0; i < 8; i++) {
-//        float3 trueDirectionToProbe = normalize(probePos[i] - position);
+//        float3 trueDirectionToProbe = normalize(probePos[i] - transformedPos);
 //        float w = max(0.0001, (dot(trueDirectionToProbe, smoothNormal) + 1.0) * 0.5);
 //        trilinearWeights[i] *= w*w + 0.2;
 //    }
@@ -401,7 +434,7 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
   //      shadowRay.color = 1;
   //      shadowRay.indirectColor = 1;
   //      shadowRay.color = float3(1, 0.1, 0);
-        shadowRay.indirectColor = 0 * getDDGI_(shadowRay.origin, surfaceNormal, probes, uniforms.probeData);
+        shadowRay.indirectColor = getDDGI_(shadowRay.origin, surfaceNormal, probes, uniforms.probeData);
   //      shadowRay.indirectColor = 0.1;
   //      shadowRay.indirectColor.g = 2 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureG, uniforms.probeData);
   //      shadowRay.indirectColor.b = 2 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureB, uniforms.probeData);
@@ -413,6 +446,7 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
   //    ray.origin = intersectionPoint + surfaceNormal * 1e-3f;
   //    ray.direction = sampleDirection;
   //    ray.color = color;
+        shadowRay.maxDistance = infDist + intersection.distance + 0.1;
     }
     else {
         ray.maxDistance = -1.0;
@@ -435,7 +469,8 @@ kernel void shadowKernel(uint2 tid [[thread_position_in_grid]],
                          texture2d<float, access::write> renderTarget,
                          texture3d<float, access::write> lightProbeTextureR,
                          texture3d<float, access::write> lightProbeTextureG,
-                         texture3d<float, access::write> lightProbeTextureB) {
+                         texture3d<float, access::write> lightProbeTextureB,
+                         texture2d<float, access::read_write> octahedralMap) {
     if (tid.x < uniforms.width && tid.y < uniforms.height) {
         unsigned int rayIdx = tid.y * uniforms.width + tid.x;
         device Ray & shadowRay = shadowRays[rayIdx];
@@ -447,17 +482,27 @@ kernel void shadowKernel(uint2 tid [[thread_position_in_grid]],
         float oldValuesB[4] = { 0, 0, 0, 0 };
         if ((shadowRay.maxDistance >= 0.0 && intersectionDistance < 0.0)) {
             color += shadowRay.color;
-            //    float3 direction = sphericalFibonacci(rayDirIndex, uniforms.probeWidth * uniforms.probeHeight);
-        //    float3 oldValue1 = lightProbeTexture.read(ushort3(tid.x, tid.y, rayDirIndex*2)).rgb;
-        //    float3 oldValue2 = lightProbeTexture.read(ushort3(tid.x, tid.y, rayDirIndex*2 + 1)).rgb;
-        //    float oldValues[6] = { oldValue1.x, oldValue1.y, oldValue1.z, oldValue2.x, oldValue2.y, oldValue2.z};
         }
-     //   color *= 100;
         int index = tid.x / uniforms.probeWidth;
         int rayDirIndex = tid.y*uniforms.probeWidth + tid.x % uniforms.probeWidth;
-        int raycount = uniforms.probeWidth * uniforms.probeHeight;
+        uint2 raycount = uint2(64, 64);
         float3 direction = shadowRay.prevDirection;
         uint2 texPos = indexToTexPos(index, uniforms.probeGridWidth, uniforms.probeGridHeight);
+        
+        if (shadowRay.maxDistance >= 0) {
+            uint2 texPosOcta = texPos * raycount + uint2(octEncode(direction) * float2(raycount));
+            float d = shadowRay.maxDistance - infDist;
+            float d2 = d*d;
+            float4 texColor = octahedralMap.read(texPosOcta);
+            int frame = texColor.a;
+            float d_before = texColor.r;
+            float d_final = (d_before * frame + d)/(frame + 1.0);
+            float d2_before = texColor.g;
+            float d2_final = (d2_before * frame + d2)/(frame + 1.0);
+       //     octahedralMap.write(float4(d_final, d2_final, 0, 1), texPosOcta);
+            octahedralMap.write(float4(float3(d_final, d2_final, 0), frame+1), texPosOcta);
+        }
+        
         oldValuesR[0] = direction.x;
         oldValuesR[1] = direction.y;
         oldValuesR[2] = direction.z;

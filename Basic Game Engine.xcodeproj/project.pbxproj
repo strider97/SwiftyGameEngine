@@ -1140,6 +1140,7 @@
 		72A765962686680B00E2B07D /* bathroomLowPoly.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 72A765922686680B00E2B07D /* bathroomLowPoly.mtl */; };
 		72A765972686680B00E2B07D /* sponzaLowPoly.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 72A765932686680B00E2B07D /* sponzaLowPoly.mtl */; };
 		72A765982686680B00E2B07D /* sponzaLowPoly.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72A765942686680B00E2B07D /* sponzaLowPoly.obj */; };
+		72A89657269D02F700BF6B22 /* math_.metal in Sources */ = {isa = PBXBuildFile; fileRef = 72A89656269D02F700BF6B22 /* math_.metal */; };
 		72C1736925DED90800B75C4D /* ring.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72C1736825DED90800B75C4D /* ring.usd */; };
 		72CBB801266E7B1D00D927F9 /* bigroom.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72CBB7FF266E7B1D00D927F9 /* bigroom.obj */; };
 		72CBB802266E7B1D00D927F9 /* bigroom.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 72CBB800266E7B1D00D927F9 /* bigroom.mtl */; };
@@ -2345,6 +2346,7 @@
 		72A765922686680B00E2B07D /* bathroomLowPoly.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bathroomLowPoly.mtl; sourceTree = "<group>"; };
 		72A765932686680B00E2B07D /* sponzaLowPoly.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sponzaLowPoly.mtl; sourceTree = "<group>"; };
 		72A765942686680B00E2B07D /* sponzaLowPoly.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sponzaLowPoly.obj; sourceTree = "<group>"; };
+		72A89656269D02F700BF6B22 /* math_.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = math_.metal; sourceTree = "<group>"; };
 		72C1736825DED90800B75C4D /* ring.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = ring.usd; path = "Basic Game Engine/Resources/teapot/ring.usd"; sourceTree = SOURCE_ROOT; };
 		72CBB7FF266E7B1D00D927F9 /* bigroom.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bigroom.obj; sourceTree = "<group>"; };
 		72CBB800266E7B1D00D927F9 /* bigroom.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bigroom.mtl; sourceTree = "<group>"; };
@@ -3856,6 +3858,7 @@
 				7243911A265EDE7E0066F3B4 /* Shaders.metal */,
 				7243911F265EDE9F0066F3B4 /* ShaderTypes.h */,
 				72439120265EDECE0066F3B4 /* RayTracing.metal */,
+				72A89656269D02F700BF6B22 /* math_.metal */,
 			);
 			path = Shaders;
 			sourceTree = "<group>";
@@ -5321,6 +5324,7 @@
 				7223E3EE2624EE630070CB9A /* rsmShader.metal in Sources */,
 				7230F99B25C60FAD00D9610A /* BasicScene.swift in Sources */,
 				720EC2F325D82F2500A83F1A /* SkyboxShader.metal in Sources */,
+				72A89657269D02F700BF6B22 /* math_.metal in Sources */,
 				72E398F525BC21E400927B17 /* Core.swift in Sources */,
 				72E398A525BB4ECA00927B17 /* AppDelegate.swift in Sources */,
 				72E3991825BCBB2500927B17 /* GameView.swift in Sources */,

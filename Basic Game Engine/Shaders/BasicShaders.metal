@@ -447,10 +447,55 @@ float4 bary_tet(float3 a, float3 b, float3 c, float3 d, float3 p)
     return float4(va6*v6, vb6*v6, vc6*v6, vd6*v6);
 }
 
+uint2 indexToTexPos___(int index, int width, int height){
+    int indexD = index / (width * height);
+    int indexH = (index % (width * height));
+    return uint2(indexH, indexD);
+}
+
+float2 octWrap_( float2 v ) {
+    return ( 1.0 - abs( v.yx ) ) * ( (v.x >= 0.0 && v.y >=0) ? 1.0 : -1.0 );
+}
+
+float signNotZero_(float k) {
+    return (k >= 0.0) ? 1.0 : -1.0;
+}
+
+float2 signNotZero_(float2 v) {
+    return float2(signNotZero_(v.x), signNotZero_(v.y));
+}
+ 
+float2 octEncode_( float3 v ) {
+    float l1norm = abs(v.x) + abs(v.y) + abs(v.z);
+    float2 result = v.xy * (1.0 / l1norm);
+    if (v.z < 0.0) {
+        result = (1.0 - abs(result.yx)) * signNotZero_(result.xy);
+    }
+    result = result*0.5 + 0.5;
+    return result;
+}
+ 
+float3 octDecode_( float2 f ) {
+    f = f * 2.0 - 1.0;
+ 
+    // https://twitter.com/Stubbesaurus/status/937994790553227264
+    float3 n = float3( f.x, f.y, 1.0 - abs( f.x ) - abs( f.y ) );
+    float t = saturate( -n.z );
+    n.xy += (n.x >= 0.0 && n.y >=0) ? -t : t;
+    return normalize( n );
+}
+
+float sq(float s) {
+    return s*s;
+}
+
+float pow3(float s) { return s*s*s; }
+
 float3 getDDGI(float3 position,
                float3 smoothNormal,
                device LightProbe *probes,
-               LightProbeData probeData)
+               LightProbeData probeData,
+               texture2d<float, access::read> octahedralMap)
 {
     float3 transformedPos = (position - probeData.gridOrigin)/probeData.gridEdge;
     transformedPos -= float3(int3(transformedPos));
@@ -471,7 +516,7 @@ float3 getDDGI(float3 position,
     };
     
 //    for(int i = 0; i < 8; i++) {
-//        float3 trueDirectionToProbe = normalize(probePos[i] - position);
+//        float3 trueDirectionToProbe = normalize(probePos[i] - transformedPos);
 //        float w = max(0.0001, (dot(trueDirectionToProbe, smoothNormal) + 1.0) * 0.5);
 //        trilinearWeights[i] *= w*w + 0.2;
 //    }
@@ -497,9 +542,33 @@ float3 getDDGI(float3 position,
                         0.785398, 0.785398, 0.785398, 0.785398, 0.785398, };
     for (int iCoeff = 0; iCoeff < 8; iCoeff++) {
         float3 color_ = 0;
-        device LightProbe &probe = probes[probeIndex + lightProbeTexCoeff[iCoeff][0] +
-                               lightProbeTexCoeff[iCoeff][1] * probeData.probeGridWidth *
-                               probeData.probeGridHeight];
+        int index = probeIndex +
+                    lightProbeTexCoeff[iCoeff][0] +
+                    lightProbeTexCoeff[iCoeff][1] * probeData.probeGridWidth * probeData.probeGridHeight;
+        device LightProbe &probe = probes[index];
+        
+        float dist = length(position - probe.location);
+        uint2 texPos = indexToTexPos___(index, probeData.probeGridWidth, probeData.probeGridHeight);
+        float3 dirToProbe = normalize(position - probe.location);
+        int shadowProbeReso = 64;
+        uint2 texPosOcta = texPos * shadowProbeReso + uint2(octEncode_(dirToProbe) * float2(shadowProbeReso));
+        float4 d = octahedralMap.read(texPosOcta);
+        
+        float distToProbe = dist;
+
+        float2 temp = d.rg;
+        float mean = temp.x;
+        float variance = abs(sq(temp.x) - temp.y);
+
+        // http://www.punkuser.net/vsm/vsm_paper.pdf; equation 5
+        // Need the max in the denominator because biasing can cause a negative displacement
+        float chebyshevWeight = variance / (variance + sq(max(distToProbe - mean, 0.0)));
+            
+        // Increase contrast in the weight
+        chebyshevWeight = max(pow3(chebyshevWeight), 0.0);
+
+        float finalShadowingWeight = (distToProbe <= mean) ? 1.0 : chebyshevWeight;
+        
         for (int i = 0; i<9; i++) {
             color_.r += max(0.0, aCap[i] * probe.shCoeffR[i] * shCoeff[i]);
             color_.g += max(0.0, aCap[i] * probe.shCoeffG[i] * shCoeff[i]);
@@ -509,7 +578,7 @@ float3 getDDGI(float3 position,
 //            color_.g += (probe.location.y);
 //            color_.b += (probe.location.z);
         }
-        color += color_ * trilinearWeights[iCoeff];
+        color += color_ * trilinearWeights[iCoeff] * finalShadowingWeight;
     //    color += color_ * (1.0/8);
     }
   return color;
@@ -594,7 +663,8 @@ kernel void DefferedShadeKernel(uint2 tid [[thread_position_in_grid]],
                                 texture2d<float, access::sample> worldNormal [[texture(rsmNormal)]],
                                 texture2d<float, access::sample> albedoTex [[texture(rsmFlux)]],
                                 depth2d<float, access::sample> depthTex [[texture(rsmDepth)]],
-                                texture2d<float, access::write> outputTex [[texture(0)]]) {
+                                texture2d<float, access::write> outputTex [[texture(0)]],
+                                texture2d<float, access::read> octahedralMap[[texture(10)]]) {
     if (tid.x < uniforms.width && tid.y < uniforms.height) {
         float2 uv = float2(tid)/float2(uniforms.width, uniforms.height);
         float3 pos = worldPos.sample(s, uv).rgb;
@@ -611,7 +681,7 @@ kernel void DefferedShadeKernel(uint2 tid [[thread_position_in_grid]],
         float inShadow = normalShadow.a;
         
         float3 ambient = 0;
-        ambient = (getDDGI(pos, smoothN, probes, probe) + 0.0000);
+        ambient = (getDDGI(pos, smoothN, probes, probe, octahedralMap) + 0.0000);
         float3 diffuse = inShadow * 4.0 * albedo * saturate(dot(smoothN, l));
         float3 color = diffuse + 4 * ambient * albedo;// * albedo;
     //    float4x4 PV = shadowUniforms.P * shadowUniforms.V;
