@@ -8,15 +8,24 @@
 import MetalKit
 
 class GameView: MTKView {
+    
+    @IBOutlet var normalBiasSlider: NSSlider!
+    @IBOutlet var depthBiasSlider: NSSlider!
+    @IBOutlet var exposureSlider: NSSlider!
+    @IBOutlet var showLightProbes: NSButton!
+    
+    var currentScene: Scene!
+    
     required init(coder: NSCoder) {
         super.init(coder: coder)
         device = Device.sharedDevice.device
         delegate = SceneManager.sharedManager.currentScene
+        currentScene = SceneManager.sharedManager.currentScene
         delegate?.mtkView(self, drawableSizeWillChange: CGSize(width: drawableSize.width, height: drawableSize.height))
         colorPixelFormat = Constants.pixelFormat
         depthStencilPixelFormat = .depth32Float
         clearColor = Colors.clearColor
-
+        
         updateTrackingAreas()
         addTrackingArea(NSTrackingArea(coder: coder)!)
         let options: NSTrackingArea.Options = [.mouseEnteredAndExited, .mouseMoved, .activeInKeyWindow]
@@ -24,6 +33,20 @@ class GameView: MTKView {
                                           owner: self, userInfo: nil)
         addTrackingArea(trackingArea)
     }
+    
+    func addSliders() {
+        currentScene.uniformSliders = [
+            Constants.Labels.normalBias: normalBiasSlider,
+            Constants.Labels.depthBias: depthBiasSlider,
+            Constants.Labels.exposure: exposureSlider,
+        ]
+    }
+    
+    @IBAction func toggleShowProbes(_ sender: Any) {
+        guard let checkBox = sender as? NSButton else { return }
+        currentScene.showProbes = checkBox.state == .on
+    }
+    
 }
 
 extension GameView {

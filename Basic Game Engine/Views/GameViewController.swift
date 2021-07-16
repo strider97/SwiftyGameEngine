@@ -8,10 +8,11 @@
 import Cocoa
 
 class GameViewController: NSViewController {
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        guard let gameView = view as? GameView else { return }
+        gameView.addSliders()
     }
 
     override var representedObject: Any? {

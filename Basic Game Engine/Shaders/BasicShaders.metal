@@ -98,6 +98,8 @@ struct LightProbeData {
 
 struct FragmentUniform {
     float exposure;
+    float normalBias;
+    float depthBias;
     uint width;
     uint height;
 };
@@ -270,9 +272,13 @@ float sq(float s) {
 }
 
 float pow3(float s) { return s*s*s; }
+int signOf(float a) {
+    return a >= 0 ? 1 : -1;
+}
 
 float3 getDDGI(float3 position,
                float3 smoothNormal,
+               FragmentUniform uniforms,
                device LightProbe *probes,
                LightProbeData probeData,
                texture2d<float, access::read> octahedralMap)
@@ -295,11 +301,11 @@ float3 getDDGI(float3 position,
         x*y*z,
     };
     
-    for(int i = 0; i < 8; i++) {
-        float3 trueDirectionToProbe = normalize(probePos[i] - transformedPos);
-        float w = max(0.0001, signum_(dot(trueDirectionToProbe, smoothNormal)) * 1);
-        trilinearWeights[i] *= w*w + 0.2;
-    }
+//    for(int i = 0; i < 8; i++) {
+//        float3 trueDirectionToProbe = normalize(probePos[i] - transformedPos);
+//        float w = max(0.0001, signum_(dot(trueDirectionToProbe, smoothNormal)) * 1);
+//        trilinearWeights[i] *= w*w + 0.2;
+//    }
     
     int probeIndex = gridPosToProbeIndex_(position, probeData);
     
@@ -327,18 +333,25 @@ float3 getDDGI(float3 position,
                     lightProbeTexCoeff[iCoeff][1] * probeData.probeGridWidth * probeData.probeGridHeight;
         device LightProbe &probe = probes[index];
         
-        float normalBias = 0.15;
-        float depthBias = 0.05;
+        float normalBias = uniforms.normalBias;
+        float depthBias = uniforms.depthBias;
+        float3 dirFromProbe = normalize(position - probe.location);
+        float dotPN = dot(dirFromProbe, smoothNormal);
+    //    if (dotPN > 0)
+    //        continue;
+        int signDot = signOf(-dotPN);
+        normalBias *= signDot;
+        depthBias *= signDot;
+        float w = max(0.0001, signum_(-dotPN) * 1);
+        trilinearWeights[iCoeff] *= w*w + 0.2;
+        
         float3 newPosition = position + normalBias * smoothNormal;
-        
-        float dist = length(newPosition - probe.location);
+        dirFromProbe = normalize(newPosition - probe.location);
+        float distToProbe = length(newPosition - probe.location);
         uint2 texPos = indexToTexPos___(index, probeData.probeGridWidth, probeData.probeGridHeight);
-        float3 dirToProbe = normalize(newPosition - probe.location);
         int shadowProbeReso = 64;
-        uint2 texPosOcta = texPos * shadowProbeReso + uint2(octEncode_(dirToProbe) * float2(shadowProbeReso));
+        uint2 texPosOcta = texPos * shadowProbeReso + uint2(octEncode_(dirFromProbe) * float2(shadowProbeReso));
         float4 d = octahedralMap.read(texPosOcta);
-        
-        float distToProbe = dist;
 
         float2 temp = d.rg;
         float mean = temp.x;
@@ -461,7 +474,7 @@ kernel void DefferedShadeKernel(uint2 tid [[thread_position_in_grid]],
         float inShadow = normalShadow.a;
         
         float3 ambient = 0;
-        ambient = (getDDGI(pos, smoothN, probes, probe, octahedralMap) + 0.0000);
+        ambient = (getDDGI(pos, smoothN, uniforms, probes, probe, octahedralMap) + 0.0000);
         float3 diffuse = inShadow * 4.0 * albedo * saturate(dot(smoothN, l));
         float3 color = diffuse + 4 * ambient * albedo;// * albedo;
     //    float4x4 PV = shadowUniforms.P * shadowUniforms.V;

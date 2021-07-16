@@ -61,6 +61,9 @@ class Scene: NSObject {
         Float3(6, -1.9, 20),
         Float3(0, 10, 20),
     ]
+    
+    var uniformSliders: [String: NSSlider] = [:]
+    var showProbes = false
 
     var light: PolygonLight
     var sphere = GameObject(modelName: "sphere")
@@ -282,7 +285,9 @@ extension Scene {
         drawDefferedRenderCompute(commandBuffer: commandBuffer!)
         let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         drawDefferedRender(renderCommandEncoder: renderCommandEncoder)
-        drawLightProbes(renderCommandEncoder: renderCommandEncoder)
+        if showProbes {
+            drawLightProbes(renderCommandEncoder: renderCommandEncoder)
+        }
     //    drawSkybox(renderCommandEncoder: renderCommandEncoder)
         renderCommandEncoder?.endEncoding()
 
@@ -452,7 +457,13 @@ extension Scene {
         let irradianceField = rayTracer!.irradianceField!
         var lightProbeData = LightProbeData(gridEdge: irradianceField.gridEdge, gridOrigin: irradianceField.origin, probeGridWidth: Int32(irradianceField.width), probeGridHeight: Int32(irradianceField.height), probeGridCount: Int3(Int32(Constants.probeGrid.0), Int32(Constants.probeGrid.1), Int32(Constants.probeGrid.2)))
         var s = ShadowUniforms(P: P, V: camera.lookAtMatrix, sunDirection: sunDirection.normalized)
-        var fragmentUniform = FragmentUniforms(exposure: exposure, width: UInt32(size.width), height: UInt32(size.height))
+        var fragmentUniform = FragmentUniforms(
+            exposure: uniformSliders[Constants.Labels.exposure]!.floatValue,
+            normalBias: uniformSliders[Constants.Labels.normalBias]!.floatValue,
+            depthBias: uniformSliders[Constants.Labels.depthBias]!.floatValue,
+            width: UInt32(size.width),
+            height: UInt32(size.height)
+        )
         computeEncoder?.setTexture(gBufferData.worldPos, index: TextureIndex.worldPos.rawValue)
         computeEncoder?.setTexture(gBufferData.normal, index: TextureIndex.normal.rawValue)
         computeEncoder?.setTexture(gBufferData.flux, index: TextureIndex.flux.rawValue)
@@ -517,6 +528,8 @@ enum RenderPassType {
 
 struct FragmentUniforms {
     var exposure: Float
+    var normalBias: Float
+    var depthBias: Float
     var width: UInt32
     var height: UInt32
 };

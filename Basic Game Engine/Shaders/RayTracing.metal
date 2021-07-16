@@ -516,7 +516,7 @@ kernel void shadowKernel(uint2 tid [[thread_position_in_grid]],
         }
         int index = tid.x / uniforms.probeWidth;
         int rayDirIndex = tid.y*uniforms.probeWidth + tid.x % uniforms.probeWidth;
-        uint2 raycount = uint2(64, 64);
+        uint2 raycount = uint2(64);
         float3 direction = shadowRay.prevDirection;
         uint2 texPos = indexToTexPos(index, uniforms.probeGridWidth, uniforms.probeGridHeight);
         
@@ -530,8 +530,8 @@ kernel void shadowKernel(uint2 tid [[thread_position_in_grid]],
             float d_final = (d_before * frame + d)/(frame + 1.0);
             float d2_before = texColor.g;
             float d2_final = (d2_before * frame + d2)/(frame + 1.0);
-       //     octahedralMap.write(float4(d_final, d2_final, 0, 1), texPosOcta);
-            octahedralMap.write(float4(float3(d_final, d2_final, 0), frame+1), texPosOcta);
+      //      octahedralMap.write(float4(float3(direction), frame+1), texPosOcta);
+            octahedralMap.write(float4(d_final, d2_final, 0, frame+1), texPosOcta);
         }
         
         oldValuesR[0] = direction.x;
