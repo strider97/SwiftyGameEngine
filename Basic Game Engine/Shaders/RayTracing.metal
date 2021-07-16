@@ -325,10 +325,18 @@ constant float3 probePos[8] = {
     float3(1, 1, 1),
 };
 
+
+float sq_(float s) {
+    return s*s;
+}
+
+float pow3_(float s) { return s*s*s; }
+
 float3 getDDGI_(float3 position,
-               float3 smoothNormal,
-               device LightProbe *probes,
-               LightProbeData_ probeData)
+                float3 smoothNormal,
+                device LightProbe *probes,
+                LightProbeData_ probeData,
+                texture2d<float, access::read> octahedralMap)
 {
     float3 transformedPos = (position - probeData.gridOrigin)/probeData.gridEdge;
     transformedPos -= float3(int3(transformedPos));
@@ -375,15 +383,42 @@ float3 getDDGI_(float3 position,
                         0.785398, 0.785398, 0.785398, 0.785398, 0.785398, };
     for (int iCoeff = 0; iCoeff < 8; iCoeff++) {
         float3 color_ = 0;
-        device LightProbe &probe = probes[probeIndex + lightProbeTexCoeff[iCoeff][0] +
-                               lightProbeTexCoeff[iCoeff][1] * probeData.probeCount.x *
-                               probeData.probeCount.y];
+        int index = probeIndex +
+                    lightProbeTexCoeff[iCoeff][0] +
+                    lightProbeTexCoeff[iCoeff][1] * probeData.probeGridWidth * probeData.probeGridHeight;
+        device LightProbe &probe = probes[index];
+        float normalBias = 0.1;
+        float depthBias = 0.0;
+        float3 newPosition = position + normalBias * smoothNormal;
+        
+        float dist = length(newPosition - probe.location);
+        uint2 texPos = indexToTexPos(index, probeData.probeGridWidth, probeData.probeGridHeight);
+        float3 dirToProbe = normalize(newPosition - probe.location);
+        int shadowProbeReso = 64;
+        uint2 texPosOcta = texPos * shadowProbeReso + uint2(octEncode(dirToProbe) * float2(shadowProbeReso));
+        float4 d = octahedralMap.read(texPosOcta);
+        
+        float distToProbe = dist;
+
+        float2 temp = d.rg;
+        float mean = temp.x;
+        float variance = abs(sq_(temp.x) - temp.y);
+
+        // http://www.punkuser.net/vsm/vsm_paper.pdf; equation 5
+        // Need the max in the denominator because biasing can cause a negative displacement
+        float chebyshevWeight = variance / (variance + sq_(max(distToProbe - mean, 0.0)));
+            
+        // Increase contrast in the weight
+        chebyshevWeight = max(pow3_(chebyshevWeight), 0.0);
+
+        float finalShadowingWeight = (distToProbe <= mean + depthBias || d.a == 0.0 ) ? 1.0 : chebyshevWeight;
+        
         for (int i = 0; i<9; i++) {
             color_.r += max(0.0, aCap[i] * probe.shCoeffR[i] * shCoeff[i]);
             color_.g += max(0.0, aCap[i] * probe.shCoeffG[i] * shCoeff[i]);
             color_.b += max(0.0, aCap[i] * probe.shCoeffB[i] * shCoeff[i]);
         }
-        color += color_ * trilinearWeights[iCoeff];
+        color += color_ * trilinearWeights[iCoeff] * finalShadowingWeight;
     //    color += color_ * (1.0/8);
     }
   return color;
@@ -397,10 +432,9 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
                         device float3 *vertexColors,
                         device float3 *vertexNormals,
                         device LightProbe *probes,
-                        texture3d<float, access::read> lightProbeTextureR,
-                        texture3d<float, access::read> lightProbeTextureG,
-                        texture3d<float, access::read> lightProbeTextureB,
-                        texture2d<float, access::sample> irradianceMap)
+                        texture2d<float, access::sample> irradianceMap,
+                        texture2d<float, access::read> octahedralMap
+                        )
 {
   if (tid.x < uniforms.width && tid.y < uniforms.height) {
     unsigned int rayIdx = tid.y * uniforms.width + tid.x;
@@ -434,11 +468,8 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
   //      shadowRay.color = 1;
   //      shadowRay.indirectColor = 1;
   //      shadowRay.color = float3(1, 0.1, 0);
-        shadowRay.indirectColor = getDDGI_(shadowRay.origin, surfaceNormal, probes, uniforms.probeData);
+  //      shadowRay.indirectColor = getDDGI_(shadowRay.origin, surfaceNormal, probes, uniforms.probeData, octahedralMap);
   //      shadowRay.indirectColor = 0.1;
-  //      shadowRay.indirectColor.g = 2 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureG, uniforms.probeData);
-  //      shadowRay.indirectColor.b = 2 * getDDGI_(shadowRay.origin, surfaceNormal, lightProbeTextureB, uniforms.probeData);
-  //      shadowRay.indirectColor = 0;
       
   //    float3 sampleDirection = sampleCosineWeightedHemisphere(r);
   //    sampleDirection = alignHemisphereWithNormal(sampleDirection,
@@ -446,7 +477,7 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
   //    ray.origin = intersectionPoint + surfaceNormal * 1e-3f;
   //    ray.direction = sampleDirection;
   //    ray.color = color;
-        shadowRay.maxDistance = infDist + intersection.distance + 0.1;
+        shadowRay.maxDistance = infDist + intersection.distance;
     }
     else {
         ray.maxDistance = -1.0;
@@ -456,7 +487,7 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
         R.z = -R.z;
         float3 irradiance = irradianceMap.sample(s__, sampleSphericalMap__(R)).rgb;
         irradiance = float3(113, 164, 243)/255;
-    //    shadowRay.indirectColor += 0.1 * float3(0.6, 0.6, 1)*saturate(dot(ray.direction, float3(0, 1, 0)));
+        shadowRay.indirectColor += irradiance*saturate(dot(ray.direction, float3(0, 1, 0)));
     //    shadowRay.indirectColor = irradiance;
     }
   }

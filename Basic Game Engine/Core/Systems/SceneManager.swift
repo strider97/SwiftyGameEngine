@@ -83,7 +83,7 @@ class Scene: NSObject {
         addBehaviour()
         createShadowTexture()
         createLTCTextures()
-        sphere.transform.scale(Float3(repeating: 0.2))
+        sphere.transform.scale(Float3(repeating: 0.15))
         sphere.renderPipelineState = Descriptor.createLightProbePipelineState()
         createComputePipeline()
         createRandomKernel()
@@ -282,7 +282,7 @@ extension Scene {
         drawDefferedRenderCompute(commandBuffer: commandBuffer!)
         let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         drawDefferedRender(renderCommandEncoder: renderCommandEncoder)
-    //    drawLightProbes(renderCommandEncoder: renderCommandEncoder)
+        drawLightProbes(renderCommandEncoder: renderCommandEncoder)
     //    drawSkybox(renderCommandEncoder: renderCommandEncoder)
         renderCommandEncoder?.endEncoding()
 
@@ -390,7 +390,8 @@ extension Scene {
         let irradianceField = rayTracer!.irradianceField!
         var lightProbeData = LightProbeData(gridEdge: irradianceField.gridEdge, gridOrigin: irradianceField.origin, probeGridWidth: Int32(irradianceField.width), probeGridHeight: Int32(irradianceField.height), probeGridCount: Int3(0, 0, 0))
         renderCommandEncoder?.setFragmentBytes(&lightProbeData, length: MemoryLayout<LightProbeData>.stride, index: 0)
-        renderCommandEncoder?.setFragmentTexture(irradianceField.ambientCubeTextureFinalR, index: 0)
+        renderCommandEncoder?.setFragmentBuffer(irradianceField.probes, offset: 0, index: 1)
+        renderCommandEncoder?.setFragmentTexture(gBufferData.depth, index: 0)
         for (index, _) in rayTracer!.irradianceField.probesArray.enumerated() {
             var u = getLightProbeUniformData(index)
             renderCommandEncoder?.setVertexBytes(&u, length: MemoryLayout<Uniforms>.stride, index: 1)

@@ -159,226 +159,6 @@ float2 Hammersley_(uint i, float numSamples) {
     return float2(i / numSamples, bits / exp2(32.0));
 }
 
-int ClipQuadToHorizon(float3 L[5])
-{
-    // detect clipping config
-    int config = 0;
-    if (L[0].z > 0.0) config += 1;
-    if (L[1].z > 0.0) config += 2;
-    if (L[2].z > 0.0) config += 4;
-    if (L[3].z > 0.0) config += 8;
-
-    // clip
-    int n = 0;
-
-    if (config == 0)
-    {
-        // clip all
-    }
-    else if (config == 1) // V1 clip V2 V3 V4
-    {
-        n = 3;
-        L[1] = -L[1].z * L[0] + L[0].z * L[1];
-        L[2] = -L[3].z * L[0] + L[0].z * L[3];
-    }
-    else if (config == 2) // V2 clip V1 V3 V4
-    {
-        n = 3;
-        L[0] = -L[0].z * L[1] + L[1].z * L[0];
-        L[2] = -L[2].z * L[1] + L[1].z * L[2];
-    }
-    else if (config == 3) // V1 V2 clip V3 V4
-    {
-        n = 4;
-        L[2] = -L[2].z * L[1] + L[1].z * L[2];
-        L[3] = -L[3].z * L[0] + L[0].z * L[3];
-    }
-    else if (config == 4) // V3 clip V1 V2 V4
-    {
-        n = 3;
-        L[0] = -L[3].z * L[2] + L[2].z * L[3];
-        L[1] = -L[1].z * L[2] + L[2].z * L[1];
-    }
-    else if (config == 5) // V1 V3 clip V2 V4) impossible
-    {
-        n = 0;
-    }
-    else if (config == 6) // V2 V3 clip V1 V4
-    {
-        n = 4;
-        L[0] = -L[0].z * L[1] + L[1].z * L[0];
-        L[3] = -L[3].z * L[2] + L[2].z * L[3];
-    }
-    else if (config == 7) // V1 V2 V3 clip V4
-    {
-        n = 5;
-        L[4] = -L[3].z * L[0] + L[0].z * L[3];
-        L[3] = -L[3].z * L[2] + L[2].z * L[3];
-    }
-    else if (config == 8) // V4 clip V1 V2 V3
-    {
-        n = 3;
-        L[0] = -L[0].z * L[3] + L[3].z * L[0];
-        L[1] = -L[2].z * L[3] + L[3].z * L[2];
-        L[2] =  L[3];
-    }
-    else if (config == 9) // V1 V4 clip V2 V3
-    {
-        n = 4;
-        L[1] = -L[1].z * L[0] + L[0].z * L[1];
-        L[2] = -L[2].z * L[3] + L[3].z * L[2];
-    }
-    else if (config == 10) // V2 V4 clip V1 V3) impossible
-    {
-        n = 0;
-    }
-    else if (config == 11) // V1 V2 V4 clip V3
-    {
-        n = 5;
-        L[4] = L[3];
-        L[3] = -L[2].z * L[3] + L[3].z * L[2];
-        L[2] = -L[2].z * L[1] + L[1].z * L[2];
-    }
-    else if (config == 12) // V3 V4 clip V1 V2
-    {
-        n = 4;
-        L[1] = -L[1].z * L[2] + L[2].z * L[1];
-        L[0] = -L[0].z * L[3] + L[3].z * L[0];
-    }
-    else if (config == 13) // V1 V3 V4 clip V2
-    {
-        n = 5;
-        L[4] = L[3];
-        L[3] = L[2];
-        L[2] = -L[1].z * L[2] + L[2].z * L[1];
-        L[1] = -L[1].z * L[0] + L[0].z * L[1];
-    }
-    else if (config == 14) // V2 V3 V4 clip V1
-    {
-        n = 5;
-        L[4] = -L[0].z * L[3] + L[3].z * L[0];
-        L[0] = -L[0].z * L[1] + L[1].z * L[0];
-    }
-    else if (config == 15) // V1 V2 V3 V4
-    {
-        n = 4;
-    }
-    
-    if (n == 3)
-        L[3] = L[0];
-    if (n == 4)
-        L[4] = L[0];
-    
-    return n;
-}
-
-float IntegrateEdge(float3 v1, float3 v2) {
-    float cosTheta = dot(v1, v2);
-    float theta = acos(cosTheta);
-    float res = cross(v1, v2).z * ((theta > 0.001) ? theta/sin(theta) : 1.0);
-
-    return res;
-}
-
-float3 LTC_Evaluate(
-    float3 N, float3 V, float3 P, float3x3 Minv, constant float3 *points, bool twoSided) {
-    // construct orthonormal basis around N
-    float3 T1, T2;
-    T1 = normalize(V - N*dot(V, N));
-    T2 = cross(N, T1);
-
-    // rotate area light in (T1, T2, N) basis
-    Minv = Minv * transpose(float3x3(T1, T2, N));
-
-    // polygon (allocate 5 vertices for clipping)
-    float3 L[5];
-    L[0] = Minv * (points[0] - P);
-    L[1] = Minv * (points[1] - P);
-    L[2] = Minv * (points[2] - P);
-    L[3] = Minv * (points[3] - P);
-
-    int n = 0;
-    n = ClipQuadToHorizon(L);
-    
-    if (n == 0)
-        return float3(0, 0, 0);
-
-    // project onto sphere
-    L[0] = normalize(L[0]);
-    L[1] = normalize(L[1]);
-    L[2] = normalize(L[2]);
-    L[3] = normalize(L[3]);
-    L[4] = normalize(L[4]);
-
-    // integrate
-    float sum = 0.0;
-
-    sum += IntegrateEdge(L[0], L[1]);
-    sum += IntegrateEdge(L[1], L[2]);
-    sum += IntegrateEdge(L[2], L[3]);
-    if (n >= 4)
-        sum += IntegrateEdge(L[3], L[4]);
-    if (n == 5)
-        sum += IntegrateEdge(L[4], L[0]);
-
-    sum = twoSided ? abs(sum) : max(0.0, sum);
-
-    float3 Lo_i = float3(sum, sum, sum);
-
-    return Lo_i;
-}
-
-bool insideShadow(float4 fragPosLightSpace, float3 normal, float3 l, depth2d<float, access::sample> shadowMap [[texture(shadowMap)]])
-{
-    // perform perspective divide
-    float2 xy = fragPosLightSpace.xy;// / fragPosLightSpace.w;
-    xy = xy * 0.5 + 0.5;
-    xy.y = 1 - xy.y;
-    float closestDepth = shadowMap.sample(s, xy);
-    float currentDepth = fragPosLightSpace.z / fragPosLightSpace.w;
-//    return closestDepth > 0.055;
-//    return currentDepth;
-    return currentDepth - 0.002 > closestDepth;
-}
-
-float3 getRSMGlobalIllumination (float4 fragPosLightSpace, float3 pos, float3 smoothNormal, depth2d<float, access::sample> shadowMap [[texture(shadowMap)]], texture2d<float, access::sample> worldPos [[texture(rsmPos)]], texture2d<float, access::sample> worldNormal [[texture(rsmNormal)]], texture2d<float, access::sample> flux [[texture(rsmFlux)]]) {
-    float2 xy = fragPosLightSpace.xy;// / fragPosLightSpace.w;
-    xy = xy * 0.5 + 0.5;
-    xy.y = 1 - xy.y;
-    float radius = 0.16;
-//    float4 bounds = clamp(float4(xy - radius, xy + radius), 0, 1);
-    float samples = 00;
-//    float2 sampleStep = float2(bounds.z - bounds.x, bounds.w - bounds.y)/(samples);
-    float3 radiance = float3(0);
-    //(s+rmaxξ1 sin(2πξ2),t +rmaxξ1 cos(2πξ2)).
-    for (uint i = 0; i < samples; ++i) {
-        float2 Xi = Hammersley_(i, samples);
-        float2 point = float2(xy.x + radius*Xi.x*sin(2.0*pi*Xi.y), xy.y + radius*Xi.x*cos(2.0*pi*Xi.y));
-        float3 N = worldNormal.sample(s1, point).rgb;
-        float3 sampledLightflux = flux.sample(s1, point).rgb;
-        float3 lightSamplePos = worldPos.sample(s1, point).rgb;
-        float3 dist = max(0.001, length(pos - lightSamplePos));
-        float3 attenuation = 1.0 / (dist * dist);
-        float weight = length(point - xy);
-        radiance += sampledLightflux * saturate(dot(N, pos - lightSamplePos)) * saturate(dot(smoothNormal, lightSamplePos - pos)) * weight * 10 * attenuation / (samples) ;
-    }
-    /*
-    for(int i = 0; i<samples; i++) {
-        for(int j = 0; j <samples; j++) {
-            float2 point = bounds.xy + float2(j*sampleStep.x, i*sampleStep.y);
-            float3 N = worldNormal.sample(s1, point).rgb;
-            float3 sampledLightflux = flux.sample(s1, point).rgb;
-            float3 lightSamplePos = worldPos.sample(s1, point).rgb;
-            float3 dist = max(0.001, length(pos - lightSamplePos));
-            float3 attenuation = 1.0 / (dist * dist);
-            radiance += sampledLightflux * saturate(dot(N, pos - lightSamplePos)) * saturate(dot(smoothNormal, lightSamplePos - pos)) * attenuation / (samples * samples) ;
-        }
-    }
-     */
-//    return float3(0);
-    return radiance;
-}
-
 int gridPosToProbeIndex_(float3 pos, LightProbeData probe) {
     float3 texPos_ = (pos - probe.gridOrigin)/probe.gridEdge;
     int3 texPos = int3(texPos_);
@@ -408,7 +188,7 @@ void SHProjectLinear_(float3 dir, float coeff[9]) {
 }
 
 float signum_(float v) {
-    return v > 0 ? 1.0 : 0.0;
+    return v > 0 ? 1.0 : (v+1);
 }
 
 constant float3 probePos[8] = {
@@ -515,11 +295,11 @@ float3 getDDGI(float3 position,
         x*y*z,
     };
     
-//    for(int i = 0; i < 8; i++) {
-//        float3 trueDirectionToProbe = normalize(probePos[i] - transformedPos);
-//        float w = max(0.0001, (dot(trueDirectionToProbe, smoothNormal) + 1.0) * 0.5);
-//        trilinearWeights[i] *= w*w + 0.2;
-//    }
+    for(int i = 0; i < 8; i++) {
+        float3 trueDirectionToProbe = normalize(probePos[i] - transformedPos);
+        float w = max(0.0001, signum_(dot(trueDirectionToProbe, smoothNormal)) * 1);
+        trilinearWeights[i] *= w*w + 0.2;
+    }
     
     int probeIndex = gridPosToProbeIndex_(position, probeData);
     
@@ -547,9 +327,13 @@ float3 getDDGI(float3 position,
                     lightProbeTexCoeff[iCoeff][1] * probeData.probeGridWidth * probeData.probeGridHeight;
         device LightProbe &probe = probes[index];
         
-        float dist = length(position - probe.location);
+        float normalBias = 0.15;
+        float depthBias = 0.05;
+        float3 newPosition = position + normalBias * smoothNormal;
+        
+        float dist = length(newPosition - probe.location);
         uint2 texPos = indexToTexPos___(index, probeData.probeGridWidth, probeData.probeGridHeight);
-        float3 dirToProbe = normalize(position - probe.location);
+        float3 dirToProbe = normalize(newPosition - probe.location);
         int shadowProbeReso = 64;
         uint2 texPosOcta = texPos * shadowProbeReso + uint2(octEncode_(dirToProbe) * float2(shadowProbeReso));
         float4 d = octahedralMap.read(texPosOcta);
@@ -567,16 +351,12 @@ float3 getDDGI(float3 position,
         // Increase contrast in the weight
         chebyshevWeight = max(pow3(chebyshevWeight), 0.0);
 
-        float finalShadowingWeight = (distToProbe <= mean) ? 1.0 : chebyshevWeight;
+        float finalShadowingWeight = (distToProbe <= mean + depthBias || d.a == 0.0 ) ? 1.0 : chebyshevWeight;
         
         for (int i = 0; i<9; i++) {
             color_.r += max(0.0, aCap[i] * probe.shCoeffR[i] * shCoeff[i]);
             color_.g += max(0.0, aCap[i] * probe.shCoeffG[i] * shCoeff[i]);
             color_.b += max(0.0, aCap[i] * probe.shCoeffB[i] * shCoeff[i]);
-            
-//            color_.r += (probe.location.x);
-//            color_.g += (probe.location.y);
-//            color_.b += (probe.location.z);
         }
         color += color_ * trilinearWeights[iCoeff] * finalShadowingWeight;
     //    color += color_ * (1.0/8);

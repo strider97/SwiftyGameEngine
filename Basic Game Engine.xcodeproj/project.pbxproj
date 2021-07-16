@@ -10,7 +10,6 @@
 		7208ADED267D638A00649138 /* sponza copy.obj in Resources */ = {isa = PBXBuildFile; fileRef = 7208ADEB267D638900649138 /* sponza copy.obj */; };
 		7208ADEE267D638A00649138 /* sponza copy.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 7208ADEC267D638A00649138 /* sponza copy.mtl */; };
 		720EC2EE25D7CCD300A83F1A /* Skybox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720EC2ED25D7CCD300A83F1A /* Skybox.swift */; };
-		720EC2F325D82F2500A83F1A /* SkyboxShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 720EC2F225D82F2500A83F1A /* SkyboxShader.metal */; };
 		720EC2FF25D8816B00A83F1A /* park.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 720EC2FE25D8816B00A83F1A /* park.hdr */; };
 		72164FBD25E859C700511342 /* studio.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 72164FBC25E859C700511342 /* studio.hdr */; };
 		72164FC225E860AD00511342 /* heli.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72164FC125E860AD00511342 /* heli.usd */; };
@@ -224,7 +223,6 @@
 		7216525725EDABA400511342 /* helmet_normal.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7216525625EDABA400511342 /* helmet_normal.jpg */; };
 		721F5B4025E2A7920000EA4C /* sphere.usd in Resources */ = {isa = PBXBuildFile; fileRef = 721F5B3F25E2A7920000EA4C /* sphere.usd */; };
 		721F5B5625E2DC5A0000EA4C /* cloudy.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 721F5B5525E2DC5A0000EA4C /* cloudy.hdr */; };
-		7223E3EE2624EE630070CB9A /* rsmShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 7223E3ED2624EE630070CB9A /* rsmShader.metal */; };
 		722830B925C5706000C9CCF4 /* spheres.usd in Resources */ = {isa = PBXBuildFile; fileRef = 722830B825C5705F00C9CCF4 /* spheres.usd */; };
 		722946EC267E25E500B3E620 /* bathroom.obj in Resources */ = {isa = PBXBuildFile; fileRef = 722946EA267E25E400B3E620 /* bathroom.obj */; };
 		722946ED267E25E500B3E620 /* bathroom.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 722946EB267E25E400B3E620 /* bathroom.mtl */; };
@@ -916,8 +914,6 @@
 		724157F626657CBF00821A7C /* sphere.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 724157F426657CBF00821A7C /* sphere.mtl */; };
 		724157F726657CBF00821A7C /* sphere.obj in Resources */ = {isa = PBXBuildFile; fileRef = 724157F526657CBF00821A7C /* sphere.obj */; };
 		72439113265ED1920066F3B4 /* Raytracer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72439112265ED1920066F3B4 /* Raytracer.swift */; };
-		7243911B265EDE7E0066F3B4 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 7243911A265EDE7E0066F3B4 /* Shaders.metal */; };
-		72439121265EDECE0066F3B4 /* RayTracing.metal in Sources */ = {isa = PBXBuildFile; fileRef = 72439120265EDECE0066F3B4 /* RayTracing.metal */; };
 		7244840C25C6F42300294331 /* SimpleScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7244840B25C6F42300294331 /* SimpleScene.swift */; };
 		7254B21E267390580053B4F4 /* classroom.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 7254B21C267390580053B4F4 /* classroom.mtl */; };
 		7254B21F267390580053B4F4 /* classroom.obj in Resources */ = {isa = PBXBuildFile; fileRef = 7254B21D267390580053B4F4 /* classroom.obj */; };
@@ -1140,11 +1136,9 @@
 		72A765962686680B00E2B07D /* bathroomLowPoly.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 72A765922686680B00E2B07D /* bathroomLowPoly.mtl */; };
 		72A765972686680B00E2B07D /* sponzaLowPoly.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 72A765932686680B00E2B07D /* sponzaLowPoly.mtl */; };
 		72A765982686680B00E2B07D /* sponzaLowPoly.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72A765942686680B00E2B07D /* sponzaLowPoly.obj */; };
-		72A89657269D02F700BF6B22 /* math_.metal in Sources */ = {isa = PBXBuildFile; fileRef = 72A89656269D02F700BF6B22 /* math_.metal */; };
 		72C1736925DED90800B75C4D /* ring.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72C1736825DED90800B75C4D /* ring.usd */; };
 		72CBB801266E7B1D00D927F9 /* bigroom.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72CBB7FF266E7B1D00D927F9 /* bigroom.obj */; };
 		72CBB802266E7B1D00D927F9 /* bigroom.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 72CBB800266E7B1D00D927F9 /* bigroom.mtl */; };
-		72D1449425F53ED80047A93D /* brdfFitShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 72D1449325F53ED80047A93D /* brdfFitShader.metal */; };
 		72DAC96025DDD87500DB3C50 /* plane.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72DAC95F25DDD87500DB3C50 /* plane.usd */; };
 		72DACABC25DE6AED00DB3C50 /* IrradianceMap_.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DACABB25DE6AED00DB3C50 /* IrradianceMap_.swift */; };
 		72E0476925E45B2A00E48A54 /* shield.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72E0476825E45B2A00E48A54 /* shield.usd */; };
@@ -1166,7 +1160,6 @@
 		72E398BB25BB4ECB00927B17 /* Basic_Game_EngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E398BA25BB4ECB00927B17 /* Basic_Game_EngineTests.swift */; };
 		72E398C625BB4ECB00927B17 /* Basic_Game_EngineUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E398C525BB4ECB00927B17 /* Basic_Game_EngineUITests.swift */; };
 		72E398DB25BB6FB800927B17 /* HelloWorldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E398DA25BB6FB800927B17 /* HelloWorldView.swift */; };
-		72E398E125BB73E700927B17 /* BasicShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 72E398E025BB73E700927B17 /* BasicShaders.metal */; };
 		72E398E725BC135C00927B17 /* GameObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E398E625BC135C00927B17 /* GameObject.swift */; };
 		72E398EF25BC19EF00927B17 /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E398EE25BC19EF00927B17 /* Camera.swift */; };
 		72E398F525BC21E400927B17 /* Core.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E398F425BC21E400927B17 /* Core.swift */; };
@@ -1189,9 +1182,16 @@
 		72E94FB12690767400170CB4 /* pillarRoom.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72E94FAF2690767400170CB4 /* pillarRoom.obj */; };
 		72E94FB22690767400170CB4 /* pillarRoom.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 72E94FB02690767400170CB4 /* pillarRoom.mtl */; };
 		72ED2D8C25DC33FF00F12F90 /* Descriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72ED2D8B25DC33FF00F12F90 /* Descriptor.swift */; };
-		72ED2D9125DC61F700F12F90 /* shadowShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 72ED2D9025DC61F700F12F90 /* shadowShader.metal */; };
 		72FB906225F7A771008D71C5 /* ltc_mat.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 72FB906025F7A771008D71C5 /* ltc_mat.hdr */; };
 		72FB906325F7A771008D71C5 /* ltc_mag.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 72FB906125F7A771008D71C5 /* ltc_mag.hdr */; };
+		72FCCA65269DFCE300A9F0BA /* rsmShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 72FCCA5C269DFCE300A9F0BA /* rsmShader.metal */; };
+		72FCCA66269DFCE300A9F0BA /* SkyboxShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 72FCCA5D269DFCE300A9F0BA /* SkyboxShader.metal */; };
+		72FCCA67269DFCE300A9F0BA /* RayTracing.metal in Sources */ = {isa = PBXBuildFile; fileRef = 72FCCA5E269DFCE300A9F0BA /* RayTracing.metal */; };
+		72FCCA68269DFCE300A9F0BA /* BasicShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 72FCCA60269DFCE300A9F0BA /* BasicShaders.metal */; };
+		72FCCA69269DFCE300A9F0BA /* shadowShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 72FCCA61269DFCE300A9F0BA /* shadowShader.metal */; };
+		72FCCA6A269DFCE300A9F0BA /* brdfFitShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 72FCCA62269DFCE300A9F0BA /* brdfFitShader.metal */; };
+		72FCCA6B269DFCE300A9F0BA /* math_.metal in Sources */ = {isa = PBXBuildFile; fileRef = 72FCCA63269DFCE300A9F0BA /* math_.metal */; };
+		72FCCA6C269DFCE300A9F0BA /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 72FCCA64269DFCE300A9F0BA /* Shaders.metal */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1215,7 +1215,6 @@
 		7208ADEB267D638900649138 /* sponza copy.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "sponza copy.obj"; sourceTree = "<group>"; };
 		7208ADEC267D638A00649138 /* sponza copy.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "sponza copy.mtl"; sourceTree = "<group>"; };
 		720EC2ED25D7CCD300A83F1A /* Skybox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Skybox.swift; sourceTree = "<group>"; };
-		720EC2F225D82F2500A83F1A /* SkyboxShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = SkyboxShader.metal; sourceTree = "<group>"; };
 		720EC2FE25D8816B00A83F1A /* park.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = park.hdr; path = "Basic Game Engine/HDRI/park.hdr"; sourceTree = SOURCE_ROOT; };
 		72164FBC25E859C700511342 /* studio.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = studio.hdr; path = "Basic Game Engine/HDRI/studio.hdr"; sourceTree = SOURCE_ROOT; };
 		72164FC125E860AD00511342 /* heli.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = heli.usd; path = "Basic Game Engine/Resources/teapot/heli.usd"; sourceTree = SOURCE_ROOT; };
@@ -1429,7 +1428,6 @@
 		7216525625EDABA400511342 /* helmet_normal.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = helmet_normal.jpg; path = "../../../../Downloads/modelio-materials-master/Shared/Resources/helmet_normal.jpg"; sourceTree = "<group>"; };
 		721F5B3F25E2A7920000EA4C /* sphere.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = sphere.usd; path = "Basic Game Engine/Resources/teapot/sphere.usd"; sourceTree = SOURCE_ROOT; };
 		721F5B5525E2DC5A0000EA4C /* cloudy.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = cloudy.hdr; path = "Basic Game Engine/HDRI/cloudy.hdr"; sourceTree = SOURCE_ROOT; };
-		7223E3ED2624EE630070CB9A /* rsmShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = rsmShader.metal; sourceTree = "<group>"; };
 		722830B825C5705F00C9CCF4 /* spheres.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = spheres.usd; path = "Basic Game Engine/Resources/teapot/spheres.usd"; sourceTree = SOURCE_ROOT; };
 		722946EA267E25E400B3E620 /* bathroom.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bathroom.obj; sourceTree = "<group>"; };
 		722946EB267E25E400B3E620 /* bathroom.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bathroom.mtl; sourceTree = "<group>"; };
@@ -2121,9 +2119,6 @@
 		724157F426657CBF00821A7C /* sphere.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sphere.mtl; sourceTree = "<group>"; };
 		724157F526657CBF00821A7C /* sphere.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sphere.obj; sourceTree = "<group>"; };
 		72439112265ED1920066F3B4 /* Raytracer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Raytracer.swift; sourceTree = "<group>"; };
-		7243911A265EDE7E0066F3B4 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
-		7243911F265EDE9F0066F3B4 /* ShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShaderTypes.h; sourceTree = "<group>"; };
-		72439120265EDECE0066F3B4 /* RayTracing.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = RayTracing.metal; sourceTree = "<group>"; };
 		7244840B25C6F42300294331 /* SimpleScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleScene.swift; sourceTree = "<group>"; };
 		7254B21C267390580053B4F4 /* classroom.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = classroom.mtl; sourceTree = "<group>"; };
 		7254B21D267390580053B4F4 /* classroom.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = classroom.obj; sourceTree = "<group>"; };
@@ -2346,11 +2341,9 @@
 		72A765922686680B00E2B07D /* bathroomLowPoly.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bathroomLowPoly.mtl; sourceTree = "<group>"; };
 		72A765932686680B00E2B07D /* sponzaLowPoly.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sponzaLowPoly.mtl; sourceTree = "<group>"; };
 		72A765942686680B00E2B07D /* sponzaLowPoly.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sponzaLowPoly.obj; sourceTree = "<group>"; };
-		72A89656269D02F700BF6B22 /* math_.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = math_.metal; sourceTree = "<group>"; };
 		72C1736825DED90800B75C4D /* ring.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = ring.usd; path = "Basic Game Engine/Resources/teapot/ring.usd"; sourceTree = SOURCE_ROOT; };
 		72CBB7FF266E7B1D00D927F9 /* bigroom.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bigroom.obj; sourceTree = "<group>"; };
 		72CBB800266E7B1D00D927F9 /* bigroom.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bigroom.mtl; sourceTree = "<group>"; };
-		72D1449325F53ED80047A93D /* brdfFitShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = brdfFitShader.metal; sourceTree = "<group>"; };
 		72DAC95F25DDD87500DB3C50 /* plane.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = plane.usd; path = "Basic Game Engine/Resources/teapot/plane.usd"; sourceTree = SOURCE_ROOT; };
 		72DACABB25DE6AED00DB3C50 /* IrradianceMap_.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IrradianceMap_.swift; sourceTree = "<group>"; };
 		72E0476825E45B2A00E48A54 /* shield.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = shield.usd; path = "Basic Game Engine/Resources/teapot/shield.usd"; sourceTree = SOURCE_ROOT; };
@@ -2379,7 +2372,6 @@
 		72E398C525BB4ECB00927B17 /* Basic_Game_EngineUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Basic_Game_EngineUITests.swift; sourceTree = "<group>"; };
 		72E398C725BB4ECB00927B17 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		72E398DA25BB6FB800927B17 /* HelloWorldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelloWorldView.swift; sourceTree = "<group>"; };
-		72E398E025BB73E700927B17 /* BasicShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = BasicShaders.metal; sourceTree = "<group>"; };
 		72E398E625BC135C00927B17 /* GameObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameObject.swift; sourceTree = "<group>"; };
 		72E398EE25BC19EF00927B17 /* Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
 		72E398F425BC21E400927B17 /* Core.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core.swift; sourceTree = "<group>"; };
@@ -2402,9 +2394,17 @@
 		72E94FAF2690767400170CB4 /* pillarRoom.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = pillarRoom.obj; sourceTree = "<group>"; };
 		72E94FB02690767400170CB4 /* pillarRoom.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = pillarRoom.mtl; sourceTree = "<group>"; };
 		72ED2D8B25DC33FF00F12F90 /* Descriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Descriptor.swift; sourceTree = "<group>"; };
-		72ED2D9025DC61F700F12F90 /* shadowShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = shadowShader.metal; sourceTree = "<group>"; };
 		72FB906025F7A771008D71C5 /* ltc_mat.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = ltc_mat.hdr; path = ../../../../../Downloads/fit/results/sampleFileCode/ltc_mat.hdr; sourceTree = "<group>"; };
 		72FB906125F7A771008D71C5 /* ltc_mag.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = ltc_mag.hdr; path = ../../../../../Downloads/fit/results/sampleFileCode/ltc_mag.hdr; sourceTree = "<group>"; };
+		72FCCA5C269DFCE300A9F0BA /* rsmShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = rsmShader.metal; sourceTree = "<group>"; };
+		72FCCA5D269DFCE300A9F0BA /* SkyboxShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = SkyboxShader.metal; sourceTree = "<group>"; };
+		72FCCA5E269DFCE300A9F0BA /* RayTracing.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = RayTracing.metal; sourceTree = "<group>"; };
+		72FCCA5F269DFCE300A9F0BA /* ShaderTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderTypes.h; sourceTree = "<group>"; };
+		72FCCA60269DFCE300A9F0BA /* BasicShaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = BasicShaders.metal; sourceTree = "<group>"; };
+		72FCCA61269DFCE300A9F0BA /* shadowShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = shadowShader.metal; sourceTree = "<group>"; };
+		72FCCA62269DFCE300A9F0BA /* brdfFitShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = brdfFitShader.metal; sourceTree = "<group>"; };
+		72FCCA63269DFCE300A9F0BA /* math_.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = math_.metal; sourceTree = "<group>"; };
+		72FCCA64269DFCE300A9F0BA /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3850,15 +3850,15 @@
 		72E398DF25BB73CD00927B17 /* Shaders */ = {
 			isa = PBXGroup;
 			children = (
-				72E398E025BB73E700927B17 /* BasicShaders.metal */,
-				720EC2F225D82F2500A83F1A /* SkyboxShader.metal */,
-				72ED2D9025DC61F700F12F90 /* shadowShader.metal */,
-				72D1449325F53ED80047A93D /* brdfFitShader.metal */,
-				7223E3ED2624EE630070CB9A /* rsmShader.metal */,
-				7243911A265EDE7E0066F3B4 /* Shaders.metal */,
-				7243911F265EDE9F0066F3B4 /* ShaderTypes.h */,
-				72439120265EDECE0066F3B4 /* RayTracing.metal */,
-				72A89656269D02F700BF6B22 /* math_.metal */,
+				72FCCA60269DFCE300A9F0BA /* BasicShaders.metal */,
+				72FCCA62269DFCE300A9F0BA /* brdfFitShader.metal */,
+				72FCCA63269DFCE300A9F0BA /* math_.metal */,
+				72FCCA5E269DFCE300A9F0BA /* RayTracing.metal */,
+				72FCCA5C269DFCE300A9F0BA /* rsmShader.metal */,
+				72FCCA64269DFCE300A9F0BA /* Shaders.metal */,
+				72FCCA5F269DFCE300A9F0BA /* ShaderTypes.h */,
+				72FCCA61269DFCE300A9F0BA /* shadowShader.metal */,
+				72FCCA5D269DFCE300A9F0BA /* SkyboxShader.metal */,
 			);
 			path = Shaders;
 			sourceTree = "<group>";
@@ -5299,36 +5299,36 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				72E398E125BB73E700927B17 /* BasicShaders.metal in Sources */,
 				72E3990B25BC9D7B00927B17 /* Mesh.swift in Sources */,
 				72DACABC25DE6AED00DB3C50 /* IrradianceMap_.swift in Sources */,
 				72ED2D8C25DC33FF00F12F90 /* Descriptor.swift in Sources */,
 				7244840C25C6F42300294331 /* SimpleScene.swift in Sources */,
-				72439121265EDECE0066F3B4 /* RayTracing.metal in Sources */,
+				72FCCA68269DFCE300A9F0BA /* BasicShaders.metal in Sources */,
+				72FCCA6B269DFCE300A9F0BA /* math_.metal in Sources */,
 				72E3992225BCC95500927B17 /* Renderer.swift in Sources */,
 				72E398A725BB4ECA00927B17 /* GameViewController.swift in Sources */,
 				72E3991D25BCBBB900927B17 /* RenderPipelineState.swift in Sources */,
 				72E398E725BC135C00927B17 /* GameObject.swift in Sources */,
 				72E3993025BCD28300927B17 /* SceneManager.swift in Sources */,
 				72E398AA25BB4ECA00927B17 /* Basic_Game_Engine.xcdatamodeld in Sources */,
-				72D1449425F53ED80047A93D /* brdfFitShader.metal in Sources */,
 				720EC2EE25D7CCD300A83F1A /* Skybox.swift in Sources */,
-				7243911B265EDE7E0066F3B4 /* Shaders.metal in Sources */,
 				72E398DB25BB6FB800927B17 /* HelloWorldView.swift in Sources */,
 				72E3990025BC98AA00927B17 /* Utils.swift in Sources */,
 				72E398EF25BC19EF00927B17 /* Camera.swift in Sources */,
 				72E3993E25BD85E300927B17 /* GameTime.swift in Sources */,
-				72ED2D9125DC61F700F12F90 /* shadowShader.metal in Sources */,
 				72E3992825BCCDCF00927B17 /* RendererManager.swift in Sources */,
 				72439113265ED1920066F3B4 /* Raytracer.swift in Sources */,
-				7223E3EE2624EE630070CB9A /* rsmShader.metal in Sources */,
 				7230F99B25C60FAD00D9610A /* BasicScene.swift in Sources */,
-				720EC2F325D82F2500A83F1A /* SkyboxShader.metal in Sources */,
-				72A89657269D02F700BF6B22 /* math_.metal in Sources */,
+				72FCCA66269DFCE300A9F0BA /* SkyboxShader.metal in Sources */,
+				72FCCA6A269DFCE300A9F0BA /* brdfFitShader.metal in Sources */,
+				72FCCA67269DFCE300A9F0BA /* RayTracing.metal in Sources */,
 				72E398F525BC21E400927B17 /* Core.swift in Sources */,
+				72FCCA65269DFCE300A9F0BA /* rsmShader.metal in Sources */,
 				72E398A525BB4ECA00927B17 /* AppDelegate.swift in Sources */,
 				72E3991825BCBB2500927B17 /* GameView.swift in Sources */,
 				72E3996F25BEBA0800927B17 /* MeshManager.swift in Sources */,
+				72FCCA6C269DFCE300A9F0BA /* Shaders.metal in Sources */,
+				72FCCA69269DFCE300A9F0BA /* shadowShader.metal in Sources */,
 				7216506125EAE59800511342 /* cylinderSome.mtl.swift in Sources */,
 				72E398FA25BC432C00927B17 /* Constants.swift in Sources */,
 				7232615F2665420A005C9CB7 /* IrradianceField.swift in Sources */,

@@ -112,10 +112,10 @@ int2 gridPosToTex(float3 pos, float3 gridEdge, float3 gridOrigin, int probeGridW
     return indexToTexPos_(index, probeGridWidth, probeGridHeight);
 }*/
 
-ushort2 gridPosToTex(float3 pos, float3 gridEdge, float3 gridOrigin, int probeGridWidth, int probeGridHeight) {
+int gridPosToIndex(float3 pos, float3 gridEdge, float3 gridOrigin, int probeGridWidth, int probeGridHeight) {
     float3 texPos_ = (pos - gridOrigin)/gridEdge;
     int3 texPos = int3(rint(texPos_.x), rint(texPos_.y), rint(texPos_.z));
-    return ushort2(texPos.y * probeGridWidth + texPos.x, texPos.z);
+    return texPos.y * probeGridWidth + texPos.x + texPos.z * probeGridWidth * probeGridHeight;
 }
 
 vertex Vertex vertexShaderRT(unsigned short vid [[vertex_id]])
@@ -135,33 +135,8 @@ fragment float4 fragmentShaderRT(Vertex in [[stage_in]], texture2d<float> tex) {
   return float4(color, 1.0);
 }
 
-vertex VertexOut lightProbeVertexShader(const VertexIn vIn [[ stage_in ]], constant Uniforms &uniforms [[buffer(1)]]) {
-    VertexOut vOut;
-    float4x4 VM = uniforms.V*uniforms.M;
-    float4x4 PVM = uniforms.P*VM;
-    vOut.m_position = PVM * float4(vIn.position, 1.0);
-    vOut.position = (uniforms.M*float4(vIn.position, 1.0)).xyz;
-    vOut.texCoords = float2(vIn.texCoords.x, 1 - vIn.texCoords.y);
-    vOut.smoothNormal = (uniforms.M*float4(vIn.smoothNormal, 0)).xyz;
-    vOut.normal = (uniforms.M*float4(vIn.normal, 0)).xyz;
-    return vOut;
-}
-
 float signum(float a) {
     return a > 0 ? 1 : 0;
-}
-
-fragment float4 lightProbeFragmentShader(VertexOut vOut [[stage_in]], constant LightProbeData &probe [[buffer(0)]], texture3d<float, access::read> lightProbeTexture) {
-    return float4(float3(0.2), 1.0);
-    ushort2 texPos = gridPosToTex(vOut.position - vOut.smoothNormal * 0.2, probe.gridEdge, probe.gridOrigin, probe.probeCount.x, probe.probeCount.y);
-    float3 col1 = lightProbeTexture.read(ushort3(texPos, 0)).rgb;
-    float3 col2 = lightProbeTexture.read(ushort3(texPos, 1)).rgb;
-    float colors[6] = {col1.x, col1.y, col1.z, col2.x, col2.y, col2.z};
-    float3 color = 0;
-    for (int i = 0; i<AMBIENT_DIR_COUNT; i++) {
-        color += saturate(dot(colors[i] * ambientCubeDir[i], vOut.smoothNormal));
-    }
-  return float4(color * 10, 1.0);
 }
 
 uint2 indexToTexPos__(int index, int width, int height){
@@ -295,3 +270,42 @@ kernel void accumulateKernel(constant Uniforms_ & uniforms,
  lightProbeTextureFinalG.write(((frame - 1)*oldCoeffR + coeffR)/frame, ushort3(tid.x, tid.y, 0));
  lightProbeTextureFinalB.write(((frame - 1)*oldCoeffB + coeffB)/frame, ushort3(tid.x, tid.y, 0));
  */
+
+vertex VertexOut lightProbeVertexShader(const VertexIn vIn [[ stage_in ]], constant Uniforms &uniforms [[buffer(1)]]) {
+    VertexOut vOut;
+    float4x4 VM = uniforms.V*uniforms.M;
+    float4x4 PVM = uniforms.P*VM;
+    vOut.m_position = PVM * float4(vIn.position, 1.0);
+    vOut.position = (uniforms.M*float4(vIn.position, 1.0)).xyz;
+    vOut.texCoords = float2(vIn.texCoords.x, 1 - vIn.texCoords.y);
+    vOut.smoothNormal = (uniforms.M*float4(vIn.smoothNormal, 0)).xyz;
+    vOut.normal = (uniforms.M*float4(vIn.normal, 0)).xyz;
+    return vOut;
+}
+
+fragment float4 lightProbeFragmentShader(VertexOut vOut [[stage_in]],
+                                         constant LightProbeData &probe [[buffer(0)]],
+                                         device LightProbe *probes,
+                                         depth2d<float, access::read> depthMap) {
+    float d = vOut.m_position.z;// / vOut.m_position.a;
+    float dMap = depthMap.read(ushort2(vOut.m_position.xy));
+    if (d>dMap)
+        discard_fragment();
+    int index = gridPosToIndex(vOut.position, probe.gridEdge, probe.gridOrigin, probe.probeGridWidth, probe.probeGridHeight);
+    LightProbe lightProbe = probes[index];
+    float3 color = 0;
+    float shCoeff[9];
+    float aCap[9] = {   3.141593,
+                        2.094395, 2.094395, 2.094395,
+                        0.785398, 0.785398, 0.785398, 0.785398, 0.785398, };
+    float3 normal = normalize(vOut.position - lightProbe.location);
+    SHProjectLinear(normal, shCoeff);
+    for (int i = 0; i<9; i++) {
+        color.r += max(0.0, aCap[i] * lightProbe.shCoeffR[i] * shCoeff[i]);
+        color.g += max(0.0, aCap[i] * lightProbe.shCoeffG[i] * shCoeff[i]);
+        color.b += max(0.0, aCap[i] * lightProbe.shCoeffB[i] * shCoeff[i]);
+    }
+    
+//    return float4(float3(d), 1);
+    return float4(color * 10, 1.0);
+}

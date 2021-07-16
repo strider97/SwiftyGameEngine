@@ -80,11 +80,11 @@ float insideShadow_(float4 fragPosLightSpace, float3 normal, depth2d<float, acce
     float2 xy = fragPosLightSpace.xy;// / fragPosLightSpace.w;
     xy = xy * 0.5 + 0.5;
     xy.y = 1 - xy.y;
-    float closestDepth = shadowMap.sample(s, xy);
+    float shadowMapDepth = shadowMap.sample(s, xy);
     float currentDepth = fragPosLightSpace.z / fragPosLightSpace.w;
 //    return closestDepth > 0.055;
 //    return currentDepth;
-    return (currentDepth - 0.002 > closestDepth) ? 0.0 : 1.0;
+    return (currentDepth <= shadowMapDepth + 0.0001) ? 1.0 : 0.0;
 }
 
 float3 getNormalFromMap_(float3 worldPos, float3 normal, float2 texCoords, float3 tangentNormal) {
