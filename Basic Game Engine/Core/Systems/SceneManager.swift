@@ -159,11 +159,14 @@ extension Scene {
 
     func getLightProbeUniformData(_ index: Int) -> Uniforms {
         var M = sphere.transform.modelMatrix
-        let pos = rayTracer!.irradianceField.probesArray[index].location
+        let buffer = rayTracer!.irradianceField.probes!
+        let count = buffer.length / MemoryLayout<LightProbe>.stride
+        let ptr = buffer.contents().bindMemory(to: LightProbe.self, capacity: count)
+        let pos = ptr[index].location + ptr[index].offset
         M[3][0] = pos[0]
         M[3][1] = pos[1]
         M[3][2] = pos[2]
-        return Uniforms(M: M, V: camera.lookAtMatrix, P: P, eye: camera.position, exposure: exposure)
+        return Uniforms(M: M, V: camera.lookAtMatrix, P: P, eye: ptr[index].offset, exposure: exposure)
     }
     
     func createComputePipeline() {

@@ -281,7 +281,7 @@ float3 getDDGI(float3 position,
                FragmentUniform uniforms,
                device LightProbe *probes,
                LightProbeData probeData,
-               texture2d<float, access::read> octahedralMap)
+               texture2d<float, access::sample> octahedralMap)
 {
     float3 transformedPos = (position - probeData.gridOrigin)/probeData.gridEdge;
     transformedPos -= float3(int3(transformedPos));
@@ -335,23 +335,36 @@ float3 getDDGI(float3 position,
         
         float normalBias = uniforms.normalBias;
         float depthBias = uniforms.depthBias;
-        float3 dirFromProbe = normalize(position - probe.location);
+        float3 dirFromProbe = normalize(position - (probe.location + probe.offset));
         float dotPN = dot(dirFromProbe, smoothNormal);
-    //    if (dotPN > 0)
-    //        continue;
-        int signDot = signOf(-dotPN);
-        normalBias *= signDot;
-        depthBias *= signDot;
+        if (dotPN > 0)
+            continue;
+    //    int signDot = signOf(-dotPN);
+    //    normalBias *= signDot;
+    //    depthBias *= signDot;
         float w = max(0.0001, signum_(-dotPN) * 1);
         trilinearWeights[iCoeff] *= w*w + 0.2;
         
         float3 newPosition = position + normalBias * smoothNormal;
-        dirFromProbe = normalize(newPosition - probe.location);
-        float distToProbe = length(newPosition - probe.location);
+        dirFromProbe = normalize(newPosition - (probe.location + probe.offset));
+        float distToProbe = length(newPosition - (probe.location + probe.offset));
         uint2 texPos = indexToTexPos___(index, probeData.probeGridWidth, probeData.probeGridHeight);
         int shadowProbeReso = 64;
-        uint2 texPosOcta = texPos * shadowProbeReso + uint2(octEncode_(dirFromProbe) * float2(shadowProbeReso));
-        float4 d = octahedralMap.read(texPosOcta);
+        int3 probeCount = probeData.probeCount;
+        float2 encodedUV = octEncode_(dirFromProbe);
+        float minimumUV = 1.0/shadowProbeReso;
+        if (encodedUV.x < minimumUV)
+            encodedUV.x += minimumUV;
+        if (encodedUV.x > 1-minimumUV)
+            encodedUV.x -= minimumUV;
+        if (encodedUV.y < minimumUV)
+            encodedUV.y += minimumUV;
+        if (encodedUV.y > 1-minimumUV)
+            encodedUV.y -= minimumUV;
+            
+        float2 uv = (float2(texPos) + encodedUV)*float2(1.0/(probeCount.x * probeCount.y), 1.0/probeCount.z);
+    //    uint2 texPosOcta = texPos * shadowProbeReso + uint2(octEncode_(dirFromProbe) * float2(shadowProbeReso));
+        float4 d = octahedralMap.sample(s, uv);
 
         float2 temp = d.rg;
         float mean = temp.x;
@@ -457,7 +470,7 @@ kernel void DefferedShadeKernel(uint2 tid [[thread_position_in_grid]],
                                 texture2d<float, access::sample> albedoTex [[texture(rsmFlux)]],
                                 depth2d<float, access::sample> depthTex [[texture(rsmDepth)]],
                                 texture2d<float, access::write> outputTex [[texture(0)]],
-                                texture2d<float, access::read> octahedralMap[[texture(10)]]) {
+                                texture2d<float, access::sample> octahedralMap[[texture(10)]]) {
     if (tid.x < uniforms.width && tid.y < uniforms.height) {
         float2 uv = float2(tid)/float2(uniforms.width, uniforms.height);
         float3 pos = worldPos.sample(s, uv).rgb;

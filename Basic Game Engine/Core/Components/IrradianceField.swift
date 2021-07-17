@@ -122,11 +122,13 @@ class IrradianceField {
             probe.shCoeffB = (Float(0), Float(0), Float(0),
                              Float(0), Float(0), Float(0),
                              Float(0), Float(0), Float(0))
+            probe.moved = Int32(0)
+            probe.offset = vector_float3(0, 0, 0)
             probesArray.append(probe)
         }
     //    print(probeLocationsArray)
         let tempProbes = device.makeBuffer(bytes: probesArray, length: MemoryLayout<LightProbe>.stride * probeCount, options: .storageModeShared)!
-        probes = device.makeBuffer(length: MemoryLayout<LightProbe>.stride * probeCount, options: .storageModePrivate)
+        probes = device.makeBuffer(length: MemoryLayout<LightProbe>.stride * probeCount, options: .storageModeShared)
         let commandQueue = device.makeCommandQueue()
         let commandBuffer = commandQueue?.makeCommandBuffer()
         let blitEncoder = commandBuffer?.makeBlitCommandEncoder()

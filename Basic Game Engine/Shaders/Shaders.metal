@@ -71,6 +71,7 @@ struct VertexOut {
     float3 smoothNormal;
     float3 normal;
     float2 texCoords;
+    float3 probeOffset;
 };
 
 struct LightProbeData {
@@ -79,6 +80,17 @@ struct LightProbeData {
     int probeGridWidth;
     int probeGridHeight;
     int3 probeCount;
+};
+
+struct Ray {
+    packed_float3 origin;
+    float minDistance;
+    packed_float3 direction;
+    float maxDistance;
+    float3 color = 0;
+    float3 indirectColor = 0;
+    float3 prevDirection;
+    float3 offset;
 };
 
 constant int AMBIENT_DIR_COUNT = 6;
@@ -183,6 +195,7 @@ void SHProjectLinear(float3 dir, float coeff[9]) {
 
 kernel void accumulateKernel(constant Uniforms_ & uniforms,
                              device LightProbe *probes,
+                             device Ray *rays,
                              texture3d<float, access::read_write> lightProbeTextureR,
                              texture3d<float, access::read_write> lightProbeTextureG,
                              texture3d<float, access::read_write> lightProbeTextureB,
@@ -220,17 +233,53 @@ kernel void accumulateKernel(constant Uniforms_ & uniforms,
             coeffG[i] *= w;
             coeffB[i] *= w;
         }
-        device LightProbe &probe = probes[tid.x + tid.y * uniforms.probeGridWidth * uniforms.probeGridHeight];
+        int probeIndex = tid.x + tid.y * uniforms.probeGridWidth * uniforms.probeGridHeight;
+        device LightProbe &lightProbe = probes[probeIndex];
         
         int frame = uniforms.frameIndex;
+        int3 numProbes = uniforms.probeData.probeCount;
+        int probeCount = numProbes.x * numProbes.y * numProbes.z;
+        int startJ = probeIndex*uniforms.probeWidth;
+        float raysHit = 0.0;
+        float minDist = 100000;
+        float3 minOffset = 0;
+        
+        if (frame < 2 && lightProbe.moved == 0) {
+            for (int i = 0; i<uniforms.probeWidth; i++) {
+                for(int j = startJ; j<startJ + uniforms.probeWidth;j++) {
+                    device Ray &ray = rays[i*probeCount*uniforms.probeWidth + j];
+                    if(abs(ray.offset.x) > 0.0) {
+                        float l = length(ray.offset);
+                        if (l < minDist) {
+                            minDist = l;
+                            minOffset = ray.offset;
+                        }
+                        raysHit += 1.0/samples;
+                        ray.offset = 0;
+                    }
+                }
+            }
+        }
+        
+        if (raysHit > 0.5) {
+            lightProbe.offset = minOffset;
+            lightProbe.moved = 1;
+            for (int i=0; i<9; i++) {
+                lightProbe.shCoeffR[i] = 0;
+                lightProbe.shCoeffG[i] = 0;
+                lightProbe.shCoeffB[i] = 0;
+            }
+            return;
+        }
+        
 //        float4 newCoeffR = ((frame - 1)*oldCoeffR + coeffR)/frame;
 //        float4 newCoeffG = ((frame - 1)*oldCoeffG + coeffG)/frame;
 //        float4 newCoeffB = ((frame - 1)*oldCoeffB + coeffB)/frame;
         
         for(int i=0;i < 9; i++) {
-            probe.shCoeffR[i] = lerp(coeffR[i], probe.shCoeffR[i], t);
-            probe.shCoeffG[i] = lerp(coeffG[i], probe.shCoeffG[i], t);
-            probe.shCoeffB[i] = lerp(coeffB[i], probe.shCoeffB[i], t);
+            lightProbe.shCoeffR[i] = lerp(coeffR[i], lightProbe.shCoeffR[i], t);
+            lightProbe.shCoeffG[i] = lerp(coeffG[i], lightProbe.shCoeffG[i], t);
+            lightProbe.shCoeffB[i] = lerp(coeffB[i], lightProbe.shCoeffB[i], t);
         }
         
 //        lightProbeTextureR.write(oldCoeffR, ushort3(tid.x, tid.y, 0));
@@ -280,6 +329,7 @@ vertex VertexOut lightProbeVertexShader(const VertexIn vIn [[ stage_in ]], const
     vOut.texCoords = float2(vIn.texCoords.x, 1 - vIn.texCoords.y);
     vOut.smoothNormal = (uniforms.M*float4(vIn.smoothNormal, 0)).xyz;
     vOut.normal = (uniforms.M*float4(vIn.normal, 0)).xyz;
+    vOut.probeOffset = uniforms.eye;
     return vOut;
 }
 
@@ -291,14 +341,14 @@ fragment float4 lightProbeFragmentShader(VertexOut vOut [[stage_in]],
     float dMap = depthMap.read(ushort2(vOut.m_position.xy));
     if (d>dMap)
         discard_fragment();
-    int index = gridPosToIndex(vOut.position, probe.gridEdge, probe.gridOrigin, probe.probeGridWidth, probe.probeGridHeight);
+    int index = gridPosToIndex(vOut.position - vOut.probeOffset, probe.gridEdge, probe.gridOrigin, probe.probeGridWidth, probe.probeGridHeight);
     LightProbe lightProbe = probes[index];
     float3 color = 0;
     float shCoeff[9];
     float aCap[9] = {   3.141593,
                         2.094395, 2.094395, 2.094395,
                         0.785398, 0.785398, 0.785398, 0.785398, 0.785398, };
-    float3 normal = normalize(vOut.position - lightProbe.location);
+    float3 normal = normalize(vOut.position - (lightProbe.location + lightProbe.offset));
     SHProjectLinear(normal, shCoeff);
     for (int i = 0; i<9; i++) {
         color.r += max(0.0, aCap[i] * lightProbe.shCoeffR[i] * shCoeff[i]);

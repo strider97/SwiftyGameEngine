@@ -38,13 +38,14 @@ using namespace metal;
 // Add structs here
 
 struct Ray {
-  packed_float3 origin;
-  float minDistance;
-  packed_float3 direction;
-  float maxDistance;
-  float3 color = 0;
+    packed_float3 origin;
+    float minDistance;
+    packed_float3 direction;
+    float maxDistance;
+    float3 color = 0;
     float3 indirectColor = 0;
     float3 prevDirection;
+    float3 offset;
 };
 
 struct Intersection {
@@ -131,7 +132,8 @@ kernel void primaryRays(constant Uniforms_ & uniforms [[buffer(0)]],
     device Ray & ray = rays[rayIdx];
       
          int index = tid.x / uniforms.probeWidth;
-       ray.origin = probes[index].location;
+       ray.origin = probes[index].location + probes[index].offset;
+  //    ray.probeIndex = index;
   //    ray.direction = normalize(float3(0, 1, 0));
       int rayDirIndex = tid.y*uniforms.probeWidth + tid.x % uniforms.probeWidth;
       ray.direction = probeDirections[rayDirIndex*((uniforms.frameIndex + 1) % 4000)];
@@ -391,9 +393,9 @@ float3 getDDGI_(float3 position,
         float depthBias = 0.0;
         float3 newPosition = position + normalBias * smoothNormal;
         
-        float dist = length(newPosition - probe.location);
+        float dist = length(newPosition - (probe.location + probe.offset));
         uint2 texPos = indexToTexPos(index, probeData.probeGridWidth, probeData.probeGridHeight);
-        float3 dirToProbe = normalize(newPosition - probe.location);
+        float3 dirToProbe = normalize(newPosition - (probe.location + probe.offset));
         int shadowProbeReso = 64;
         uint2 texPosOcta = texPos * shadowProbeReso + uint2(octEncode(dirToProbe) * float2(shadowProbeReso));
         float4 d = octahedralMap.read(texPosOcta);
@@ -449,11 +451,13 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
         float3 surfaceNormal = interpolateVertexAttribute(vertexNormals,
                                                         intersection);
         surfaceNormal = normalize(surfaceNormal);
-        if (dot(surfaceNormal, ray.direction) >= 0)
+        if (dot(surfaceNormal, ray.direction) >= 0) {
+            ray.offset = ray.direction * (0.2 + intersection.distance);
+            ray.maxDistance = -1.0;
+            shadowRay.maxDistance = -1.0;
             return;
-  //      surfaceNormal = dot(surfaceNormal, ray.direction) < 0 ? surfaceNormal : -surfaceNormal;
-  //    float2 r = random[(tid.y % 16) * 16 + (tid.x % 16)];
-  //      r = 0;
+        }
+        
         float3 lightDirection = uniforms.sunDirection;
         float3 lightColor = uniforms.light.color;
         float lightDistance = INFINITY;

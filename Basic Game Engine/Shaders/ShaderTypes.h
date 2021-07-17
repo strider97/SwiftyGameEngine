@@ -84,9 +84,11 @@ struct Uniforms_
 
 struct LightProbe {
     vector_float3 location;
+    vector_float3 offset;
     float shCoeffR[9];
     float shCoeffG[9];
     float shCoeffB[9];
+    int moved;
 };
 
 #endif /* ShaderTypes_h */

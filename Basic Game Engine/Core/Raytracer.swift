@@ -37,7 +37,7 @@ class Raytracer {
     var intersector: MPSRayIntersector!
     let rayStride =
         MemoryLayout<MPSRayOriginMinDistanceDirectionMaxDistance>.stride
-        + 3 * MemoryLayout<Float3>.stride
+        + 4 * MemoryLayout<Float3>.stride// + MemoryLayout<Int32>.stride
 
     let maxFramesInFlight = 3
     let alignedUniformsSize = (MemoryLayout<Uniforms>.size + 255) & ~255
@@ -285,6 +285,7 @@ extension Raytracer {
         computeEncoder?.setBuffer(uniformBuffer, offset: uniformBufferOffset,
                                   index: 0)
         computeEncoder?.setBuffer(irradianceField.probes, offset: 0, index: 1)
+        computeEncoder?.setBuffer(rayBuffer, offset: 0, index: 2)
         computeEncoder?.setTexture(irradianceField.ambientCubeTextureR, index: 0)
         computeEncoder?.setTexture(irradianceField.ambientCubeTextureG, index: 1)
         computeEncoder?.setTexture(irradianceField.ambientCubeTextureB, index: 2)
