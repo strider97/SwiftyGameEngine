@@ -261,7 +261,7 @@ kernel void accumulateKernel(constant Uniforms_ & uniforms,
             }
         }
         
-        if (raysHit > 0.5) {
+        if (raysHit > 0.25) {
             lightProbe.offset = minOffset;
             lightProbe.moved = 1;
             for (int i=0; i<9; i++) {

@@ -464,6 +464,8 @@ extension Scene {
             exposure: uniformSliders[Constants.Labels.exposure]!.floatValue,
             normalBias: uniformSliders[Constants.Labels.normalBias]!.floatValue,
             depthBias: uniformSliders[Constants.Labels.depthBias]!.floatValue,
+            ka: uniformSliders[Constants.Labels.ka]!.floatValue,
+            kd: uniformSliders[Constants.Labels.kd]!.floatValue,
             width: UInt32(size.width),
             height: UInt32(size.height)
         )
@@ -533,6 +535,8 @@ struct FragmentUniforms {
     var exposure: Float
     var normalBias: Float
     var depthBias: Float
+    var ka: Float
+    var kd: Float
     var width: UInt32
     var height: UInt32
 };

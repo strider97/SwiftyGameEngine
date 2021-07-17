@@ -711,13 +711,13 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <stackView distribution="fillEqually" orientation="vertical" alignment="leading" spacing="0.0" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZMC-xl-kE2">
-                                <rect key="frame" x="1049" y="587" width="231" height="133"/>
+                                <rect key="frame" x="1049" y="570" width="231" height="150"/>
                                 <subviews>
                                     <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="10" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MZs-TS-rHm">
-                                        <rect key="frame" x="0.0" y="94" width="221" height="39"/>
+                                        <rect key="frame" x="0.0" y="123" width="221" height="27"/>
                                         <subviews>
                                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="swp-Qs-gST">
-                                                <rect key="frame" x="-2" y="12" width="75" height="16"/>
+                                                <rect key="frame" x="-2" y="6" width="75" height="16"/>
                                                 <textFieldCell key="cell" lineBreakMode="clipping" title="normal Bias" id="uS3-WF-IxY">
                                                     <font key="font" metaFont="system"/>
                                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -725,7 +725,7 @@
                                                 </textFieldCell>
                                             </textField>
                                             <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Fhd-hq-JRf">
-                                                <rect key="frame" x="79" y="4" width="144" height="28"/>
+                                                <rect key="frame" x="79" y="-2" width="144" height="28"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="140" id="g2P-X6-UnD"/>
                                                 </constraints>
@@ -742,10 +742,10 @@
                                         </customSpacing>
                                     </stackView>
                                     <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="10" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="13V-SI-Jao">
-                                        <rect key="frame" x="0.0" y="55" width="215" height="39"/>
+                                        <rect key="frame" x="0.0" y="96" width="215" height="27"/>
                                         <subviews>
                                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="QgA-hf-sJz">
-                                                <rect key="frame" x="-2" y="12" width="69" height="16"/>
+                                                <rect key="frame" x="-2" y="6" width="69" height="16"/>
                                                 <textFieldCell key="cell" lineBreakMode="clipping" title="depth Bias" id="evf-Yi-toY">
                                                     <font key="font" metaFont="system"/>
                                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -753,7 +753,7 @@
                                                 </textFieldCell>
                                             </textField>
                                             <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="iRe-FE-1oJ">
-                                                <rect key="frame" x="73" y="4" width="144" height="28"/>
+                                                <rect key="frame" x="73" y="-2" width="144" height="28"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="140" id="V7Z-me-M46"/>
                                                 </constraints>
@@ -770,10 +770,10 @@
                                         </customSpacing>
                                     </stackView>
                                     <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="10" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CQk-ni-dCb">
-                                        <rect key="frame" x="0.0" y="16" width="207" height="39"/>
+                                        <rect key="frame" x="0.0" y="70" width="207" height="26"/>
                                         <subviews>
                                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Jyn-gh-YeF">
-                                                <rect key="frame" x="-2" y="12" width="61" height="16"/>
+                                                <rect key="frame" x="-2" y="5" width="61" height="16"/>
                                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Exposure" id="Cl1-MX-SUo">
                                                     <font key="font" metaFont="system"/>
                                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -781,11 +781,67 @@
                                                 </textFieldCell>
                                             </textField>
                                             <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="GxL-uo-OYX">
-                                                <rect key="frame" x="65" y="4" width="144" height="28"/>
+                                                <rect key="frame" x="65" y="-3" width="144" height="28"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="140" id="TLs-r6-TXd"/>
                                                 </constraints>
                                                 <sliderCell key="cell" state="on" alignment="left" maxValue="10" doubleValue="1" tickMarkPosition="above" sliderType="linear" id="FJk-NO-BQi"/>
+                                            </slider>
+                                        </subviews>
+                                        <visibilityPriorities>
+                                            <integer value="1000"/>
+                                            <integer value="1000"/>
+                                        </visibilityPriorities>
+                                        <customSpacing>
+                                            <real value="3.4028234663852886e+38"/>
+                                            <real value="3.4028234663852886e+38"/>
+                                        </customSpacing>
+                                    </stackView>
+                                    <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="10" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nCb-dJ-Y9f">
+                                        <rect key="frame" x="0.0" y="43" width="166" height="27"/>
+                                        <subviews>
+                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="TZZ-kx-bkD">
+                                                <rect key="frame" x="-2" y="5" width="20" height="16"/>
+                                                <textFieldCell key="cell" lineBreakMode="clipping" title="Ka" id="FTS-CU-oId">
+                                                    <font key="font" metaFont="system"/>
+                                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                </textFieldCell>
+                                            </textField>
+                                            <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="CRk-gY-bUI">
+                                                <rect key="frame" x="24" y="-3" width="144" height="28"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="140" id="kZ1-62-vpc"/>
+                                                </constraints>
+                                                <sliderCell key="cell" state="on" alignment="left" maxValue="4" doubleValue="1" tickMarkPosition="above" sliderType="linear" id="XY5-QG-0ok"/>
+                                            </slider>
+                                        </subviews>
+                                        <visibilityPriorities>
+                                            <integer value="1000"/>
+                                            <integer value="1000"/>
+                                        </visibilityPriorities>
+                                        <customSpacing>
+                                            <real value="3.4028234663852886e+38"/>
+                                            <real value="3.4028234663852886e+38"/>
+                                        </customSpacing>
+                                    </stackView>
+                                    <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="10" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Vye-jl-mIs">
+                                        <rect key="frame" x="0.0" y="16" width="166" height="27"/>
+                                        <subviews>
+                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="fSm-ML-CmP">
+                                                <rect key="frame" x="-2" y="5" width="20" height="16"/>
+                                                <textFieldCell key="cell" lineBreakMode="clipping" title="Kd" id="JEn-mb-ccw">
+                                                    <font key="font" metaFont="system"/>
+                                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                </textFieldCell>
+                                            </textField>
+                                            <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zZW-4Y-oOQ">
+                                                <rect key="frame" x="24" y="-3" width="144" height="28"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="140" id="u84-9j-sss"/>
+                                                </constraints>
+                                                <sliderCell key="cell" state="on" alignment="left" maxValue="4" doubleValue="1" tickMarkPosition="above" sliderType="linear" id="JV5-CM-3xU"/>
                                             </slider>
                                         </subviews>
                                         <visibilityPriorities>
@@ -810,15 +866,19 @@
                                 </subviews>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="231" id="Q7b-xN-mho"/>
-                                    <constraint firstAttribute="height" constant="133" id="reV-Mx-Xav"/>
+                                    <constraint firstAttribute="height" constant="150" id="reV-Mx-Xav"/>
                                 </constraints>
                                 <visibilityPriorities>
                                     <integer value="1000"/>
                                     <integer value="1000"/>
                                     <integer value="1000"/>
                                     <integer value="1000"/>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
                                 </visibilityPriorities>
                                 <customSpacing>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
                                     <real value="3.4028234663852886e+38"/>
                                     <real value="3.4028234663852886e+38"/>
                                     <real value="3.4028234663852886e+38"/>
@@ -833,6 +893,8 @@
                         <connections>
                             <outlet property="depthBiasSlider" destination="iRe-FE-1oJ" id="Ku8-PE-HEg"/>
                             <outlet property="exposureSlider" destination="GxL-uo-OYX" id="N9n-4v-FI2"/>
+                            <outlet property="kaSlider" destination="CRk-gY-bUI" id="bwS-d9-GuY"/>
+                            <outlet property="kdSlider" destination="zZW-4Y-oOQ" id="gcY-9s-fkX"/>
                             <outlet property="normalBiasSlider" destination="Fhd-hq-JRf" id="XNe-N1-bft"/>
                             <outlet property="showLightProbes" destination="Jgk-Hz-uOT" id="QEO-dA-nm5"/>
                         </connections>

@@ -100,6 +100,8 @@ struct FragmentUniform {
     float exposure;
     float normalBias;
     float depthBias;
+    float ka;
+    float kd;
     uint width;
     uint height;
 };
@@ -489,7 +491,7 @@ kernel void DefferedShadeKernel(uint2 tid [[thread_position_in_grid]],
         float3 ambient = 0;
         ambient = (getDDGI(pos, smoothN, uniforms, probes, probe, octahedralMap) + 0.0000);
         float3 diffuse = inShadow * 4.0 * albedo * saturate(dot(smoothN, l));
-        float3 color = diffuse + 4 * ambient * albedo;// * albedo;
+        float3 color = uniforms.kd * diffuse + uniforms.ka * ambient * albedo;// * albedo;
     //    float4x4 PV = shadowUniforms.P * shadowUniforms.V;
     //    float ssao = getSSAO(pos, smoothN, kernelAndNoise[64 + tid.x % 16], PV, kernelAndNoise, depthTex);
         

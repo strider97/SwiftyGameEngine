@@ -27,5 +27,7 @@ struct Constants {
         static let normalBias = "normalBias"
         static let depthBias = "depthBias"
         static let exposure = "exposure"
+        static let ka = "ka"
+        static let kd = "kd"
     }
 }
