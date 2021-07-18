@@ -82,18 +82,12 @@ struct Uniforms_
     struct LightProbeData_ probeData;
 };
 
-struct Proberay {
-    vector_float3 direction;
-    vector_float3 color;
-};
-
 struct LightProbe {
     vector_float3 location;
     vector_float3 offset;
     float shCoeffR[9];
     float shCoeffG[9];
     float shCoeffB[9];
-    struct Proberay rays[24*24];
     int moved;
 };
 

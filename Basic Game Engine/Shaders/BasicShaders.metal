@@ -258,16 +258,6 @@ float2 octEncode_( float3 v ) {
     result = result*0.5 + 0.5;
     return result;
 }
- 
-float3 octDecode_( float2 f ) {
-    f = f * 2.0 - 1.0;
- 
-    // https://twitter.com/Stubbesaurus/status/937994790553227264
-    float3 n = float3( f.x, f.y, 1.0 - abs( f.x ) - abs( f.y ) );
-    float t = saturate( -n.z );
-    n.xy += (n.x >= 0.0 && n.y >=0) ? -t : t;
-    return normalize( n );
-}
 
 float sq(float s) {
     return s*s;
@@ -283,7 +273,8 @@ float3 getDDGI(float3 position,
                FragmentUniform uniforms,
                device LightProbe *probes,
                LightProbeData probeData,
-               texture2d<float, access::sample> octahedralMap)
+               texture2d<float, access::sample> octahedralMap,
+               texture2d<float, access::sample> radianceMap)
 {
     float3 transformedPos = (position - probeData.gridOrigin)/probeData.gridEdge;
     transformedPos -= float3(int3(transformedPos));
@@ -344,8 +335,8 @@ float3 getDDGI(float3 position,
     //    int signDot = signOf(-dotPN);
     //    normalBias *= signDot;
     //    depthBias *= signDot;
-        float w = max(0.0001, signum_(-dotPN) * 1);
-        trilinearWeights[iCoeff] *= w*w + 0.2;
+    //    float w = max(0.0001, signum_(-dotPN) * 1);
+    //    trilinearWeights[iCoeff] *= w*w + 0.2;
         
         float3 newPosition = position + normalBias * smoothNormal;
         dirFromProbe = normalize(newPosition - (probe.location + probe.offset));
@@ -354,6 +345,7 @@ float3 getDDGI(float3 position,
         int shadowProbeReso = 64;
         int3 probeCount = probeData.probeCount;
         float2 encodedUV = octEncode_(dirFromProbe);
+        float2 encodedUV_ = octEncode_(smoothNormal);
         float minimumUV = 1.0/shadowProbeReso;
         if (encodedUV.x < minimumUV)
             encodedUV.x += minimumUV;
@@ -363,29 +355,43 @@ float3 getDDGI(float3 position,
             encodedUV.y += minimumUV;
         if (encodedUV.y > 1-minimumUV)
             encodedUV.y -= minimumUV;
+        
+        int radianceMapSize = 24;
+        minimumUV = 1.0/radianceMapSize;
+        if (encodedUV_.x < minimumUV)
+            encodedUV_.x += minimumUV;
+        if (encodedUV_.x > 1-minimumUV)
+            encodedUV_.x -= minimumUV;
+        if (encodedUV_.y < minimumUV)
+            encodedUV_.y += minimumUV;
+        if (encodedUV_.y > 1-minimumUV)
+            encodedUV_.y -= minimumUV;
             
         float2 uv = (float2(texPos) + encodedUV)*float2(1.0/(probeCount.x * probeCount.y), 1.0/probeCount.z);
-    //    uint2 texPosOcta = texPos * shadowProbeReso + uint2(octEncode_(dirFromProbe) * float2(shadowProbeReso));
         float4 d = octahedralMap.sample(s, uv);
-
+        
+        float2 uv_ = (float2(texPos) + encodedUV_)*float2(1.0/(probeCount.x * probeCount.y), 1.0/probeCount.z);
+        uint2 texPosOcta = texPos * radianceMapSize + uint2(uv_ * float2(radianceMapSize));
+        color_ = radianceMap.sample(s, uv_).rgb;
+        
         float2 temp = d.rg;
         float mean = temp.x;
         float variance = abs(sq(temp.x) - temp.y);
 
-        // http://www.punkuser.net/vsm/vsm_paper.pdf; equation 5
-        // Need the max in the denominator because biasing can cause a negative displacement
+        /// http://www.punkuser.net/vsm/vsm_paper.pdf; equation 5
+        /// Need the max in the denominator because biasing can cause a negative displacement
         float chebyshevWeight = variance / (variance + sq(max(distToProbe - mean, 0.0)));
             
-        // Increase contrast in the weight
+        /// Increase contrast in the weight
         chebyshevWeight = max(pow3(chebyshevWeight), 0.0);
 
         float finalShadowingWeight = (distToProbe <= mean + depthBias || d.a == 0.0 ) ? 1.0 : chebyshevWeight;
         
-        for (int i = 0; i<9; i++) {
-            color_.r += max(0.0, aCap[i] * probe.shCoeffR[i] * shCoeff[i]);
-            color_.g += max(0.0, aCap[i] * probe.shCoeffG[i] * shCoeff[i]);
-            color_.b += max(0.0, aCap[i] * probe.shCoeffB[i] * shCoeff[i]);
-        }
+//        for (int i = 0; i<9; i++) {
+//            color_.r += max(0.0, aCap[i] * probe.shCoeffR[i] * shCoeff[i]);
+//            color_.g += max(0.0, aCap[i] * probe.shCoeffG[i] * shCoeff[i]);
+//            color_.b += max(0.0, aCap[i] * probe.shCoeffB[i] * shCoeff[i]);
+//        }
         color += color_ * trilinearWeights[iCoeff] * finalShadowingWeight;
     //    color += color_ * (1.0/8);
     }
@@ -472,7 +478,8 @@ kernel void DefferedShadeKernel(uint2 tid [[thread_position_in_grid]],
                                 texture2d<float, access::sample> albedoTex [[texture(rsmFlux)]],
                                 depth2d<float, access::sample> depthTex [[texture(rsmDepth)]],
                                 texture2d<float, access::write> outputTex [[texture(0)]],
-                                texture2d<float, access::sample> octahedralMap[[texture(10)]]) {
+                                texture2d<float, access::sample> octahedralMap[[texture(10)]],
+                                texture2d<float, access::sample> radianceMap[[texture(1)]]) {
     if (tid.x < uniforms.width && tid.y < uniforms.height) {
         float2 uv = float2(tid)/float2(uniforms.width, uniforms.height);
         float3 pos = worldPos.sample(s, uv).rgb;
@@ -489,9 +496,10 @@ kernel void DefferedShadeKernel(uint2 tid [[thread_position_in_grid]],
         float inShadow = normalShadow.a;
         
         float3 ambient = 0;
-        ambient = (getDDGI(pos, smoothN, uniforms, probes, probe, octahedralMap) + 0.0000);
+        ambient = (getDDGI(pos, smoothN, uniforms, probes, probe, octahedralMap, radianceMap) + 0.0000);
         float3 diffuse = inShadow * 4.0 * albedo * saturate(dot(smoothN, l));
-        float3 color = uniforms.kd * diffuse + uniforms.ka * ambient * albedo;// * albedo;
+        float3 color = uniforms.kd * diffuse + uniforms.ka * ambient * albedo;
+        
     //    float4x4 PV = shadowUniforms.P * shadowUniforms.V;
     //    float ssao = getSSAO(pos, smoothN, kernelAndNoise[64 + tid.x % 16], PV, kernelAndNoise, depthTex);
         

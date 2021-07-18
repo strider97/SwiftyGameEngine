@@ -400,6 +400,7 @@ extension Scene {
         renderCommandEncoder?.setFragmentBytes(&lightProbeData, length: MemoryLayout<LightProbeData>.stride, index: 0)
         renderCommandEncoder?.setFragmentBuffer(irradianceField.probes, offset: 0, index: 1)
         renderCommandEncoder?.setFragmentTexture(gBufferData.depth, index: 0)
+        renderCommandEncoder?.setFragmentTexture(rayTracer!.irradianceField.radianceMap!, index: 1)
         for (index, _) in rayTracer!.irradianceField.probesArray.enumerated() {
             var u = getLightProbeUniformData(index)
             renderCommandEncoder?.setVertexBytes(&u, length: MemoryLayout<Uniforms>.stride, index: 1)
@@ -475,6 +476,7 @@ extension Scene {
         computeEncoder?.setTexture(gBufferData.depth, index: TextureIndex.depth.rawValue)
         computeEncoder?.setTexture(renderTarget, index: 0)
         computeEncoder?.setTexture(irradianceField.octaHedralMap!, index: 10)
+        computeEncoder?.setTexture(irradianceField.radianceMap!, index: 1)
         computeEncoder?.setBytes(&s, length: MemoryLayout<ShadowUniforms>.stride, index: 0)
         computeEncoder?.setBytes(&lightProbeData, length: MemoryLayout<LightProbeData>.stride, index: 1)
         computeEncoder?.setBytes(&fragmentUniform, length: MemoryLayout<FragmentUniforms>.stride, index: 2)

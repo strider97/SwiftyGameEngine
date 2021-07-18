@@ -103,6 +103,8 @@ constant float3 ambientCubeDir[] = {
     float3(0, 0, -1)
 };
 
+constexpr sampler s(coord::normalized, address::repeat, filter::linear, mip_filter::linear);
+
 float signNotZero__(float k) {
     return (k >= 0.0) ? 1.0 : -1.0;
 }
@@ -233,17 +235,9 @@ kernel void accumulateKernel(constant Uniforms_ & uniforms,
         int probeIndex = tid.x + tid.y * uniforms.probeGridWidth * uniforms.probeGridHeight;
         device LightProbe &lightProbe = probes[probeIndex];
         
-        Proberay probeRays[24*24];
         for(int i = 0; i < samples; i++) {
             float3 dir = lightProbeTextureR.read(ushort3(tid.x, tid.y, i)).xyz;
             float3 col = lightProbeTextureG.read(ushort3(tid.x, tid.y, i)).rgb;
-            probeRays[i].direction = dir;
-            probeRays[i].color = col;
-        }
-        
-        for(int i = 0; i < samples; i++) {
-            float3 dir = probeRays[i].direction;
-            float3 col = probeRays[i].color;
             
             float coeffSH[9];
             SHProjectLinear(dir, coeffSH);
@@ -322,7 +316,7 @@ kernel void accumulateRadianceKernel(constant Uniforms_ & uniforms,
 {
     float t = 0.033;
     int samples = uniforms.probeWidth * uniforms.probeHeight;
-    int radianceMapSize = 16;
+    int radianceMapSize = 24;
     int index = tid.x / radianceMapSize;
     uint2 texPos = indexToTexPos_(index, uniforms.probeGridWidth, uniforms.probeGridHeight);
     float2 uv = float2(tid.x % radianceMapSize, tid.y % radianceMapSize)/radianceMapSize;
@@ -336,7 +330,8 @@ kernel void accumulateRadianceKernel(constant Uniforms_ & uniforms,
     color /= samples;
     uint2 texPosOcta = texPos * radianceMapSize + uint2(uv * float2(radianceMapSize));
     float3 prevColor = radianceMap.read(texPosOcta).rgb;
-    radianceMap.write(float4(lerp(color, prevColor, t), 1), texPosOcta);
+    radianceMap.write(float4(lerp(color, prevColor, t), index), texPosOcta);
+//    radianceMap.write(float4(texelDir, index), texPosOcta);
 }
 
 vertex VertexOut lightProbeVertexShader(const VertexIn vIn [[ stage_in ]], constant Uniforms &uniforms [[buffer(1)]]) {
@@ -355,7 +350,8 @@ vertex VertexOut lightProbeVertexShader(const VertexIn vIn [[ stage_in ]], const
 fragment float4 lightProbeFragmentShader(VertexOut vOut [[stage_in]],
                                          constant LightProbeData &probe [[buffer(0)]],
                                          device LightProbe *probes,
-                                         depth2d<float, access::read> depthMap) {
+                                         depth2d<float, access::read> depthMap,
+                                         texture2d<float, access::read> radianceMap) {
     float d = vOut.m_position.z;// / vOut.m_position.a;
     float dMap = depthMap.read(ushort2(vOut.m_position.xy));
     if (d>dMap)
@@ -375,6 +371,11 @@ fragment float4 lightProbeFragmentShader(VertexOut vOut [[stage_in]],
         color.b += max(0.0, aCap[i] * lightProbe.shCoeffB[i] * shCoeff[i]);
     }
     
-//    return float4(float3(d), 1);
-    return float4(color * 10, 1.0);
+    int radianceMapSize = 24;
+    uint2 texPos = indexToTexPos_(index, 12, 6);
+    float2 uv = octEncode__(normal);
+    uint2 texPosOcta = texPos * radianceMapSize + uint2(uv * float2(radianceMapSize));
+    color = radianceMap.read(texPosOcta).rgb;
+    return float4(color*10, 1);
+//    return float4((uv_), 0, 1.0);
 }

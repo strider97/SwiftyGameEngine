@@ -22,7 +22,7 @@ struct Constants {
     static var probeCount: Int { Self.probeGrid.0 * Self.probeGrid.1 * Self.probeGrid.2 }
     static let probeReso = 24
     static let shadowProbeReso = 64;
-    static let radianceProbeReso = 16;
+    static let radianceProbeReso = 24;
     
     struct Labels {
         static let normalBias = "normalBias"
