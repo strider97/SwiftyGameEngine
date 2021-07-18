@@ -103,26 +103,42 @@ constant float3 ambientCubeDir[] = {
     float3(0, 0, -1)
 };
 
-/*
- func indexToGridPos(_ index: Int, _ origin: Float3, _ gridEdge: Float3) -> Float3{
-     let indexD = index / (width * height)
-     let indexH = (index % (width * height)) / width
-     let indexW = (index % (width * height)) % width
-     return origin + Float3(Float(indexW), Float(indexH), Float(indexD)) * gridEdge
- }
- */
-
-/*
-int2 indexToTexPos_(int index, int width, int height){
-    int indexD = index / (width * height);
-    int indexH = (index % (width * height));
-    return int2(indexH, indexD);
+float signNotZero__(float k) {
+    return (k >= 0.0) ? 1.0 : -1.0;
 }
-int2 gridPosToTex(float3 pos, float3 gridEdge, float3 gridOrigin, int probeGridWidth, int probeGridHeight) {
-    float3 texPos = (pos - gridOrigin)/gridEdge;
-    int index = int(texPos.z) * probeGridWidth * probeGridHeight + int(texPos.y)*probeGridWidth + int(texPos.x);
-    return indexToTexPos_(index, probeGridWidth, probeGridHeight);
-}*/
+
+float2 signNotZero__(float2 v) {
+    return float2(signNotZero__(v.x), signNotZero__(v.y));
+}
+ 
+float2 octEncode__( float3 v ) {
+    float l1norm = abs(v.x) + abs(v.y) + abs(v.z);
+    float2 result = v.xy * (1.0 / l1norm);
+    if (v.z < 0.0) {
+        result = (1.0 - abs(result.yx)) * signNotZero__(result.xy);
+    }
+    result = result*0.5 + 0.5;
+    return result;
+}
+ 
+//float3 octDecode( float2 f ) {
+//    f = f * 2.0 - 1.0;
+//
+//    // https://twitter.com/Stubbesaurus/status/937994790553227264
+//    float3 n = float3( f.x, f.y, 1.0 - abs( f.x ) - abs( f.y ) );
+//    float t = saturate( -n.z );
+//    n.xy += (n.x >= 0.0 && n.y >=0) ? -t : t;
+//    return normalize( n );
+//}
+
+float3 octDecode__(float2 f) {
+    float2 o = f * 2.0 - 1.0;
+    float3 v = float3(o.x, o.y, 1.0 - abs(o.x) - abs(o.y));
+    if (v.z < 0.0) {
+        v.xy = (1.0 - abs(v.yx)) * signNotZero__(v.xy);
+    }
+    return normalize(v);
+}
 
 int gridPosToIndex(float3 pos, float3 gridEdge, float3 gridOrigin, int probeGridWidth, int probeGridHeight) {
     float3 texPos_ = (pos - gridOrigin)/gridEdge;
@@ -173,6 +189,12 @@ float4 lerp(float4 a, float4 b, float t) {
     return a*t + b*(1-t);
 }
 
+uint2 indexToTexPos_(int index, int width, int height){
+    int indexD = index / (width * height);
+    int indexH = (index % (width * height));
+    return uint2(indexH, indexD);
+}
+
 void SHProjectLinear(float3 dir, float coeff[9]) {
     float l0 = 0.282095;
     float l1 = 0.488603;
@@ -208,19 +230,27 @@ kernel void accumulateKernel(constant Uniforms_ & uniforms,
         float coeffG[9] = {0};
         float coeffB[9] = {0};
         int samples = uniforms.probeWidth * uniforms.probeHeight;
+        int probeIndex = tid.x + tid.y * uniforms.probeGridWidth * uniforms.probeGridHeight;
+        device LightProbe &lightProbe = probes[probeIndex];
+        
+        Proberay probeRays[24*24];
         for(int i = 0; i < samples; i++) {
-            float4 valR = lightProbeTextureR.read(ushort3(tid.x, tid.y, i));
-            float3 dir = valR.xyz;
-            float colR = valR.a;
-            float colG = lightProbeTextureG.read(ushort3(tid.x, tid.y, i)).a;
-            float colB = lightProbeTextureB.read(ushort3(tid.x, tid.y, i)).a;
+            float3 dir = lightProbeTextureR.read(ushort3(tid.x, tid.y, i)).xyz;
+            float3 col = lightProbeTextureG.read(ushort3(tid.x, tid.y, i)).rgb;
+            probeRays[i].direction = dir;
+            probeRays[i].color = col;
+        }
+        
+        for(int i = 0; i < samples; i++) {
+            float3 dir = probeRays[i].direction;
+            float3 col = probeRays[i].color;
             
             float coeffSH[9];
             SHProjectLinear(dir, coeffSH);
             for (int i=0;i<9;i++) {
-                coeffR[i] += colR * coeffSH[i];
-                coeffG[i] += colG * coeffSH[i];
-                coeffB[i] += colB * coeffSH[i];
+                coeffR[i] += col.r * coeffSH[i];
+                coeffG[i] += col.g * coeffSH[i];
+                coeffB[i] += col.b * coeffSH[i];
             }
 //            lightProbeTextureR.write(0, ushort3(tid.x, tid.y, i));
 //            lightProbeTextureG.write(0, ushort3(tid.x, tid.y, i));
@@ -233,8 +263,6 @@ kernel void accumulateKernel(constant Uniforms_ & uniforms,
             coeffG[i] *= w;
             coeffB[i] *= w;
         }
-        int probeIndex = tid.x + tid.y * uniforms.probeGridWidth * uniforms.probeGridHeight;
-        device LightProbe &lightProbe = probes[probeIndex];
         
         int frame = uniforms.frameIndex;
         int3 numProbes = uniforms.probeData.probeCount;
@@ -281,44 +309,35 @@ kernel void accumulateKernel(constant Uniforms_ & uniforms,
             lightProbe.shCoeffG[i] = lerp(coeffG[i], lightProbe.shCoeffG[i], t);
             lightProbe.shCoeffB[i] = lerp(coeffB[i], lightProbe.shCoeffB[i], t);
         }
-        
-//        lightProbeTextureR.write(oldCoeffR, ushort3(tid.x, tid.y, 0));
-//        lightProbeTextureG.write(oldCoeffG, ushort3(tid.x, tid.y, 0));
-//        lightProbeTextureB.write(oldCoeffB, ushort3(tid.x, tid.y, 0));
-        
-//        probe.shCoeffR[0] = newCoeffR[0];
-//        probe.shCoeffR[1] = newCoeffR[1];
-//        probe.shCoeffR[2] = newCoeffR[2];
-//        probe.shCoeffR[3] = newCoeffR[3];
-//
-//        probe.shCoeffG[0] = newCoeffG[0];
-//        probe.shCoeffG[1] = newCoeffG[1];
-//        probe.shCoeffG[2] = newCoeffG[2];
-//        probe.shCoeffG[3] = newCoeffG[3];
-//
-//        probe.shCoeffB[0] = newCoeffB[0];
-//        probe.shCoeffB[1] = newCoeffB[1];
-//        probe.shCoeffB[2] = newCoeffB[2];
-//        probe.shCoeffB[3] = newCoeffB[3];
-        
-//        lightProbeTextureFinalR.write(lerp(coeffR, oldCoeffR, t), ushort3(tid.x, tid.y, 0));
-//        lightProbeTextureFinalG.write(lerp(coeffG, oldCoeffG, t), ushort3(tid.x, tid.y, 0));
-//        lightProbeTextureFinalB.write(lerp(coeffB, oldCoeffB, t), ushort3(tid.x, tid.y, 0));
-        
-        
-    //    lightProbeTextureFinalB.write(float4(lerp(newValue6, oldValue6, t), 1), ushort3(tid.x, tid.y, 1));
-    //    lightProbeTextureFinal.write(float4(newValue1, 1), ushort3(tid.x, tid.y, 0));
-    //    lightProbeTextureFinal.write(float4(newValue2, 1), ushort3(tid.x, tid.y, 1));
     }
   }
 }
 
-/*
- int frame = uniforms.frameIndex;
- lightProbeTextureFinalR.write(((frame - 1)*oldCoeffR + coeffR)/frame , ushort3(tid.x, tid.y, 0));
- lightProbeTextureFinalG.write(((frame - 1)*oldCoeffR + coeffR)/frame, ushort3(tid.x, tid.y, 0));
- lightProbeTextureFinalB.write(((frame - 1)*oldCoeffB + coeffB)/frame, ushort3(tid.x, tid.y, 0));
- */
+kernel void accumulateRadianceKernel(constant Uniforms_ & uniforms,
+                             texture3d<float, access::read_write> lightProbeTextureR,
+                             texture3d<float, access::read_write> lightProbeTextureG,
+                             texture3d<float, access::read_write> lightProbeTextureB,
+                             texture2d<float, access::read_write> radianceMap,
+                             uint2 tid [[thread_position_in_grid]])
+{
+    float t = 0.033;
+    int samples = uniforms.probeWidth * uniforms.probeHeight;
+    int radianceMapSize = 16;
+    int index = tid.x / radianceMapSize;
+    uint2 texPos = indexToTexPos_(index, uniforms.probeGridWidth, uniforms.probeGridHeight);
+    float2 uv = float2(tid.x % radianceMapSize, tid.y % radianceMapSize)/radianceMapSize;
+    float3 texelDir = octDecode__(uv);
+    float3 color = 0;
+    for(int i = 0; i < samples; i++) {
+        float3 rayDir = lightProbeTextureR.read(ushort3(texPos.x, texPos.y, i)).xyz;
+        float3 col = lightProbeTextureG.read(ushort3(texPos.x, texPos.y, i)).rgb;
+        color += saturate(dot(texelDir, rayDir)) * col;
+    }
+    color /= samples;
+    uint2 texPosOcta = texPos * radianceMapSize + uint2(uv * float2(radianceMapSize));
+    float3 prevColor = radianceMap.read(texPosOcta).rgb;
+    radianceMap.write(float4(lerp(color, prevColor, t), 1), texPosOcta);
+}
 
 vertex VertexOut lightProbeVertexShader(const VertexIn vIn [[ stage_in ]], constant Uniforms &uniforms [[buffer(1)]]) {
     VertexOut vOut;

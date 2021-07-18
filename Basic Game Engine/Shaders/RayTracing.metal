@@ -501,6 +501,7 @@ kernel void shadowKernel(uint2 tid [[thread_position_in_grid]],
                          device Uniforms_ & uniforms,
                          device Ray *shadowRays,
                          device float *intersections,
+                         device LightProbe *probes,
                          texture2d<float, access::write> renderTarget,
                          texture3d<float, access::write> lightProbeTextureR,
                          texture3d<float, access::write> lightProbeTextureG,
@@ -543,23 +544,20 @@ kernel void shadowKernel(uint2 tid [[thread_position_in_grid]],
         oldValuesR[2] = direction.z;
         oldValuesR[3] = color.r;
         
-        oldValuesG[0] = direction.x;
-        oldValuesG[1] = direction.y;
-        oldValuesG[2] = direction.z;
+//        oldValuesG[0] = direction.x;
+//        oldValuesG[1] = direction.y;
+//        oldValuesG[2] = direction.z;
         oldValuesG[3] = color.g;
         
-        oldValuesB[0] = direction.x;
-        oldValuesB[1] = direction.y;
-        oldValuesB[2] = direction.z;
+//        oldValuesB[0] = direction.x;
+//        oldValuesB[1] = direction.y;
+//        oldValuesB[2] = direction.z;
         oldValuesB[3] = color.b;
         
         lightProbeTextureR.write(float4(oldValuesR[0], oldValuesR[1], oldValuesR[2], oldValuesR[3]), ushort3(texPos.x, texPos.y, rayDirIndex));
-     //   lightProbeTextureR.write(float4(oldValuesR[3], oldValuesR[4], oldValuesR[5], 1), ushort3(texPos.x, texPos.y, rayDirIndex*2 + 1));
         
-        lightProbeTextureG.write(float4(oldValuesG[0], oldValuesG[1], oldValuesG[2], oldValuesG[3]), ushort3(texPos.x, texPos.y, rayDirIndex));
-     //   lightProbeTextureG.write(float4(oldValuesG[3], oldValuesG[4], oldValuesG[5], 1), ushort3(texPos.x, texPos.y, rayDirIndex*2 + 1));
+        lightProbeTextureG.write(float4(oldValuesR[3], oldValuesG[3], oldValuesB[3], 1), ushort3(texPos.x, texPos.y, rayDirIndex));
         
-        lightProbeTextureB.write(float4(oldValuesB[0], oldValuesB[1], oldValuesB[2], oldValuesB[3]), ushort3(texPos.x, texPos.y, rayDirIndex));
-     //   lightProbeTextureB.write(float4(oldValuesB[3], oldValuesB[4], oldValuesB[5], 1), ushort3(texPos.x, texPos.y, rayDirIndex*2 + 1));
+    //    lightProbeTextureB.write(float4(oldValuesB[0], oldValuesB[1], oldValuesB[2], oldValuesB[3]), ushort3(texPos.x, texPos.y, rayDirIndex));
     }
 }

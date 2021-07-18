@@ -27,6 +27,7 @@ class IrradianceField {
     var ambientCubeTextureFinalG: MTLTexture!
     var ambientCubeTextureFinalB: MTLTexture!
     var octaHedralMap: MTLTexture!
+    var radianceMap: MTLTexture!
     var probes: MTLBuffer!
     var probeDirections: MTLBuffer!
     var probeCount: Int
@@ -53,6 +54,7 @@ class IrradianceField {
         ambientCubeTextureB = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: Constants.probeReso * Constants.probeReso, label: "Irradiance Field", pixelFormat: .rgba32Float)
         ambientCubeTextureFinalB = Descriptor.build3DTexture(dimW: w * h, dimH: d, dimD: 2, label: "Irradiance Field final", pixelFormat: .rgba32Float)
         octaHedralMap = Descriptor.build2DTextureForWrite(pixelFormat: .rgba32Float, size: CGSize(width: (Constants.probeGrid.0 * Constants.probeGrid.1) * Constants.shadowProbeReso, height: Constants.probeGrid.2 * Constants.shadowProbeReso), label: "octaHedralMap", shaderWrite: true)
+        radianceMap = Descriptor.build2DTextureForWrite(pixelFormat: .rgba32Float, size: CGSize(width: (Constants.probeGrid.0 * Constants.probeGrid.1) * Constants.radianceProbeReso, height: Constants.probeGrid.2 * Constants.radianceProbeReso), label: "radianceMap", shaderWrite: true)
         gridEdge = gridSize / Float3(Float(w - 1), Float(h - 1), Float(d - 1))
         origin = centre - gridSize / 2
         makeBuffer(origin, gridEdge)

@@ -20,6 +20,7 @@ class Raytracer {
 
     var shadePipelineState: MTLComputePipelineState!
     var accumulatePipeline: MTLComputePipelineState!
+    var irradianceAccumulatePipeline: MTLComputePipelineState!
     var accumulationTarget: MTLTexture!
     var accelerationStructure: MPSTriangleAccelerationStructure!
     var shadowPipeline: MTLComputePipelineState!
@@ -134,6 +135,14 @@ class Raytracer {
             computeDescriptor.computeFunction = library.makeFunction(
                 name: "accumulateKernel")
             accumulatePipeline = try device.makeComputePipelineState(
+                descriptor: computeDescriptor,
+                options: [],
+                reflection: nil
+            )
+            
+            computeDescriptor.computeFunction = library.makeFunction(
+                name: "accumulateRadianceKernel")
+            irradianceAccumulatePipeline = try device.makeComputePipelineState(
                 descriptor: computeDescriptor,
                 options: [],
                 reflection: nil
@@ -280,7 +289,7 @@ extension Raytracer {
             (probeCount + threadsPerGroup_.width - 1) / threadsPerGroup_.width,
             (Constants.probeGrid.2 + threadsPerGroup_.height - 1) / threadsPerGroup_.height, 1
         )
-        let computeEncoder = commandBuffer.makeComputeCommandEncoder()
+        var computeEncoder = commandBuffer.makeComputeCommandEncoder()
         computeEncoder?.label = "Accumulation"
         computeEncoder?.setBuffer(uniformBuffer, offset: uniformBufferOffset,
                                   index: 0)
@@ -292,6 +301,27 @@ extension Raytracer {
         computeEncoder?.setComputePipelineState(accumulatePipeline)
         computeEncoder?.dispatchThreadgroups(threadGroups_,
                                              threadsPerThreadgroup: threadsPerGroup_)
+        computeEncoder?.endEncoding()
+        
+        let width = Int(Constants.probeCount * Constants.radianceProbeReso)
+        let height = Int(Constants.radianceProbeReso)
+        let threadsPerGroup = MTLSizeMake(8, 8, 1)
+        let threadGroups = MTLSizeMake(
+            (width + threadsPerGroup.width - 1) / threadsPerGroup.width,
+            (height + threadsPerGroup.height - 1) / threadsPerGroup.height, 1
+        )
+        
+        computeEncoder = commandBuffer.makeComputeCommandEncoder()
+        computeEncoder?.label = "IrradianceAccumulation"
+        computeEncoder?.setBuffer(uniformBuffer, offset: uniformBufferOffset,
+                                  index: 0)
+        computeEncoder?.setTexture(irradianceField.ambientCubeTextureR, index: 0)
+        computeEncoder?.setTexture(irradianceField.ambientCubeTextureG, index: 1)
+        computeEncoder?.setTexture(irradianceField.ambientCubeTextureB, index: 2)
+        computeEncoder?.setTexture(irradianceField.radianceMap, index: 3)
+        computeEncoder?.setComputePipelineState(irradianceAccumulatePipeline)
+        computeEncoder?.dispatchThreadgroups(threadGroups,
+                                             threadsPerThreadgroup: threadsPerGroup)
         computeEncoder?.endEncoding()
     }
 
@@ -387,6 +417,7 @@ extension Raytracer {
                                       index: 0)
             computeEncoder?.setBuffer(shadowRayBuffer, offset: 0, index: 1)
             computeEncoder?.setBuffer(intersectionBuffer, offset: 0, index: 2)
+            computeEncoder?.setBuffer(irradianceField.probes, offset: 0, index: 3)
         //    computeEncoder?.setBuffer(irradianceField.probeLocations, offset: 0, index: 3)
         //    computeEncoder?.setBuffer(irradianceField.probeDirections, offset: Constants.probeReso * Constants.probeReso, index: 4)
             computeEncoder?.setTexture(renderTarget, index: 0)
