@@ -389,6 +389,7 @@ extension Raytracer {
             computeEncoder?.setBuffer(irradianceField.probes, offset: 0, index: 6)
             computeEncoder?.setTexture(scene.irradianceMap.texture, index: 0)
             computeEncoder?.setTexture(irradianceField.octaHedralMap!, index: 1)
+            computeEncoder?.setTexture(irradianceField.radianceMap!, index: 2)
             computeEncoder?.setComputePipelineState(shadePipelineState!)
             computeEncoder?.dispatchThreadgroups(
                 threadGroups,

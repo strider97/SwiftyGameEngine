@@ -356,7 +356,7 @@ float3 getDDGI(float3 position,
         if (encodedUV.y > 1-minimumUV)
             encodedUV.y -= minimumUV;
         
-        int radianceMapSize = 24;
+        int radianceMapSize = 16;
         minimumUV = 1.0/radianceMapSize;
         if (encodedUV_.x < minimumUV)
             encodedUV_.x += minimumUV;
@@ -371,7 +371,6 @@ float3 getDDGI(float3 position,
         float4 d = octahedralMap.sample(s, uv);
         
         float2 uv_ = (float2(texPos) + encodedUV_)*float2(1.0/(probeCount.x * probeCount.y), 1.0/probeCount.z);
-        uint2 texPosOcta = texPos * radianceMapSize + uint2(uv_ * float2(radianceMapSize));
         color_ = radianceMap.sample(s, uv_).rgb;
         
         float2 temp = d.rg;
