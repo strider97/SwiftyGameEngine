@@ -1138,6 +1138,7 @@
 		72A765962686680B00E2B07D /* bathroomLowPoly.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 72A765922686680B00E2B07D /* bathroomLowPoly.mtl */; };
 		72A765972686680B00E2B07D /* sponzaLowPoly.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 72A765932686680B00E2B07D /* sponzaLowPoly.mtl */; };
 		72A765982686680B00E2B07D /* sponzaLowPoly.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72A765942686680B00E2B07D /* sponzaLowPoly.obj */; };
+		72B1C74D26A727D90078932B /* PointLight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72B1C74C26A727D90078932B /* PointLight.swift */; };
 		72C1736925DED90800B75C4D /* ring.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72C1736825DED90800B75C4D /* ring.usd */; };
 		72CBB801266E7B1D00D927F9 /* bigroom.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72CBB7FF266E7B1D00D927F9 /* bigroom.obj */; };
 		72CBB802266E7B1D00D927F9 /* bigroom.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 72CBB800266E7B1D00D927F9 /* bigroom.mtl */; };
@@ -2345,6 +2346,7 @@
 		72A765922686680B00E2B07D /* bathroomLowPoly.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bathroomLowPoly.mtl; sourceTree = "<group>"; };
 		72A765932686680B00E2B07D /* sponzaLowPoly.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sponzaLowPoly.mtl; sourceTree = "<group>"; };
 		72A765942686680B00E2B07D /* sponzaLowPoly.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sponzaLowPoly.obj; sourceTree = "<group>"; };
+		72B1C74C26A727D90078932B /* PointLight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointLight.swift; sourceTree = "<group>"; };
 		72C1736825DED90800B75C4D /* ring.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = ring.usd; path = "Basic Game Engine/Resources/teapot/ring.usd"; sourceTree = SOURCE_ROOT; };
 		72CBB7FF266E7B1D00D927F9 /* bigroom.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bigroom.obj; sourceTree = "<group>"; };
 		72CBB800266E7B1D00D927F9 /* bigroom.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bigroom.mtl; sourceTree = "<group>"; };
@@ -3881,6 +3883,7 @@
 				72ED2D8B25DC33FF00F12F90 /* Descriptor.swift */,
 				72DACABB25DE6AED00DB3C50 /* IrradianceMap_.swift */,
 				72439112265ED1920066F3B4 /* Raytracer.swift */,
+				72B1C74C26A727D90078932B /* PointLight.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -5307,6 +5310,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				72B1C74D26A727D90078932B /* PointLight.swift in Sources */,
 				72E3990B25BC9D7B00927B17 /* Mesh.swift in Sources */,
 				72DACABC25DE6AED00DB3C50 /* IrradianceMap_.swift in Sources */,
 				72ED2D8C25DC33FF00F12F90 /* Descriptor.swift in Sources */,

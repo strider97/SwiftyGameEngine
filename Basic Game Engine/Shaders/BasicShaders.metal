@@ -330,13 +330,13 @@ float3 getDDGI(float3 position,
         float depthBias = uniforms.depthBias;
         float3 dirFromProbe = normalize(position - (probe.location + probe.offset));
         float dotPN = dot(dirFromProbe, smoothNormal);
-        if (dotPN > 0)
-            continue;
+    //    if (dotPN > 0)
+    //        continue;
     //    int signDot = signOf(-dotPN);
     //    normalBias *= signDot;
     //    depthBias *= signDot;
-    //    float w = max(0.0001, signum_(-dotPN) * 1);
-    //    trilinearWeights[iCoeff] *= w*w + 0.2;
+        float w = max(0.0001, signum_(-dotPN) * 1);
+        trilinearWeights[iCoeff] *= w*w + 0.2;
         
         float3 newPosition = position + normalBias * smoothNormal;
         dirFromProbe = normalize(newPosition - (probe.location + probe.offset));
