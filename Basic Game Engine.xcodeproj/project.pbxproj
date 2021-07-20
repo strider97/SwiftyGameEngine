@@ -915,6 +915,8 @@
 		724157F726657CBF00821A7C /* sphere.obj in Resources */ = {isa = PBXBuildFile; fileRef = 724157F526657CBF00821A7C /* sphere.obj */; };
 		72439113265ED1920066F3B4 /* Raytracer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72439112265ED1920066F3B4 /* Raytracer.swift */; };
 		7244840C25C6F42300294331 /* SimpleScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7244840B25C6F42300294331 /* SimpleScene.swift */; };
+		724D4E7F26A6297500AC0902 /* sponzaOnly.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 724D4E7D26A6297500AC0902 /* sponzaOnly.mtl */; };
+		724D4E8026A6297500AC0902 /* sponzaOnly.obj in Resources */ = {isa = PBXBuildFile; fileRef = 724D4E7E26A6297500AC0902 /* sponzaOnly.obj */; };
 		7254B21E267390580053B4F4 /* classroom.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 7254B21C267390580053B4F4 /* classroom.mtl */; };
 		7254B21F267390580053B4F4 /* classroom.obj in Resources */ = {isa = PBXBuildFile; fileRef = 7254B21D267390580053B4F4 /* classroom.obj */; };
 		7254B22526739BD70053B4F4 /* city.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 7254B22326739BD70053B4F4 /* city.mtl */; };
@@ -2120,6 +2122,8 @@
 		724157F526657CBF00821A7C /* sphere.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sphere.obj; sourceTree = "<group>"; };
 		72439112265ED1920066F3B4 /* Raytracer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Raytracer.swift; sourceTree = "<group>"; };
 		7244840B25C6F42300294331 /* SimpleScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleScene.swift; sourceTree = "<group>"; };
+		724D4E7D26A6297500AC0902 /* sponzaOnly.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sponzaOnly.mtl; sourceTree = "<group>"; };
+		724D4E7E26A6297500AC0902 /* sponzaOnly.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sponzaOnly.obj; sourceTree = "<group>"; };
 		7254B21C267390580053B4F4 /* classroom.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = classroom.mtl; sourceTree = "<group>"; };
 		7254B21D267390580053B4F4 /* classroom.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = classroom.obj; sourceTree = "<group>"; };
 		7254B22326739BD70053B4F4 /* city.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = city.mtl; sourceTree = "<group>"; };
@@ -3932,6 +3936,8 @@
 		72E3999925BF0C8300927B17 /* models */ = {
 			isa = PBXGroup;
 			children = (
+				724D4E7D26A6297500AC0902 /* sponzaOnly.mtl */,
+				724D4E7E26A6297500AC0902 /* sponzaOnly.obj */,
 				72E94FB02690767400170CB4 /* pillarRoom.mtl */,
 				72E94FAF2690767400170CB4 /* pillarRoom.obj */,
 				72A765922686680B00E2B07D /* bathroomLowPoly.mtl */,
@@ -4799,6 +4805,7 @@
 				7216518C25EBAF5C00511342 /* sefmegyc_4K_Roughness.jpg in Resources */,
 				72294A90267E7EEF00B3E620 /* MASTER_Concrete_Plaster_Normal.dds in Resources */,
 				7216521E25ED571E00511342 /* Coat_Fur_Opacity.jpg in Resources */,
+				724D4E8026A6297500AC0902 /* sponzaOnly.obj in Resources */,
 				7254B2402673A0E80053B4F4 /* fasades_fasades2_Roughness.jpg in Resources */,
 				7216514125EB9EA500511342 /* vbwkdallw_4K_Albedo.jpg in Resources */,
 				7216524425ED653600511342 /* Low_Mech1_BaseColor.png in Resources */,
@@ -4954,6 +4961,7 @@
 				72294B7D267E7EEF00B3E620 /* Pavement_Cobblestone_Wet_BLENDSHADER_Normal.dds in Resources */,
 				72294A2F267E7EEF00B3E620 /* MASTER_Side_Letters_Specular.dds in Resources */,
 				72294A0D267E7EEF00B3E620 /* Paris_Beertap_BaseColor.dds in Resources */,
+				724D4E7F26A6297500AC0902 /* sponzaOnly.mtl in Resources */,
 				72E399BA25BF3ECD00927B17 /* planet.obj in Resources */,
 				7254FA532673BBC4000F5738 /* BalconyRoof_tex.jpg in Resources */,
 				72294A6A267E7EEF00B3E620 /* Concrete3_BaseColor.dds in Resources */,

@@ -504,7 +504,7 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
   //      shadowRay.color = 1;
   //      shadowRay.indirectColor = 1;
   //      shadowRay.color = float3(1, 0.1, 0);
-        shadowRay.indirectColor = 0.65 * getDDGI_(shadowRay.origin, surfaceNormal, probes, uniforms.probeData, octahedralMap, radianceMap) * color;
+        shadowRay.indirectColor = 0.45 * getDDGI_(shadowRay.origin, surfaceNormal, probes, uniforms.probeData, octahedralMap, radianceMap) * color;
   //      shadowRay.indirectColor = 0.1;
       
   //    float3 sampleDirection = sampleCosineWeightedHemisphere(r);

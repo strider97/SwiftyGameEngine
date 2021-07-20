@@ -322,7 +322,7 @@ kernel void accumulateRadianceKernel(constant Uniforms_ & uniforms,
     float2 uv = float2(tid.x % radianceMapSize, tid.y % radianceMapSize)/radianceMapSize;
     float3 texelDir = octDecode__(uv);
     float3 color = 0;
-    for(int i = 0; i < samples; i++) {
+    for(int i = 0; i < 16*16; i++) {
         float3 rayDir = lightProbeTextureR.read(ushort3(texPos.x, texPos.y, i)).xyz;
         float3 col = lightProbeTextureG.read(ushort3(texPos.x, texPos.y, i)).rgb;
         color += saturate(dot(texelDir, rayDir)) * col;
@@ -372,7 +372,7 @@ fragment float4 lightProbeFragmentShader(VertexOut vOut [[stage_in]],
     }
     
     int radianceMapSize = 16;
-    uint2 texPos = indexToTexPos_(index, 12, 8);
+    uint2 texPos = indexToTexPos_(index, 16, 12);
     float2 uv = octEncode__(normal);
     uint2 texPosOcta = texPos * radianceMapSize + uint2(uv * float2(radianceMapSize));
     color = radianceMap.read(texPosOcta).rgb;

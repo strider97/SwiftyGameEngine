@@ -135,7 +135,7 @@ fragment GbufferOut fragmentRSMData (VertexOut vOut [[ stage_in ]],
     float3x3 TBN(vOut.tangent, vOut.biTangent, vOut.smoothNormal);
     float3 normal = normalize(TBN * tangentNormal);
 //    float3 N = getNormalFromMap_(vOut.worldPos, vOut.smoothNormal, vOut.uv, tangentNormal);
-    
+    normal = vOut.smoothNormal;
 //    float4 ao = AO.sample(s, vOut.uv);
     out.worldPos = float4(vOut.worldPos, roughness);
     out.normal = half4(normal.x, normal.y, normal.z, inShadow);

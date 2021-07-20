@@ -139,8 +139,12 @@ class IrradianceField {
         commandBuffer?.commit()
         commandBuffer?.waitUntilCompleted()
         let numRays = Constants.probeReso * Constants.probeReso * 4000
-        for _ in 0 ..< numRays {
-        //    let dir = Self.sphericalFibonacci9(Float(i), Float(numRays))
+        let numSamples = Constants.probeReso * Constants.probeReso
+        for i in 0 ..< numRays {
+            let j = i % numSamples
+            let k = i / 4000
+            let index = j * 4000 + k
+        //    let dir = Self.sphericalFibonacci9(Float(index), Float(numRays))
             let dir = Self.getRandomDirection()
             probeDirectionsArray.append(dir)
         }
