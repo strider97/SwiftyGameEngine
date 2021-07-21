@@ -342,7 +342,7 @@ float3 getDDGI(float3 position,
         dirFromProbe = normalize(newPosition - (probe.location + probe.offset));
         float distToProbe = length(newPosition - (probe.location + probe.offset));
         uint2 texPos = indexToTexPos___(index, probeData.probeGridWidth, probeData.probeGridHeight);
-        int shadowProbeReso = 64;
+        int shadowProbeReso = 24;
         int3 probeCount = probeData.probeCount;
         float2 encodedUV = octEncode_(dirFromProbe);
         float2 encodedUV_ = octEncode_(smoothNormal);
@@ -358,14 +358,16 @@ float3 getDDGI(float3 position,
         
         int radianceMapSize = 16;
         minimumUV = 1.0/radianceMapSize;
-        if (encodedUV_.x < minimumUV)
-            encodedUV_.x += minimumUV;
-        if (encodedUV_.x > 1-minimumUV)
-            encodedUV_.x -= minimumUV;
-        if (encodedUV_.y < minimumUV)
-            encodedUV_.y += minimumUV;
-        if (encodedUV_.y > 1-minimumUV)
-            encodedUV_.y -= minimumUV;
+//        if (encodedUV_.x < minimumUV)
+//            encodedUV_.x = minimumUV;
+//        if (encodedUV_.y < minimumUV)
+//            encodedUV_.y = minimumUV;
+//        if (encodedUV_.x > 1-minimumUV)
+//            encodedUV_.x = 1-minimumUV;
+//        if (encodedUV_.y > 1-minimumUV)
+//            encodedUV_.y = 1-minimumUV;
+        
+        encodedUV_ = max(minimumUV, min(1-minimumUV, encodedUV_));
             
         float2 uv = (float2(texPos) + encodedUV)*float2(1.0/(probeCount.x * probeCount.y), 1.0/probeCount.z);
         float4 d = octahedralMap.sample(s, uv);

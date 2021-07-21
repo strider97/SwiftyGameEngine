@@ -26,8 +26,8 @@ class Scene: NSObject {
     static let W: Float = 1280
     static let H: Float = 720
     final let P = Matrix4(projectionFov: MathConstants.PI.rawValue / 3, near: 0.01, far: 500, aspect: Scene.W / Scene.H)
-    var sunDirection = Float3(25, 8, 2)
-//    var sunDirection = Float3(5, 18, 4)
+//    var sunDirection = Float3(25, 8, 2)
+    var sunDirection = Float3(5, 18, 4)
     var orthoGraphicP = Matrix4(orthoLeft: -10, right: 10, bottom: -10, top: 10, near: 0.01, far: 100)
     lazy var shadowViewMatrix = Matrix4.viewMatrix(position: sunDirection, target: Float3(0, 0, 0), up: Camera.WorldUp)
     final let timer = GameTimer.sharedTimer
@@ -475,7 +475,7 @@ extension Scene {
         computeEncoder?.setTexture(gBufferData.flux, index: TextureIndex.flux.rawValue)
         computeEncoder?.setTexture(gBufferData.depth, index: TextureIndex.depth.rawValue)
         computeEncoder?.setTexture(renderTarget, index: 0)
-        computeEncoder?.setTexture(irradianceField.octaHedralMap!, index: 10)
+        computeEncoder?.setTexture(irradianceField.depthMap!, index: 10)
         computeEncoder?.setTexture(irradianceField.radianceMap!, index: 1)
         computeEncoder?.setBytes(&s, length: MemoryLayout<ShadowUniforms>.stride, index: 0)
         computeEncoder?.setBytes(&lightProbeData, length: MemoryLayout<LightProbeData>.stride, index: 1)

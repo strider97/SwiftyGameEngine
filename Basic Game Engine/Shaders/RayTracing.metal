@@ -504,7 +504,7 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
   //      shadowRay.color = 1;
   //      shadowRay.indirectColor = 1;
   //      shadowRay.color = float3(1, 0.1, 0);
-        shadowRay.indirectColor = 0.45 * getDDGI_(shadowRay.origin, surfaceNormal, probes, uniforms.probeData, octahedralMap, radianceMap) * color;
+        shadowRay.indirectColor = 0.25 * getDDGI_(shadowRay.origin, surfaceNormal, probes, uniforms.probeData, octahedralMap, radianceMap) * color;
   //      shadowRay.indirectColor = 0.1;
       
   //    float3 sampleDirection = sampleCosineWeightedHemisphere(r);
@@ -553,7 +553,7 @@ kernel void shadowKernel(uint2 tid [[thread_position_in_grid]],
         }
         int index = tid.x / uniforms.probeWidth;
         int rayDirIndex = tid.y*uniforms.probeWidth + tid.x % uniforms.probeWidth;
-        uint2 raycount = uint2(64);
+        uint2 raycount = uint2(24);
         float3 direction = shadowRay.prevDirection;
         uint2 texPos = indexToTexPos(index, uniforms.probeGridWidth, uniforms.probeGridHeight);
         
@@ -591,5 +591,62 @@ kernel void shadowKernel(uint2 tid [[thread_position_in_grid]],
         lightProbeTextureG.write(float4(oldValuesR[3], oldValuesG[3], oldValuesB[3], 1), ushort3(texPos.x, texPos.y, rayDirIndex));
         
     //    lightProbeTextureB.write(float4(oldValuesB[0], oldValuesB[1], oldValuesB[2], oldValuesB[3]), ushort3(texPos.x, texPos.y, rayDirIndex));
+    }
+}
+
+kernel void accumulateShadowKernel(uint2 tid [[thread_position_in_grid]],
+                                   device Uniforms_ & uniforms,
+                                   texture2d<float, access::read_write> octahedralMap,
+                                   texture2d<float, access::write> depthMap) {
+    int shadowProbeReso = 24;
+    if (int(tid.x) < uniforms.probeGridWidth * uniforms.probeHeight * shadowProbeReso) {
+        int x = tid.x;
+        int y = tid.y;
+        int kernelSize = 2;
+        int2 startI = int2(x - min(kernelSize, x % shadowProbeReso),
+                           y - min(kernelSize, y % shadowProbeReso));
+        int2 endI = int2(x + min(kernelSize, shadowProbeReso - 1 - x % shadowProbeReso),
+                         y + min(kernelSize, shadowProbeReso - 1 - y % shadowProbeReso));
+        int nx = (endI.x-startI.x+1)*(endI.y-startI.y+1);
+        float sum = 0;
+        float sumSquare = 0;
+        
+//        int2 startI = int2(x - kernelSize/2, y - kernelSize/2);
+//        int2 endI = startI + kernelSize;
+        
+        for(int i = startI.x; i<endI.x; i++) {
+            for(int j = startI.y; j<endI.y; j++) {
+//                int i_ = i;
+//                int j_ = j;
+//                if(j<y && j%shadowProbeReso > y%shadowProbeReso) {
+//                    j_ = j + shadowProbeReso;
+//                }
+//                if(j>y && j%shadowProbeReso < y%shadowProbeReso) {
+//                    j_ = j - shadowProbeReso;
+//                }
+//                if(i<x && i%shadowProbeReso > x%shadowProbeReso) {
+//                    i_ = i + shadowProbeReso;
+//                }
+//                if(i>x && i%shadowProbeReso < x%shadowProbeReso) {
+//                    i_ = i - shadowProbeReso;
+//                }
+                    
+                float4 d = octahedralMap.read(ushort2(i, j));
+//                if (d.a == 0) {
+//                    sum += 1000;
+//                    sumSquare += 1000000;
+//                } else {
+                    sum += d.x;
+                    sumSquare += d.y;
+//                }
+            }
+        }
+        
+        sum /= nx;
+        sumSquare /= nx;
+        float4 d = octahedralMap.read(tid);
+        depthMap.write(float4(sum, sumSquare, 0, d.a), tid);
+    //    float4 d = octahedralMap.read(tid);
+    //    depthMap.write(d, tid);
     }
 }
