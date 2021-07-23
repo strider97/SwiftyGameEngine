@@ -74,17 +74,41 @@ struct Material {
 };
 
 constexpr sampler s(coord::normalized, address::repeat, filter::linear, mip_filter::linear);
-float insideShadow_(float4 fragPosLightSpace, float3 normal, depth2d<float, access::sample> shadowMap)
+
+float linearize_depth_(float depth) {
+    float near = 0.01;
+    float far = 100;
+    return (far - near)*depth + near;
+}
+
+float linstep(float minV, float maxV, float v) {
+    return clamp((v - minV) / (maxV - minV), 0.0, 1.0);
+}
+float reduceLightBleeding(float p_max, float Amount) {
+    // Remove the [0, Amount] tail and linearly rescale (Amount, 1].
+    return linstep(Amount, 1, p_max);
+}
+
+
+float insideShadow_(float4 fragPosLightSpace, float3 normal, texture2d<float, access::sample> shadowMap)
 {
     // perform perspective divide
     float2 xy = fragPosLightSpace.xy;// / fragPosLightSpace.w;
     xy = xy * 0.5 + 0.5;
     xy.y = 1 - xy.y;
-    float shadowMapDepth = shadowMap.sample(s, xy);
+    float2 shadowMapDepth = shadowMap.sample(s, xy).rg;
     float currentDepth = fragPosLightSpace.z / fragPosLightSpace.w;
-//    return closestDepth > 0.055;
-//    return currentDepth;
-    return (currentDepth <= shadowMapDepth + 0.0001) ? 1.0 : 0.0;
+    currentDepth = linearize_depth_(currentDepth);
+    float m1 = shadowMapDepth.r;
+    float m2 = shadowMapDepth.g;
+    float variance = abs(m2 - m1*m1);
+    float diffTm1 = max(0.0, currentDepth - m1);
+    float inShadow = max(0.001, variance / (variance + diffTm1 * diffTm1));
+    float amount = 0.5;
+    inShadow = reduceLightBleeding(inShadow, amount);
+//    inShadow *= inShadow;
+    return (currentDepth <= shadowMapDepth.x + 0.001) ? 1.0 : inShadow;
+//    return inShadow;
 }
 
 float3 getNormalFromMap_(float3 worldPos, float3 normal, float2 texCoords, float3 tangentNormal) {
@@ -109,7 +133,8 @@ vertex VertexOut vertexRSM(const VertexIn vIn [[ stage_in ]], constant Uniforms 
     float3 N = (uniforms.M*float4(vIn.smoothNormal, 0)).xyz;
     vOut.smoothNormal = N;
     vOut.uv = float2(vIn.texCoords.x, 1-vIn.texCoords.y);
-    vOut.lightFragPos = shadowUniforms.P * shadowUniforms.V * uniforms.M * float4(vIn.position, 1.0);
+    float3 lightFragPos = (uniforms.M * float4(vIn.position, 1.0)).xyz + vIn.smoothNormal * 0.001;
+    vOut.lightFragPos = shadowUniforms.P * shadowUniforms.V * float4(lightFragPos, 1.0);
     vOut.tangent = vIn.tangent;
     vOut.biTangent = -cross(vIn.tangent, N);
     return vOut;
@@ -117,7 +142,7 @@ vertex VertexOut vertexRSM(const VertexIn vIn [[ stage_in ]], constant Uniforms 
 
 fragment GbufferOut fragmentRSMData (VertexOut vOut [[ stage_in ]],
                                      constant Material &material[[buffer(0)]],
-                                     depth2d<float, access::sample> shadowMap [[texture(0)]],
+                                     texture2d<float, access::sample> shadowMap [[texture(0)]],
                                      texture2d<float, access::sample> baseColorTexture [[texture(textureIndexBaseColor)]],
                                      texture2d<float, access::sample> normalMapTexture [[texture(normalMap)]],
                                      texture2d<float, access::sample> roughnessTexture [[texture(textureIndexRoughness)]],

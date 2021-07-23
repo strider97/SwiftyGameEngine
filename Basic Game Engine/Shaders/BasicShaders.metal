@@ -347,15 +347,16 @@ float3 getDDGI(float3 position,
         float2 encodedUV = octEncode_(dirFromProbe);
         float2 encodedUV_ = octEncode_(smoothNormal);
         float minimumUV = 1.0/shadowProbeReso;
-        if (encodedUV.x < minimumUV)
-            encodedUV.x += minimumUV;
-        if (encodedUV.x > 1-minimumUV)
-            encodedUV.x -= minimumUV;
-        if (encodedUV.y < minimumUV)
-            encodedUV.y += minimumUV;
-        if (encodedUV.y > 1-minimumUV)
-            encodedUV.y -= minimumUV;
+//        if (encodedUV.x < minimumUV)
+//            encodedUV.x += minimumUV;
+//        if (encodedUV.x > 1-minimumUV)
+//            encodedUV.x -= minimumUV;
+//        if (encodedUV.y < minimumUV)
+//            encodedUV.y += minimumUV;
+//        if (encodedUV.y > 1-minimumUV)
+//            encodedUV.y -= minimumUV;
         
+        encodedUV = max(minimumUV, min(1-minimumUV, encodedUV));
         int radianceMapSize = 16;
         minimumUV = 1.0/radianceMapSize;
 //        if (encodedUV_.x < minimumUV)
@@ -488,7 +489,8 @@ kernel void DefferedShadeKernel(uint2 tid [[thread_position_in_grid]],
         float3 smoothN = normalShadow.xyz;
         float4 albedo_ = albedoTex.sample(s, uv);
         float3 albedo = albedo_.rgb;
-        if(albedo.r==0 && albedo.g==0 && albedo.b==0 ) {
+        float depth = depthTex.sample(s, uv);
+        if(depth == 1) {
             outputTex.write(float4(113, 164, 243, 255)/255, tid);
             return;
         }

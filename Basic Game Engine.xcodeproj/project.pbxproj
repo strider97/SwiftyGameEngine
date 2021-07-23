@@ -221,6 +221,31 @@
 		7216524E25ED655000511342 /* Low.obj in Resources */ = {isa = PBXBuildFile; fileRef = 7216524C25ED655000511342 /* Low.obj */; };
 		7216524F25ED655000511342 /* Low.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 7216524D25ED655000511342 /* Low.mtl */; };
 		7216525725EDABA400511342 /* helmet_normal.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7216525625EDABA400511342 /* helmet_normal.jpg */; };
+		721A4B9E26A8A49C00727FA6 /* Dsponza.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 721A4B9C26A8A49C00727FA6 /* Dsponza.mtl */; };
+		721A4B9F26A8A49C00727FA6 /* Dsponza.obj in Resources */ = {isa = PBXBuildFile; fileRef = 721A4B9D26A8A49C00727FA6 /* Dsponza.obj */; };
+		721A4BB626A8A4CF00727FA6 /* 01_S_kap.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 721A4BA126A8A4CE00727FA6 /* 01_S_kap.JPG */; };
+		721A4BB726A8A4CF00727FA6 /* KAMEN.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 721A4BA226A8A4CE00727FA6 /* KAMEN.JPG */; };
+		721A4BB826A8A4CF00727FA6 /* copyright.txt in Resources */ = {isa = PBXBuildFile; fileRef = 721A4BA326A8A4CE00727FA6 /* copyright.txt */; };
+		721A4BB926A8A4CF00727FA6 /* prozor1.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 721A4BA426A8A4CE00727FA6 /* prozor1.JPG */; };
+		721A4BBA26A8A4CF00727FA6 /* 01_St_kp-bump.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 721A4BA526A8A4CE00727FA6 /* 01_St_kp-bump.jpg */; };
+		721A4BBB26A8A4CF00727FA6 /* 01_S_kap-bump.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 721A4BA626A8A4CE00727FA6 /* 01_S_kap-bump.jpg */; };
+		721A4BBC26A8A4CF00727FA6 /* KAMEN-bump.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 721A4BA726A8A4CE00727FA6 /* KAMEN-bump.jpg */; };
+		721A4BBD26A8A4CF00727FA6 /* sp_luk.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 721A4BA826A8A4CE00727FA6 /* sp_luk.JPG */; };
+		721A4BBE26A8A4CF00727FA6 /* vrata_kr.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 721A4BA926A8A4CE00727FA6 /* vrata_kr.JPG */; };
+		721A4BBF26A8A4CF00727FA6 /* KAMEN-stup.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 721A4BAA26A8A4CE00727FA6 /* KAMEN-stup.JPG */; };
+		721A4BC026A8A4CF00727FA6 /* reljef.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 721A4BAB26A8A4CE00727FA6 /* reljef.JPG */; };
+		721A4BC126A8A4CF00727FA6 /* reljef-bump.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 721A4BAC26A8A4CE00727FA6 /* reljef-bump.jpg */; };
+		721A4BC226A8A4CF00727FA6 /* x01_st-bump.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 721A4BAD26A8A4CE00727FA6 /* x01_st-bump.jpg */; };
+		721A4BC326A8A4CF00727FA6 /* 01_STUB.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 721A4BAE26A8A4CE00727FA6 /* 01_STUB.JPG */; };
+		721A4BC426A8A4CF00727FA6 /* vrata_ko.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 721A4BAF26A8A4CF00727FA6 /* vrata_ko.JPG */; };
+		721A4BC526A8A4CF00727FA6 /* sp_luk-bump.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 721A4BB026A8A4CF00727FA6 /* sp_luk-bump.JPG */; };
+		721A4BC626A8A4CF00727FA6 /* x01_st.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 721A4BB126A8A4CF00727FA6 /* x01_st.JPG */; };
+		721A4BC726A8A4CF00727FA6 /* 00_skap.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 721A4BB226A8A4CF00727FA6 /* 00_skap.JPG */; };
+		721A4BC826A8A4CF00727FA6 /* 01_St_kp.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 721A4BB326A8A4CF00727FA6 /* 01_St_kp.JPG */; };
+		721A4BC926A8A4CF00727FA6 /* 01_S_ba.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 721A4BB426A8A4CF00727FA6 /* 01_S_ba.JPG */; };
+		721A4BCA26A8A4CF00727FA6 /* 01_STUB-bump.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 721A4BB526A8A4CF00727FA6 /* 01_STUB-bump.jpg */; };
+		721A4BCD26A8B33700727FA6 /* sibenik.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 721A4BCB26A8B33700727FA6 /* sibenik.mtl */; };
+		721A4BCE26A8B33700727FA6 /* sibenik.obj in Resources */ = {isa = PBXBuildFile; fileRef = 721A4BCC26A8B33700727FA6 /* sibenik.obj */; };
 		721F5B4025E2A7920000EA4C /* sphere.usd in Resources */ = {isa = PBXBuildFile; fileRef = 721F5B3F25E2A7920000EA4C /* sphere.usd */; };
 		721F5B5625E2DC5A0000EA4C /* cloudy.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 721F5B5525E2DC5A0000EA4C /* cloudy.hdr */; };
 		722830B925C5706000C9CCF4 /* spheres.usd in Resources */ = {isa = PBXBuildFile; fileRef = 722830B825C5705F00C9CCF4 /* spheres.usd */; };
@@ -1429,6 +1454,31 @@
 		7216524C25ED655000511342 /* Low.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Low.obj; path = "../../../../Downloads/pbr-mech-practice/source/Low.obj"; sourceTree = "<group>"; };
 		7216524D25ED655000511342 /* Low.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Low.mtl; path = "../../../../Downloads/pbr-mech-practice/source/Low.mtl"; sourceTree = "<group>"; };
 		7216525625EDABA400511342 /* helmet_normal.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = helmet_normal.jpg; path = "../../../../Downloads/modelio-materials-master/Shared/Resources/helmet_normal.jpg"; sourceTree = "<group>"; };
+		721A4B9C26A8A49C00727FA6 /* Dsponza.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Dsponza.mtl; sourceTree = "<group>"; };
+		721A4B9D26A8A49C00727FA6 /* Dsponza.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Dsponza.obj; sourceTree = "<group>"; };
+		721A4BA126A8A4CE00727FA6 /* 01_S_kap.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = 01_S_kap.JPG; path = ../../../../../Downloads/sponza/01_S_kap.JPG; sourceTree = "<group>"; };
+		721A4BA226A8A4CE00727FA6 /* KAMEN.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = KAMEN.JPG; path = ../../../../../Downloads/sponza/KAMEN.JPG; sourceTree = "<group>"; };
+		721A4BA326A8A4CE00727FA6 /* copyright.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = copyright.txt; path = ../../../../../Downloads/sponza/copyright.txt; sourceTree = "<group>"; };
+		721A4BA426A8A4CE00727FA6 /* prozor1.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = prozor1.JPG; path = ../../../../../Downloads/sponza/prozor1.JPG; sourceTree = "<group>"; };
+		721A4BA526A8A4CE00727FA6 /* 01_St_kp-bump.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "01_St_kp-bump.jpg"; path = "../../../../../Downloads/sponza/01_St_kp-bump.jpg"; sourceTree = "<group>"; };
+		721A4BA626A8A4CE00727FA6 /* 01_S_kap-bump.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "01_S_kap-bump.jpg"; path = "../../../../../Downloads/sponza/01_S_kap-bump.jpg"; sourceTree = "<group>"; };
+		721A4BA726A8A4CE00727FA6 /* KAMEN-bump.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "KAMEN-bump.jpg"; path = "../../../../../Downloads/sponza/KAMEN-bump.jpg"; sourceTree = "<group>"; };
+		721A4BA826A8A4CE00727FA6 /* sp_luk.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = sp_luk.JPG; path = ../../../../../Downloads/sponza/sp_luk.JPG; sourceTree = "<group>"; };
+		721A4BA926A8A4CE00727FA6 /* vrata_kr.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = vrata_kr.JPG; path = ../../../../../Downloads/sponza/vrata_kr.JPG; sourceTree = "<group>"; };
+		721A4BAA26A8A4CE00727FA6 /* KAMEN-stup.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "KAMEN-stup.JPG"; path = "../../../../../Downloads/sponza/KAMEN-stup.JPG"; sourceTree = "<group>"; };
+		721A4BAB26A8A4CE00727FA6 /* reljef.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = reljef.JPG; path = ../../../../../Downloads/sponza/reljef.JPG; sourceTree = "<group>"; };
+		721A4BAC26A8A4CE00727FA6 /* reljef-bump.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "reljef-bump.jpg"; path = "../../../../../Downloads/sponza/reljef-bump.jpg"; sourceTree = "<group>"; };
+		721A4BAD26A8A4CE00727FA6 /* x01_st-bump.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "x01_st-bump.jpg"; path = "../../../../../Downloads/sponza/x01_st-bump.jpg"; sourceTree = "<group>"; };
+		721A4BAE26A8A4CE00727FA6 /* 01_STUB.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = 01_STUB.JPG; path = ../../../../../Downloads/sponza/01_STUB.JPG; sourceTree = "<group>"; };
+		721A4BAF26A8A4CF00727FA6 /* vrata_ko.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = vrata_ko.JPG; path = ../../../../../Downloads/sponza/vrata_ko.JPG; sourceTree = "<group>"; };
+		721A4BB026A8A4CF00727FA6 /* sp_luk-bump.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "sp_luk-bump.JPG"; path = "../../../../../Downloads/sponza/sp_luk-bump.JPG"; sourceTree = "<group>"; };
+		721A4BB126A8A4CF00727FA6 /* x01_st.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = x01_st.JPG; path = ../../../../../Downloads/sponza/x01_st.JPG; sourceTree = "<group>"; };
+		721A4BB226A8A4CF00727FA6 /* 00_skap.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = 00_skap.JPG; path = ../../../../../Downloads/sponza/00_skap.JPG; sourceTree = "<group>"; };
+		721A4BB326A8A4CF00727FA6 /* 01_St_kp.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = 01_St_kp.JPG; path = ../../../../../Downloads/sponza/01_St_kp.JPG; sourceTree = "<group>"; };
+		721A4BB426A8A4CF00727FA6 /* 01_S_ba.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = 01_S_ba.JPG; path = ../../../../../Downloads/sponza/01_S_ba.JPG; sourceTree = "<group>"; };
+		721A4BB526A8A4CF00727FA6 /* 01_STUB-bump.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "01_STUB-bump.jpg"; path = "../../../../../Downloads/sponza/01_STUB-bump.jpg"; sourceTree = "<group>"; };
+		721A4BCB26A8B33700727FA6 /* sibenik.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sibenik.mtl; sourceTree = "<group>"; };
+		721A4BCC26A8B33700727FA6 /* sibenik.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sibenik.obj; sourceTree = "<group>"; };
 		721F5B3F25E2A7920000EA4C /* sphere.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = sphere.usd; path = "Basic Game Engine/Resources/teapot/sphere.usd"; sourceTree = SOURCE_ROOT; };
 		721F5B5525E2DC5A0000EA4C /* cloudy.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = cloudy.hdr; path = "Basic Game Engine/HDRI/cloudy.hdr"; sourceTree = SOURCE_ROOT; };
 		722830B825C5705F00C9CCF4 /* spheres.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = spheres.usd; path = "Basic Game Engine/Resources/teapot/spheres.usd"; sourceTree = SOURCE_ROOT; };
@@ -2489,6 +2539,7 @@
 		7216504725EAE35500511342 /* Textures */ = {
 			isa = PBXGroup;
 			children = (
+				721A4BA026A8A4A500727FA6 /* DabrovicSponza */,
 				72294749267E7E6500B3E620 /* Bistro */,
 				722946EE267E261C00B3E620 /* Bathroom */,
 				7254F9AF2673BB8F000F5738 /* Tokyo */,
@@ -2845,6 +2896,34 @@
 				7216524025ED653600511342 /* Low_Mech2_Roughness.png */,
 			);
 			path = mech;
+			sourceTree = "<group>";
+		};
+		721A4BA026A8A4A500727FA6 /* DabrovicSponza */ = {
+			isa = PBXGroup;
+			children = (
+				721A4BB226A8A4CF00727FA6 /* 00_skap.JPG */,
+				721A4BB426A8A4CF00727FA6 /* 01_S_ba.JPG */,
+				721A4BA626A8A4CE00727FA6 /* 01_S_kap-bump.jpg */,
+				721A4BA126A8A4CE00727FA6 /* 01_S_kap.JPG */,
+				721A4BA526A8A4CE00727FA6 /* 01_St_kp-bump.jpg */,
+				721A4BB326A8A4CF00727FA6 /* 01_St_kp.JPG */,
+				721A4BB526A8A4CF00727FA6 /* 01_STUB-bump.jpg */,
+				721A4BAE26A8A4CE00727FA6 /* 01_STUB.JPG */,
+				721A4BA326A8A4CE00727FA6 /* copyright.txt */,
+				721A4BA726A8A4CE00727FA6 /* KAMEN-bump.jpg */,
+				721A4BAA26A8A4CE00727FA6 /* KAMEN-stup.JPG */,
+				721A4BA226A8A4CE00727FA6 /* KAMEN.JPG */,
+				721A4BA426A8A4CE00727FA6 /* prozor1.JPG */,
+				721A4BAC26A8A4CE00727FA6 /* reljef-bump.jpg */,
+				721A4BAB26A8A4CE00727FA6 /* reljef.JPG */,
+				721A4BB026A8A4CF00727FA6 /* sp_luk-bump.JPG */,
+				721A4BA826A8A4CE00727FA6 /* sp_luk.JPG */,
+				721A4BAF26A8A4CF00727FA6 /* vrata_ko.JPG */,
+				721A4BA926A8A4CE00727FA6 /* vrata_kr.JPG */,
+				721A4BAD26A8A4CE00727FA6 /* x01_st-bump.jpg */,
+				721A4BB126A8A4CF00727FA6 /* x01_st.JPG */,
+			);
+			path = DabrovicSponza;
 			sourceTree = "<group>";
 		};
 		722946EE267E261C00B3E620 /* Bathroom */ = {
@@ -3939,6 +4018,10 @@
 		72E3999925BF0C8300927B17 /* models */ = {
 			isa = PBXGroup;
 			children = (
+				721A4BCB26A8B33700727FA6 /* sibenik.mtl */,
+				721A4BCC26A8B33700727FA6 /* sibenik.obj */,
+				721A4B9C26A8A49C00727FA6 /* Dsponza.mtl */,
+				721A4B9D26A8A49C00727FA6 /* Dsponza.obj */,
 				724D4E7D26A6297500AC0902 /* sponzaOnly.mtl */,
 				724D4E7E26A6297500AC0902 /* sponzaOnly.obj */,
 				72E94FB02690767400170CB4 /* pillarRoom.mtl */,
@@ -4159,9 +4242,11 @@
 				7216514B25EBA48800511342 /* ucsjfain_2K_Albedo.jpg in Resources */,
 				721650CF25EAF75C00511342 /* ub1gfbwew_2K_Albedo.jpg in Resources */,
 				7216512B25EB083700511342 /* tkdicbgew_4K_Normal.jpg in Resources */,
+				721A4BB826A8A4CF00727FA6 /* copyright.txt in Resources */,
 				7254FA442673BBC4000F5738 /* PlantStore_decals_Opacity.jpg in Resources */,
 				72294A4B267E7EEF00B3E620 /* MASTER_Bronze_BLENDSHADER_Specular.dds in Resources */,
 				72294B6A267E7EEF00B3E620 /* Paris_Wall_Bulb_Light_Specular.dds in Resources */,
+				721A4BC826A8A4CF00727FA6 /* 01_St_kp.JPG in Resources */,
 				72294A87267E7EEF00B3E620 /* MASTER_Building_Details_Specular.dds in Resources */,
 				72583F74262266E000ADD5BD /* Sponza_Ceiling_normal.png in Resources */,
 				72294A19267E7EEF00B3E620 /* MASTER_Awning_Fabric_Cyan_Specular.dds in Resources */,
@@ -4178,6 +4263,7 @@
 				72294748267E7A3100B3E620 /* bistro.mtl in Resources */,
 				722949EA267E7EEF00B3E620 /* MASTER_Doors_BaseColor.dds in Resources */,
 				7216503125EA877300511342 /* material_metallicRoughness.png in Resources */,
+				721A4BC226A8A4CF00727FA6 /* x01_st-bump.jpg in Resources */,
 				72294AA6267E7EEF00B3E620 /* MASTER_Concrete_Grooved_Normal.dds in Resources */,
 				72294A26267E7EEF00B3E620 /* Trolley_Wood_Painted_BaseColor.dds in Resources */,
 				72583F7D262266E000ADD5BD /* VaseRound_normal.png in Resources */,
@@ -4217,6 +4303,7 @@
 				7216521825ED571E00511342 /* Coat_Fur_Roughness.jpeg in Resources */,
 				721651A425EBB37F00511342 /* 01-Default_AO.jpg in Resources */,
 				7254FA742673BBC4000F5738 /* 4_LongTileable_tex.jpg in Resources */,
+				721A4BC526A8A4CF00727FA6 /* sp_luk-bump.JPG in Resources */,
 				7254FA252673BBC4000F5738 /* TileablePlanks.jpg in Resources */,
 				72294C15267E7EF000B3E620 /* Paris_Cashregister_Glass_Normal.dds in Resources */,
 				72294A59267E7EEF00B3E620 /* Paris_Cashregister_Buttons_Specular.dds in Resources */,
@@ -4236,6 +4323,7 @@
 				72294C2F267E7EF000B3E620 /* Awnings_Beams_Specular.dds in Resources */,
 				72294A67267E7EEF00B3E620 /* Paris_LiquorBottle_03_Glass_Specular.dds in Resources */,
 				72294C32267E7EF000B3E620 /* MASTER_Awning_Fabric_Cyan_Normal.dds in Resources */,
+				721A4B9E26A8A49C00727FA6 /* Dsponza.mtl in Resources */,
 				7254FA2B2673BBC4000F5738 /* VendingMachine2_tex.jpg in Resources */,
 				72294B09267E7EEF00B3E620 /* MASTER_Trim_Cornice_BaseColor.dds in Resources */,
 				72294B28267E7EEF00B3E620 /* Paris_Painting_Metal_Specular.dds in Resources */,
@@ -4255,6 +4343,7 @@
 				721650D025EAF75C00511342 /* ub1gfbwew_2K_Roughness.jpg in Resources */,
 				72294B25267E7EEF00B3E620 /* Balcony_Green_Wood_Normal.dds in Resources */,
 				7254FA732673BBC4000F5738 /* 7_long_tileable.jpg in Resources */,
+				721A4BC326A8A4CF00727FA6 /* 01_STUB.JPG in Resources */,
 				721651F725ED571E00511342 /* Hair_BaseColor.jpeg in Resources */,
 				72294A8F267E7EEF00B3E620 /* Paris_Table_03_Normal.dds in Resources */,
 				7216515825EBA5DB00511342 /* bricks_0013_base_color_4k.jpg in Resources */,
@@ -4275,6 +4364,7 @@
 				72294A3D267E7EEF00B3E620 /* Pavement_Ground_Wet_Specular.dds in Resources */,
 				72583F83262266E000ADD5BD /* Sponza_Thorn_roughness.png in Resources */,
 				72294A49267E7EEF00B3E620 /* Shopsign_Pharmacy_Emissive_Specular.dds in Resources */,
+				721A4BC126A8A4CF00727FA6 /* reljef-bump.jpg in Resources */,
 				722949E3267E7EEF00B3E620 /* MASTER_Bistro_Main_Door_Normal.dds in Resources */,
 				7216517425EBAA2600511342 /* tiles_0015_basecolor_4k.jpg in Resources */,
 				72294AAB267E7EEF00B3E620 /* Trolley_Plastic_Normal.dds in Resources */,
@@ -4398,6 +4488,7 @@
 				72164FCD25E99CCE00511342 /* f1.mtl in Resources */,
 				72294C2A267E7EF000B3E620 /* Rubber_Bar_Mat_01_Specular.dds in Resources */,
 				729B14E825D896EC00129165 /* kiara.hdr in Resources */,
+				721A4BC026A8A4CF00727FA6 /* reljef.JPG in Resources */,
 				72294BF0267E7EF000B3E620 /* MASTER_Plastic_Normal.dds in Resources */,
 				7254FA402673BBC4000F5738 /* Plant3_Leave_tex.jpg in Resources */,
 				72294A2D267E7EEF00B3E620 /* Paris_LiquorBottle_01_Glass_Wine_Normal.dds in Resources */,
@@ -4462,6 +4553,8 @@
 				72294B27267E7EEF00B3E620 /* Paris_StringLights_01_Blue_Color_Emissive_BaseColor.dds in Resources */,
 				72294B8F267E7EEF00B3E620 /* Emissive_StreetLight_Emissive.dds in Resources */,
 				7216511325EB02A700511342 /* gym.hdr in Resources */,
+				721A4BC626A8A4CF00727FA6 /* x01_st.JPG in Resources */,
+				721A4BBD26A8A4CF00727FA6 /* sp_luk.JPG in Resources */,
 				72294737267E263200B3E620 /* Candle_low_Candle_BaseColor.png in Resources */,
 				72294AE2267E7EEF00B3E620 /* Balcony_Concrete_BaseColor.dds in Resources */,
 				72294A14267E7EEF00B3E620 /* MASTER_Interior_01_Wood_Specular.dds in Resources */,
@@ -4493,6 +4586,8 @@
 				722949FC267E7EEF00B3E620 /* MASTER_Interior_01_Plaster2_Normal.dds in Resources */,
 				7254FA462673BBC4000F5738 /* TileableWood.jpg in Resources */,
 				72294B55267E7EEF00B3E620 /* Plaster_Specular.dds in Resources */,
+				721A4BBA26A8A4CF00727FA6 /* 01_St_kp-bump.jpg in Resources */,
+				721A4BCE26A8B33700727FA6 /* sibenik.obj in Resources */,
 				72294BC6267E7EEF00B3E620 /* MASTER_Brick_Large_Beige_BLENDSHADER_Specular.dds in Resources */,
 				72294B7F267E7EEF00B3E620 /* MenuSign_02_Mesh_Specular.dds in Resources */,
 				7254FA372673BBC4000F5738 /* Plant1_leaves_tex.jpg in Resources */,
@@ -4534,6 +4629,7 @@
 				72294BB2267E7EEF00B3E620 /* Foliage_Linde_Tree_Large_Green_Leaves_Specular.dds in Resources */,
 				7254FA4A2673BBC4000F5738 /* SoilHard.jpg in Resources */,
 				72294A8A267E7EEF00B3E620 /* Paris_Coasters_01_Specular.dds in Resources */,
+				721A4BB926A8A4CF00727FA6 /* prozor1.JPG in Resources */,
 				7229473F267E762800B3E620 /* bistroSmall.mtl in Resources */,
 				7216501D25EA859A00511342 /* backpack.mtl in Resources */,
 				72294C17267E7EF000B3E620 /* Foliage_Linde_Tree_Large_Orange_Leaves_Normal.dds in Resources */,
@@ -4571,6 +4667,7 @@
 				722949F8267E7EEF00B3E620 /* Paris_CeilingFan_BaseColor.dds in Resources */,
 				7254FA3F2673BBC4000F5738 /* PlantFlower2_flowers_Opacity.jpg in Resources */,
 				7229471A267E263200B3E620 /* Wall_trim_roughness.png in Resources */,
+				721A4BCA26A8A4CF00727FA6 /* 01_STUB-bump.jpg in Resources */,
 				72294A81267E7EEF00B3E620 /* Vespa_Odometer_Specular.dds in Resources */,
 				72164FF325EA55F500511342 /* cerberus.mtl in Resources */,
 				7216508325EAE81200511342 /* denim_fabric_diff_2k.png in Resources */,
@@ -4770,6 +4867,7 @@
 				72294B67267E7EEF00B3E620 /* Foliage_Leaves_Normal.dds in Resources */,
 				72294A5E267E7EEF00B3E620 /* Paris_TrafficSign_A_Specular.dds in Resources */,
 				72294B39267E7EEF00B3E620 /* Bistro_Sign_Letters_Specular.dds in Resources */,
+				721A4BC926A8A4CF00727FA6 /* 01_S_ba.JPG in Resources */,
 				72E398AC25BB4ECB00927B17 /* Assets.xcassets in Resources */,
 				72294B63267E7EEF00B3E620 /* Bistro_Sign_Main_Normal.dds in Resources */,
 				72294B53267E7EEF00B3E620 /* Paris_Painting_Metal_BaseColor.dds in Resources */,
@@ -4804,6 +4902,7 @@
 				721651F525ED571E00511342 /* Coat_Normal.jpeg in Resources */,
 				72294A0B267E7EEF00B3E620 /* Foliage_Linde_Tree_Large_Trunk_Specular.dds in Resources */,
 				7254B21E267390580053B4F4 /* classroom.mtl in Resources */,
+				721A4BBB26A8A4CF00727FA6 /* 01_S_kap-bump.jpg in Resources */,
 				72294A3E267E7EEF00B3E620 /* MASTER_Wood_Brown_BaseColor.dds in Resources */,
 				7216518C25EBAF5C00511342 /* sefmegyc_4K_Roughness.jpg in Resources */,
 				72294A90267E7EEF00B3E620 /* MASTER_Concrete_Plaster_Normal.dds in Resources */,
@@ -4929,6 +5028,7 @@
 				7216524725ED653600511342 /* Low_Mech2_BaseColor.png in Resources */,
 				7216512125EB043B00511342 /* ukmmbb3fw_4K_Albedo.jpg in Resources */,
 				72294BD8267E7EF000B3E620 /* Lantern_Normal.dds in Resources */,
+				721A4BB726A8A4CF00727FA6 /* KAMEN.JPG in Resources */,
 				7216520325ED571E00511342 /* Coat_BaseColor.jpeg in Resources */,
 				72294B8E267E7EEF00B3E620 /* Metal_Bronze_01_Normal.dds in Resources */,
 				7216524E25ED655000511342 /* Low.obj in Resources */,
@@ -4958,6 +5058,7 @@
 				7216524625ED653600511342 /* Low_Mech1_Metallic.png in Resources */,
 				72583F9F262266E000ADD5BD /* Sponza_Floor_normal.png in Resources */,
 				7274EF4B25E03DD40026C80B /* cliff.hdr in Resources */,
+				721A4BC426A8A4CF00727FA6 /* vrata_ko.JPG in Resources */,
 				72294AE0267E7EEF00B3E620 /* MASTER_Glass_Dirty_MASKED_Specular.dds in Resources */,
 				72A765982686680B00E2B07D /* sponzaLowPoly.obj in Resources */,
 				72294BFB267E7EF000B3E620 /* MASTER_Interior_01_Plaster_Red_BaseColor.dds in Resources */,
@@ -4990,6 +5091,7 @@
 				72294AAF267E7EEF00B3E620 /* MASTER_Wood_Polished_Normal.dds in Resources */,
 				7216517E25EBAC5B00511342 /* Tiles_Moroccan_001_normal.jpg in Resources */,
 				72294BE9267E7EF000B3E620 /* Antenna_Plastic_Blue_Specular.dds in Resources */,
+				721A4BBF26A8A4CF00727FA6 /* KAMEN-stup.JPG in Resources */,
 				72294B5A267E7EEF00B3E620 /* MASTER_Roofing_Shingle_Grey_BaseColor.dds in Resources */,
 				7216520525ED571E00511342 /* Arm_Roughness.jpeg in Resources */,
 				7254FA4B2673BBC4000F5738 /* TrainGate_tex.jpg in Resources */,
@@ -5001,6 +5103,7 @@
 				72294B73267E7EEF00B3E620 /* TransparentGlass_BaseColor.dds in Resources */,
 				72294718267E263200B3E620 /* Frame_low_Frames_BaseColor.png in Resources */,
 				721651BB25ED56CC00511342 /* Winter Girl.mtl in Resources */,
+				721A4BB626A8A4CF00727FA6 /* 01_S_kap.JPG in Resources */,
 				7274A88D25F8A29E00F716AF /* plane.mtl in Resources */,
 				72294BEC267E7EF000B3E620 /* Vespa_Odometer_Glass_Specular.dds in Resources */,
 				72294AF4267E7EEF00B3E620 /* Paris_Cashregister_Glass_BaseColor.dds in Resources */,
@@ -5025,6 +5128,7 @@
 				72583FA3262266E000ADD5BD /* Sponza_Curtain_metallic.png in Resources */,
 				72583F97262266E000ADD5BD /* Sponza_Floor_diffuse.png in Resources */,
 				7229471C267E263200B3E620 /* Candle_low_Candle_Emissive.png in Resources */,
+				721A4B9F26A8A49C00727FA6 /* Dsponza.obj in Resources */,
 				72294C38267E7EF000B3E620 /* Pavement_Brick_BLENDSHADER_BaseColor.dds in Resources */,
 				72294B22267E7EEF00B3E620 /* Bistro_Sign_Letters_BaseColor.dds in Resources */,
 				72294AC2267E7EEF00B3E620 /* Vespa_BaseColor.dds in Resources */,
@@ -5137,12 +5241,14 @@
 				721651A725EBB37F00511342 /* 01-Default_normal.jpg in Resources */,
 				72294746267E7A3100B3E620 /* bistroRT.obj in Resources */,
 				722949E4267E7EEF00B3E620 /* MASTER_Rollup_Door_BaseColor.dds in Resources */,
+				721A4BBC26A8A4CF00727FA6 /* KAMEN-bump.jpg in Resources */,
 				72294717267E263200B3E620 /* Frame_low_Frames_Metallic.png in Resources */,
 				72294AC9267E7EEF00B3E620 /* Paris_Paintings_Normal.dds in Resources */,
 				72294A0C267E7EEF00B3E620 /* Stringlights_Specular.dds in Resources */,
 				72294AA9267E7EEF00B3E620 /* Balcony_Ornaments_Specular.dds in Resources */,
 				72294C12267E7EF000B3E620 /* Paris_StringLights_01_White_Color_Specular.dds in Resources */,
 				7254FA6F2673BBC4000F5738 /* Railroad_Track.jpg in Resources */,
+				721A4BC726A8A4CF00727FA6 /* 00_skap.JPG in Resources */,
 				72583FB4262266E000ADD5BD /* Sponza_Column_a_roughness.png in Resources */,
 				7216520225ED571E00511342 /* Arm_Metallic.jpeg in Resources */,
 				7254FA1B2673BBC4000F5738 /* PlasterWall.jpg in Resources */,
@@ -5152,6 +5258,7 @@
 				72E3998B25BEF35100927B17 /* legoMan.mtl in Resources */,
 				72294A3A267E7EEF00B3E620 /* Paris_Paintings_Glass_Normal.dds in Resources */,
 				72294BD1267E7EF000B3E620 /* Paris_LiquorBottle_03_Glass_BaseColor.dds in Resources */,
+				721A4BCD26A8B33700727FA6 /* sibenik.mtl in Resources */,
 				72294B06267E7EEF00B3E620 /* MASTER_Interior_01_Plaster_Specular.dds in Resources */,
 				722949C5267E7EEF00B3E620 /* Plantpots_Normal.dds in Resources */,
 				72294A96267E7EEF00B3E620 /* MASTER_Book_Covers_Normal.dds in Resources */,
@@ -5258,6 +5365,7 @@
 				72294BAB267E7EEF00B3E620 /* Paris_LiquorBottle_02_Glass_Specular.dds in Resources */,
 				7254FA632673BBC4000F5738 /* Alley_Fence_opacity.jpg in Resources */,
 				72294B1C267E7EEF00B3E620 /* MASTER_Concrete_Smooth_Normal.dds in Resources */,
+				721A4BBE26A8A4CF00727FA6 /* vrata_kr.JPG in Resources */,
 				7254FA162673BBC4000F5738 /* Alley_unique_tex.jpg in Resources */,
 				72294BE1267E7EF000B3E620 /* MASTER_Concrete_Specular.dds in Resources */,
 				72294C3A267E7EF000B3E620 /* MASTER_Concrete_Grooved_Specular.dds in Resources */,

@@ -22,6 +22,7 @@ class Raytracer {
     var accumulatePipeline: MTLComputePipelineState!
     var irradianceAccumulatePipeline: MTLComputePipelineState!
     var shadowAccumulatePipeline: MTLComputePipelineState!
+    var varianceShadowMapPipeline: MTLComputePipelineState!
     var accumulationTarget: MTLTexture!
     var accelerationStructure: MPSTriangleAccelerationStructure!
     var shadowPipeline: MTLComputePipelineState!
@@ -85,8 +86,8 @@ class Raytracer {
         createBuffers()
         buildIntersector()
         buildAccelerationStructure()
-   //     irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, (minPosition + maxPosition)/2, (maxPosition - minPosition)*1.05)
-        irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 7.5, 0), Float3(30, 18, 14))
+        irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, (minPosition + maxPosition)/2, (maxPosition - minPosition)*1.05)
+   //     irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 7.5, 0), Float3(30, 18, 14))
    //     irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 1.5, 0), Float3(16, 2.5, 8.2))
    //     irradianceField = IrradianceField(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2, Float3(-0, 10, 0), Float3(25, 25, 15))
     }
@@ -156,6 +157,14 @@ class Raytracer {
                 options: [],
                 reflection: nil
             )
+            
+            computeDescriptor.computeFunction = library.makeFunction(
+                name: "varianceShadowMapKernel")
+            varianceShadowMapPipeline = try device.makeComputePipelineState(
+                descriptor: computeDescriptor,
+                options: [],
+                reflection: nil
+            )
 
             computeDescriptor.computeFunction = library.makeFunction(
                 name: "primaryRays")
@@ -172,7 +181,7 @@ class Raytracer {
     }
 
     func createScene() {
-        loadAsset(name: "sponza")
+        loadAsset(name: "Dsponza")
     }
 
     func createBuffers() {
@@ -329,6 +338,28 @@ extension Raytracer {
         computeEncoder?.setTexture(irradianceField.ambientCubeTextureB, index: 2)
         computeEncoder?.setTexture(irradianceField.radianceMap, index: 3)
         computeEncoder?.setComputePipelineState(irradianceAccumulatePipeline)
+        computeEncoder?.dispatchThreadgroups(threadGroups,
+                                             threadsPerThreadgroup: threadsPerGroup)
+        computeEncoder?.endEncoding()
+    }
+    
+    func updateShadowMap(shadowMap: MTLTexture, newShadowMap: MTLTexture, commandBuffer: MTLCommandBuffer?) {
+        let width = shadowMap.width
+        let height = shadowMap.height
+        guard let commandBuffer = commandBuffer else {
+            return
+        }
+        let threadsPerGroup = MTLSizeMake(16, 16, 1)
+        let threadGroups = MTLSizeMake(
+            (width + threadsPerGroup.width - 1) / threadsPerGroup.width,
+            (height + threadsPerGroup.height - 1) / threadsPerGroup.height, 1
+        )
+        
+        let computeEncoder = commandBuffer.makeComputeCommandEncoder()
+        computeEncoder?.label = "varianceShadowMap"
+        computeEncoder?.setTexture(shadowMap, index: 0)
+        computeEncoder?.setTexture(newShadowMap, index: 1)
+        computeEncoder?.setComputePipelineState(varianceShadowMapPipeline)
         computeEncoder?.dispatchThreadgroups(threadGroups,
                                              threadsPerThreadgroup: threadsPerGroup)
         computeEncoder?.endEncoding()

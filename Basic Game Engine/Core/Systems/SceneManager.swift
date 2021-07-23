@@ -36,6 +36,7 @@ class Scene: NSObject {
     final var depthStencilState: MTLDepthStencilState?
     var skybox: Skybox!
     var shadowTexture: MTLTexture!
+    var varianceShadowMap: MTLTexture!
     var shadowDescriptor = MTLRenderPassDescriptor()
     var shadowPipelineState: MTLRenderPipelineState?
     let deferredRenderPipelineState = Descriptor.createDeferredRendererPipelineState()
@@ -220,6 +221,7 @@ extension Scene {
     func render(_ view: MTKView) {
         guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
         let commandBuffer = Device.sharedDevice.commandQueue?.makeCommandBuffer()
+        let commandBufferRT = Device.sharedDevice.commandQueue?.makeCommandBuffer()
 
         // Generate irradiance maps and DFG lut if first draw
         if false {
@@ -254,19 +256,21 @@ extension Scene {
             //    dfgLut.texture = try! textureLoader.newTexture(name: "dfglut", scaleFactor: 1.0, bundle: nil, options: options_)
         }
 
-        rayTracer?.draw(in: view, commandBuffer: commandBuffer)
-        rayTracer?.drawAccumulation(in: view, commandBuffer: commandBuffer)
+        rayTracer?.draw(in: view, commandBuffer: commandBufferRT)
+        rayTracer?.drawAccumulation(in: view, commandBuffer: commandBufferRT)
+        commandBufferRT?.commit()
         let shadowCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: shadowDescriptor)
         shadowCommandEncoder?.setDepthStencilState(depthStencilState)
         shadowCommandEncoder?.setCullMode(.front)
         //    shadowCommandEncoder?.setDepthBias(0.001, slopeScale: 1.0, clamp: 0.01)
         drawGameObjects(renderCommandEncoder: shadowCommandEncoder, renderPassType: .shadow)
         shadowCommandEncoder?.endEncoding()
+        rayTracer?.updateShadowMap(shadowMap: shadowTexture, newShadowMap: varianceShadowMap, commandBuffer: commandBuffer)
 
         let gBufferCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: gBufferData.gBufferRenderPassDescriptor)
         gBufferCommandEncoder?.setCullMode(.front)
         gBufferCommandEncoder?.setDepthStencilState(depthStencilState)
-        gBufferCommandEncoder?.setFragmentTexture(shadowTexture, index: 0)
+        gBufferCommandEncoder?.setFragmentTexture(varianceShadowMap, index: 0)
         drawGameObjects(renderCommandEncoder: gBufferCommandEncoder, renderPassType: .gBuffer)
         gBufferCommandEncoder?.endEncoding()
 
@@ -309,9 +313,11 @@ extension Scene {
     }
 
     func createShadowTexture() {
-        shadowTexture = Descriptor.build2DTexture(pixelFormat: .depth32Float, size: CGSize(width: 2 * Int(Self.W), height: 2 * Int(Self.W)))
+        let size = CGSize(width: 2 * Int(Self.W), height: 2 * Int(Self.W))
+        shadowTexture = Descriptor.build2DTexture(pixelFormat: .depth32Float, size: size)
         shadowDescriptor.setupDepthAttachment(texture: shadowTexture)
         shadowPipelineState = Descriptor.createShadowPipelineState()
+        varianceShadowMap = Descriptor.build2DTextureForWrite(pixelFormat: .rgba32Float, size: size, label: "varianceShadowMap", shaderWrite: true)
     }
 
     func createLTCTextures() {
@@ -475,7 +481,7 @@ extension Scene {
         computeEncoder?.setTexture(gBufferData.flux, index: TextureIndex.flux.rawValue)
         computeEncoder?.setTexture(gBufferData.depth, index: TextureIndex.depth.rawValue)
         computeEncoder?.setTexture(renderTarget, index: 0)
-        computeEncoder?.setTexture(irradianceField.depthMap!, index: 10)
+        computeEncoder?.setTexture(irradianceField.octaHedralMap!, index: 10)
         computeEncoder?.setTexture(irradianceField.radianceMap!, index: 1)
         computeEncoder?.setBytes(&s, length: MemoryLayout<ShadowUniforms>.stride, index: 0)
         computeEncoder?.setBytes(&lightProbeData, length: MemoryLayout<LightProbeData>.stride, index: 1)

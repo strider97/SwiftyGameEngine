@@ -650,3 +650,36 @@ kernel void accumulateShadowKernel(uint2 tid [[thread_position_in_grid]],
     //    depthMap.write(d, tid);
     }
 }
+
+float linearize_depth(float depth) {
+    float near = 0.01;
+    float far = 100;
+    return (far - near)*depth + near;
+}
+
+kernel void varianceShadowMapKernel(uint2 tid [[thread_position_in_grid]],
+                                   depth2d<float, access::read> shadowMap,
+                                   texture2d<float, access::write> varianceShadowMap) {
+    if (tid.x < shadowMap.get_width() && tid.y < shadowMap.get_height()) {
+        int kernelSize = 7;
+        uint2 startI = tid - kernelSize/2;
+        uint2 endI = startI + kernelSize;
+        uint n = kernelSize * kernelSize;
+        float sum = 0;
+        float sumSquare = 0;
+        
+        for(uint i = startI.x; i<endI.x; i++) {
+            for(uint j = startI.y; j<endI.y; j++) {
+                float d = shadowMap.read(ushort2(i, j));
+                d = linearize_depth(d);
+                sum += d;
+                sumSquare += d * d;
+            }
+        }
+        
+        sum /= n;
+        sumSquare /= n;
+        varianceShadowMap.write(float4(sum, sumSquare, 0, 1), tid);
+    }
+}
+
