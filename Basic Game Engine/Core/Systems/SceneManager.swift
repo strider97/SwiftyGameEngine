@@ -26,8 +26,8 @@ class Scene: NSObject {
     static let W: Float = 1280
     static let H: Float = 720
     final let P = Matrix4(projectionFov: MathConstants.PI.rawValue / 3, near: 0.01, far: 500, aspect: Scene.W / Scene.H)
-//    var sunDirection = Float3(25, 8, 2)
-    var sunDirection = Float3(5, 18, 4)
+    var sunDirection = Float3(25, 8, 2)
+//    var sunDirection = Float3(5, 18, 4)
     var orthoGraphicP = Matrix4(orthoLeft: -10, right: 10, bottom: -10, top: 10, near: 0.01, far: 100)
     lazy var shadowViewMatrix = Matrix4.viewMatrix(position: sunDirection, target: Float3(0, 0, 0), up: Camera.WorldUp)
     final let timer = GameTimer.sharedTimer
@@ -467,7 +467,7 @@ extension Scene {
         let irradianceField = rayTracer!.irradianceField!
         var lightProbeData = LightProbeData(gridEdge: irradianceField.gridEdge, gridOrigin: irradianceField.origin, probeGridWidth: Int32(irradianceField.width), probeGridHeight: Int32(irradianceField.height), probeGridCount: Int3(Int32(Constants.probeGrid.0), Int32(Constants.probeGrid.1), Int32(Constants.probeGrid.2)))
         var s = ShadowUniforms(P: P, V: camera.lookAtMatrix, sunDirection: sunDirection.normalized)
-        var fragmentUniform = FragmentUniforms(
+        var fragmentUniform = FragmentUniforms(eye: camera.position,
             exposure: uniformSliders[Constants.Labels.exposure]!.floatValue,
             normalBias: uniformSliders[Constants.Labels.normalBias]!.floatValue,
             depthBias: uniformSliders[Constants.Labels.depthBias]!.floatValue,
@@ -481,8 +481,9 @@ extension Scene {
         computeEncoder?.setTexture(gBufferData.flux, index: TextureIndex.flux.rawValue)
         computeEncoder?.setTexture(gBufferData.depth, index: TextureIndex.depth.rawValue)
         computeEncoder?.setTexture(renderTarget, index: 0)
-        computeEncoder?.setTexture(irradianceField.octaHedralMap!, index: 10)
+        computeEncoder?.setTexture(irradianceField.depthMap!, index: 10)
         computeEncoder?.setTexture(irradianceField.radianceMap!, index: 1)
+        computeEncoder?.setTexture(irradianceField.specularMap!, index: 2)
         computeEncoder?.setBytes(&s, length: MemoryLayout<ShadowUniforms>.stride, index: 0)
         computeEncoder?.setBytes(&lightProbeData, length: MemoryLayout<LightProbeData>.stride, index: 1)
         computeEncoder?.setBytes(&fragmentUniform, length: MemoryLayout<FragmentUniforms>.stride, index: 2)
@@ -540,6 +541,7 @@ enum RenderPassType {
 }
 
 struct FragmentUniforms {
+    var eye: Float3
     var exposure: Float
     var normalBias: Float
     var depthBias: Float

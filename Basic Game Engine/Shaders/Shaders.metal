@@ -197,6 +197,10 @@ uint2 indexToTexPos_(int index, int width, int height){
     return uint2(indexH, indexD);
 }
 
+bool equal(bool2 b) {
+    return b.x == b.y;
+}
+
 void SHProjectLinear(float3 dir, float coeff[9]) {
     float l0 = 0.282095;
     float l1 = 0.488603;
@@ -312,25 +316,34 @@ kernel void accumulateRadianceKernel(constant Uniforms_ & uniforms,
                              texture3d<float, access::read_write> lightProbeTextureG,
                              texture3d<float, access::read_write> lightProbeTextureB,
                              texture2d<float, access::read_write> radianceMap,
+                             texture2d<float, access::read_write> specularMap,
                              uint2 tid [[thread_position_in_grid]])
 {
     float t = 0.033;
     int samples = uniforms.probeWidth * uniforms.probeHeight;
-    int radianceMapSize = 16;
+    int radianceMapSize = 32;
     int index = tid.x / radianceMapSize;
     uint2 texPos = indexToTexPos_(index, uniforms.probeGridWidth, uniforms.probeGridHeight);
     float2 uv = float2(tid.x % radianceMapSize, tid.y % radianceMapSize)/radianceMapSize;
     float3 texelDir = octDecode__(uv);
     float3 color = 0;
-    for(int i = 0; i < 16*16; i++) {
+    float3 thisDirColor = 0;
+    int thisPixelDirCount = 0;
+    for(int i = 0; i < radianceMapSize * radianceMapSize; i++) {
         float3 rayDir = lightProbeTextureR.read(ushort3(texPos.x, texPos.y, i)).xyz;
         float3 col = lightProbeTextureG.read(ushort3(texPos.x, texPos.y, i)).rgb;
         color += saturate(dot(texelDir, rayDir)) * col;
+        if (dot(texelDir, rayDir) > 0.994) {
+            thisPixelDirCount += 1;
+            thisDirColor = (thisDirColor * (thisPixelDirCount - 1) + col)/thisPixelDirCount;
+        }
     }
     color /= samples;
     uint2 texPosOcta = texPos * radianceMapSize + uint2(uv * float2(radianceMapSize));
     float3 prevColor = radianceMap.read(texPosOcta).rgb;
     radianceMap.write(float4(lerp(color, prevColor, t), index), texPosOcta);
+    float3 prevColorSpecular = specularMap.read(texPosOcta).rgb;
+    specularMap.write(float4(lerp(thisDirColor, prevColorSpecular, t), index), texPosOcta);
 //    radianceMap.write(float4(texelDir, index), texPosOcta);
 }
 
@@ -351,7 +364,7 @@ fragment float4 lightProbeFragmentShader(VertexOut vOut [[stage_in]],
                                          constant LightProbeData &probe [[buffer(0)]],
                                          device LightProbe *probes,
                                          depth2d<float, access::read> depthMap,
-                                         texture2d<float, access::read> radianceMap) {
+                                         texture2d<float, access::sample> radianceMap) {
     float d = vOut.m_position.z;// / vOut.m_position.a;
     float dMap = depthMap.read(ushort2(vOut.m_position.xy));
     if (d>dMap)
@@ -371,11 +384,16 @@ fragment float4 lightProbeFragmentShader(VertexOut vOut [[stage_in]],
         color.b += max(0.0, aCap[i] * lightProbe.shCoeffB[i] * shCoeff[i]);
     }
     
-    int radianceMapSize = 16;
+    int radianceMapSize = 32;
     uint2 texPos = indexToTexPos_(index, 12, 8);
-    float2 uv = octEncode__(normal);
-    uint2 texPosOcta = texPos * radianceMapSize + uint2(uv * float2(radianceMapSize));
-    color = radianceMap.read(texPosOcta).rgb;
+    float2 encodedUV = octEncode__(normal);
+    float minimumUV = 1.0/radianceMapSize;
+    encodedUV = max(minimumUV, min(1-minimumUV, encodedUV));
+    float2 uv = (float2(texPos) + encodedUV)*float2(1.0/(12 * 8), 1.0/10);
+    
+    uint2 texPosOcta = texPos * radianceMapSize + uint2(encodedUV * float2(radianceMapSize));
+ //   color = radianceMap.read(texPosOcta).rgb;
+    color = radianceMap.sample(s, uv).rgb;
     return float4(color*10, 1);
-//    return float4((uv_), 0, 1.0);
+//    return float4((uv), 0, 1.0);
 }

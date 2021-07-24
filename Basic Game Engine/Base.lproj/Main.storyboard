@@ -729,7 +729,7 @@
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="140" id="g2P-X6-UnD"/>
                                                 </constraints>
-                                                <sliderCell key="cell" state="on" alignment="left" maxValue="1" doubleValue="0.10000000000000001" tickMarkPosition="above" sliderType="linear" id="VB4-Kx-CKg"/>
+                                                <sliderCell key="cell" state="on" alignment="left" maxValue="2" doubleValue="0.10000000000000001" tickMarkPosition="above" sliderType="linear" id="VB4-Kx-CKg"/>
                                             </slider>
                                         </subviews>
                                         <visibilityPriorities>
@@ -757,7 +757,7 @@
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="140" id="V7Z-me-M46"/>
                                                 </constraints>
-                                                <sliderCell key="cell" state="on" alignment="left" maxValue="1" tickMarkPosition="above" sliderType="linear" id="M7S-sy-iGr"/>
+                                                <sliderCell key="cell" state="on" alignment="left" maxValue="2" tickMarkPosition="above" sliderType="linear" id="M7S-sy-iGr"/>
                                             </slider>
                                         </subviews>
                                         <visibilityPriorities>

@@ -29,6 +29,7 @@ class IrradianceField {
     var octaHedralMap: MTLTexture!
     var depthMap: MTLTexture!
     var radianceMap: MTLTexture!
+    var specularMap: MTLTexture!
     var probes: MTLBuffer!
     var probeDirections: MTLBuffer!
     var probeCount: Int
@@ -57,6 +58,7 @@ class IrradianceField {
         octaHedralMap = Descriptor.build2DTextureForWrite(pixelFormat: .rgba32Float, size: CGSize(width: (Constants.probeGrid.0 * Constants.probeGrid.1) * Constants.shadowProbeReso, height: Constants.probeGrid.2 * Constants.shadowProbeReso), label: "octaHedralMap", shaderWrite: true)
         depthMap = Descriptor.build2DTextureForWrite(pixelFormat: .rgba32Float, size: CGSize(width: (Constants.probeGrid.0 * Constants.probeGrid.1) * Constants.shadowProbeReso, height: Constants.probeGrid.2 * Constants.shadowProbeReso), label: "probesDepthMap", shaderWrite: true)
         radianceMap = Descriptor.build2DTextureForWrite(pixelFormat: .rgba32Float, size: CGSize(width: (Constants.probeGrid.0 * Constants.probeGrid.1) * Constants.radianceProbeReso, height: Constants.probeGrid.2 * Constants.radianceProbeReso), label: "radianceMap", shaderWrite: true)
+        specularMap = Descriptor.build2DTextureForWrite(pixelFormat: .rgba32Float, size: CGSize(width: (Constants.probeGrid.0 * Constants.probeGrid.1) * Constants.radianceProbeReso, height: Constants.probeGrid.2 * Constants.radianceProbeReso), label: "specularMap", shaderWrite: true)
         gridEdge = gridSize / Float3(Float(w - 1), Float(h - 1), Float(d - 1))
         origin = centre - gridSize / 2
         makeBuffer(origin, gridEdge)

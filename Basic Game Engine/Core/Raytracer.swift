@@ -181,7 +181,7 @@ class Raytracer {
     }
 
     func createScene() {
-        loadAsset(name: "Dsponza")
+        loadAsset(name: "pillarRoom")
     }
 
     func createBuffers() {
@@ -337,6 +337,7 @@ extension Raytracer {
         computeEncoder?.setTexture(irradianceField.ambientCubeTextureG, index: 1)
         computeEncoder?.setTexture(irradianceField.ambientCubeTextureB, index: 2)
         computeEncoder?.setTexture(irradianceField.radianceMap, index: 3)
+        computeEncoder?.setTexture(irradianceField.specularMap, index: 4)
         computeEncoder?.setComputePipelineState(irradianceAccumulatePipeline)
         computeEncoder?.dispatchThreadgroups(threadGroups,
                                              threadsPerThreadgroup: threadsPerGroup)

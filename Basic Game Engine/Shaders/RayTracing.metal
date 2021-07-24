@@ -416,7 +416,7 @@ float3 getDDGI_(float3 position,
         if (encodedUV.y > 1-minimumUV)
             encodedUV.y -= minimumUV;
         
-        int radianceMapSize = 16;
+        int radianceMapSize = 32;
         minimumUV = 1.0/radianceMapSize;
         if (encodedUV_.x < minimumUV)
             encodedUV_.x += minimumUV;
@@ -683,3 +683,48 @@ kernel void varianceShadowMapKernel(uint2 tid [[thread_position_in_grid]],
     }
 }
 
+kernel void primaryRaysIndirect(
+                                uint2 tid [[thread_position_in_grid]],
+                                device Ray *rays [[buffer(1)]],
+                                device float3 *eye,
+                                texture2d<float, access::sample> normals [[texture(0)]],
+                                texture2d<float, access::sample> positions [[texture(1)]],
+                                texture2d<float, access::read> reflectedPos [[texture(2)]])
+{
+    uint width = reflectedPos.get_width();
+    uint height = reflectedPos.get_height();
+    if (tid.x < width && tid.y < height) {
+        unsigned int rayIdx = tid.y * width + tid.x;
+        device Ray & ray = rays[rayIdx];
+        float eps = 0.001;
+        float2 uv = (float2(tid) + 0.5)/float2(width, height);
+        float3 pos = positions.sample(s__, uv).xyz;
+        float3 normal = normals.sample(s__, uv).xyz;
+        float3 v = normalize(pos - float3(eye->x, eye->y, eye->z));
+        ray.origin = pos + eps * normal;
+        ray.direction = reflect(-v, normal);
+        ray.minDistance = 0;
+        ray.maxDistance = INFINITY;
+    }
+}
+
+kernel void intersectionIndirect(
+                                uint2 tid [[thread_position_in_grid]],
+                                device Ray *rays,
+                                device Intersection *intersections,
+                                texture2d<float, access::write> reflectedPos [[texture(0)]])
+{
+    uint width = reflectedPos.get_width();
+    uint height = reflectedPos.get_height();
+    if (tid.x < width && tid.y < height) {
+        unsigned int rayIdx = tid.y * width + tid.x;
+        device Ray & ray = rays[rayIdx];
+        device Intersection & intersection = intersections[rayIdx];
+        if (ray.maxDistance >= 0.0 && intersection.distance >= 0.0) {
+            float3 pos = ray.origin + ray.direction * intersections[rayIdx].distance;
+            reflectedPos.write(float4(pos, 1), tid);
+        } else {
+            reflectedPos.write(0.0, tid);
+        }
+    }
+}

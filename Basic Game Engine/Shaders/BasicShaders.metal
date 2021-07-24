@@ -97,6 +97,7 @@ struct LightProbeData {
 };
 
 struct FragmentUniform {
+    float3 eye;
     float exposure;
     float normalBias;
     float depthBias;
@@ -274,7 +275,8 @@ float3 getDDGI(float3 position,
                device LightProbe *probes,
                LightProbeData probeData,
                texture2d<float, access::sample> octahedralMap,
-               texture2d<float, access::sample> radianceMap)
+               texture2d<float, access::sample> radianceMap,
+               texture2d<float, access::sample> specularMap)
 {
     float3 transformedPos = (position - probeData.gridOrigin)/probeData.gridEdge;
     transformedPos -= float3(int3(transformedPos));
@@ -337,44 +339,36 @@ float3 getDDGI(float3 position,
     //    depthBias *= signDot;
         float w = max(0.0001, signum_(-dotPN) * 1);
         trilinearWeights[iCoeff] *= w*w + 0.2;
-        
-        float3 newPosition = position + normalBias * smoothNormal;
+        float3 v = normalize(uniforms.eye - position);
+        float3 r = reflect(-v, smoothNormal);
+        float3 dirToProbe = -dirFromProbe;
+    //    if(dot(uniforms.eye, dirToProbe - dot(dirToProbe, smoothNormal)) < 0)
+    //        v = reflect(-v, smoothNormal);
+        float3 newPosition = position + (0.2 * smoothNormal + depthBias * v)
+        * (0.75 * 2) * normalBias;
         dirFromProbe = normalize(newPosition - (probe.location + probe.offset));
         float distToProbe = length(newPosition - (probe.location + probe.offset));
         uint2 texPos = indexToTexPos___(index, probeData.probeGridWidth, probeData.probeGridHeight);
         int shadowProbeReso = 24;
         int3 probeCount = probeData.probeCount;
+        
         float2 encodedUV = octEncode_(dirFromProbe);
         float2 encodedUV_ = octEncode_(smoothNormal);
+        float2 encodedUVSpecular = octEncode_(r);
         float minimumUV = 1.0/shadowProbeReso;
-//        if (encodedUV.x < minimumUV)
-//            encodedUV.x += minimumUV;
-//        if (encodedUV.x > 1-minimumUV)
-//            encodedUV.x -= minimumUV;
-//        if (encodedUV.y < minimumUV)
-//            encodedUV.y += minimumUV;
-//        if (encodedUV.y > 1-minimumUV)
-//            encodedUV.y -= minimumUV;
-        
         encodedUV = max(minimumUV, min(1-minimumUV, encodedUV));
-        int radianceMapSize = 16;
+        int radianceMapSize = 32;
         minimumUV = 1.0/radianceMapSize;
-//        if (encodedUV_.x < minimumUV)
-//            encodedUV_.x = minimumUV;
-//        if (encodedUV_.y < minimumUV)
-//            encodedUV_.y = minimumUV;
-//        if (encodedUV_.x > 1-minimumUV)
-//            encodedUV_.x = 1-minimumUV;
-//        if (encodedUV_.y > 1-minimumUV)
-//            encodedUV_.y = 1-minimumUV;
-        
         encodedUV_ = max(minimumUV, min(1-minimumUV, encodedUV_));
-            
-        float2 uv = (float2(texPos) + encodedUV)*float2(1.0/(probeCount.x * probeCount.y), 1.0/probeCount.z);
-        float4 d = octahedralMap.sample(s, uv);
+        encodedUVSpecular = max(minimumUV, min(1-minimumUV, encodedUVSpecular));
         
+        float2 uv = (float2(texPos) + encodedUV)*float2(1.0/(probeCount.x * probeCount.y), 1.0/probeCount.z);
         float2 uv_ = (float2(texPos) + encodedUV_)*float2(1.0/(probeCount.x * probeCount.y), 1.0/probeCount.z);
-        color_ = radianceMap.sample(s, uv_).rgb;
+        float2 uvSpecular = (float2(texPos) + encodedUVSpecular)*float2(1.0/(probeCount.x * probeCount.y), 1.0/probeCount.z);
+        
+        float4 d = octahedralMap.sample(s, uv);
+    //    color_ = radianceMap.sample(s, uv_).rgb;
+        color_ += specularMap.sample(s, uvSpecular).rgb;
         
         float2 temp = d.rg;
         float mean = temp.x;
@@ -387,7 +381,7 @@ float3 getDDGI(float3 position,
         /// Increase contrast in the weight
         chebyshevWeight = max(pow3(chebyshevWeight), 0.0);
 
-        float finalShadowingWeight = (distToProbe <= mean + depthBias || d.a == 0.0 ) ? 1.0 : chebyshevWeight;
+        float finalShadowingWeight = (distToProbe <= mean + 0.01 || d.a == 0.0 ) ? 1.0 : chebyshevWeight;
         
 //        for (int i = 0; i<9; i++) {
 //            color_.r += max(0.0, aCap[i] * probe.shCoeffR[i] * shCoeff[i]);
@@ -481,7 +475,8 @@ kernel void DefferedShadeKernel(uint2 tid [[thread_position_in_grid]],
                                 depth2d<float, access::sample> depthTex [[texture(rsmDepth)]],
                                 texture2d<float, access::write> outputTex [[texture(0)]],
                                 texture2d<float, access::sample> octahedralMap[[texture(10)]],
-                                texture2d<float, access::sample> radianceMap[[texture(1)]]) {
+                                texture2d<float, access::sample> radianceMap[[texture(1)]],
+                                texture2d<float, access::sample> specularMap[[texture(2)]]) {
     if (tid.x < uniforms.width && tid.y < uniforms.height) {
         float2 uv = float2(tid)/float2(uniforms.width, uniforms.height);
         float3 pos = worldPos.sample(s, uv).rgb;
@@ -499,7 +494,7 @@ kernel void DefferedShadeKernel(uint2 tid [[thread_position_in_grid]],
         float inShadow = normalShadow.a;
         
         float3 ambient = 0;
-        ambient = (getDDGI(pos, smoothN, uniforms, probes, probe, octahedralMap, radianceMap) + 0.0000);
+        ambient = (getDDGI(pos, smoothN, uniforms, probes, probe, octahedralMap, radianceMap, specularMap) + 0.0000);
         float3 diffuse = inShadow * 4.0 * albedo * saturate(dot(smoothN, l));
         float3 color = uniforms.kd * diffuse + uniforms.ka * ambient * albedo;
         
