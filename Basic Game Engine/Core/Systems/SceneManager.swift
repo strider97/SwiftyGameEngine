@@ -127,7 +127,7 @@ extension Scene: MTKViewDelegate {
         gBufferData = GBufferData(size: size)
         renderTarget = device!.makeTexture(descriptor: renderTargetDescriptor)
         //     rayTracer?.mtkView(view, drawableSizeWillChange: CGSize(width: Constants.probeReso * Constants.probeCount, height: Constants.probeReso * Constants.probeCount))
-        finalOutput = Descriptor.build2DTextureForWrite(pixelFormat: .rgba16Float, size: size, label: "Final output", mipmapped: false, shaderWrite: true)
+        finalOutput = Descriptor.build2DTextureForWrite(pixelFormat: .rgba32Float, size: size, label: "Final output", mipmapped: false, shaderWrite: true)
         rayTracer?.mtkView(view, drawableSizeWillChange: CGSize(width: Constants.probeCount * Constants.probeReso, height: Constants.probeReso))
     }
 
@@ -512,6 +512,7 @@ extension Scene {
         computeEncoder?.label = "SSR compute"
         computeEncoder?.setTexture(gBufferData.worldPos, index: TextureIndex.worldPos.rawValue)
         computeEncoder?.setTexture(gBufferData.normal, index: TextureIndex.normal.rawValue)
+        computeEncoder?.setTexture(gBufferData.depth, index: TextureIndex.depth.rawValue)
         computeEncoder?.setTexture(finalOutput, index: 1)
         computeEncoder?.setTexture(renderTarget, index: 0)
         computeEncoder?.setTexture(rayTracer?.reflectedPositions!, index: 3)

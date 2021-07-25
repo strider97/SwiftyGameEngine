@@ -504,7 +504,7 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
   //      shadowRay.color = 1;
   //      shadowRay.indirectColor = 1;
   //      shadowRay.color = float3(1, 0.1, 0);
-  //      shadowRay.indirectColor = 0.25 * getDDGI_(shadowRay.origin, surfaceNormal, probes, uniforms.probeData, octahedralMap, radianceMap) * color;
+        shadowRay.indirectColor = 0.25 * getDDGI_(shadowRay.origin, surfaceNormal, probes, uniforms.probeData, octahedralMap, radianceMap) * color;
   //      shadowRay.indirectColor = 0.1;
       
   //    float3 sampleDirection = sampleCosineWeightedHemisphere(r);
@@ -714,7 +714,10 @@ kernel void intersectionIndirectKernel(
                                 uint2 tid [[thread_position_in_grid]],
                                 device Ray *rays,
                                 device Intersection *intersections,
-                                texture2d<float, access::write> reflectedPos [[texture(0)]])
+                                device float3 *normals,
+                                device float3 *colors,
+                                texture2d<float, access::write> reflectedPos [[texture(0)]],
+                                texture2d<float, access::write> reflectedColors [[texture(1)]])
 {
     uint width = reflectedPos.get_width();
     uint height = reflectedPos.get_height();
@@ -722,15 +725,14 @@ kernel void intersectionIndirectKernel(
         unsigned int rayIdx = tid.y * width + tid.x;
         device Ray & ray = rays[rayIdx];
         device Intersection & intersection = intersections[rayIdx];
-    //    float3 pos = ray.direction + ray.direction * intersections[rayIdx].distance;
-        reflectedPos.write(float4(float3(intersection.distance), 1), tid);
-        return;
         if (ray.maxDistance >= 0.0 && intersection.distance >= 0.0) {
-            float3 pos = ray.direction;// + ray.direction * intersections[rayIdx].distance;
-        //    reflectedPos.write(float4(float3(pos), 1), tid);
-        //    reflectedPos.write(float4(float3(intersections[rayIdx].distance), 1), tid);
+            float3 surfaceNormal = interpolateVertexAttribute(normals,
+                                                            intersection);
+            float3 albedo = interpolateVertexAttribute(colors, intersection);
+            reflectedPos.write(float4(surfaceNormal, intersection.distance), tid);
+            reflectedColors.write(float4(albedo, 1.0), tid);
         } else {
-            reflectedPos.write(0.0, tid);
+            reflectedPos.write(-1, tid);
         }
     }
 }

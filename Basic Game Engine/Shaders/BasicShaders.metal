@@ -536,31 +536,37 @@ kernel void ssrKernel(
     float3 pos = worldPos.sample(s, uv).rgb;
     float4 normalShadow = worldNormal.sample(s, uv);
     float3 smoothN = normalShadow.xyz;
-    float3 reflectedDepth = reflectedDepthMap.sample(s, uv).r;
+    float4 reflectedDepthAndNormal = reflectedDepthMap.sample(s, uv);
+    float3 reflectedNormal = reflectedDepthAndNormal.xyz;
+    float reflectedDepth = reflectedDepthAndNormal.a;
     float3 color = outputTex.sample(s, uv).rgb;
-    float depth = depthTex.sample(s, uv);
     
     float3 v = normalize(uniforms.eye - pos);
-    float3 reflectedPosition = pos + reflect(-v, smoothN) * reflectedDepth;
-    float4 reflectedPosSS = uniforms.V * float4(reflectedPosition, 1.0);
-    reflectedPosSS.xy /= -reflectedPosSS.z;
-    
-    float2 xy = reflectedPosSS.xy;
-    xy = xy * 0.5 + 0.5;
-    xy.y = 1 - xy.y;
-    
-    if (reflectedPosSS.z > 0) {
-        bool2 inScreen = xy >=0.0 && xy <= 1.0;
-        if (inScreen.r == inScreen.g) {
-        //    color += 0.2 * outputTex.sample(s, xy).rgb;
-            color = 1;
+    if (reflectedDepth >= 0.0 && dot(reflectedNormal, v) >= 0) {
+        float3 reflectedPosition = pos + reflect(-v, smoothN) * reflectedDepth;
+        float4 reflectedPosSS = uniforms.P * uniforms.V * float4(reflectedPosition, 1.0);
+        reflectedPosSS /= reflectedPosSS.w;
+        
+        float dReflected = reflectedPosSS.z;
+        
+        float2 xy = reflectedPosSS.xy;
+        xy = xy * 0.5 + 0.5;
+        xy.y = 1 - xy.y;
+        float depthR = depthTex.sample(s, xy);
+        
+        if (dReflected < depthR + 0.0005  && dReflected > 0) {
+            bool2 inScreen = xy >=0.0 && xy <= 1.0;
+            if (inScreen.r == inScreen.g) {
+                color += 0.2 * outputTex.sample(s, xy).rgb;
+                color = 1;
+            }
         }
     }
-    
     float exposure = uniforms.exposure;
     color = 1 - exp(-color * exposure);
     color = pow(color, float3(1.0/2.2));
-    
+//    color = float3(depth, dReflected, depthR);
+//    color = reflectedPosSS.xyz;
     finalOutput.write(float4(color, 1), tid);
 }
 

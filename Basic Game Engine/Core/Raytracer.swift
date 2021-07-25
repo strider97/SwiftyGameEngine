@@ -26,6 +26,7 @@ class Raytracer {
     var varianceShadowMapPipeline: MTLComputePipelineState!
     var accumulationTarget: MTLTexture!
     var reflectedPositions: MTLTexture!
+    var reflectedColors: MTLTexture!
     var accelerationStructure: MPSTriangleAccelerationStructure!
     var indirectAccelerationStructure: MPSTriangleAccelerationStructure!
     var shadowPipeline: MTLComputePipelineState!
@@ -36,6 +37,8 @@ class Raytracer {
     var vertexNormalBuffer: MTLBuffer!
     var vertexColorBuffer: MTLBuffer!
     var vertexIndirectScenePositionBuffer: MTLBuffer!
+    var vertexIndirectSceneNormalsBuffer: MTLBuffer!
+    var vertexIndirectSceneColorBuffer: MTLBuffer!
     var indexBuffer: MTLBuffer!
     var uniformBuffer: MTLBuffer!
     var randomBuffer: MTLBuffer!
@@ -84,6 +87,8 @@ class Raytracer {
     var minPosition: Float3 = Float3.zero
     var maxPosition: Float3 = Float3.zero
     var verticesIndirectScene: [Float3] = []
+    var normalsIndirectScene: [Float3] = []
+    var colorsIndirectScene: [Float3] = []
 
     init(metalView: MTKView) {
         device = Device.sharedDevice.device!
@@ -217,8 +222,8 @@ class Raytracer {
     }
 
     func createScene() {
-        loadAsset(name: "pillarRoom")
-        loadAsset(name: "pillarRoom", isIndirectScene: true)
+        loadAsset(name: "bigroom")
+        loadAsset(name: "bigroom", isIndirectScene: true)
     }
 
     func createBuffers() {
@@ -238,6 +243,8 @@ class Raytracer {
         vertexColorBuffer = device.makeBuffer(bytes: &colors, length: colors.count * MemoryLayout<Float3>.stride, options: options)
         vertexNormalBuffer = device.makeBuffer(bytes: &normals, length: normals.count * MemoryLayout<Float3>.stride, options: options)
         vertexIndirectScenePositionBuffer = device.makeBuffer(bytes: &verticesIndirectScene, length: verticesIndirectScene.count * MemoryLayout<Float3>.stride, options: options)
+        vertexIndirectSceneNormalsBuffer = device.makeBuffer(bytes: &normalsIndirectScene, length: normalsIndirectScene.count * MemoryLayout<Float3>.stride, options: options)
+        vertexIndirectSceneColorBuffer = device.makeBuffer(bytes: &colorsIndirectScene, length: colorsIndirectScene.count * MemoryLayout<Float3>.stride, options: options)
     }
 
     func update() {
@@ -329,6 +336,7 @@ extension Raytracer {
         accumulationTarget = device.makeTexture(
             descriptor: renderTargetDescriptor)
         reflectedPositions = Descriptor.build2DTextureForWrite(pixelFormat: .rgba32Float, size: Constants.reflectedPositionsSize, label: "Reflected positions", shaderWrite: true)
+        reflectedColors = Descriptor.build2DTextureForWrite(pixelFormat: .rgba16Float, size: Constants.reflectedPositionsSize, label: "Reflected colors", shaderWrite: true)
         intersectionBuffer = device.makeBuffer(
             length: intersectionStride * rayCount,
             options: .storageModePrivate
@@ -510,7 +518,10 @@ extension Raytracer {
             computeEncoder?.label = "Set positions"
             computeEncoder?.setBuffer(indirectRaybuffer, offset: 0, index: 0)
             computeEncoder?.setBuffer(indirectIntersectionBuffer, offset: 0, index: 1)
+            computeEncoder?.setBuffer(vertexIndirectSceneNormalsBuffer, offset: 0, index: 2)
+            computeEncoder?.setBuffer(vertexIndirectSceneColorBuffer, offset: 0, index: 3)
             computeEncoder?.setTexture(reflectedPositions, index: 0)
+            computeEncoder?.setTexture(reflectedColors, index: 1)
             computeEncoder?.setComputePipelineState(indirectIntersectionsPipeline!)
             computeEncoder?.dispatchThreadgroups(
                 threadGroups,
@@ -698,20 +709,22 @@ extension Raytracer {
                         let vertex = ptr[index]
                         //    vertices_.append(ptr[index])
                         let vPosition = vertex.position * scale + position
+                        var color = Float3(1, 1, 1)
+                        let mdlSubmesh = subMeshesMDL[meshIndex][mdlIndex]
+                        if let baseColor = mdlSubmesh.material?.property(with: .baseColor),
+                          baseColor.type == .float3 {
+                          color = baseColor.float3Value
+                        }
                         if (isIndirectScene) {
                             verticesIndirectScene.append(vPosition)
+                            normalsIndirectScene.append(vertex.normal)
+                            colorsIndirectScene.append(color)
                         //    print(vPosition)
                         } else {
                             minPosition = min(vPosition, minPosition)
                             maxPosition = max(vPosition, maxPosition)
                             vertices.append(vPosition)
                             normals.append(vertex.normal)
-                            var color = Float3(1, 1, 1)
-                            let mdlSubmesh = subMeshesMDL[meshIndex][mdlIndex]
-                            if let baseColor = mdlSubmesh.material?.property(with: .baseColor),
-                              baseColor.type == .float3 {
-                              color = baseColor.float3Value
-                            }
                         //    color = Float3(1, 1, 1);
                             colors.append(color)
                         }
