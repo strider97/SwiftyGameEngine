@@ -17,6 +17,7 @@ class Raytracer {
     var rayPipeline: MTLComputePipelineState!
     var rayBuffer: MTLBuffer!
     var shadowRayBuffer: MTLBuffer!
+    var indirectRaybuffer: MTLBuffer!
 
     var shadePipelineState: MTLComputePipelineState!
     var accumulatePipeline: MTLComputePipelineState!
@@ -24,20 +25,27 @@ class Raytracer {
     var shadowAccumulatePipeline: MTLComputePipelineState!
     var varianceShadowMapPipeline: MTLComputePipelineState!
     var accumulationTarget: MTLTexture!
+    var reflectedPositions: MTLTexture!
     var accelerationStructure: MPSTriangleAccelerationStructure!
+    var indirectAccelerationStructure: MPSTriangleAccelerationStructure!
     var shadowPipeline: MTLComputePipelineState!
+    var indirectRayPipeline: MTLComputePipelineState!
+    var indirectIntersectionsPipeline: MTLComputePipelineState!
 
     var vertexPositionBuffer: MTLBuffer!
     var vertexNormalBuffer: MTLBuffer!
     var vertexColorBuffer: MTLBuffer!
+    var vertexIndirectScenePositionBuffer: MTLBuffer!
     var indexBuffer: MTLBuffer!
     var uniformBuffer: MTLBuffer!
     var randomBuffer: MTLBuffer!
     var intersectionBuffer: MTLBuffer!
+    var indirectIntersectionBuffer: MTLBuffer!
     let intersectionStride =
         MemoryLayout<MPSIntersectionDistancePrimitiveIndexCoordinates>.stride
-
+    let indirectIntersectionStride = MemoryLayout<MPSIntersectionDistance>.stride
     var intersector: MPSRayIntersector!
+    var indirectIntersector: MPSRayIntersector!
     let rayStride =
         MemoryLayout<MPSRayOriginMinDistanceDirectionMaxDistance>.stride
         + 4 * MemoryLayout<Float3>.stride// + MemoryLayout<Int32>.stride
@@ -75,6 +83,7 @@ class Raytracer {
     var colors: [Float3] = []
     var minPosition: Float3 = Float3.zero
     var maxPosition: Float3 = Float3.zero
+    var verticesIndirectScene: [Float3] = []
 
     init(metalView: MTKView) {
         device = Device.sharedDevice.device!
@@ -98,12 +107,23 @@ class Raytracer {
         accelerationStructure?.vertexBuffer = vertexPositionBuffer
         accelerationStructure?.triangleCount = vertices.count / 3
         accelerationStructure?.rebuild()
+        
+        indirectAccelerationStructure =
+            MPSTriangleAccelerationStructure(device: device)
+        indirectAccelerationStructure?.vertexBuffer = vertexIndirectScenePositionBuffer
+        indirectAccelerationStructure?.triangleCount = verticesIndirectScene.count / 3
+        indirectAccelerationStructure?.rebuild()
     }
 
     func buildIntersector() {
         intersector = MPSRayIntersector(device: device)
         intersector?.rayDataType = .originMinDistanceDirectionMaxDistance
         intersector?.rayStride = rayStride
+        
+        indirectIntersector = MPSRayIntersector(device: device)
+        indirectIntersector.rayDataType = .originMinDistanceDirectionMaxDistance
+        indirectIntersector.rayStride = rayStride
+        indirectIntersector.intersectionStride = intersectionStride
     }
 
     func buildPipelines(view: MTKView) {
@@ -173,6 +193,22 @@ class Raytracer {
                 options: [],
                 reflection: nil
             )
+            
+            computeDescriptor.computeFunction = library.makeFunction(
+                name: "primaryRaysIndirectKernel")
+            indirectRayPipeline = try device.makeComputePipelineState(
+                descriptor: computeDescriptor,
+                options: [],
+                reflection: nil
+            )
+            
+            computeDescriptor.computeFunction = library.makeFunction(
+                name: "intersectionIndirectKernel")
+            indirectIntersectionsPipeline = try device.makeComputePipelineState(
+                descriptor: computeDescriptor,
+                options: [],
+                reflection: nil
+            )
 
             //    renderPipeline = try device.makeRenderPipelineState(descriptor: pipelineDescriptor)
         } catch {
@@ -182,6 +218,7 @@ class Raytracer {
 
     func createScene() {
         loadAsset(name: "pillarRoom")
+        loadAsset(name: "pillarRoom", isIndirectScene: true)
     }
 
     func createBuffers() {
@@ -200,6 +237,7 @@ class Raytracer {
         vertexPositionBuffer = device.makeBuffer(bytes: &vertices, length: vertices.count * MemoryLayout<Float3>.stride, options: options)
         vertexColorBuffer = device.makeBuffer(bytes: &colors, length: colors.count * MemoryLayout<Float3>.stride, options: options)
         vertexNormalBuffer = device.makeBuffer(bytes: &normals, length: normals.count * MemoryLayout<Float3>.stride, options: options)
+        vertexIndirectScenePositionBuffer = device.makeBuffer(bytes: &verticesIndirectScene, length: verticesIndirectScene.count * MemoryLayout<Float3>.stride, options: options)
     }
 
     func update() {
@@ -281,16 +319,22 @@ extension Raytracer {
         renderTarget = device.makeTexture(descriptor: renderTargetDescriptor)
 
         let rayCount = Int(size.width * size.height)
+        let indirectRayCount = Int(Constants.reflectedPositionsSize.width * Constants.reflectedPositionsSize.height)
         rayBuffer = device.makeBuffer(length: rayStride * rayCount,
                                       options: .storageModePrivate)
         shadowRayBuffer = device.makeBuffer(length: rayStride * rayCount,
                                             options: .storageModePrivate)
-
+        indirectRaybuffer = device.makeBuffer(length: rayStride * indirectRayCount,
+                                            options: .storageModePrivate)
         accumulationTarget = device.makeTexture(
             descriptor: renderTargetDescriptor)
-
+        reflectedPositions = Descriptor.build2DTextureForWrite(pixelFormat: .rgba32Float, size: Constants.reflectedPositionsSize, label: "Reflected positions", shaderWrite: true)
         intersectionBuffer = device.makeBuffer(
             length: intersectionStride * rayCount,
+            options: .storageModePrivate
+        )
+        indirectIntersectionBuffer = device.makeBuffer(
+            length: intersectionStride * indirectRayCount,
             options: .storageModePrivate
         )
     }
@@ -364,6 +408,116 @@ extension Raytracer {
         computeEncoder?.dispatchThreadgroups(threadGroups,
                                              threadsPerThreadgroup: threadsPerGroup)
         computeEncoder?.endEncoding()
+    }
+    
+//    func drawIndirectRays(normals: MTLTexture, positions: MTLTexture, commandBuffer: MTLCommandBuffer?) {
+//
+//        let width = reflectedPositions.width
+//        let height = reflectedPositions.height
+//        guard let commandBuffer = commandBuffer else {
+//            return
+//        }
+//        let threadsPerGroup = MTLSizeMake(16, 16, 1)
+//        let threadGroups = MTLSizeMake(
+//            (width + threadsPerGroup.width - 1) / threadsPerGroup.width,
+//            (height + threadsPerGroup.height - 1) / threadsPerGroup.height, 1
+//        )
+//        var computeEncoder = commandBuffer.makeComputeCommandEncoder()
+//        var eye = scene.camera.position
+//        computeEncoder?.label = "Generate Indirect Rays"
+//        computeEncoder?.setBuffer(indirectRaybuffer, offset: 0, index: 0)
+//        computeEncoder?.setBytes(&eye, length: MemoryLayout<Float3>.stride, index: 1)
+//        computeEncoder?.setTexture(normals, index: 0)
+//        computeEncoder?.setTexture(positions, index: 1)
+//        computeEncoder?.setTexture(reflectedPositions, index: 2)
+//        computeEncoder?.setComputePipelineState(indirectRayPipeline)
+//        computeEncoder?.dispatchThreadgroups(threadGroups,
+//                                             threadsPerThreadgroup: threadsPerGroup)
+//        computeEncoder?.endEncoding()
+//
+//        // MARK: intersections
+//
+//        intersector?.label = "Shadows Intersector"
+//        intersector?.intersectionDataType = .distance
+//        intersector?.encodeIntersection(
+//            commandBuffer: commandBuffer,
+//            intersectionType: .any,
+//            rayBuffer: indirectRaybuffer,
+//            rayBufferOffset: 0,
+//            intersectionBuffer: indirectIntersectionBuffer,
+//            intersectionBufferOffset: 0,
+//            rayCount: width * height,
+//            accelerationStructure: indirectAccelerationStructure
+//        )
+//
+//        // MARK: set positions
+//
+//        computeEncoder = commandBuffer.makeComputeCommandEncoder()
+//        computeEncoder?.label = "Set positions"
+//        computeEncoder?.setBuffer(indirectRaybuffer, offset: 0, index: 0)
+//        computeEncoder?.setBuffer(indirectIntersectionBuffer, offset: 0, index: 1)
+//        computeEncoder?.setTexture(reflectedPositions, index: 0)
+//        computeEncoder?.setComputePipelineState(indirectIntersectionsPipeline!)
+//        computeEncoder?.dispatchThreadgroups(
+//            threadGroups,
+//            threadsPerThreadgroup: threadsPerGroup
+//        )
+//        computeEncoder?.endEncoding()
+//    }
+    
+    func drawIndirectRays(normals: MTLTexture, positions: MTLTexture, commandBuffer: MTLCommandBuffer?) {
+        let width = reflectedPositions.width
+        let height = reflectedPositions.height
+        guard let commandBuffer = commandBuffer else {
+            return
+        }
+        let threadsPerGroup = MTLSizeMake(8, 8, 1)
+        let threadGroups = MTLSizeMake(
+            (width + threadsPerGroup.width - 1) / threadsPerGroup.width,
+            (height + threadsPerGroup.height - 1) / threadsPerGroup.height, 1
+        )
+        var computeEncoder = commandBuffer.makeComputeCommandEncoder()
+        var eye = scene.camera.position
+        computeEncoder?.label = "Generate Indirect Rays"
+        computeEncoder?.setBuffer(indirectRaybuffer, offset: 0, index: 0)
+        computeEncoder?.setBytes(&eye, length: MemoryLayout<Float3>.stride, index: 1)
+        computeEncoder?.setTexture(normals, index: 0)
+        computeEncoder?.setTexture(positions, index: 1)
+        computeEncoder?.setTexture(reflectedPositions, index: 2)
+        computeEncoder?.setComputePipelineState(indirectRayPipeline)
+        computeEncoder?.dispatchThreadgroups(threadGroups,
+                                             threadsPerThreadgroup: threadsPerGroup)
+        computeEncoder?.endEncoding()
+
+        for _ in 0 ..< 1 {
+            // MARK: generate intersections between rays and model triangles
+
+            intersector?.intersectionDataType = .distancePrimitiveIndexCoordinates
+            intersector?.encodeIntersection(
+                commandBuffer: commandBuffer,
+                intersectionType: .nearest,
+                rayBuffer: indirectRaybuffer,
+                rayBufferOffset: 0,
+                intersectionBuffer: indirectIntersectionBuffer,
+                intersectionBufferOffset: 0,
+                rayCount: width * height,
+                accelerationStructure: indirectAccelerationStructure
+            )
+
+            // MARK: set positions
+            
+            computeEncoder = commandBuffer.makeComputeCommandEncoder()
+            computeEncoder?.label = "Set positions"
+            computeEncoder?.setBuffer(indirectRaybuffer, offset: 0, index: 0)
+            computeEncoder?.setBuffer(indirectIntersectionBuffer, offset: 0, index: 1)
+            computeEncoder?.setTexture(reflectedPositions, index: 0)
+            computeEncoder?.setComputePipelineState(indirectIntersectionsPipeline!)
+            computeEncoder?.dispatchThreadgroups(
+                threadGroups,
+                threadsPerThreadgroup: threadsPerGroup
+            )
+            computeEncoder?.endEncoding()
+        }
     }
 
     func draw(in _: MTKView, commandBuffer: MTLCommandBuffer?) {
@@ -512,7 +666,7 @@ extension Raytracer {
 }
 
 extension Raytracer {
-    func loadAsset(name modelName: String, position: Float3 = [0, 0, 0], scale: Float = 1) {
+    func loadAsset(name modelName: String, position: Float3 = [0, 0, 0], scale: Float = 1, isIndirectScene: Bool = false) {
         guard let url = Bundle.main.url(forResource: modelName, withExtension: "obj") else { return }
         let bufferAllocator_ = MTKMeshBufferAllocator(device: device)
         let asset_ = MDLAsset(url: url, vertexDescriptor: Self.getMDLVertexDescriptor(), bufferAllocator: bufferAllocator_)
@@ -544,18 +698,23 @@ extension Raytracer {
                         let vertex = ptr[index]
                         //    vertices_.append(ptr[index])
                         let vPosition = vertex.position * scale + position
-                        minPosition = min(vPosition, minPosition)
-                        maxPosition = max(vPosition, maxPosition)
-                        vertices.append(vPosition)
-                        normals.append(vertex.normal)
-                        var color = Float3(1, 1, 1)
-                        let mdlSubmesh = subMeshesMDL[meshIndex][mdlIndex]
-                        if let baseColor = mdlSubmesh.material?.property(with: .baseColor),
-                          baseColor.type == .float3 {
-                          color = baseColor.float3Value
+                        if (isIndirectScene) {
+                            verticesIndirectScene.append(vPosition)
+                        //    print(vPosition)
+                        } else {
+                            minPosition = min(vPosition, minPosition)
+                            maxPosition = max(vPosition, maxPosition)
+                            vertices.append(vPosition)
+                            normals.append(vertex.normal)
+                            var color = Float3(1, 1, 1)
+                            let mdlSubmesh = subMeshesMDL[meshIndex][mdlIndex]
+                            if let baseColor = mdlSubmesh.material?.property(with: .baseColor),
+                              baseColor.type == .float3 {
+                              color = baseColor.float3Value
+                            }
+                        //    color = Float3(1, 1, 1);
+                            colors.append(color)
                         }
-                    //    color = Float3(1, 1, 1);
-                        colors.append(color)
                         indices = indices.advanced(by: 1)
                     }
                 }

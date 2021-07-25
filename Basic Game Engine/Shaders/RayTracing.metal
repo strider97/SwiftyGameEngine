@@ -504,7 +504,7 @@ kernel void shadeKernel(uint2 tid [[thread_position_in_grid]],
   //      shadowRay.color = 1;
   //      shadowRay.indirectColor = 1;
   //      shadowRay.color = float3(1, 0.1, 0);
-        shadowRay.indirectColor = 0.25 * getDDGI_(shadowRay.origin, surfaceNormal, probes, uniforms.probeData, octahedralMap, radianceMap) * color;
+  //      shadowRay.indirectColor = 0.25 * getDDGI_(shadowRay.origin, surfaceNormal, probes, uniforms.probeData, octahedralMap, radianceMap) * color;
   //      shadowRay.indirectColor = 0.1;
       
   //    float3 sampleDirection = sampleCosineWeightedHemisphere(r);
@@ -683,32 +683,34 @@ kernel void varianceShadowMapKernel(uint2 tid [[thread_position_in_grid]],
     }
 }
 
-kernel void primaryRaysIndirect(
+kernel void primaryRaysIndirectKernel(
                                 uint2 tid [[thread_position_in_grid]],
-                                device Ray *rays [[buffer(1)]],
-                                device float3 *eye,
+                                device Ray *rays [[buffer(0)]],
+                                constant float3 *eye[[buffer(1)]],
                                 texture2d<float, access::sample> normals [[texture(0)]],
                                 texture2d<float, access::sample> positions [[texture(1)]],
-                                texture2d<float, access::read> reflectedPos [[texture(2)]])
+                                texture2d<float, access::write> reflectedPos [[texture(2)]])
 {
     uint width = reflectedPos.get_width();
     uint height = reflectedPos.get_height();
     if (tid.x < width && tid.y < height) {
         unsigned int rayIdx = tid.y * width + tid.x;
         device Ray & ray = rays[rayIdx];
-        float eps = 0.001;
-        float2 uv = (float2(tid) + 0.5)/float2(width, height);
+        float eps = 0.01;
+        float2 uv = (float2(tid))/float2(width, height);
         float3 pos = positions.sample(s__, uv).xyz;
-        float3 normal = normals.sample(s__, uv).xyz;
-        float3 v = normalize(pos - float3(eye->x, eye->y, eye->z));
+        float3 normal = normalize(normals.sample(s__, uv).xyz);
+        float3 e = float3(eye->x, eye->y, eye->z);
+        float3 v = normalize(pos - e);
         ray.origin = pos + eps * normal;
-        ray.direction = reflect(-v, normal);
+        ray.direction = reflect(v, normal);
         ray.minDistance = 0;
-        ray.maxDistance = INFINITY;
+        ray.maxDistance = 1000;
+        reflectedPos.write(float4(normal, 1), tid);
     }
 }
 
-kernel void intersectionIndirect(
+kernel void intersectionIndirectKernel(
                                 uint2 tid [[thread_position_in_grid]],
                                 device Ray *rays,
                                 device Intersection *intersections,
@@ -720,9 +722,13 @@ kernel void intersectionIndirect(
         unsigned int rayIdx = tid.y * width + tid.x;
         device Ray & ray = rays[rayIdx];
         device Intersection & intersection = intersections[rayIdx];
+    //    float3 pos = ray.direction + ray.direction * intersections[rayIdx].distance;
+        reflectedPos.write(float4(float3(intersection.distance), 1), tid);
+        return;
         if (ray.maxDistance >= 0.0 && intersection.distance >= 0.0) {
-            float3 pos = ray.origin + ray.direction * intersections[rayIdx].distance;
-            reflectedPos.write(float4(pos, 1), tid);
+            float3 pos = ray.direction;// + ray.direction * intersections[rayIdx].distance;
+        //    reflectedPos.write(float4(float3(pos), 1), tid);
+        //    reflectedPos.write(float4(float3(intersections[rayIdx].distance), 1), tid);
         } else {
             reflectedPos.write(0.0, tid);
         }

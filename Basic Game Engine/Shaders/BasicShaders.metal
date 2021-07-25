@@ -103,8 +103,11 @@ struct FragmentUniform {
     float depthBias;
     float ka;
     float kd;
+    float ks;
     uint width;
     uint height;
+    float4x4 P;
+    float4x4 V;
 };
 
 float2 sampleSphericalMap_(float3 dir) {
@@ -271,6 +274,7 @@ int signOf(float a) {
 
 float3 getDDGI(float3 position,
                float3 smoothNormal,
+               float3 reflectedPosition,
                FragmentUniform uniforms,
                device LightProbe *probes,
                LightProbeData probeData,
@@ -340,7 +344,7 @@ float3 getDDGI(float3 position,
         float w = max(0.0001, signum_(-dotPN) * 1);
         trilinearWeights[iCoeff] *= w*w + 0.2;
         float3 v = normalize(uniforms.eye - position);
-        float3 r = reflect(-v, smoothNormal);
+        float3 r = normalize(reflectedPosition - (probe.location + probe.offset));
         float3 dirToProbe = -dirFromProbe;
     //    if(dot(uniforms.eye, dirToProbe - dot(dirToProbe, smoothNormal)) < 0)
     //        v = reflect(-v, smoothNormal);
@@ -367,8 +371,8 @@ float3 getDDGI(float3 position,
         float2 uvSpecular = (float2(texPos) + encodedUVSpecular)*float2(1.0/(probeCount.x * probeCount.y), 1.0/probeCount.z);
         
         float4 d = octahedralMap.sample(s, uv);
-    //    color_ = radianceMap.sample(s, uv_).rgb;
-        color_ += specularMap.sample(s, uvSpecular).rgb;
+        color_ = uniforms.ka * radianceMap.sample(s, uv_).rgb;
+        color_ += uniforms.ks * specularMap.sample(s, uvSpecular).rgb;
         
         float2 temp = d.rg;
         float mean = temp.x;
@@ -473,10 +477,11 @@ kernel void DefferedShadeKernel(uint2 tid [[thread_position_in_grid]],
                                 texture2d<float, access::sample> worldNormal [[texture(rsmNormal)]],
                                 texture2d<float, access::sample> albedoTex [[texture(rsmFlux)]],
                                 depth2d<float, access::sample> depthTex [[texture(rsmDepth)]],
-                                texture2d<float, access::write> outputTex [[texture(0)]],
+                                texture2d<float, access::read_write> outputTex [[texture(0)]],
                                 texture2d<float, access::sample> octahedralMap[[texture(10)]],
                                 texture2d<float, access::sample> radianceMap[[texture(1)]],
-                                texture2d<float, access::sample> specularMap[[texture(2)]]) {
+                                texture2d<float, access::sample> specularMap[[texture(2)]],
+                                texture2d<float, access::sample> reflectedDepthMap[[texture(3)]]) {
     if (tid.x < uniforms.width && tid.y < uniforms.height) {
         float2 uv = float2(tid)/float2(uniforms.width, uniforms.height);
         float3 pos = worldPos.sample(s, uv).rgb;
@@ -485,6 +490,11 @@ kernel void DefferedShadeKernel(uint2 tid [[thread_position_in_grid]],
         float4 albedo_ = albedoTex.sample(s, uv);
         float3 albedo = albedo_.rgb;
         float depth = depthTex.sample(s, uv);
+        float3 reflectedDepth = reflectedDepthMap.sample(s, uv).r;
+        
+        float3 v = normalize(uniforms.eye - pos);
+        float3 reflectedPosition = pos + reflect(-v, smoothN) * reflectedDepth;
+        
         if(depth == 1) {
             outputTex.write(float4(113, 164, 243, 255)/255, tid);
             return;
@@ -494,20 +504,64 @@ kernel void DefferedShadeKernel(uint2 tid [[thread_position_in_grid]],
         float inShadow = normalShadow.a;
         
         float3 ambient = 0;
-        ambient = (getDDGI(pos, smoothN, uniforms, probes, probe, octahedralMap, radianceMap, specularMap) + 0.0000);
+        ambient = (getDDGI(pos, smoothN, reflectedPosition, uniforms, probes, probe, octahedralMap, radianceMap, specularMap) + 0.0000);
         float3 diffuse = inShadow * 4.0 * albedo * saturate(dot(smoothN, l));
-        float3 color = uniforms.kd * diffuse + uniforms.ka * ambient * albedo;
+        float3 color = uniforms.kd * diffuse + ambient * albedo;
         
     //    float4x4 PV = shadowUniforms.P * shadowUniforms.V;
     //    float ssao = getSSAO(pos, smoothN, kernelAndNoise[64 + tid.x % 16], PV, kernelAndNoise, depthTex);
         
-        float exposure = uniforms.exposure;
-        color = 1 - exp(-color * exposure);
-        color = pow(color, float3(1.0/2.2));
+//        float exposure = uniforms.exposure;
+//        color = 1 - exp(-color * exposure);
+//        color = pow(color, float3(1.0/2.2));
     //    color = ssao * albedo;
     //    color = float3(kernelAndNoise[64 + tid.x % 16].xy, 1);
+    //    color = reflectedPosSS.rgb;
+    //    color.xy = xy;
         outputTex.write(float4(color, 1), tid);
     }
+}
+
+kernel void ssrKernel(
+                    uint2 tid [[thread_position_in_grid]],
+                    constant FragmentUniform &uniforms [[buffer(2)]],
+                    texture2d<float, access::sample> worldPos [[texture(rsmPos)]],
+                    texture2d<float, access::sample> worldNormal [[texture(rsmNormal)]],
+                      depth2d<float, access::sample> depthTex [[texture(rsmDepth)]],
+                      texture2d<float, access::sample> outputTex [[texture(0)]],
+                    texture2d<float, access::sample> reflectedDepthMap [[texture(3)]],
+                      texture2d<float, access::write> finalOutput [[texture(1)]])
+{
+    float2 uv = float2(tid)/float2(uniforms.width, uniforms.height);
+    float3 pos = worldPos.sample(s, uv).rgb;
+    float4 normalShadow = worldNormal.sample(s, uv);
+    float3 smoothN = normalShadow.xyz;
+    float3 reflectedDepth = reflectedDepthMap.sample(s, uv).r;
+    float3 color = outputTex.sample(s, uv).rgb;
+    float depth = depthTex.sample(s, uv);
+    
+    float3 v = normalize(uniforms.eye - pos);
+    float3 reflectedPosition = pos + reflect(-v, smoothN) * reflectedDepth;
+    float4 reflectedPosSS = uniforms.V * float4(reflectedPosition, 1.0);
+    reflectedPosSS.xy /= -reflectedPosSS.z;
+    
+    float2 xy = reflectedPosSS.xy;
+    xy = xy * 0.5 + 0.5;
+    xy.y = 1 - xy.y;
+    
+    if (reflectedPosSS.z > 0) {
+        bool2 inScreen = xy >=0.0 && xy <= 1.0;
+        if (inScreen.r == inScreen.g) {
+        //    color += 0.2 * outputTex.sample(s, xy).rgb;
+            color = 1;
+        }
+    }
+    
+    float exposure = uniforms.exposure;
+    color = 1 - exp(-color * exposure);
+    color = pow(color, float3(1.0/2.2));
+    
+    finalOutput.write(float4(color, 1), tid);
 }
 
 fragment float4 DeferredRendererFS_(VertexOutDR vOut [[ stage_in ]], texture2d<float, access::sample> radianceTex [[texture(0)]]) {

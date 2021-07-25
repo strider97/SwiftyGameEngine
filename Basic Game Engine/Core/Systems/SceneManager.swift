@@ -71,7 +71,9 @@ class Scene: NSObject {
     var frame = 0
     var size: CGSize!
     var computePipeline: MTLComputePipelineState!
+    var ssrComputePipeline: MTLComputePipelineState!
     var renderTarget: MTLTexture!
+    var finalOutput: MTLTexture!
     var randomKernelAndNoise: [Float3] = []
     let randomKernelSize = 64 + 16
 
@@ -116,7 +118,7 @@ extension Scene: MTKViewDelegate {
         }
         self.size = size
         let renderTargetDescriptor = MTLTextureDescriptor()
-        renderTargetDescriptor.pixelFormat = Constants.pixelFormat
+        renderTargetDescriptor.pixelFormat = .rgba16Float
         renderTargetDescriptor.textureType = .type2D
         renderTargetDescriptor.width = Int(size.width)
         renderTargetDescriptor.height = Int(size.height)
@@ -125,6 +127,7 @@ extension Scene: MTKViewDelegate {
         gBufferData = GBufferData(size: size)
         renderTarget = device!.makeTexture(descriptor: renderTargetDescriptor)
         //     rayTracer?.mtkView(view, drawableSizeWillChange: CGSize(width: Constants.probeReso * Constants.probeCount, height: Constants.probeReso * Constants.probeCount))
+        finalOutput = Descriptor.build2DTextureForWrite(pixelFormat: .rgba16Float, size: size, label: "Final output", mipmapped: false, shaderWrite: true)
         rayTracer?.mtkView(view, drawableSizeWillChange: CGSize(width: Constants.probeCount * Constants.probeReso, height: Constants.probeReso))
     }
 
@@ -177,6 +180,14 @@ extension Scene {
             computeDescriptor.computeFunction = Device.sharedDevice.library!.makeFunction(
                 name: "DefferedShadeKernel")
             computePipeline = try device!.makeComputePipelineState(
+                descriptor: computeDescriptor,
+                options: [],
+                reflection: nil
+                )
+            
+            computeDescriptor.computeFunction = Device.sharedDevice.library!.makeFunction(
+                name: "ssrKernel")
+            ssrComputePipeline = try device!.makeComputePipelineState(
                 descriptor: computeDescriptor,
                 options: [],
                 reflection: nil
@@ -266,14 +277,13 @@ extension Scene {
         drawGameObjects(renderCommandEncoder: shadowCommandEncoder, renderPassType: .shadow)
         shadowCommandEncoder?.endEncoding()
         rayTracer?.updateShadowMap(shadowMap: shadowTexture, newShadowMap: varianceShadowMap, commandBuffer: commandBuffer)
-
         let gBufferCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: gBufferData.gBufferRenderPassDescriptor)
         gBufferCommandEncoder?.setCullMode(.front)
         gBufferCommandEncoder?.setDepthStencilState(depthStencilState)
         gBufferCommandEncoder?.setFragmentTexture(varianceShadowMap, index: 0)
         drawGameObjects(renderCommandEncoder: gBufferCommandEncoder, renderPassType: .gBuffer)
         gBufferCommandEncoder?.endEncoding()
-
+        rayTracer?.drawIndirectRays(normals: gBufferData.normal, positions: gBufferData.worldPos, commandBuffer: commandBuffer)
    //     renderCommandEncoder?.setDepthStoreAction(.dontCare)
    //     renderCommandEncoder?.setDepthStencilState(depthStencilState)
 //        renderCommandEncoder?.setFragmentTexture(preFilterEnvMap.texture, index: TextureIndex.preFilterEnvMap.rawValue)
@@ -448,12 +458,12 @@ extension Scene {
 //        renderCommandEncoder?.setFragmentBytes(&s, length: MemoryLayout<ShadowUniforms>.stride, index: 0)
 //        renderCommandEncoder?.setFragmentBytes(&lightProbeData, length: MemoryLayout<LightProbeData>.stride, index: 1)
 //        renderCommandEncoder?.setFragmentBytes(&fragmentUniform, length: MemoryLayout<FragmentUniforms>.stride, index: 2)
-        renderCommandEncoder?.setFragmentTexture(renderTarget, index: 0)
+        renderCommandEncoder?.setFragmentTexture(finalOutput, index: 0)
         renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6)
     }
 
     func drawDefferedRenderCompute(commandBuffer: MTLCommandBuffer) {
-        let computeEncoder = commandBuffer.makeComputeCommandEncoder()
+        var computeEncoder = commandBuffer.makeComputeCommandEncoder()
         computeEncoder?.label = "Deferred compute"
         let width = Int(size.width)
         let height = Int(size.height)
@@ -473,8 +483,11 @@ extension Scene {
             depthBias: uniformSliders[Constants.Labels.depthBias]!.floatValue,
             ka: uniformSliders[Constants.Labels.ka]!.floatValue,
             kd: uniformSliders[Constants.Labels.kd]!.floatValue,
+            ks: uniformSliders[Constants.Labels.ks]!.floatValue,
             width: UInt32(size.width),
-            height: UInt32(size.height)
+            height: UInt32(size.height),
+            P: P,
+            V: camera.lookAtMatrix
         )
         computeEncoder?.setTexture(gBufferData.worldPos, index: TextureIndex.worldPos.rawValue)
         computeEncoder?.setTexture(gBufferData.normal, index: TextureIndex.normal.rawValue)
@@ -484,6 +497,7 @@ extension Scene {
         computeEncoder?.setTexture(irradianceField.depthMap!, index: 10)
         computeEncoder?.setTexture(irradianceField.radianceMap!, index: 1)
         computeEncoder?.setTexture(irradianceField.specularMap!, index: 2)
+        computeEncoder?.setTexture(rayTracer?.reflectedPositions!, index: 3)
         computeEncoder?.setBytes(&s, length: MemoryLayout<ShadowUniforms>.stride, index: 0)
         computeEncoder?.setBytes(&lightProbeData, length: MemoryLayout<LightProbeData>.stride, index: 1)
         computeEncoder?.setBytes(&fragmentUniform, length: MemoryLayout<FragmentUniforms>.stride, index: 2)
@@ -493,6 +507,20 @@ extension Scene {
         computeEncoder?.dispatchThreadgroups(threadGroups,
                                              threadsPerThreadgroup: threadsPerGroup)
         computeEncoder?.endEncoding()
+        
+        computeEncoder = commandBuffer.makeComputeCommandEncoder()
+        computeEncoder?.label = "SSR compute"
+        computeEncoder?.setTexture(gBufferData.worldPos, index: TextureIndex.worldPos.rawValue)
+        computeEncoder?.setTexture(gBufferData.normal, index: TextureIndex.normal.rawValue)
+        computeEncoder?.setTexture(finalOutput, index: 1)
+        computeEncoder?.setTexture(renderTarget, index: 0)
+        computeEncoder?.setTexture(rayTracer?.reflectedPositions!, index: 3)
+        computeEncoder?.setBytes(&fragmentUniform, length: MemoryLayout<FragmentUniforms>.stride, index: 2)
+        computeEncoder?.setComputePipelineState(ssrComputePipeline)
+        computeEncoder?.dispatchThreadgroups(threadGroups,
+                                             threadsPerThreadgroup: threadsPerGroup)
+        computeEncoder?.endEncoding()
+        
     }
     
     func drawIrradianceMap(renderCommandEncoder: MTLRenderCommandEncoder?) {
@@ -547,6 +575,9 @@ struct FragmentUniforms {
     var depthBias: Float
     var ka: Float
     var kd: Float
+    var ks: Float
     var width: UInt32
     var height: UInt32
+    var P: Matrix4
+    var V: Matrix4
 };

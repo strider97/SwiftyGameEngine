@@ -1163,6 +1163,8 @@
 		72A765962686680B00E2B07D /* bathroomLowPoly.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 72A765922686680B00E2B07D /* bathroomLowPoly.mtl */; };
 		72A765972686680B00E2B07D /* sponzaLowPoly.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 72A765932686680B00E2B07D /* sponzaLowPoly.mtl */; };
 		72A765982686680B00E2B07D /* sponzaLowPoly.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72A765942686680B00E2B07D /* sponzaLowPoly.obj */; };
+		72AFA5FA26AC5361003C27A6 /* pillarRoomSmol.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 72AFA5F826AC5361003C27A6 /* pillarRoomSmol.mtl */; };
+		72AFA5FB26AC5361003C27A6 /* pillarRoomSmol.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72AFA5F926AC5361003C27A6 /* pillarRoomSmol.obj */; };
 		72B1C74D26A727D90078932B /* PointLight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72B1C74C26A727D90078932B /* PointLight.swift */; };
 		72C1736925DED90800B75C4D /* ring.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72C1736825DED90800B75C4D /* ring.usd */; };
 		72CBB801266E7B1D00D927F9 /* bigroom.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72CBB7FF266E7B1D00D927F9 /* bigroom.obj */; };
@@ -2396,6 +2398,8 @@
 		72A765922686680B00E2B07D /* bathroomLowPoly.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bathroomLowPoly.mtl; sourceTree = "<group>"; };
 		72A765932686680B00E2B07D /* sponzaLowPoly.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sponzaLowPoly.mtl; sourceTree = "<group>"; };
 		72A765942686680B00E2B07D /* sponzaLowPoly.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sponzaLowPoly.obj; sourceTree = "<group>"; };
+		72AFA5F826AC5361003C27A6 /* pillarRoomSmol.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = pillarRoomSmol.mtl; sourceTree = "<group>"; };
+		72AFA5F926AC5361003C27A6 /* pillarRoomSmol.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = pillarRoomSmol.obj; sourceTree = "<group>"; };
 		72B1C74C26A727D90078932B /* PointLight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointLight.swift; sourceTree = "<group>"; };
 		72C1736825DED90800B75C4D /* ring.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = ring.usd; path = "Basic Game Engine/Resources/teapot/ring.usd"; sourceTree = SOURCE_ROOT; };
 		72CBB7FF266E7B1D00D927F9 /* bigroom.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bigroom.obj; sourceTree = "<group>"; };
@@ -4018,6 +4022,8 @@
 		72E3999925BF0C8300927B17 /* models */ = {
 			isa = PBXGroup;
 			children = (
+				72AFA5F826AC5361003C27A6 /* pillarRoomSmol.mtl */,
+				72AFA5F926AC5361003C27A6 /* pillarRoomSmol.obj */,
 				721A4BCB26A8B33700727FA6 /* sibenik.mtl */,
 				721A4BCC26A8B33700727FA6 /* sibenik.obj */,
 				721A4B9C26A8A49C00727FA6 /* Dsponza.mtl */,
@@ -4279,6 +4285,7 @@
 				72294A60267E7EEF00B3E620 /* MASTER_Bistro_Main_Door_Specular.dds in Resources */,
 				72583FA1262266E000ADD5BD /* Sponza_Ceiling_diffuse.png in Resources */,
 				7216520125ED571E00511342 /* Arm_Normal.jpeg in Resources */,
+				72AFA5FB26AC5361003C27A6 /* pillarRoomSmol.obj in Resources */,
 				72294C19267E7EF000B3E620 /* curtainB1_BaseColor.dds in Resources */,
 				72294ACC267E7EEF00B3E620 /* NapkinHolder_BaseColor.dds in Resources */,
 				72294B2F267E7EEF00B3E620 /* Paris_Table_03_BaseColor.dds in Resources */,
@@ -4669,6 +4676,7 @@
 				7229471A267E263200B3E620 /* Wall_trim_roughness.png in Resources */,
 				721A4BCA26A8A4CF00727FA6 /* 01_STUB-bump.jpg in Resources */,
 				72294A81267E7EEF00B3E620 /* Vespa_Odometer_Specular.dds in Resources */,
+				72AFA5FA26AC5361003C27A6 /* pillarRoomSmol.mtl in Resources */,
 				72164FF325EA55F500511342 /* cerberus.mtl in Resources */,
 				7216508325EAE81200511342 /* denim_fabric_diff_2k.png in Resources */,
 				72294AC3267E7EEF00B3E620 /* Paris_CeilingFan_Emissive.dds in Resources */,
