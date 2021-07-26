@@ -527,10 +527,12 @@ kernel void ssrKernel(
                     constant FragmentUniform &uniforms [[buffer(2)]],
                     texture2d<float, access::sample> worldPos [[texture(rsmPos)]],
                     texture2d<float, access::sample> worldNormal [[texture(rsmNormal)]],
-                      depth2d<float, access::sample> depthTex [[texture(rsmDepth)]],
-                      texture2d<float, access::sample> outputTex [[texture(0)]],
+                    depth2d<float, access::sample> depthTex [[texture(rsmDepth)]],
+                    texture2d<float, access::sample> outputTex [[texture(0)]],
                     texture2d<float, access::sample> reflectedDepthMap [[texture(3)]],
-                      texture2d<float, access::write> finalOutput [[texture(1)]])
+                    texture2d<float, access::sample> reflectedColors [[texture(4)]],
+                    texture2d<float, access::sample> reflectedInShadow [[texture(5)]],
+                    texture2d<float, access::write> finalOutput [[texture(1)]])
 {
     float2 uv = float2(tid)/float2(uniforms.width, uniforms.height);
     float3 pos = worldPos.sample(s, uv).rgb;
@@ -543,7 +545,7 @@ kernel void ssrKernel(
     
     float3 v = normalize(uniforms.eye - pos);
     if (reflectedDepth >= 0.0 && dot(reflectedNormal, v) >= 0) {
-        float3 reflectedPosition = pos + reflect(-v, smoothN) * reflectedDepth;
+        float3 reflectedPosition = pos + 0.01 * smoothN + reflect(-v, smoothN) * reflectedDepth;
         float4 reflectedPosSS = uniforms.P * uniforms.V * float4(reflectedPosition, 1.0);
         reflectedPosSS /= reflectedPosSS.w;
         
@@ -557,8 +559,8 @@ kernel void ssrKernel(
         if (dReflected < depthR + 0.0005  && dReflected > 0) {
             bool2 inScreen = xy >=0.0 && xy <= 1.0;
             if (inScreen.r == inScreen.g) {
-                color += 0.2 * outputTex.sample(s, xy).rgb;
-                color = 1;
+            //    color += 0.2 * outputTex.sample(s, xy).rgb;
+            //    color = 1;
             }
         }
     }

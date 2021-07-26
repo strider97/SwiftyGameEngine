@@ -222,8 +222,8 @@ class Raytracer {
     }
 
     func createScene() {
-        loadAsset(name: "bigroom")
-        loadAsset(name: "bigroom", isIndirectScene: true)
+        loadAsset(name: "pillarRoom")
+        loadAsset(name: "pillarRoom", isIndirectScene: true)
     }
 
     func createBuffers() {

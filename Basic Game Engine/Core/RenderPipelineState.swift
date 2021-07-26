@@ -27,6 +27,7 @@ class GBufferData {
     var normal: MTLTexture
     var worldPos: MTLTexture
     var flux: MTLTexture
+    var inShadowReflected: MTLTexture
     var gBufferRenderPassDescriptor: MTLRenderPassDescriptor!
     var renderPipelineState: MTLRenderPipelineState?
 
@@ -35,6 +36,7 @@ class GBufferData {
         normal = Descriptor.build2DTexture(pixelFormat: .rgba8Snorm, size: size)
         worldPos = Descriptor.build2DTexture(pixelFormat: .rgba16Float, size: size)
         flux = Descriptor.build2DTexture(pixelFormat: .rgba8Unorm_srgb, size: size)
+        inShadowReflected = Descriptor.build2DTexture(pixelFormat: .rgba32Float, size: size)
         buildGBufferRenderPassDescriptor(size: size)
         buildGBufferPipelineState(fragmentFunction: fragmentFunction)
     }
@@ -44,6 +46,7 @@ class GBufferData {
         gBufferRenderPassDescriptor.setupColorAttachment(normal, 0)
         gBufferRenderPassDescriptor.setupColorAttachment(worldPos, 1)
         gBufferRenderPassDescriptor.setupColorAttachment(flux, 2)
+        gBufferRenderPassDescriptor.setupColorAttachment(inShadowReflected, 3)
         gBufferRenderPassDescriptor.setupDepthAttachment(texture: depth)
     }
 
@@ -52,6 +55,7 @@ class GBufferData {
         descriptor.colorAttachments[0].pixelFormat = .rgba8Snorm
         descriptor.colorAttachments[1].pixelFormat = .rgba16Float
         descriptor.colorAttachments[2].pixelFormat = .rgba8Unorm_srgb
+        descriptor.colorAttachments[3].pixelFormat = .rgba32Float
         descriptor.depthAttachmentPixelFormat = .depth32Float
 
         descriptor.vertexFunction = Device.sharedDevice.library!.makeFunction(name: "vertexRSM")

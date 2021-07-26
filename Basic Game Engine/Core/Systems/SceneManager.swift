@@ -281,6 +281,7 @@ extension Scene {
         gBufferCommandEncoder?.setCullMode(.front)
         gBufferCommandEncoder?.setDepthStencilState(depthStencilState)
         gBufferCommandEncoder?.setFragmentTexture(varianceShadowMap, index: 0)
+        gBufferCommandEncoder?.setFragmentTexture(rayTracer?.reflectedPositions, index: 1)
         drawGameObjects(renderCommandEncoder: gBufferCommandEncoder, renderPassType: .gBuffer)
         gBufferCommandEncoder?.endEncoding()
         rayTracer?.drawIndirectRays(normals: gBufferData.normal, positions: gBufferData.worldPos, commandBuffer: commandBuffer)
@@ -348,6 +349,11 @@ extension Scene {
                 if renderPassType == .shading || renderPassType == .gBuffer {
                     var s = ShadowUniforms(P: orthoGraphicP, V: shadowViewMatrix, sunDirection: sunDirection.normalized)
                     renderCommandEncoder?.setVertexBytes(&s, length: MemoryLayout<ShadowUniforms>.stride, index: 2)
+                    if renderPassType == .gBuffer {
+                        renderCommandEncoder?.setFragmentBytes(&s, length: MemoryLayout<ShadowUniforms>.stride, index: 2)
+                        var size = Float2(Float(size.width), Float(size.height))
+                        renderCommandEncoder?.setFragmentBytes(&size, length: MemoryLayout<Float2>.stride, index: 3)
+                    }
                 //    let irradianceField = rayTracer!.irradianceField!
                 //    var lightProbeData = LightProbeData(gridEdge: irradianceField.gridEdge, gridOrigin: irradianceField.origin, probeGridWidth: irradianceField.width, probeGridHeight: irradianceField.height, probeGridCount: Int3(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2))
                 //    renderCommandEncoder?.setFragmentBytes(&lightProbeData, length: MemoryLayout<LightProbeData>.stride, index: 2)
@@ -516,6 +522,8 @@ extension Scene {
         computeEncoder?.setTexture(finalOutput, index: 1)
         computeEncoder?.setTexture(renderTarget, index: 0)
         computeEncoder?.setTexture(rayTracer?.reflectedPositions!, index: 3)
+        computeEncoder?.setTexture(rayTracer?.reflectedColors!, index: 4)
+        computeEncoder?.setTexture(gBufferData.inShadowReflected, index: 5)
         computeEncoder?.setBytes(&fragmentUniform, length: MemoryLayout<FragmentUniforms>.stride, index: 2)
         computeEncoder?.setComputePipelineState(ssrComputePipeline)
         computeEncoder?.dispatchThreadgroups(threadGroups,

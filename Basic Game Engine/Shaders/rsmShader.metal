@@ -24,6 +24,7 @@ struct VertexOut {
     float2 uv;
     float3 tangent;
     float3 biTangent;
+    float3 eye;
 };
 
 enum {
@@ -63,7 +64,8 @@ struct GbufferOut {
     half4 normal [[ color(0) ]];
     float4 worldPos [[ color(1) ]];
     half4 flux [[ color(2) ]];
-    float depth [[ color(3)]];
+    float4 inShadowReflected [[ color(3) ]];
+    float depth [[ color(4)]];
 };
 
 struct Material {
@@ -90,7 +92,7 @@ float reduceLightBleeding(float p_max, float Amount) {
 }
 
 
-float insideShadow_(float4 fragPosLightSpace, float3 normal, texture2d<float, access::sample> shadowMap)
+float insideShadow_(float4 fragPosLightSpace, texture2d<float, access::sample> shadowMap)
 {
     // perform perspective divide
     float2 xy = fragPosLightSpace.xy;// / fragPosLightSpace.w;
@@ -137,24 +139,30 @@ vertex VertexOut vertexRSM(const VertexIn vIn [[ stage_in ]], constant Uniforms 
     vOut.lightFragPos = shadowUniforms.P * shadowUniforms.V * float4(lightFragPos, 1.0);
     vOut.tangent = vIn.tangent;
     vOut.biTangent = -cross(vIn.tangent, N);
+    vOut.eye = uniforms.eye;
     return vOut;
 }
 
 fragment GbufferOut fragmentRSMData (VertexOut vOut [[ stage_in ]],
                                      constant Material &material[[buffer(0)]],
+                                     constant ShadowUniforms &shadowUniforms [[buffer(2)]],
+                                     constant float2 &screenSize [[buffer(3)]],
                                      texture2d<float, access::sample> shadowMap [[texture(0)]],
+                                     texture2d<float, access::sample> reflectedDepthMap [[texture(1)]],
                                      texture2d<float, access::sample> baseColorTexture [[texture(textureIndexBaseColor)]],
                                      texture2d<float, access::sample> normalMapTexture [[texture(normalMap)]],
                                      texture2d<float, access::sample> roughnessTexture [[texture(textureIndexRoughness)]],
                                      texture2d<float, access::sample> metallicTexture [[texture(textureIndexMetallic)]],
                                      texture2d<float, access::sample> AO [[texture(ao)]]) {
     GbufferOut out;
-    float inShadow = insideShadow_(vOut.lightFragPos, vOut.smoothNormal, shadowMap);
+    float inShadow = insideShadow_(vOut.lightFragPos, shadowMap);
     float3 baseColor = baseColorTexture.sample(s, vOut.uv).rgb;
     baseColor *= material.baseColor;
 //    float4 normal = normalMapTexture.sample(s, vOut.uv);
     float roughness = roughnessTexture.sample(s, vOut.uv).r;
     float metallic = metallicTexture.sample(s, vOut.uv).r;
+    float2 uv = vOut.position.xy / screenSize;
+    float reflectedDepth = reflectedDepthMap.sample(s, uv).a;
     
     float3 tangentNormal = normalMapTexture.sample(s, vOut.uv).xyz * 2.0 - 1.0;
     float3x3 TBN(vOut.tangent, vOut.biTangent, vOut.smoothNormal);
@@ -162,9 +170,16 @@ fragment GbufferOut fragmentRSMData (VertexOut vOut [[ stage_in ]],
 //    float3 N = getNormalFromMap_(vOut.worldPos, vOut.smoothNormal, vOut.uv, tangentNormal);
     normal = vOut.smoothNormal;
 //    float4 ao = AO.sample(s, vOut.uv);
+    float3 pos = vOut.worldPos;
+    float3 v = normalize(vOut.eye - pos);
+    float4 reflectedPosition = float4(pos + 0.01 * normal + reflect(-v, normal) * reflectedDepth, 1);
+    float4 reflectedFragPos = shadowUniforms.P * shadowUniforms.V * reflectedPosition;
+    float inShadowReflected = insideShadow_(reflectedFragPos, shadowMap);
+    
     out.worldPos = float4(vOut.worldPos, roughness);
     out.normal = half4(normal.x, normal.y, normal.z, inShadow);
     out.flux = half4(baseColor.r, baseColor.g, baseColor.b, metallic);
+    out.inShadowReflected = float4(float3(inShadowReflected), 1.0);
     out.depth = vOut.position.z;
     return out;
 }
