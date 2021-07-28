@@ -321,7 +321,7 @@ kernel void accumulateRadianceKernel(constant Uniforms_ & uniforms,
 {
     float t = 0.033;
     int samples = uniforms.probeWidth * uniforms.probeHeight;
-    int radianceMapSize = 32;
+    int radianceMapSize = 16;
     int index = tid.x / radianceMapSize;
     uint2 texPos = indexToTexPos_(index, uniforms.probeGridWidth, uniforms.probeGridHeight);
     float2 uv = float2(tid.x % radianceMapSize, tid.y % radianceMapSize)/radianceMapSize;
@@ -333,17 +333,17 @@ kernel void accumulateRadianceKernel(constant Uniforms_ & uniforms,
         float3 rayDir = lightProbeTextureR.read(ushort3(texPos.x, texPos.y, i)).xyz;
         float3 col = lightProbeTextureG.read(ushort3(texPos.x, texPos.y, i)).rgb;
         color += saturate(dot(texelDir, rayDir)) * col;
-        if (dot(texelDir, rayDir) > 0.994) {
-            thisPixelDirCount += 1;
-            thisDirColor = (thisDirColor * (thisPixelDirCount - 1) + col)/thisPixelDirCount;
-        }
+//        if (dot(texelDir, rayDir) > 0.994) {
+//            thisPixelDirCount += 1;
+//            thisDirColor = (thisDirColor * (thisPixelDirCount - 1) + col)/thisPixelDirCount;
+//        }
     }
     color /= samples;
     uint2 texPosOcta = texPos * radianceMapSize + uint2(uv * float2(radianceMapSize));
     float3 prevColor = radianceMap.read(texPosOcta).rgb;
     radianceMap.write(float4(lerp(color, prevColor, t), index), texPosOcta);
-    float3 prevColorSpecular = specularMap.read(texPosOcta).rgb;
-    specularMap.write(float4(lerp(thisDirColor, prevColorSpecular, t), index), texPosOcta);
+//    float3 prevColorSpecular = specularMap.read(texPosOcta).rgb;
+//    specularMap.write(float4(lerp(thisDirColor, prevColorSpecular, t), index), texPosOcta);
 //    radianceMap.write(float4(texelDir, index), texPosOcta);
 }
 
@@ -384,7 +384,7 @@ fragment float4 lightProbeFragmentShader(VertexOut vOut [[stage_in]],
         color.b += max(0.0, aCap[i] * lightProbe.shCoeffB[i] * shCoeff[i]);
     }
     
-    int radianceMapSize = 32;
+    int radianceMapSize = 16;
     uint2 texPos = indexToTexPos_(index, 12, 8);
     float2 encodedUV = octEncode__(normal);
     float minimumUV = 1.0/radianceMapSize;

@@ -680,12 +680,16 @@ extension Raytracer {
     func loadAsset(name modelName: String, position: Float3 = [0, 0, 0], scale: Float = 1, isIndirectScene: Bool = false) {
         guard let url = Bundle.main.url(forResource: modelName, withExtension: "obj") else { return }
         let bufferAllocator_ = MTKMeshBufferAllocator(device: device)
-        let asset_ = MDLAsset(url: url, vertexDescriptor: Self.getMDLVertexDescriptor(), bufferAllocator: bufferAllocator_)
-        asset_.loadTextures()
+        let asset = MDLAsset(url: url, vertexDescriptor: Self.getMDLVertexDescriptor(), bufferAllocator: bufferAllocator_)
+        asset.loadTextures()
+        for sourceMesh in asset.childObjects(of: MDLMesh.self) as! [MDLMesh] {
+            sourceMesh.addNormals(withAttributeNamed: Constants.smoothNormal, creaseThreshold: 0.7)
+            sourceMesh.vertexDescriptor = Self.getMDLVertexDescriptor()
+        }
         var meshes: [MTKMesh]
         var meshesMDL: [MDLMesh]
         do {
-            try (meshesMDL, meshes) = MTKMesh.newMeshes(asset: asset_, device: device)
+            try (meshesMDL, meshes) = MTKMesh.newMeshes(asset: asset, device: device)
             //    allMeshes[modelName] = (meshesMDL, meshes)
         } catch let error as NSError {
             fatalError(error.description)
@@ -717,7 +721,7 @@ extension Raytracer {
                         }
                         if (isIndirectScene) {
                             verticesIndirectScene.append(vPosition)
-                            normalsIndirectScene.append(vertex.normal)
+                            normalsIndirectScene.append(vertex.smoothNormal)
                             colorsIndirectScene.append(color)
                         //    print(vPosition)
                         } else {
@@ -740,7 +744,8 @@ extension Raytracer {
         vertexDescriptor.attributes[0] = MDLVertexAttribute(name: MDLVertexAttributePosition, format: .float3, offset: 0, bufferIndex: 0)
         vertexDescriptor.attributes[1] = MDLVertexAttribute(name: MDLVertexAttributeNormal, format: .float3, offset: MemoryLayout<Float>.size * 3, bufferIndex: 0)
         vertexDescriptor.attributes[2] = MDLVertexAttribute(name: MDLVertexAttributeTextureCoordinate, format: .float2, offset: MemoryLayout<Float>.size * 6, bufferIndex: 0)
-        vertexDescriptor.layouts[0] = MDLVertexBufferLayout(stride: MemoryLayout<Float>.size * 8)
+        vertexDescriptor.attributes[3] = MDLVertexAttribute(name: Constants.smoothNormal, format: .float3, offset: MemoryLayout<Float>.size * 8, bufferIndex: 0)
+        vertexDescriptor.layouts[0] = MDLVertexBufferLayout(stride: MemoryLayout<Float>.size * 11)
         return vertexDescriptor
     }
 
@@ -748,6 +753,7 @@ extension Raytracer {
         var pos: Float3_
         var n: Float3_
         var tex: Float2_
+        var smoothN: Float3_
     }
 
     struct Float3_ {
@@ -769,5 +775,9 @@ extension Raytracer.VertexIn {
 
     var normal: Float3 {
         return Float3(n.x, n.y, n.z)
+    }
+    
+    var smoothNormal: Float3 {
+        return Float3(smoothN.x, smoothN.y, smoothN.z)
     }
 }

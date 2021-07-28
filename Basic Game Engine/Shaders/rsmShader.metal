@@ -92,7 +92,7 @@ float reduceLightBleeding(float p_max, float Amount) {
 }
 
 
-float insideShadow_(float4 fragPosLightSpace, texture2d<float, access::sample> shadowMap)
+float insideShadow_(float4 fragPosLightSpace, texture2d<float, access::sample> shadowMap, float depthBias)
 {
     // perform perspective divide
     float2 xy = fragPosLightSpace.xy;// / fragPosLightSpace.w;
@@ -109,7 +109,7 @@ float insideShadow_(float4 fragPosLightSpace, texture2d<float, access::sample> s
     float amount = 0.5;
     inShadow = reduceLightBleeding(inShadow, amount);
 //    inShadow *= inShadow;
-    return (currentDepth <= shadowMapDepth.x + 0.001) ? 1.0 : inShadow;
+    return (currentDepth <= shadowMapDepth.x + depthBias) ? 1.0 : inShadow;
 //    return inShadow;
 }
 
@@ -155,14 +155,16 @@ fragment GbufferOut fragmentRSMData (VertexOut vOut [[ stage_in ]],
                                      texture2d<float, access::sample> metallicTexture [[texture(textureIndexMetallic)]],
                                      texture2d<float, access::sample> AO [[texture(ao)]]) {
     GbufferOut out;
-    float inShadow = insideShadow_(vOut.lightFragPos, shadowMap);
+    float inShadow = insideShadow_(vOut.lightFragPos, shadowMap, 0.001);
     float3 baseColor = baseColorTexture.sample(s, vOut.uv).rgb;
     baseColor *= material.baseColor;
 //    float4 normal = normalMapTexture.sample(s, vOut.uv);
     float roughness = roughnessTexture.sample(s, vOut.uv).r;
     float metallic = metallicTexture.sample(s, vOut.uv).r;
     float2 uv = vOut.position.xy / screenSize;
-    float reflectedDepth = reflectedDepthMap.sample(s, uv).a;
+    float4 reflectedNormalDepth = reflectedDepthMap.sample(s, uv);
+    float reflectedDepth = reflectedNormalDepth.a;
+    float3 reflectedNormal = reflectedNormalDepth.xyz;
     
     float3 tangentNormal = normalMapTexture.sample(s, vOut.uv).xyz * 2.0 - 1.0;
     float3x3 TBN(vOut.tangent, vOut.biTangent, vOut.smoothNormal);
@@ -172,9 +174,10 @@ fragment GbufferOut fragmentRSMData (VertexOut vOut [[ stage_in ]],
 //    float4 ao = AO.sample(s, vOut.uv);
     float3 pos = vOut.worldPos;
     float3 v = normalize(vOut.eye - pos);
-    float4 reflectedPosition = float4(pos + 0.01 * normal + reflect(-v, normal) * reflectedDepth, 1);
+    float4 reflectedPosition = float4(pos + reflect(-v, normal) * reflectedDepth, 1);
+    reflectedPosition.xyz += 0.2 * reflectedNormal;
     float4 reflectedFragPos = shadowUniforms.P * shadowUniforms.V * reflectedPosition;
-    float inShadowReflected = insideShadow_(reflectedFragPos, shadowMap);
+    float inShadowReflected = insideShadow_(reflectedFragPos, shadowMap, 0.008);
     
     out.worldPos = float4(vOut.worldPos, roughness);
     out.normal = half4(normal.x, normal.y, normal.z, inShadow);

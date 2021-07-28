@@ -157,15 +157,15 @@ float3 fresnelSchlick(float3 F0, float cosTheta)
     return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
 }
 
-float2 Hammersley_(uint i, float numSamples) {
-    uint bits = i;
-    bits = (bits << 16) | (bits >> 16);
-    bits = ((bits & 0x55555555) << 1) | ((bits & 0xAAAAAAAA) >> 1);
-    bits = ((bits & 0x33333333) << 2) | ((bits & 0xCCCCCCCC) >> 2);
-    bits = ((bits & 0x0F0F0F0F) << 4) | ((bits & 0xF0F0F0F0) >> 4);
-    bits = ((bits & 0x00FF00FF) << 8) | ((bits & 0xFF00FF00) >> 8);
-    return float2(i / numSamples, bits / exp2(32.0));
-}
+//float2 Hammersley_(uint i, float numSamples) {
+//    uint bits = i;
+//    bits = (bits << 16) | (bits >> 16);
+//    bits = ((bits & 0x55555555) << 1) | ((bits & 0xAAAAAAAA) >> 1);
+//    bits = ((bits & 0x33333333) << 2) | ((bits & 0xCCCCCCCC) >> 2);
+//    bits = ((bits & 0x0F0F0F0F) << 4) | ((bits & 0xF0F0F0F0) >> 4);
+//    bits = ((bits & 0x00FF00FF) << 8) | ((bits & 0xFF00FF00) >> 8);
+//    return float2(i / numSamples, bits / exp2(32.0));
+//}
 
 int gridPosToProbeIndex_(float3 pos, LightProbeData probe) {
     float3 texPos_ = (pos - probe.gridOrigin)/probe.gridEdge;
@@ -361,18 +361,18 @@ float3 getDDGI(float3 position,
         float2 encodedUVSpecular = octEncode_(r);
         float minimumUV = 1.0/shadowProbeReso;
         encodedUV = max(minimumUV, min(1-minimumUV, encodedUV));
-        int radianceMapSize = 32;
+        int radianceMapSize = 16;
         minimumUV = 1.0/radianceMapSize;
         encodedUV_ = max(minimumUV, min(1-minimumUV, encodedUV_));
         encodedUVSpecular = max(minimumUV, min(1-minimumUV, encodedUVSpecular));
         
         float2 uv = (float2(texPos) + encodedUV)*float2(1.0/(probeCount.x * probeCount.y), 1.0/probeCount.z);
         float2 uv_ = (float2(texPos) + encodedUV_)*float2(1.0/(probeCount.x * probeCount.y), 1.0/probeCount.z);
-        float2 uvSpecular = (float2(texPos) + encodedUVSpecular)*float2(1.0/(probeCount.x * probeCount.y), 1.0/probeCount.z);
+    //    float2 uvSpecular = (float2(texPos) + encodedUVSpecular)*float2(1.0/(probeCount.x * probeCount.y), 1.0/probeCount.z);
         
         float4 d = octahedralMap.sample(s, uv);
         color_ = uniforms.ka * radianceMap.sample(s, uv_).rgb;
-        color_ += uniforms.ks * specularMap.sample(s, uvSpecular).rgb;
+    //    color_ += uniforms.ks * specularMap.sample(s, uvSpecular).rgb;
         
         float2 temp = d.rg;
         float mean = temp.x;
@@ -524,45 +524,47 @@ kernel void DefferedShadeKernel(uint2 tid [[thread_position_in_grid]],
 
 kernel void ssrKernel(
                     uint2 tid [[thread_position_in_grid]],
+                    constant ShadowUniforms &shadowUniforms [[buffer(0)]],
+                    constant LightProbeData &probe [[buffer(1)]],
                     constant FragmentUniform &uniforms [[buffer(2)]],
+                    device LightProbe *probes [[buffer(4)]],
                     texture2d<float, access::sample> worldPos [[texture(rsmPos)]],
                     texture2d<float, access::sample> worldNormal [[texture(rsmNormal)]],
                     depth2d<float, access::sample> depthTex [[texture(rsmDepth)]],
                     texture2d<float, access::sample> outputTex [[texture(0)]],
+                      texture2d<float, access::sample> octahedralMap[[texture(10)]],
+                      texture2d<float, access::sample> radianceMap[[texture(1)]],
+                      texture2d<float, access::sample> specularMap[[texture(2)]],
                     texture2d<float, access::sample> reflectedDepthMap [[texture(3)]],
                     texture2d<float, access::sample> reflectedColors [[texture(4)]],
-                    texture2d<float, access::sample> reflectedInShadow [[texture(5)]],
-                    texture2d<float, access::write> finalOutput [[texture(1)]])
+                    depth2d<float, access::sample> reflectedInShadow [[texture(5)]],
+                    texture2d<float, access::write> finalOutput [[texture(6)]])
 {
     float2 uv = float2(tid)/float2(uniforms.width, uniforms.height);
     float3 pos = worldPos.sample(s, uv).rgb;
     float4 normalShadow = worldNormal.sample(s, uv);
     float3 smoothN = normalShadow.xyz;
     float4 reflectedDepthAndNormal = reflectedDepthMap.sample(s, uv);
+    float3 reflectedAlbedo = reflectedColors.sample(s, uv).rgb;
+    float insideShadow = reflectedInShadow.sample(s, uv);
     float3 reflectedNormal = reflectedDepthAndNormal.xyz;
     float reflectedDepth = reflectedDepthAndNormal.a;
     float3 color = outputTex.sample(s, uv).rgb;
     
-    float3 v = normalize(uniforms.eye - pos);
-    if (reflectedDepth >= 0.0 && dot(reflectedNormal, v) >= 0) {
-        float3 reflectedPosition = pos + 0.01 * smoothN + reflect(-v, smoothN) * reflectedDepth;
-        float4 reflectedPosSS = uniforms.P * uniforms.V * float4(reflectedPosition, 1.0);
-        reflectedPosSS /= reflectedPosSS.w;
+    float3 ssrColor = 0;
+    
+    if (reflectedDepth < 0) {
+        color += uniforms.ks * float3(113, 164, 243)/255;
+    } else {
+        float3 v = normalize(uniforms.eye - pos);
+        float3 reflectedPosition = pos + reflect(-v, smoothN) * reflectedDepth;
+        float3 l = shadowUniforms.sunDirection;
+        float3 diffuse = insideShadow * 4.0 * reflectedAlbedo * saturate(dot(reflectedNormal, l));
+        float3 ambient = 0;
+        ambient = (getDDGI(reflectedPosition, reflectedNormal, 1.0, uniforms, probes, probe, octahedralMap, radianceMap, specularMap) + 0.0000);
+        ssrColor = uniforms.kd * diffuse + ambient * reflectedAlbedo;
         
-        float dReflected = reflectedPosSS.z;
-        
-        float2 xy = reflectedPosSS.xy;
-        xy = xy * 0.5 + 0.5;
-        xy.y = 1 - xy.y;
-        float depthR = depthTex.sample(s, xy);
-        
-        if (dReflected < depthR + 0.0005  && dReflected > 0) {
-            bool2 inScreen = xy >=0.0 && xy <= 1.0;
-            if (inScreen.r == inScreen.g) {
-            //    color += 0.2 * outputTex.sample(s, xy).rgb;
-            //    color = 1;
-            }
-        }
+        color += uniforms.ks * ssrColor;
     }
     float exposure = uniforms.exposure;
     color = 1 - exp(-color * exposure);

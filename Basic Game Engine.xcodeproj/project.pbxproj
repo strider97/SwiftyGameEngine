@@ -942,6 +942,8 @@
 		7244840C25C6F42300294331 /* SimpleScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7244840B25C6F42300294331 /* SimpleScene.swift */; };
 		724D4E7F26A6297500AC0902 /* sponzaOnly.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 724D4E7D26A6297500AC0902 /* sponzaOnly.mtl */; };
 		724D4E8026A6297500AC0902 /* sponzaOnly.obj in Resources */ = {isa = PBXBuildFile; fileRef = 724D4E7E26A6297500AC0902 /* sponzaOnly.obj */; };
+		724F84F526B0A84D000D0C88 /* PetrolPump.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 724F84F326B0A84D000D0C88 /* PetrolPump.mtl */; };
+		724F84F626B0A84D000D0C88 /* PetrolPump.obj in Resources */ = {isa = PBXBuildFile; fileRef = 724F84F426B0A84D000D0C88 /* PetrolPump.obj */; };
 		7254B21E267390580053B4F4 /* classroom.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 7254B21C267390580053B4F4 /* classroom.mtl */; };
 		7254B21F267390580053B4F4 /* classroom.obj in Resources */ = {isa = PBXBuildFile; fileRef = 7254B21D267390580053B4F4 /* classroom.obj */; };
 		7254B22526739BD70053B4F4 /* city.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 7254B22326739BD70053B4F4 /* city.mtl */; };
@@ -2177,6 +2179,8 @@
 		7244840B25C6F42300294331 /* SimpleScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleScene.swift; sourceTree = "<group>"; };
 		724D4E7D26A6297500AC0902 /* sponzaOnly.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sponzaOnly.mtl; sourceTree = "<group>"; };
 		724D4E7E26A6297500AC0902 /* sponzaOnly.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sponzaOnly.obj; sourceTree = "<group>"; };
+		724F84F326B0A84D000D0C88 /* PetrolPump.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PetrolPump.mtl; sourceTree = "<group>"; };
+		724F84F426B0A84D000D0C88 /* PetrolPump.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PetrolPump.obj; sourceTree = "<group>"; };
 		7254B21C267390580053B4F4 /* classroom.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = classroom.mtl; sourceTree = "<group>"; };
 		7254B21D267390580053B4F4 /* classroom.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = classroom.obj; sourceTree = "<group>"; };
 		7254B22326739BD70053B4F4 /* city.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = city.mtl; sourceTree = "<group>"; };
@@ -4022,6 +4026,8 @@
 		72E3999925BF0C8300927B17 /* models */ = {
 			isa = PBXGroup;
 			children = (
+				724F84F326B0A84D000D0C88 /* PetrolPump.mtl */,
+				724F84F426B0A84D000D0C88 /* PetrolPump.obj */,
 				72AFA5F826AC5361003C27A6 /* pillarRoomSmol.mtl */,
 				72AFA5F926AC5361003C27A6 /* pillarRoomSmol.obj */,
 				721A4BCB26A8B33700727FA6 /* sibenik.mtl */,
@@ -4610,6 +4616,7 @@
 				729B14F625D91AFF00129165 /* garden.hdr in Resources */,
 				7254FA452673BBC4000F5738 /* Alley_TopNet_tex.jpg in Resources */,
 				72294AF1267E7EEF00B3E620 /* NapkinHolder_Specular.dds in Resources */,
+				724F84F526B0A84D000D0C88 /* PetrolPump.mtl in Resources */,
 				721650CE25EAF75C00511342 /* ub1gfbwew_2K_AO.jpg in Resources */,
 				721650F225EAFC9100511342 /* uk0ocizfw_2K_Albedo.jpg in Resources */,
 				7254FA6B2673BBC4000F5738 /* Car_ToyotaTownace_tex.jpg in Resources */,
@@ -5394,6 +5401,7 @@
 				721651F425ED571E00511342 /* Accessoires_BaseColor.jpeg in Resources */,
 				72294A27267E7EEF00B3E620 /* Streetlight_Metal_Specular.dds in Resources */,
 				722949CB267E7EEF00B3E620 /* Paris_StringLights_01_Blue_Color_Emissive_Specular.dds in Resources */,
+				724F84F626B0A84D000D0C88 /* PetrolPump.obj in Resources */,
 				72294B56267E7EEF00B3E620 /* Paris_StringLights_01_Pink_Color_Normal.dds in Resources */,
 				72294BE8267E7EF000B3E620 /* MASTER_Frosted_Glass_Specular.dds in Resources */,
 				7274A87B25F8104D00F716AF /* ltc_mat2.hdr in Resources */,

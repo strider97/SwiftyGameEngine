@@ -22,7 +22,7 @@ struct Constants {
     static var probeCount: Int { Self.probeGrid.0 * Self.probeGrid.1 * Self.probeGrid.2 }
     static let probeReso = 16
     static let shadowProbeReso = 24;
-    static let radianceProbeReso = 32;
+    static let radianceProbeReso = 16;
     static let reflectedPositionsSize = CGSize(width: 900, height: 506)
     
     struct Labels {

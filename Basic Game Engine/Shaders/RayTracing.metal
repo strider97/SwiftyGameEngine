@@ -56,6 +56,7 @@ struct Intersection {
 
 constant float PI = 3.14159265;
 constexpr sampler s__(coord::normalized, address::repeat, filter::linear, mip_filter::linear);
+constexpr sampler s_(coord::normalized, address::repeat, filter::nearest, mip_filter::none);
 
 constant unsigned int primes[] = {
     2,   3,  5,  7,
@@ -416,7 +417,7 @@ float3 getDDGI_(float3 position,
         if (encodedUV.y > 1-minimumUV)
             encodedUV.y -= minimumUV;
         
-        int radianceMapSize = 32;
+        int radianceMapSize = 16;
         minimumUV = 1.0/radianceMapSize;
         if (encodedUV_.x < minimumUV)
             encodedUV_.x += minimumUV;
@@ -683,6 +684,39 @@ kernel void varianceShadowMapKernel(uint2 tid [[thread_position_in_grid]],
     }
 }
 
+float2 Hammersley_(uint i, float numSamples) {
+    uint bits = i;
+    bits = (bits << 16) | (bits >> 16);
+    bits = ((bits & 0x55555555) << 1) | ((bits & 0xAAAAAAAA) >> 1);
+    bits = ((bits & 0x33333333) << 2) | ((bits & 0xCCCCCCCC) >> 2);
+    bits = ((bits & 0x0F0F0F0F) << 4) | ((bits & 0xF0F0F0F0) >> 4);
+    bits = ((bits & 0x00FF00FF) << 8) | ((bits & 0xFF00FF00) >> 8);
+    return float2(i / numSamples, bits / exp2(32.0));
+}
+
+float3 ImportanceSampleGGX_(float2 Xi, float3 N, float roughness)
+{
+    float a = roughness*roughness;
+    
+    float phi = 2.0 * PI * Xi.x;
+    float cosTheta = sqrt((1.0 - Xi.y) / (1.0 + (a*a - 1.0) * Xi.y));
+    float sinTheta = sqrt(1.0 - cosTheta*cosTheta);
+    
+    // from spherical coordinates to cartesian coordinates - halfway vector
+    float3 H;
+    H.x = cos(phi) * sinTheta;
+    H.y = sin(phi) * sinTheta;
+    H.z = cosTheta;
+    
+    // from tangent-space H vector to world-space sample vector
+    float3 up          = abs(N.z) < 0.999 ? float3(0.0, 0.0, 1.0) : float3(1.0, 0.0, 0.0);
+    float3 tangent   = normalize(cross(up, N));
+    float3 bitangent = cross(N, tangent);
+    
+    float3 sampleVec = tangent * H.x + bitangent * H.y + N * H.z;
+    return normalize(sampleVec);
+}
+
 kernel void primaryRaysIndirectKernel(
                                 uint2 tid [[thread_position_in_grid]],
                                 device Ray *rays [[buffer(0)]],
@@ -698,14 +732,19 @@ kernel void primaryRaysIndirectKernel(
         device Ray & ray = rays[rayIdx];
         float eps = 0.01;
         float2 uv = (float2(tid))/float2(width, height);
-        float3 pos = positions.sample(s__, uv).xyz;
-        float3 normal = normalize(normals.sample(s__, uv).xyz);
+        float3 pos = positions.sample(s_, uv).xyz;
+        float3 normal = normalize(normals.sample(s_, uv).xyz);
+        
+        float roughness = 0.3;
+        float2 Xi = Hammersley_(rayIdx, width*height);
+        float3 H  = ImportanceSampleGGX_(Xi, normal, roughness);
+        
         float3 e = float3(eye->x, eye->y, eye->z);
         float3 v = normalize(pos - e);
         ray.origin = pos + eps * normal;
-        ray.direction = reflect(v, normal);
-        ray.minDistance = 0;
-        ray.maxDistance = 1000;
+        ray.direction = reflect(v, H);
+        ray.minDistance = 0.001;
+        ray.maxDistance = 100;
         reflectedPos.write(float4(normal, 1), tid);
     }
 }

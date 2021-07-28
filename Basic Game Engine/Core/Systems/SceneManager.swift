@@ -514,17 +514,24 @@ extension Scene {
                                              threadsPerThreadgroup: threadsPerGroup)
         computeEncoder?.endEncoding()
         
+        // SSR
         computeEncoder = commandBuffer.makeComputeCommandEncoder()
         computeEncoder?.label = "SSR compute"
         computeEncoder?.setTexture(gBufferData.worldPos, index: TextureIndex.worldPos.rawValue)
         computeEncoder?.setTexture(gBufferData.normal, index: TextureIndex.normal.rawValue)
         computeEncoder?.setTexture(gBufferData.depth, index: TextureIndex.depth.rawValue)
-        computeEncoder?.setTexture(finalOutput, index: 1)
+        computeEncoder?.setTexture(finalOutput, index: 6)
         computeEncoder?.setTexture(renderTarget, index: 0)
         computeEncoder?.setTexture(rayTracer?.reflectedPositions!, index: 3)
         computeEncoder?.setTexture(rayTracer?.reflectedColors!, index: 4)
         computeEncoder?.setTexture(gBufferData.inShadowReflected, index: 5)
+        computeEncoder?.setTexture(irradianceField.depthMap!, index: 10)
+        computeEncoder?.setTexture(irradianceField.radianceMap!, index: 1)
+        computeEncoder?.setTexture(irradianceField.specularMap!, index: 2)
+        computeEncoder?.setBytes(&s, length: MemoryLayout<ShadowUniforms>.stride, index: 0)
         computeEncoder?.setBytes(&fragmentUniform, length: MemoryLayout<FragmentUniforms>.stride, index: 2)
+        computeEncoder?.setBytes(&lightProbeData, length: MemoryLayout<LightProbeData>.stride, index: 1)
+        computeEncoder?.setBuffer(irradianceField.probes, offset: 0, index: 4)
         computeEncoder?.setComputePipelineState(ssrComputePipeline)
         computeEncoder?.dispatchThreadgroups(threadGroups,
                                              threadsPerThreadgroup: threadsPerGroup)
