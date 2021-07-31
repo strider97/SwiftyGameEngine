@@ -617,26 +617,7 @@ kernel void accumulateShadowKernel(uint2 tid [[thread_position_in_grid]],
         
         for(int i = startI.x; i<endI.x; i++) {
             for(int j = startI.y; j<endI.y; j++) {
-//                int i_ = i;
-//                int j_ = j;
-//                if(j<y && j%shadowProbeReso > y%shadowProbeReso) {
-//                    j_ = j + shadowProbeReso;
-//                }
-//                if(j>y && j%shadowProbeReso < y%shadowProbeReso) {
-//                    j_ = j - shadowProbeReso;
-//                }
-//                if(i<x && i%shadowProbeReso > x%shadowProbeReso) {
-//                    i_ = i + shadowProbeReso;
-//                }
-//                if(i>x && i%shadowProbeReso < x%shadowProbeReso) {
-//                    i_ = i - shadowProbeReso;
-//                }
-                    
                 float4 d = octahedralMap.read(ushort2(i, j));
-//                if (d.a == 0) {
-//                    sum += 1000;
-//                    sumSquare += 1000000;
-//                } else {
                     sum += d.x;
                     sumSquare += d.y;
 //                }
@@ -694,6 +675,28 @@ float2 Hammersley_(uint i, float numSamples) {
     return float2(i / numSamples, bits / exp2(32.0));
 }
 
+float Halton(int b, int i)
+{
+    float r = 0.0;
+    float f = 1.0;
+    while (i > 0) {
+        f = f / float(b);
+        r = r + f * float(i % b);
+        i = int(floor(float(i) / float(b)));
+    }
+    return r;
+}
+
+float Halton2(int i)
+{
+    return float(reverse_bits(uint(i)))/4294967296.0;
+}
+
+float2 Halton23(int i)
+{
+    return float2(Halton2(i), Halton(3, i));
+}
+
 float3 ImportanceSampleGGX_(float2 Xi, float3 N, float roughness)
 {
     float a = roughness*roughness;
@@ -719,6 +722,7 @@ float3 ImportanceSampleGGX_(float2 Xi, float3 N, float roughness)
 
 kernel void primaryRaysIndirectKernel(
                                 uint2 tid [[thread_position_in_grid]],
+                                constant Uniforms_ & uniforms [[buffer(2)]],
                                 device Ray *rays [[buffer(0)]],
                                 constant float3 *eye[[buffer(1)]],
                                 texture2d<float, access::sample> normals [[texture(0)]],
@@ -734,15 +738,28 @@ kernel void primaryRaysIndirectKernel(
         float2 uv = (float2(tid))/float2(width, height);
         float3 pos = positions.sample(s_, uv).xyz;
         float3 normal = normalize(normals.sample(s_, uv).xyz);
-        
-        float roughness = 0.3;
-        float2 Xi = Hammersley_(rayIdx, width*height);
-        float3 H  = ImportanceSampleGGX_(Xi, normal, roughness);
-        
         float3 e = float3(eye->x, eye->y, eye->z);
         float3 v = normalize(pos - e);
+        
+        float roughness = max(0.00001, uniforms.roughness.x);
+   //     uint largeN = width * height * 100;
+   //     float2 Xi = Hammersley_(rayIdx * uniforms.frameIndex % largeN, largeN);
+   //     float2 Xi = Hammersley_(rayIdx + 1, width * height);
+        float2 Xi = Halton23(rayIdx);
+        float3 H  = ImportanceSampleGGX_(Xi, normal, roughness);
+        float3 r = reflect(v, H);
+        float dotRN = dot(normal, r);
+        uint numCalcs = 1;
+        while (dotRN < 0 && numCalcs < 1) {
+            numCalcs += 1;
+            Xi = Halton23((rayIdx+1)*numCalcs);
+            H  = ImportanceSampleGGX_(Xi, normal, roughness);
+            r = reflect(v, H);
+            dotRN = dot(normal, r);
+        }
+        
         ray.origin = pos + eps * normal;
-        ray.direction = reflect(v, H);
+        ray.direction = r;
         ray.minDistance = 0.001;
         ray.maxDistance = 100;
         reflectedPos.write(float4(normal, 1), tid);

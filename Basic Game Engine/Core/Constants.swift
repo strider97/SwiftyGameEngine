@@ -23,7 +23,7 @@ struct Constants {
     static let probeReso = 16
     static let shadowProbeReso = 24;
     static let radianceProbeReso = 16;
-    static let reflectedPositionsSize = CGSize(width: 900, height: 506)
+    static var reflectedPositionsSize = CGSize(width: 900, height: 506)
     
     struct Labels {
         static let normalBias = "normalBias"
@@ -32,5 +32,6 @@ struct Constants {
         static let ka = "ka"
         static let kd = "kd"
         static let ks = "ks"
+        static let roughness = "roughness"
     }
 }

@@ -80,6 +80,7 @@ struct Uniforms_
     int probeGridWidth;
     int probeGridHeight;
     struct LightProbeData_ probeData;
+    vector_float2 roughness;
 };
 
 struct LightProbe {

@@ -128,6 +128,7 @@ extension Scene: MTKViewDelegate {
         renderTarget = device!.makeTexture(descriptor: renderTargetDescriptor)
         //     rayTracer?.mtkView(view, drawableSizeWillChange: CGSize(width: Constants.probeReso * Constants.probeCount, height: Constants.probeReso * Constants.probeCount))
         finalOutput = Descriptor.build2DTextureForWrite(pixelFormat: .rgba32Float, size: size, label: "Final output", mipmapped: false, shaderWrite: true)
+        Constants.reflectedPositionsSize = CGSize(width: size.width/2, height: size.height/2)
         rayTracer?.mtkView(view, drawableSizeWillChange: CGSize(width: Constants.probeCount * Constants.probeReso, height: Constants.probeReso))
     }
 

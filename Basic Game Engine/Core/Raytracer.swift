@@ -54,7 +54,7 @@ class Raytracer {
         + 4 * MemoryLayout<Float3>.stride// + MemoryLayout<Int32>.stride
 
     let maxFramesInFlight = 3
-    let alignedUniformsSize = (MemoryLayout<Uniforms>.size + 255) & ~255
+    let alignedUniformsSize = (MemoryLayout<Uniforms_>.size + 255) & ~255
     var semaphore: DispatchSemaphore!
     var size = CGSize.zero
     var randomBufferOffset = 0
@@ -290,7 +290,7 @@ class Raytracer {
         lightProbe.gridEdge = irradianceField.gridEdge
         lightProbe.gridOrigin = irradianceField.origin
         lightProbe.probeCount = SIMD3<Int32>(Int32(Constants.probeGrid.0), Int32(Constants.probeGrid.1), Int32(Constants.probeGrid.2))
-
+        uniforms.pointee.roughness = Float2(scene.uniformSliders[Constants.Labels.roughness]!.floatValue, 0)
         uniforms.pointee.camera = camera
         uniforms.pointee.light = light
         uniforms.pointee.sunDirection = scene.sunDirection.normalized
@@ -489,6 +489,8 @@ extension Raytracer {
         computeEncoder?.label = "Generate Indirect Rays"
         computeEncoder?.setBuffer(indirectRaybuffer, offset: 0, index: 0)
         computeEncoder?.setBytes(&eye, length: MemoryLayout<Float3>.stride, index: 1)
+        computeEncoder?.setBuffer(uniformBuffer, offset: uniformBufferOffset,
+                                  index: 2)
         computeEncoder?.setTexture(normals, index: 0)
         computeEncoder?.setTexture(positions, index: 1)
         computeEncoder?.setTexture(reflectedPositions, index: 2)

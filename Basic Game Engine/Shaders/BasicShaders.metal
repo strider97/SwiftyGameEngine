@@ -522,6 +522,10 @@ kernel void DefferedShadeKernel(uint2 tid [[thread_position_in_grid]],
     }
 }
 
+float3 lerp3(float3 a, float3 b, float t) {
+    return a*t + b*(1-t);
+}
+
 kernel void ssrKernel(
                     uint2 tid [[thread_position_in_grid]],
                     constant ShadowUniforms &shadowUniforms [[buffer(0)]],
@@ -538,7 +542,7 @@ kernel void ssrKernel(
                     texture2d<float, access::sample> reflectedDepthMap [[texture(3)]],
                     texture2d<float, access::sample> reflectedColors [[texture(4)]],
                     depth2d<float, access::sample> reflectedInShadow [[texture(5)]],
-                    texture2d<float, access::write> finalOutput [[texture(6)]])
+                    texture2d<float, access::read_write> finalOutput [[texture(6)]])
 {
     float2 uv = float2(tid)/float2(uniforms.width, uniforms.height);
     float3 pos = worldPos.sample(s, uv).rgb;
@@ -571,6 +575,8 @@ kernel void ssrKernel(
     color = pow(color, float3(1.0/2.2));
 //    color = float3(depth, dReflected, depthR);
 //    color = reflectedPosSS.xyz;
+//    float3 prevColor = finalOutput.read(tid).rgb;
+//    finalOutput.write(float4(lerp3(color, prevColor, 1.0/8), 1), tid);
     finalOutput.write(float4(color, 1), tid);
 }
 

@@ -15,6 +15,7 @@ class GameView: MTKView {
     @IBOutlet var kaSlider: NSSlider!
     @IBOutlet var kdSlider: NSSlider!
     @IBOutlet var ksSlider: NSSlider!
+    @IBOutlet var roughnessSlider: NSSlider!
     @IBOutlet var showLightProbes: NSButton!
     
     var currentScene: Scene!
@@ -45,6 +46,7 @@ class GameView: MTKView {
             Constants.Labels.ka: kaSlider,
             Constants.Labels.kd: kdSlider,
             Constants.Labels.ks: ksSlider,
+            Constants.Labels.roughness: roughnessSlider,
         ]
     }
     
