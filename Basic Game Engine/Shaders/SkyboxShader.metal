@@ -142,11 +142,11 @@ float3 prefilterEnvMap_(float Roughness, float3 R, texture2d<float, access::samp
             // https://chetanjags.wordpress.com/2015/08/26/image-based-lighting/
             
             float D             = NormalDistributionGGX(NdotH, roughness2);
-            float pdf           = (D * NdotH / (4.0 * HdotV)) + 0.0001; // Propability density function
+            float pdf           = max(0.0001, (D * NdotH / (4.0 * HdotV))); // Propability density function
             
             float resolution    = baseColorTexture.get_width(); // Resolution of source cubemap (per face)
             float saTexel       = 4.0 * PI / (6.0 * resolution * resolution);
-            float saSample      = 1.0 / (float(kSampleCount) * pdf + 0.0001);
+            float saSample      = 1.0 / (float(kSampleCount) * pdf);
             
             float mipLevel      = Roughness == 0.0 ? 0.0 : 0.5 * log2(saSample / saTexel);
             

@@ -26,6 +26,7 @@ class Raytracer {
     var varianceShadowMapPipeline: MTLComputePipelineState!
     var accumulationTarget: MTLTexture!
     var reflectedPositions: MTLTexture!
+    var reflectedDir: MTLTexture!
     var reflectedColors: MTLTexture!
     var accelerationStructure: MPSTriangleAccelerationStructure!
     var indirectAccelerationStructure: MPSTriangleAccelerationStructure!
@@ -336,6 +337,7 @@ extension Raytracer {
         accumulationTarget = device.makeTexture(
             descriptor: renderTargetDescriptor)
         reflectedPositions = Descriptor.build2DTextureForWrite(pixelFormat: .rgba32Float, size: Constants.reflectedPositionsSize, label: "Reflected positions", shaderWrite: true)
+        reflectedDir = Descriptor.build2DTextureForWrite(pixelFormat: .rgba32Float, size: Constants.reflectedPositionsSize, label: "Reflected directions", shaderWrite: true)
         reflectedColors = Descriptor.build2DTextureForWrite(pixelFormat: .rgba16Float, size: Constants.reflectedPositionsSize, label: "Reflected colors", shaderWrite: true)
         intersectionBuffer = device.makeBuffer(
             length: intersectionStride * rayCount,
@@ -418,61 +420,6 @@ extension Raytracer {
         computeEncoder?.endEncoding()
     }
     
-//    func drawIndirectRays(normals: MTLTexture, positions: MTLTexture, commandBuffer: MTLCommandBuffer?) {
-//
-//        let width = reflectedPositions.width
-//        let height = reflectedPositions.height
-//        guard let commandBuffer = commandBuffer else {
-//            return
-//        }
-//        let threadsPerGroup = MTLSizeMake(16, 16, 1)
-//        let threadGroups = MTLSizeMake(
-//            (width + threadsPerGroup.width - 1) / threadsPerGroup.width,
-//            (height + threadsPerGroup.height - 1) / threadsPerGroup.height, 1
-//        )
-//        var computeEncoder = commandBuffer.makeComputeCommandEncoder()
-//        var eye = scene.camera.position
-//        computeEncoder?.label = "Generate Indirect Rays"
-//        computeEncoder?.setBuffer(indirectRaybuffer, offset: 0, index: 0)
-//        computeEncoder?.setBytes(&eye, length: MemoryLayout<Float3>.stride, index: 1)
-//        computeEncoder?.setTexture(normals, index: 0)
-//        computeEncoder?.setTexture(positions, index: 1)
-//        computeEncoder?.setTexture(reflectedPositions, index: 2)
-//        computeEncoder?.setComputePipelineState(indirectRayPipeline)
-//        computeEncoder?.dispatchThreadgroups(threadGroups,
-//                                             threadsPerThreadgroup: threadsPerGroup)
-//        computeEncoder?.endEncoding()
-//
-//        // MARK: intersections
-//
-//        intersector?.label = "Shadows Intersector"
-//        intersector?.intersectionDataType = .distance
-//        intersector?.encodeIntersection(
-//            commandBuffer: commandBuffer,
-//            intersectionType: .any,
-//            rayBuffer: indirectRaybuffer,
-//            rayBufferOffset: 0,
-//            intersectionBuffer: indirectIntersectionBuffer,
-//            intersectionBufferOffset: 0,
-//            rayCount: width * height,
-//            accelerationStructure: indirectAccelerationStructure
-//        )
-//
-//        // MARK: set positions
-//
-//        computeEncoder = commandBuffer.makeComputeCommandEncoder()
-//        computeEncoder?.label = "Set positions"
-//        computeEncoder?.setBuffer(indirectRaybuffer, offset: 0, index: 0)
-//        computeEncoder?.setBuffer(indirectIntersectionBuffer, offset: 0, index: 1)
-//        computeEncoder?.setTexture(reflectedPositions, index: 0)
-//        computeEncoder?.setComputePipelineState(indirectIntersectionsPipeline!)
-//        computeEncoder?.dispatchThreadgroups(
-//            threadGroups,
-//            threadsPerThreadgroup: threadsPerGroup
-//        )
-//        computeEncoder?.endEncoding()
-//    }
-    
     func drawIndirectRays(normals: MTLTexture, positions: MTLTexture, commandBuffer: MTLCommandBuffer?) {
         let width = reflectedPositions.width
         let height = reflectedPositions.height
@@ -493,7 +440,7 @@ extension Raytracer {
                                   index: 2)
         computeEncoder?.setTexture(normals, index: 0)
         computeEncoder?.setTexture(positions, index: 1)
-        computeEncoder?.setTexture(reflectedPositions, index: 2)
+        computeEncoder?.setTexture(reflectedDir, index: 2)
         computeEncoder?.setComputePipelineState(indirectRayPipeline)
         computeEncoder?.dispatchThreadgroups(threadGroups,
                                              threadsPerThreadgroup: threadsPerGroup)

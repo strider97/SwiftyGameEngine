@@ -76,6 +76,7 @@ struct Material {
 };
 
 constexpr sampler s(coord::normalized, address::repeat, filter::linear, mip_filter::linear);
+constexpr sampler s_(coord::normalized, address::repeat, filter::nearest, mip_filter::linear);
 
 float linearize_depth_(float depth) {
     float near = 0.01;
@@ -149,6 +150,7 @@ fragment GbufferOut fragmentRSMData (VertexOut vOut [[ stage_in ]],
                                      constant float2 &screenSize [[buffer(3)]],
                                      texture2d<float, access::sample> shadowMap [[texture(0)]],
                                      texture2d<float, access::sample> reflectedDepthMap [[texture(1)]],
+                                     texture2d<float, access::sample> reflectedDirectionMap [[texture(2)]],
                                      texture2d<float, access::sample> baseColorTexture [[texture(textureIndexBaseColor)]],
                                      texture2d<float, access::sample> normalMapTexture [[texture(normalMap)]],
                                      texture2d<float, access::sample> roughnessTexture [[texture(textureIndexRoughness)]],
@@ -159,10 +161,13 @@ fragment GbufferOut fragmentRSMData (VertexOut vOut [[ stage_in ]],
     float3 baseColor = baseColorTexture.sample(s, vOut.uv).rgb;
     baseColor *= material.baseColor;
 //    float4 normal = normalMapTexture.sample(s, vOut.uv);
-    float roughness = roughnessTexture.sample(s, vOut.uv).r;
-    float metallic = metallicTexture.sample(s, vOut.uv).r;
+//    float roughness = roughnessTexture.sample(s, vOut.uv).r;
+//    float metallic = metallicTexture.sample(s, vOut.uv).r;
+    float roughness = material.roughness;
+    float metallic = material.metallic;
     float2 uv = vOut.position.xy / screenSize;
-    float4 reflectedNormalDepth = reflectedDepthMap.sample(s, uv);
+    float4 reflectedNormalDepth = reflectedDepthMap.sample(s_, uv);
+    float3 reflectedDir = reflectedDirectionMap.sample(s_, uv).xyz;
     float reflectedDepth = reflectedNormalDepth.a;
     float3 reflectedNormal = reflectedNormalDepth.xyz;
     
@@ -173,8 +178,8 @@ fragment GbufferOut fragmentRSMData (VertexOut vOut [[ stage_in ]],
     normal = vOut.smoothNormal;
 //    float4 ao = AO.sample(s, vOut.uv);
     float3 pos = vOut.worldPos;
-    float3 v = normalize(vOut.eye - pos);
-    float4 reflectedPosition = float4(pos + reflect(-v, normal) * reflectedDepth, 1);
+//    float3 v = normalize(vOut.eye - pos);
+    float4 reflectedPosition = float4(pos + reflectedDir * reflectedDepth, 1);
     reflectedPosition.xyz += 0.2 * reflectedNormal;
     float4 reflectedFragPos = shadowUniforms.P * shadowUniforms.V * reflectedPosition;
     float inShadowReflected = insideShadow_(reflectedFragPos, shadowMap, 0.008);
@@ -182,7 +187,7 @@ fragment GbufferOut fragmentRSMData (VertexOut vOut [[ stage_in ]],
     out.worldPos = float4(vOut.worldPos, roughness);
     out.normal = half4(normal.x, normal.y, normal.z, inShadow);
     out.flux = half4(baseColor.r, baseColor.g, baseColor.b, metallic);
-    out.inShadowReflected = float4(float3(inShadowReflected), 1.0);
+    out.inShadowReflected = float4(float3(inShadowReflected), metallic);
     out.depth = vOut.position.z;
     return out;
 }

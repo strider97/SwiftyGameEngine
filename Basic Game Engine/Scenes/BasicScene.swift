@@ -41,7 +41,7 @@ class BasicScene: Scene {
     override func addPhysics() {}
 
     override func getSkybox() -> Skybox {
-        return Skybox(textureName: "room")
+        return Skybox(textureName: "park_green")
     }
 
     override func addBehaviour() {

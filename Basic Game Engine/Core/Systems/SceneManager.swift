@@ -71,9 +71,11 @@ class Scene: NSObject {
     var frame = 0
     var size: CGSize!
     var computePipeline: MTLComputePipelineState!
-    var ssrComputePipeline: MTLComputePipelineState!
+    var reflectionComputePipeline: MTLComputePipelineState!
+    var denoiseReflectionPipeline: MTLComputePipelineState!
     var renderTarget: MTLTexture!
-    var finalOutput: MTLTexture!
+    var reflectionOutput: MTLTexture!
+    var denoisedReflectionOutput: MTLTexture!
     var randomKernelAndNoise: [Float3] = []
     let randomKernelSize = 64 + 16
 
@@ -127,8 +129,10 @@ extension Scene: MTKViewDelegate {
         gBufferData = GBufferData(size: size)
         renderTarget = device!.makeTexture(descriptor: renderTargetDescriptor)
         //     rayTracer?.mtkView(view, drawableSizeWillChange: CGSize(width: Constants.probeReso * Constants.probeCount, height: Constants.probeReso * Constants.probeCount))
-        finalOutput = Descriptor.build2DTextureForWrite(pixelFormat: .rgba32Float, size: size, label: "Final output", mipmapped: false, shaderWrite: true)
-        Constants.reflectedPositionsSize = CGSize(width: size.width/2, height: size.height/2)
+        let reflectionSize = CGSize(width: size.width/2, height: size.height/2)
+        Constants.reflectedPositionsSize = reflectionSize
+        reflectionOutput = Descriptor.build2DTextureForWrite(pixelFormat: .rgba16Float, size: reflectionSize, label: "Reflection output", mipmapped: false, shaderWrite: true)
+        denoisedReflectionOutput = Descriptor.build2DTextureForWrite(pixelFormat: .rgba16Float, size: reflectionSize, label: "Denoised reflection output", mipmapped: false, shaderWrite: true)
         rayTracer?.mtkView(view, drawableSizeWillChange: CGSize(width: Constants.probeCount * Constants.probeReso, height: Constants.probeReso))
     }
 
@@ -187,8 +191,16 @@ extension Scene {
                 )
             
             computeDescriptor.computeFunction = Device.sharedDevice.library!.makeFunction(
-                name: "ssrKernel")
-            ssrComputePipeline = try device!.makeComputePipelineState(
+                name: "reflectionKernel")
+            reflectionComputePipeline = try device!.makeComputePipelineState(
+                descriptor: computeDescriptor,
+                options: [],
+                reflection: nil
+            )
+            
+            computeDescriptor.computeFunction = Device.sharedDevice.library!.makeFunction(
+                name: "denoiseReflectionKernel")
+            denoiseReflectionPipeline = try device!.makeComputePipelineState(
                 descriptor: computeDescriptor,
                 options: [],
                 reflection: nil
@@ -283,6 +295,7 @@ extension Scene {
         gBufferCommandEncoder?.setDepthStencilState(depthStencilState)
         gBufferCommandEncoder?.setFragmentTexture(varianceShadowMap, index: 0)
         gBufferCommandEncoder?.setFragmentTexture(rayTracer?.reflectedPositions, index: 1)
+        gBufferCommandEncoder?.setFragmentTexture(rayTracer?.reflectedDir, index: 2)
         drawGameObjects(renderCommandEncoder: gBufferCommandEncoder, renderPassType: .gBuffer)
         gBufferCommandEncoder?.endEncoding()
         rayTracer?.drawIndirectRays(normals: gBufferData.normal, positions: gBufferData.worldPos, commandBuffer: commandBuffer)
@@ -456,6 +469,18 @@ extension Scene {
     }
     
     func drawDefferedRender(renderCommandEncoder: MTLRenderCommandEncoder?) {
+        var fragmentUniform = FragmentUniforms(eye: camera.position,
+            exposure: uniformSliders[Constants.Labels.exposure]!.floatValue,
+            normalBias: uniformSliders[Constants.Labels.normalBias]!.floatValue,
+            depthBias: uniformSliders[Constants.Labels.depthBias]!.floatValue,
+            ka: uniformSliders[Constants.Labels.ka]!.floatValue,
+            kd: uniformSliders[Constants.Labels.kd]!.floatValue,
+            ks: uniformSliders[Constants.Labels.ks]!.floatValue,
+            width: UInt32(size.width),
+            height: UInt32(size.height),
+            P: P,
+            V: camera.lookAtMatrix
+        )
         renderCommandEncoder?.setRenderPipelineState(deferredRenderPipelineState)
         renderCommandEncoder?.setVertexBuffer(dfgLut.vertexBuffer, offset: 0, index: 0)
 //        let irradianceField = rayTracer!.irradianceField!
@@ -465,17 +490,19 @@ extension Scene {
 //        renderCommandEncoder?.setFragmentBytes(&s, length: MemoryLayout<ShadowUniforms>.stride, index: 0)
 //        renderCommandEncoder?.setFragmentBytes(&lightProbeData, length: MemoryLayout<LightProbeData>.stride, index: 1)
 //        renderCommandEncoder?.setFragmentBytes(&fragmentUniform, length: MemoryLayout<FragmentUniforms>.stride, index: 2)
-        renderCommandEncoder?.setFragmentTexture(finalOutput, index: 0)
+        renderCommandEncoder?.setFragmentTexture(renderTarget, index: 0)
+        renderCommandEncoder?.setFragmentTexture(denoisedReflectionOutput, index: 1)
+        renderCommandEncoder?.setFragmentBytes(&fragmentUniform, length: MemoryLayout<FragmentUniforms>.stride, index: 0)
         renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6)
     }
 
     func drawDefferedRenderCompute(commandBuffer: MTLCommandBuffer) {
         var computeEncoder = commandBuffer.makeComputeCommandEncoder()
         computeEncoder?.label = "Deferred compute"
-        let width = Int(size.width)
-        let height = Int(size.height)
-        let threadsPerGroup = MTLSizeMake(16, 16, 1)
-        let threadGroups = MTLSizeMake(
+        var width = Int(size.width)
+        var height = Int(size.height)
+        var threadsPerGroup = MTLSizeMake(16, 16, 1)
+        var threadGroups = MTLSizeMake(
             (width + threadsPerGroup.width - 1) / threadsPerGroup.width,
             (height + threadsPerGroup.height - 1) / threadsPerGroup.height, 1
         )
@@ -515,13 +542,21 @@ extension Scene {
                                              threadsPerThreadgroup: threadsPerGroup)
         computeEncoder?.endEncoding()
         
-        // SSR
+        //MARK: Reflection Compute
+        width = Int(Constants.reflectedPositionsSize.width)
+        height = Int(Constants.reflectedPositionsSize.height)
+        threadsPerGroup = MTLSizeMake(16, 16, 1)
+        threadGroups = MTLSizeMake(
+        (width + threadsPerGroup.width - 1) / threadsPerGroup.width,
+        (height + threadsPerGroup.height - 1) / threadsPerGroup.height, 1
+        )
         computeEncoder = commandBuffer.makeComputeCommandEncoder()
-        computeEncoder?.label = "SSR compute"
+        computeEncoder?.label = "Reflection compute"
         computeEncoder?.setTexture(gBufferData.worldPos, index: TextureIndex.worldPos.rawValue)
         computeEncoder?.setTexture(gBufferData.normal, index: TextureIndex.normal.rawValue)
+        computeEncoder?.setTexture(gBufferData.flux, index: TextureIndex.flux.rawValue)
         computeEncoder?.setTexture(gBufferData.depth, index: TextureIndex.depth.rawValue)
-        computeEncoder?.setTexture(finalOutput, index: 6)
+        computeEncoder?.setTexture(reflectionOutput, index: 6)
         computeEncoder?.setTexture(renderTarget, index: 0)
         computeEncoder?.setTexture(rayTracer?.reflectedPositions!, index: 3)
         computeEncoder?.setTexture(rayTracer?.reflectedColors!, index: 4)
@@ -529,11 +564,37 @@ extension Scene {
         computeEncoder?.setTexture(irradianceField.depthMap!, index: 10)
         computeEncoder?.setTexture(irradianceField.radianceMap!, index: 1)
         computeEncoder?.setTexture(irradianceField.specularMap!, index: 2)
+        computeEncoder?.setTexture(rayTracer?.reflectedDir, index: 7)
         computeEncoder?.setBytes(&s, length: MemoryLayout<ShadowUniforms>.stride, index: 0)
         computeEncoder?.setBytes(&fragmentUniform, length: MemoryLayout<FragmentUniforms>.stride, index: 2)
         computeEncoder?.setBytes(&lightProbeData, length: MemoryLayout<LightProbeData>.stride, index: 1)
         computeEncoder?.setBuffer(irradianceField.probes, offset: 0, index: 4)
-        computeEncoder?.setComputePipelineState(ssrComputePipeline)
+        computeEncoder?.setComputePipelineState(reflectionComputePipeline)
+        computeEncoder?.dispatchThreadgroups(threadGroups,
+                                             threadsPerThreadgroup: threadsPerGroup)
+        computeEncoder?.endEncoding()
+        
+        //MARK: Denoise Reflection
+        computeEncoder = commandBuffer.makeComputeCommandEncoder()
+        computeEncoder?.label = "Denoise Reflection compute"
+        computeEncoder?.setTexture(gBufferData.worldPos, index: TextureIndex.worldPos.rawValue)
+        computeEncoder?.setTexture(gBufferData.normal, index: TextureIndex.normal.rawValue)
+        computeEncoder?.setTexture(gBufferData.depth, index: TextureIndex.depth.rawValue)
+        computeEncoder?.setTexture(reflectionOutput, index: 6)
+        computeEncoder?.setTexture(denoisedReflectionOutput, index: 7)
+        computeEncoder?.setTexture(renderTarget, index: 0)
+        computeEncoder?.setTexture(rayTracer?.reflectedPositions!, index: 3)
+        computeEncoder?.setTexture(rayTracer?.reflectedColors!, index: 4)
+        computeEncoder?.setTexture(gBufferData.inShadowReflected, index: 5)
+        computeEncoder?.setTexture(irradianceField.depthMap!, index: 10)
+        computeEncoder?.setTexture(irradianceField.radianceMap!, index: 1)
+        computeEncoder?.setTexture(irradianceField.specularMap!, index: 2)
+        
+        computeEncoder?.setBytes(&s, length: MemoryLayout<ShadowUniforms>.stride, index: 0)
+        computeEncoder?.setBytes(&fragmentUniform, length: MemoryLayout<FragmentUniforms>.stride, index: 2)
+        computeEncoder?.setBytes(&lightProbeData, length: MemoryLayout<LightProbeData>.stride, index: 1)
+        computeEncoder?.setBuffer(irradianceField.probes, offset: 0, index: 4)
+        computeEncoder?.setComputePipelineState(denoiseReflectionPipeline)
         computeEncoder?.dispatchThreadgroups(threadGroups,
                                              threadsPerThreadgroup: threadsPerGroup)
         computeEncoder?.endEncoding()

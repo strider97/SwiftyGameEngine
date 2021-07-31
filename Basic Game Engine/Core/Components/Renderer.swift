@@ -67,6 +67,7 @@ class Material {
             roughness = material.property(with: .materialIndexOfRefraction)?.floatValue ?? Float(0.1)
             metallic = material.property(with: .emission)?.floatValue ?? Float(0.8)
             textureSet = TextureSet(material: material, textureLoader: textureLoader)
+            print(material.name, "m", metallic, "r", roughness)
         }
     }
 }

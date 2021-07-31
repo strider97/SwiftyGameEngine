@@ -20,7 +20,7 @@ class SimpleScene: Scene {
     override func addPhysics() {}
 
     override func getSkybox() -> Skybox {
-        return Skybox(textureName: "cambridge")
+        return Skybox(textureName: "park_green")
     }
 
     override func addBehaviour() {

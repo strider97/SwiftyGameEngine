@@ -46,6 +46,7 @@ constant float2 invPi = float2(0.15915, 0.31831);
 constant float pi = 3.1415926;
 
 constexpr sampler s(coord::normalized, address::repeat, filter::linear, mip_filter::linear);
+constexpr sampler s_(coord::normalized, address::repeat, filter::nearest, mip_filter::linear);
 constexpr sampler s1(coord::normalized, address::clamp_to_edge, filter::linear, mip_filter::linear);
 
 constant int AMBIENT_DIR_COUNT = 6;
@@ -484,11 +485,14 @@ kernel void DefferedShadeKernel(uint2 tid [[thread_position_in_grid]],
                                 texture2d<float, access::sample> reflectedDepthMap[[texture(3)]]) {
     if (tid.x < uniforms.width && tid.y < uniforms.height) {
         float2 uv = float2(tid)/float2(uniforms.width, uniforms.height);
-        float3 pos = worldPos.sample(s, uv).rgb;
+        float4 posRoughness = worldPos.sample(s, uv);
+        float3 pos = posRoughness.xyz;
         float4 normalShadow = worldNormal.sample(s, uv);
         float3 smoothN = normalShadow.xyz;
         float4 albedo_ = albedoTex.sample(s, uv);
         float3 albedo = albedo_.rgb;
+        float metallic = albedo_.a;
+        float roughness = posRoughness.a;
         float depth = depthTex.sample(s, uv);
         float3 reflectedDepth = reflectedDepthMap.sample(s, uv).r;
         
@@ -505,8 +509,16 @@ kernel void DefferedShadeKernel(uint2 tid [[thread_position_in_grid]],
         
         float3 ambient = 0;
         ambient = (getDDGI(pos, smoothN, reflectedPosition, uniforms, probes, probe, octahedralMap, radianceMap, specularMap) + 0.0000);
-        float3 diffuse = inShadow * 4.0 * albedo * saturate(dot(smoothN, l));
-        float3 color = uniforms.kd * diffuse + ambient * albedo;
+        float3 diffuse = uniforms.kd * inShadow * 1.0 * saturate(dot(smoothN, l));
+        
+        float3 F0 = float3(0.04);
+        F0 = mix(F0, albedo, metallic);
+        float3 F = fresnelSchlickRoughness(saturate(dot(smoothN, v)), F0, 0.001);
+        float3 kS = F;
+        float3 kD = float3(1.0) - kS;
+        kD *= 1.0 - metallic;
+        float3 color = albedo * (diffuse + ambient);
+        color *= kD / M_PI_F;
         
     //    float4x4 PV = shadowUniforms.P * shadowUniforms.V;
     //    float ssao = getSSAO(pos, smoothN, kernelAndNoise[64 + tid.x % 16], PV, kernelAndNoise, depthTex);
@@ -518,6 +530,7 @@ kernel void DefferedShadeKernel(uint2 tid [[thread_position_in_grid]],
     //    color = float3(kernelAndNoise[64 + tid.x % 16].xy, 1);
     //    color = reflectedPosSS.rgb;
     //    color.xy = xy;
+    //    outputTex.write(float4(kD * albedo / M_PI_F, 1), tid);
         outputTex.write(float4(color, 1), tid);
     }
 }
@@ -526,7 +539,103 @@ float3 lerp3(float3 a, float3 b, float t) {
     return a*t + b*(1-t);
 }
 
-kernel void ssrKernel(
+float GeometrySchlickGGX_(float NdotV, float roughness)
+{
+    // note that we use a different k for IBL
+    float a = roughness;
+    float k = (a * a) / 2.0;
+
+    float nom   = NdotV;
+    float denom = NdotV * (1.0 - k) + k;
+
+    return nom / denom;
+}
+
+float GeometrySmith_(float3 N, float3 V, float3 L, float roughness)
+{
+    float NdotV = max(dot(N, V), 0.0);
+    float NdotL = max(dot(N, L), 0.0);
+    float ggx2 = GeometrySchlickGGX_(NdotV, roughness);
+    float ggx1 = GeometrySchlickGGX_(NdotL, roughness);
+
+    return ggx1 * ggx2;
+}
+
+float NormalDistributionGGX__(float NdotH, float roughness) {
+    float a2        = roughness * roughness;
+    float NdotH2    = NdotH * NdotH;
+    
+    float nom       = a2;
+    float denom     = (NdotH2 * (a2 - 1.0) + 1.0);
+    denom           = M_PI_F * denom * denom;
+    
+    return nom / denom;
+}
+
+kernel void reflectionKernel(
+                    uint2 tid [[thread_position_in_grid]],
+                    constant ShadowUniforms &shadowUniforms [[buffer(0)]],
+                    constant LightProbeData &probe [[buffer(1)]],
+                    constant FragmentUniform &uniforms [[buffer(2)]],
+                    device LightProbe *probes [[buffer(4)]],
+                    texture2d<float, access::sample> worldPos [[texture(rsmPos)]],
+                    texture2d<float, access::sample> worldNormal [[texture(rsmNormal)]],
+                    texture2d<float, access::sample> albedoTex [[texture(rsmFlux)]],
+                    depth2d<float, access::sample> depthTex [[texture(rsmDepth)]],
+                    texture2d<float, access::sample> outputTex [[texture(0)]],
+                      texture2d<float, access::sample> octahedralMap[[texture(10)]],
+                      texture2d<float, access::sample> radianceMap[[texture(1)]],
+                      texture2d<float, access::sample> specularMap[[texture(2)]],
+                    texture2d<float, access::sample> reflectedDepthMap [[texture(3)]],
+                    texture2d<float, access::sample> reflectedColors [[texture(4)]],
+                    texture2d<float, access::sample> reflectedInShadow [[texture(5)]],
+                    texture2d<float, access::read_write> reflectionOutput [[texture(6)]],
+                    texture2d<float, access::sample> reflectionDirectionMap [[texture(7)]])
+{
+    float2 uv = float2(tid)/float2(reflectionOutput.get_width(), reflectionOutput.get_height());
+    float4 posRoughness = worldPos.sample(s, uv);
+    float3 pos = posRoughness.xyz;
+    float roughness = posRoughness.a;
+    float4 normalShadow = worldNormal.sample(s, uv);
+    float3 smoothN = normalShadow.xyz;
+    float4 reflectedDepthAndNormal = reflectedDepthMap.sample(s_, uv);
+    float3 reflectedAlbedo = reflectedColors.sample(s_, uv).rgb;
+    float3 reflectedDir = reflectionDirectionMap.sample(s_, uv).xyz;
+    float4 reflectedShadowMetallic = reflectedInShadow.sample(s_, uv);
+    float insideShadow = reflectedShadowMetallic.r;
+    float metallic = reflectedShadowMetallic.a;
+    float3 reflectedNormal = reflectedDepthAndNormal.xyz;
+    float reflectedDepth = reflectedDepthAndNormal.a;
+    float3 albedo = albedoTex.sample(s, uv).rgb;
+    
+    float3 ssrColor = 0;
+
+    float3 v = normalize(uniforms.eye - pos);
+    float3 F0 = float3(0.04);
+    F0 = mix(F0, albedo, 1.0*metallic);
+    float3 F = fresnelSchlickRoughness(max(dot(smoothN, v), 0.0), F0, 0.001);
+    float3 kS = F;
+    
+    if (reflectedDepth < 0) {
+        ssrColor = uniforms.ks * float3(113, 164, 243)/255;
+    } else {
+    //    float3 H = normalize(reflectedDir + v);
+    //    float NdotH = saturate(dot(smoothN, H));
+    //    float NDF = NormalDistributionGGX__(NdotH, roughness);
+    //    float G   = GeometrySmith_(smoothN, v, reflectedDir, roughness);
+        
+        float3 reflectedPosition = pos + reflectedDir * reflectedDepth;
+        float3 l = shadowUniforms.sunDirection;
+        float3 diffuse = insideShadow * 4.0 * reflectedAlbedo * saturate(dot(reflectedNormal, l));
+        float3 ambient = 0;
+        ambient = (getDDGI(reflectedPosition, reflectedNormal, 1.0, uniforms, probes, probe, octahedralMap, radianceMap, specularMap) + 0.0000);
+        ssrColor = uniforms.ks * (uniforms.kd * diffuse + ambient * reflectedAlbedo);
+    }
+    ssrColor *= kS;
+    reflectionOutput.write(float4(ssrColor, 1), tid);
+}
+
+kernel void denoiseReflectionKernel(
                     uint2 tid [[thread_position_in_grid]],
                     constant ShadowUniforms &shadowUniforms [[buffer(0)]],
                     constant LightProbeData &probe [[buffer(1)]],
@@ -542,45 +651,36 @@ kernel void ssrKernel(
                     texture2d<float, access::sample> reflectedDepthMap [[texture(3)]],
                     texture2d<float, access::sample> reflectedColors [[texture(4)]],
                     depth2d<float, access::sample> reflectedInShadow [[texture(5)]],
-                    texture2d<float, access::read_write> finalOutput [[texture(6)]])
+                    texture2d<float, access::read_write> reflectionOutput [[texture(6)]],
+                    texture2d<float, access::read_write> denoisedReflectionOutput [[texture(7)]])
 {
-    float2 uv = float2(tid)/float2(uniforms.width, uniforms.height);
-    float3 pos = worldPos.sample(s, uv).rgb;
-    float4 normalShadow = worldNormal.sample(s, uv);
-    float3 smoothN = normalShadow.xyz;
-    float4 reflectedDepthAndNormal = reflectedDepthMap.sample(s, uv);
-    float3 reflectedAlbedo = reflectedColors.sample(s, uv).rgb;
-    float insideShadow = reflectedInShadow.sample(s, uv);
-    float3 reflectedNormal = reflectedDepthAndNormal.xyz;
-    float reflectedDepth = reflectedDepthAndNormal.a;
-    float3 color = outputTex.sample(s, uv).rgb;
-    
-    float3 ssrColor = 0;
-    
-    if (reflectedDepth < 0) {
-        color += uniforms.ks * float3(113, 164, 243)/255;
-    } else {
-        float3 v = normalize(uniforms.eye - pos);
-        float3 reflectedPosition = pos + reflect(-v, smoothN) * reflectedDepth;
-        float3 l = shadowUniforms.sunDirection;
-        float3 diffuse = insideShadow * 4.0 * reflectedAlbedo * saturate(dot(reflectedNormal, l));
-        float3 ambient = 0;
-        ambient = (getDDGI(reflectedPosition, reflectedNormal, 1.0, uniforms, probes, probe, octahedralMap, radianceMap, specularMap) + 0.0000);
-        ssrColor = uniforms.kd * diffuse + ambient * reflectedAlbedo;
+    if (tid.x < denoisedReflectionOutput.get_width() && tid.y < denoisedReflectionOutput.get_height()) {
+        int kernelSize = 1;
+        uint2 startI = tid - kernelSize/2;
+        uint2 endI = startI + kernelSize;
+        uint n = kernelSize * kernelSize;
+        float3 sum = 0;
         
-        color += uniforms.ks * ssrColor;
+        for(uint i = startI.x; i<endI.x; i++) {
+            for(uint j = startI.y; j<endI.y; j++) {
+                float3 c = reflectionOutput.read(ushort2(i, j)).rgb;
+                sum += c;
+            }
+        }
+        
+        sum /= n;
+        denoisedReflectionOutput.write(float4(sum, 1), tid);
     }
+}
+
+fragment float4 DeferredRendererFS_(VertexOutDR vOut [[ stage_in ]],constant FragmentUniform &uniforms [[buffer(0)]], texture2d<float, access::sample> radianceTex [[texture(0)]], texture2d<float, access::sample> reflectionTex [[texture(1)]]) {
+    float3 radiance = radianceTex.sample(s, vOut.pos).rgb;
+    float3 reflection = reflectionTex.sample(s, vOut.pos).rgb;
+    float3 color = radiance.rgb + uniforms.ks * reflection;
+    
     float exposure = uniforms.exposure;
     color = 1 - exp(-color * exposure);
     color = pow(color, float3(1.0/2.2));
-//    color = float3(depth, dReflected, depthR);
-//    color = reflectedPosSS.xyz;
-//    float3 prevColor = finalOutput.read(tid).rgb;
-//    finalOutput.write(float4(lerp3(color, prevColor, 1.0/8), 1), tid);
-    finalOutput.write(float4(color, 1), tid);
-}
-
-fragment float4 DeferredRendererFS_(VertexOutDR vOut [[ stage_in ]], texture2d<float, access::sample> radianceTex [[texture(0)]]) {
-    float4 radiance = radianceTex.sample(s, vOut.pos);
-    return radiance;
+    
+    return float4(color, 1.0);
 }

@@ -720,6 +720,17 @@ float3 ImportanceSampleGGX_(float2 Xi, float3 N, float roughness)
     return normalize(sampleVec);
 }
 
+float NormalDistributionGGX_(float NdotH, float roughness) {
+    float a2        = roughness * roughness;
+    float NdotH2    = NdotH * NdotH;
+    
+    float nom       = a2;
+    float denom     = (NdotH2 * (a2 - 1.0) + 1.0);
+    denom           = PI * denom * denom;
+    
+    return nom / denom;
+}
+
 kernel void primaryRaysIndirectKernel(
                                 uint2 tid [[thread_position_in_grid]],
                                 constant Uniforms_ & uniforms [[buffer(2)]],
@@ -727,10 +738,10 @@ kernel void primaryRaysIndirectKernel(
                                 constant float3 *eye[[buffer(1)]],
                                 texture2d<float, access::sample> normals [[texture(0)]],
                                 texture2d<float, access::sample> positions [[texture(1)]],
-                                texture2d<float, access::write> reflectedPos [[texture(2)]])
+                                texture2d<float, access::write> reflectedDir [[texture(2)]])
 {
-    uint width = reflectedPos.get_width();
-    uint height = reflectedPos.get_height();
+    uint width = reflectedDir.get_width();
+    uint height = reflectedDir.get_height();
     if (tid.x < width && tid.y < height) {
         unsigned int rayIdx = tid.y * width + tid.x;
         device Ray & ray = rays[rayIdx];
@@ -739,7 +750,7 @@ kernel void primaryRaysIndirectKernel(
         float3 pos = positions.sample(s_, uv).xyz;
         float3 normal = normalize(normals.sample(s_, uv).xyz);
         float3 e = float3(eye->x, eye->y, eye->z);
-        float3 v = normalize(pos - e);
+        float3 v = normalize(e - pos);
         
         float roughness = max(0.00001, uniforms.roughness.x);
    //     uint largeN = width * height * 100;
@@ -747,22 +758,26 @@ kernel void primaryRaysIndirectKernel(
    //     float2 Xi = Hammersley_(rayIdx + 1, width * height);
         float2 Xi = Halton23(rayIdx);
         float3 H  = ImportanceSampleGGX_(Xi, normal, roughness);
-        float3 r = reflect(v, H);
-        float dotRN = dot(normal, r);
-        uint numCalcs = 1;
-        while (dotRN < 0 && numCalcs < 1) {
-            numCalcs += 1;
-            Xi = Halton23((rayIdx+1)*numCalcs);
-            H  = ImportanceSampleGGX_(Xi, normal, roughness);
-            r = reflect(v, H);
-            dotRN = dot(normal, r);
-        }
+        float3 r = reflect(-v, H);
+//        float dotRN = dot(normal, r);
+//        uint numCalcs = 1;
+//        while (dotRN < 0 && numCalcs < 1) {
+//            numCalcs += 1;
+//            Xi = Halton23((rayIdx+1)*numCalcs);
+//            H  = ImportanceSampleGGX_(Xi, normal, roughness);
+//            r = reflect(v, H);
+//            dotRN = dot(normal, r);
+//        }
+        float NdotH = saturate(dot(normal, H));
+        float HdotV = saturate(dot(H, v));
+        float D = NormalDistributionGGX_(NdotH, roughness);
+        float invPdf   = 1.0/max(0.0001,(D * NdotH / (4.0 * HdotV)));
         
         ray.origin = pos + eps * normal;
         ray.direction = r;
         ray.minDistance = 0.001;
         ray.maxDistance = 100;
-        reflectedPos.write(float4(normal, 1), tid);
+        reflectedDir.write(float4(r, invPdf), tid);
     }
 }
 
