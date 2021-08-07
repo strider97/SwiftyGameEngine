@@ -76,6 +76,7 @@ class Scene: NSObject {
     var renderTarget: MTLTexture!
     var reflectionOutput: MTLTexture!
     var denoisedReflectionOutput: MTLTexture!
+    var noiseTexture: MTLTexture!
     var randomKernelAndNoise: [Float3] = []
     let randomKernelSize = 64 + 16
 
@@ -128,11 +129,14 @@ extension Scene: MTKViewDelegate {
         renderTargetDescriptor.usage = [.shaderRead, .shaderWrite]
         gBufferData = GBufferData(size: size)
         renderTarget = device!.makeTexture(descriptor: renderTargetDescriptor)
+        let textureLoader = MTKTextureLoader(device: device!)
+        let options_: [MTKTextureLoader.Option : Any] = [.SRGB : false]
+        noiseTexture = try! textureLoader.newTexture(name: "noiseTex", scaleFactor: 1.0, bundle: nil, options: options_)
         //     rayTracer?.mtkView(view, drawableSizeWillChange: CGSize(width: Constants.probeReso * Constants.probeCount, height: Constants.probeReso * Constants.probeCount))
         let reflectionSize = CGSize(width: size.width/2, height: size.height/2)
         Constants.reflectedPositionsSize = reflectionSize
         reflectionOutput = Descriptor.build2DTextureForWrite(pixelFormat: .rgba16Float, size: reflectionSize, label: "Reflection output", mipmapped: false, shaderWrite: true)
-        denoisedReflectionOutput = Descriptor.build2DTextureForWrite(pixelFormat: .rgba16Float, size: reflectionSize, label: "Denoised reflection output", mipmapped: false, shaderWrite: true)
+        denoisedReflectionOutput = Descriptor.build2DTextureForWrite(pixelFormat: .rgba16Float, size: size, label: "Denoised reflection output", mipmapped: false, shaderWrite: true)
         rayTracer?.mtkView(view, drawableSizeWillChange: CGSize(width: Constants.probeCount * Constants.probeReso, height: Constants.probeReso))
     }
 
@@ -575,13 +579,21 @@ extension Scene {
         computeEncoder?.endEncoding()
         
         //MARK: Denoise Reflection
+        width = Int(size.width)
+        height = Int(size.height)
+        threadsPerGroup = MTLSizeMake(24, 24, 1)
+        threadGroups = MTLSizeMake(
+        (width + threadsPerGroup.width - 1) / threadsPerGroup.width,
+        (height + threadsPerGroup.height - 1) / threadsPerGroup.height, 1
+        )
         computeEncoder = commandBuffer.makeComputeCommandEncoder()
         computeEncoder?.label = "Denoise Reflection compute"
         computeEncoder?.setTexture(gBufferData.worldPos, index: TextureIndex.worldPos.rawValue)
         computeEncoder?.setTexture(gBufferData.normal, index: TextureIndex.normal.rawValue)
         computeEncoder?.setTexture(gBufferData.depth, index: TextureIndex.depth.rawValue)
         computeEncoder?.setTexture(reflectionOutput, index: 6)
-        computeEncoder?.setTexture(denoisedReflectionOutput, index: 7)
+        computeEncoder?.setTexture(rayTracer?.reflectedDir, index: 7)
+        computeEncoder?.setTexture(denoisedReflectionOutput, index: 8)
         computeEncoder?.setTexture(renderTarget, index: 0)
         computeEncoder?.setTexture(rayTracer?.reflectedPositions!, index: 3)
         computeEncoder?.setTexture(rayTracer?.reflectedColors!, index: 4)

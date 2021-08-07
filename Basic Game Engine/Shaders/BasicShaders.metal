@@ -609,28 +609,31 @@ kernel void reflectionKernel(
     float3 albedo = albedoTex.sample(s, uv).rgb;
     
     float3 ssrColor = 0;
-
+    
+    roughness = 0.1;
     float3 v = normalize(uniforms.eye - pos);
     float3 F0 = float3(0.04);
     F0 = mix(F0, albedo, 1.0*metallic);
     float3 F = fresnelSchlickRoughness(max(dot(smoothN, v), 0.0), F0, 0.001);
     float3 kS = F;
+//    float3 H = normalize(reflectedDir + v);
+//    float NdotH = saturate(dot(smoothN, H));
+//    float NDF = NormalDistributionGGX__(NdotH, roughness);
+//    float G   = GeometrySmith_(smoothN, v, reflectedDir, roughness);
+//    float3 numerator    = NDF * G * F;
+//    float denominator = 4.0 * saturate(dot(smoothN, v)) * saturate(dot(smoothN, reflectedDir));
     
     if (reflectedDepth < 0) {
         ssrColor = uniforms.ks * float3(113, 164, 243)/255;
     } else {
-    //    float3 H = normalize(reflectedDir + v);
-    //    float NdotH = saturate(dot(smoothN, H));
-    //    float NDF = NormalDistributionGGX__(NdotH, roughness);
-    //    float G   = GeometrySmith_(smoothN, v, reflectedDir, roughness);
-        
         float3 reflectedPosition = pos + reflectedDir * reflectedDepth;
         float3 l = shadowUniforms.sunDirection;
-        float3 diffuse = insideShadow * 4.0 * reflectedAlbedo * saturate(dot(reflectedNormal, l));
+        float3 diffuse = insideShadow * reflectedAlbedo * saturate(dot(reflectedNormal, l));
         float3 ambient = 0;
         ambient = (getDDGI(reflectedPosition, reflectedNormal, 1.0, uniforms, probes, probe, octahedralMap, radianceMap, specularMap) + 0.0000);
         ssrColor = uniforms.ks * (uniforms.kd * diffuse + ambient * reflectedAlbedo);
     }
+//    ssrColor *= numerator / max(denominator, 0.001);
     ssrColor *= kS;
     reflectionOutput.write(float4(ssrColor, 1), tid);
 }
@@ -650,26 +653,63 @@ kernel void denoiseReflectionKernel(
                       texture2d<float, access::sample> specularMap[[texture(2)]],
                     texture2d<float, access::sample> reflectedDepthMap [[texture(3)]],
                     texture2d<float, access::sample> reflectedColors [[texture(4)]],
-                    depth2d<float, access::sample> reflectedInShadow [[texture(5)]],
-                    texture2d<float, access::read_write> reflectionOutput [[texture(6)]],
-                    texture2d<float, access::read_write> denoisedReflectionOutput [[texture(7)]])
+                    texture2d<float, access::sample> reflectedInShadow [[texture(5)]],
+                    texture2d<float, access::sample> reflectionOutput [[texture(6)]],
+                    texture2d<float, access::sample> reflectionDirectionMap [[texture(7)]],
+                    texture2d<float, access::read_write> denoisedReflectionOutput [[texture(8)]])
 {
-    if (tid.x < denoisedReflectionOutput.get_width() && tid.y < denoisedReflectionOutput.get_height()) {
-        int kernelSize = 1;
+    uint width = denoisedReflectionOutput.get_width();
+    uint height = denoisedReflectionOutput.get_height();
+    if (tid.x < width && tid.y < height) {
+        int kernelSize = 3;
         uint2 startI = tid - kernelSize/2;
         uint2 endI = startI + kernelSize;
         uint n = kernelSize * kernelSize;
-        float3 sum = 0;
+        float2 uv = float2(tid) / float2(width, height);
+        float4 posRoughness = worldPos.sample(s, uv);
+        
+        float3 pos = posRoughness.xyz;
+        float3 normal = worldNormal.sample(s, uv).xyz;
+        float roughness = posRoughness.a;
+        float4 weightReflection = reflectionDirectionMap.sample(s, uv);
+        float3 v = normalize(uniforms.eye - pos);
+        float3 r = weightReflection.xyz;
+        float3 h = normalize(v + r);
+        float metallic = reflectedInShadow.sample(s, uv).a;
+        
+        float3 F0 = float3(0.04);
+        F0 = mix(F0, 0.8, metallic);
+        
+        float3 FG = fresnelSchlickRoughness(saturate(dot(h, v)), F0, roughness) * GeometrySmith_(normal, v, r, roughness);
+        
+        float3 result = 0.0;
+        float weightSum = 0.0;
+        
+//        float posA = reflectedDepthMap.sample(s, uv).a;
+//        if (posA == -1) {
+//            denoisedReflectionOutput.write(0, tid);
+//            return;
+//        }
+//        float3 prevColor = denoisedReflectionOutput.read(tid).rgb;
         
         for(uint i = startI.x; i<endI.x; i++) {
             for(uint j = startI.y; j<endI.y; j++) {
-                float3 c = reflectionOutput.read(ushort2(i, j)).rgb;
-                sum += c;
+                float2 uv = float2(i, j) / float2(width, height);
+                float3 color = reflectionOutput.sample(s, uv).rgb;
+                float weight = reflectionDirectionMap.sample(s, uv).a;
+                result += color * weight;
+                weightSum += weight;
             }
         }
         
-        sum /= n;
-        denoisedReflectionOutput.write(float4(sum, 1), tid);
+        result /= weightSum;
+        result = max(0.0, min(result, 0.1));
+        result *= FG;
+    //    result /= n;
+//        if (prevColor.x > 0 || prevColor.y > 0 || prevColor.z > 0) {
+//            result = (result + prevColor)/2.0;
+//        }
+        denoisedReflectionOutput.write(float4(result, 1), tid);
     }
 }
 

@@ -643,7 +643,7 @@ kernel void varianceShadowMapKernel(uint2 tid [[thread_position_in_grid]],
                                    depth2d<float, access::read> shadowMap,
                                    texture2d<float, access::write> varianceShadowMap) {
     if (tid.x < shadowMap.get_width() && tid.y < shadowMap.get_height()) {
-        int kernelSize = 7;
+        int kernelSize = 4;
         uint2 startI = tid - kernelSize/2;
         uint2 endI = startI + kernelSize;
         uint n = kernelSize * kernelSize;
@@ -675,26 +675,17 @@ float2 Hammersley_(uint i, float numSamples) {
     return float2(i / numSamples, bits / exp2(32.0));
 }
 
-float Halton(int b, int i)
+#define coprimes float2(2,3)
+float2 halton (float2 s)
 {
-    float r = 0.0;
-    float f = 1.0;
-    while (i > 0) {
-        f = f / float(b);
-        r = r + f * float(i % b);
-        i = int(floor(float(i) / float(b)));
+    float4 a = float4(1,1,0,0);
+    while (s.x > 0. && s.y > 0.)
+    {
+        a.xy = a.xy/coprimes;
+        a.zw += a.xy * fmod(s, coprimes);
+        s = floor(s/coprimes);
     }
-    return r;
-}
-
-float Halton2(int i)
-{
-    return float(reverse_bits(uint(i)))/4294967296.0;
-}
-
-float2 Halton23(int i)
-{
-    return float2(Halton2(i), Halton(3, i));
+    return a.zw;
 }
 
 float3 ImportanceSampleGGX_(float2 Xi, float3 N, float roughness)
@@ -731,6 +722,38 @@ float NormalDistributionGGX_(float NdotH, float roughness) {
     return nom / denom;
 }
 
+float GeometrySchlickGGX__(float NdotV, float roughness)
+{
+    // note that we use a different k for IBL
+    float a = roughness;
+    float k = (a * a) / 2.0;
+
+    float nom   = NdotV;
+    float denom = NdotV * (1.0 - k) + k;
+
+    return nom / denom;
+}
+
+float GeometrySmith__(float3 N, float3 V, float3 L, float roughness)
+{
+    float NdotV = max(dot(N, V), 0.0);
+    float NdotL = max(dot(N, L), 0.0);
+    float ggx2 = GeometrySchlickGGX__(NdotV, roughness);
+    float ggx1 = GeometrySchlickGGX__(NdotL, roughness);
+
+    return ggx1 * ggx2;
+}
+
+float fresnelSchlick_(float cosTheta)
+{
+    float F0 = 0.04;
+    return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
+}
+
+float fresnelSchlickRoughness_(float cosTheta, float F0, float roughness) {
+    return F0 + (max(float(1.0 - roughness), F0) - F0) * pow(max(1.0 - cosTheta, 0.0), 5.0);
+}
+
 kernel void primaryRaysIndirectKernel(
                                 uint2 tid [[thread_position_in_grid]],
                                 constant Uniforms_ & uniforms [[buffer(2)]],
@@ -738,7 +761,8 @@ kernel void primaryRaysIndirectKernel(
                                 constant float3 *eye[[buffer(1)]],
                                 texture2d<float, access::sample> normals [[texture(0)]],
                                 texture2d<float, access::sample> positions [[texture(1)]],
-                                texture2d<float, access::write> reflectedDir [[texture(2)]])
+                                texture2d<float, access::write> reflectedDir [[texture(2)]],
+                                depth2d<float, access::sample> noiseTex [[texture(3)]])
 {
     uint width = reflectedDir.get_width();
     uint height = reflectedDir.get_height();
@@ -748,15 +772,20 @@ kernel void primaryRaysIndirectKernel(
         float eps = 0.01;
         float2 uv = (float2(tid))/float2(width, height);
         float3 pos = positions.sample(s_, uv).xyz;
-        float3 normal = normalize(normals.sample(s_, uv).xyz);
+        float3 normal = normals.sample(s_, uv).xyz;
+        if (dot(abs(normal), 1) == 0) {
+            ray.maxDistance = -1;
+            ray.minDistance = 0;
+            reflectedDir.write(float4(-1), tid);
+            return;
+        }
+        normal = normalize(normal);
         float3 e = float3(eye->x, eye->y, eye->z);
         float3 v = normalize(e - pos);
-        
+        float noise = noiseTex.sample(s__, uv);
         float roughness = max(0.00001, uniforms.roughness.x);
-   //     uint largeN = width * height * 100;
-   //     float2 Xi = Hammersley_(rayIdx * uniforms.frameIndex % largeN, largeN);
-   //     float2 Xi = Hammersley_(rayIdx + 1, width * height);
-        float2 Xi = Halton23(rayIdx);
+   //     uint largeN = width * height * 100;]
+        float2 Xi = halton(uint(1.0/noise * uniforms.frameIndex) % 100000);
         float3 H  = ImportanceSampleGGX_(Xi, normal, roughness);
         float3 r = reflect(-v, H);
 //        float dotRN = dot(normal, r);
@@ -768,16 +797,25 @@ kernel void primaryRaysIndirectKernel(
 //            r = reflect(v, H);
 //            dotRN = dot(normal, r);
 //        }
+        // F(ω̂ i,ω̂ m)G2(ω̂ i,ω̂ o,ω̂ m)|ω̂ o⋅ω̂ m| /
+        //         |ω̂ o⋅ω̂ g||ω̂ m⋅ω̂ g|
+        // Wm = h,
+        // Wo = v,
+        // Wg = n,
+        // Wi = l
+        
         float NdotH = saturate(dot(normal, H));
         float HdotV = saturate(dot(H, v));
-        float D = NormalDistributionGGX_(NdotH, roughness);
-        float invPdf   = 1.0/max(0.0001,(D * NdotH / (4.0 * HdotV)));
+        float NdotV = max(0.001, dot(normal, v));
+        float numerator = fresnelSchlickRoughness_(HdotV, 0.04, roughness) * GeometrySmith__(normal, v, r, roughness) * HdotV;
+        float denominator = max(0.001, NdotV * NdotH);
+        float rayWeight = numerator / denominator;
         
         ray.origin = pos + eps * normal;
         ray.direction = r;
         ray.minDistance = 0.001;
         ray.maxDistance = 100;
-        reflectedDir.write(float4(r, invPdf), tid);
+        reflectedDir.write(float4(r, rayWeight), tid);
     }
 }
 

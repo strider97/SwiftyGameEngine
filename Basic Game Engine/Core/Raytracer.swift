@@ -291,7 +291,8 @@ class Raytracer {
         lightProbe.gridEdge = irradianceField.gridEdge
         lightProbe.gridOrigin = irradianceField.origin
         lightProbe.probeCount = SIMD3<Int32>(Int32(Constants.probeGrid.0), Int32(Constants.probeGrid.1), Int32(Constants.probeGrid.2))
-        uniforms.pointee.roughness = Float2(scene.uniformSliders[Constants.Labels.roughness]!.floatValue, 0)
+        let roughness = scene.uniformSliders[Constants.Labels.roughness]!.floatValue
+        uniforms.pointee.roughness = Float2(roughness * roughness, 0)
         uniforms.pointee.camera = camera
         uniforms.pointee.light = light
         uniforms.pointee.sunDirection = scene.sunDirection.normalized
@@ -441,6 +442,7 @@ extension Raytracer {
         computeEncoder?.setTexture(normals, index: 0)
         computeEncoder?.setTexture(positions, index: 1)
         computeEncoder?.setTexture(reflectedDir, index: 2)
+        computeEncoder?.setTexture(scene.noiseTexture, index: 3)
         computeEncoder?.setComputePipelineState(indirectRayPipeline)
         computeEncoder?.dispatchThreadgroups(threadGroups,
                                              threadsPerThreadgroup: threadsPerGroup)

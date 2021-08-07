@@ -707,11 +707,11 @@
             <objects>
                 <viewController title="Game Engine" id="XfG-lQ-9wD" customClass="GameViewController" customModule="Basic_Game_Engine" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="m2S-Jp-Qdl" customClass="GameView" customModule="Basic_Game_Engine" customModuleProvider="target">
-                        <rect key="frame" x="0.0" y="0.0" width="739" height="383"/>
+                        <rect key="frame" x="0.0" y="0.0" width="960" height="540"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <stackView distribution="fillEqually" orientation="vertical" alignment="trailing" spacing="0.0" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZMC-xl-kE2">
-                                <rect key="frame" x="508" y="211" width="231" height="172"/>
+                                <rect key="frame" x="729" y="368" width="231" height="172"/>
                                 <subviews>
                                     <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="10" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MZs-TS-rHm">
                                         <rect key="frame" x="10" y="150" width="221" height="22"/>
