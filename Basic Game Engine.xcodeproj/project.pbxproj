@@ -1180,6 +1180,8 @@
 		72E0477D25E7020F00E48A54 /* carLowPoly.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72E0477C25E7020F00E48A54 /* carLowPoly.usd */; };
 		72E0478225E7069100E48A54 /* f1.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72E0478125E7069100E48A54 /* f1.usd */; };
 		72E0478725E7089800E48A54 /* weapons.usd in Resources */ = {isa = PBXBuildFile; fileRef = 72E0478625E7089800E48A54 /* weapons.usd */; };
+		72E2886726C73C37000880FD /* table.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 72E2886526C73C37000880FD /* table.mtl */; };
+		72E2886826C73C37000880FD /* table.obj in Resources */ = {isa = PBXBuildFile; fileRef = 72E2886626C73C37000880FD /* table.obj */; };
 		72E3503E25FC01550012E6D1 /* tfxkehvg_4K_Roughness.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 72E3503A25FC01550012E6D1 /* tfxkehvg_4K_Roughness.jpg */; };
 		72E3503F25FC01550012E6D1 /* tfxkehvg_4K_AO.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 72E3503B25FC01550012E6D1 /* tfxkehvg_4K_AO.jpg */; };
 		72E3504025FC01550012E6D1 /* tfxkehvg_4K_Albedo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 72E3503C25FC01550012E6D1 /* tfxkehvg_4K_Albedo.jpg */; };
@@ -2417,6 +2419,8 @@
 		72E0477C25E7020F00E48A54 /* carLowPoly.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = carLowPoly.usd; path = "Basic Game Engine/Resources/teapot/carLowPoly.usd"; sourceTree = SOURCE_ROOT; };
 		72E0478125E7069100E48A54 /* f1.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = f1.usd; path = "Basic Game Engine/Resources/teapot/f1.usd"; sourceTree = SOURCE_ROOT; };
 		72E0478625E7089800E48A54 /* weapons.usd */ = {isa = PBXFileReference; lastKnownFileType = file; name = weapons.usd; path = "Basic Game Engine/Resources/teapot/weapons.usd"; sourceTree = SOURCE_ROOT; };
+		72E2886526C73C37000880FD /* table.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = table.mtl; sourceTree = "<group>"; };
+		72E2886626C73C37000880FD /* table.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = table.obj; sourceTree = "<group>"; };
 		72E3503A25FC01550012E6D1 /* tfxkehvg_4K_Roughness.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = tfxkehvg_4K_Roughness.jpg; path = ../../../../../Downloads/Floors_Marble_tfxkehvg_4K_surface_ms/tfxkehvg_4K_Roughness.jpg; sourceTree = "<group>"; };
 		72E3503B25FC01550012E6D1 /* tfxkehvg_4K_AO.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = tfxkehvg_4K_AO.jpg; path = ../../../../../Downloads/Floors_Marble_tfxkehvg_4K_surface_ms/tfxkehvg_4K_AO.jpg; sourceTree = "<group>"; };
 		72E3503C25FC01550012E6D1 /* tfxkehvg_4K_Albedo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = tfxkehvg_4K_Albedo.jpg; path = ../../../../../Downloads/Floors_Marble_tfxkehvg_4K_surface_ms/tfxkehvg_4K_Albedo.jpg; sourceTree = "<group>"; };
@@ -4026,6 +4030,8 @@
 		72E3999925BF0C8300927B17 /* models */ = {
 			isa = PBXGroup;
 			children = (
+				72E2886526C73C37000880FD /* table.mtl */,
+				72E2886626C73C37000880FD /* table.obj */,
 				724F84F326B0A84D000D0C88 /* PetrolPump.mtl */,
 				724F84F426B0A84D000D0C88 /* PetrolPump.obj */,
 				72AFA5F826AC5361003C27A6 /* pillarRoomSmol.mtl */,
@@ -4248,6 +4254,7 @@
 				72294AE4267E7EEF00B3E620 /* Awnings_Hotel_Fabric_Normal.dds in Resources */,
 				72E3503F25FC01550012E6D1 /* tfxkehvg_4K_AO.jpg in Resources */,
 				72583F1E26225AEE00ADD5BD /* sponza.mtl in Resources */,
+				72E2886726C73C37000880FD /* table.mtl in Resources */,
 				721650F125EAFC9100511342 /* uk0ocizfw_2K_Roughness.jpg in Resources */,
 				72294734267E263200B3E620 /* Cups_low_Cups_Normal.png in Resources */,
 				72294B4A267E7EEF00B3E620 /* Antenna_Plastic_BaseColor.dds in Resources */,
@@ -5347,6 +5354,7 @@
 				7254FA542673BBC4000F5738 /* VendingMachine2_Opacity.jpg in Resources */,
 				7254FA712673BBC4000F5738 /* Road.jpg in Resources */,
 				72294B13267E7EEF00B3E620 /* Bistro_Sign_Main_BaseColor.dds in Resources */,
+				72E2886826C73C37000880FD /* table.obj in Resources */,
 				7254B2412673A0E80053B4F4 /* facades_roughness.jpg in Resources */,
 				721650C325EAF31600511342 /* schvfgwp_4K_Albedo.jpg in Resources */,
 				72294BEB267E7EF000B3E620 /* Streetlight_Chains_Specular.dds in Resources */,

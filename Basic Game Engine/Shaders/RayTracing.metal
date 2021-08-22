@@ -688,13 +688,13 @@ float2 halton (float2 s)
     return a.zw;
 }
 
-float3 ImportanceSampleGGX_(float2 Xi, float3 N, float roughness)
+float4 ImportanceSampleGGX_(float2 Xi, float3 N, float roughness)
 {
-    float a = roughness*roughness;
+    float a2 = roughness*roughness;
     
-    float phi = 2.0 * PI * Xi.x;
-    float cosTheta = sqrt((1.0 - Xi.y) / (1.0 + (a*a - 1.0) * Xi.y));
-    float sinTheta = sqrt(1.0 - cosTheta*cosTheta);
+    float phi = 2 * PI * Xi.x;
+    float cosTheta = sqrt( (1 - Xi.y) / ( 1 + (a2 - 1) * Xi.y ) );
+    float sinTheta = sqrt( 1 - cosTheta * cosTheta );
     
     // from spherical coordinates to cartesian coordinates - halfway vector
     float3 H;
@@ -708,7 +708,12 @@ float3 ImportanceSampleGGX_(float2 Xi, float3 N, float roughness)
     float3 bitangent = cross(N, tangent);
     
     float3 sampleVec = tangent * H.x + bitangent * H.y + N * H.z;
-    return normalize(sampleVec);
+    
+    float d = ( cosTheta * a2 - cosTheta ) * cosTheta + 1;
+    float D = a2 / ( PI*d*d );
+    float PDF = D * cosTheta;
+    
+    return float4(normalize(sampleVec), PDF);
 }
 
 float NormalDistributionGGX_(float NdotH, float roughness) {
@@ -754,6 +759,21 @@ float fresnelSchlickRoughness_(float cosTheta, float F0, float roughness) {
     return F0 + (max(float(1.0 - roughness), F0) - F0) * pow(max(1.0 - cosTheta, 0.0), 5.0);
 }
 
+/// Wm = h, Wg = n
+float D(float NdotH, float alpha) {
+    float alpha2 = alpha * alpha;
+    float denom = (NdotH * NdotH)*(alpha2 - 1.0) + 1;
+    return (alpha2) / (M_PI_F * denom * denom);
+}
+
+float absSum(float3 a) {
+    return dot(abs(a), 1);
+}
+
+float pdf (float NdotH, float HdotV, float roughness) {
+    return D(NdotH, roughness) * NdotH / (4.0 * max(0.001, HdotV)) ;
+}
+
 kernel void primaryRaysIndirectKernel(
                                 uint2 tid [[thread_position_in_grid]],
                                 constant Uniforms_ & uniforms [[buffer(2)]],
@@ -785,8 +805,10 @@ kernel void primaryRaysIndirectKernel(
         float noise = noiseTex.sample(s__, uv);
         float roughness = max(0.00001, uniforms.roughness.x);
    //     uint largeN = width * height * 100;]
-        float2 Xi = halton(uint(1.0/noise * uniforms.frameIndex) % 100000);
-        float3 H  = ImportanceSampleGGX_(Xi, normal, roughness);
+        float2 Xi = halton(uint(1.0/noise * (uniforms.frameIndex % 100000)) % 100000);
+   //     float2 Xi = halton(uint(1.0/noise * absSum(v) * 50 * max(1.0, roughness * 100)) % 100000);
+        float4 ggx = ImportanceSampleGGX_(Xi, normal, roughness);
+        float3 H = ggx.xyz;
         float3 r = reflect(-v, H);
 //        float dotRN = dot(normal, r);
 //        uint numCalcs = 1;
@@ -804,18 +826,19 @@ kernel void primaryRaysIndirectKernel(
         // Wg = n,
         // Wi = l
         
-        float NdotH = saturate(dot(normal, H));
-        float HdotV = saturate(dot(H, v));
-        float NdotV = max(0.001, dot(normal, v));
-        float numerator = fresnelSchlickRoughness_(HdotV, 0.04, roughness) * GeometrySmith__(normal, v, r, roughness) * HdotV;
-        float denominator = max(0.001, NdotV * NdotH);
-        float rayWeight = numerator / denominator;
+//        float NdotH = saturate(dot(normal, H));
+//        float HdotV = saturate(dot(H, v));
+//        float NdotV = max(0.001, dot(normal, v));
+//        float numerator = fresnelSchlickRoughness_(HdotV, 0.04, roughness) * GeometrySmith__(normal, v, r, roughness) * HdotV;
+//        float denominator = max(0.001, NdotV * NdotH);
+        float rayPdf = ggx.a;
         
         ray.origin = pos + eps * normal;
         ray.direction = r;
         ray.minDistance = 0.001;
         ray.maxDistance = 100;
-        reflectedDir.write(float4(r, rayWeight), tid);
+        ray.offset.x = rayPdf;
+    //    reflectedDir.write(float4(0, 0, 0, rayPdf), tid);
     }
 }
 
@@ -826,7 +849,8 @@ kernel void intersectionIndirectKernel(
                                 device float3 *normals,
                                 device float3 *colors,
                                 texture2d<float, access::write> reflectedPos [[texture(0)]],
-                                texture2d<float, access::write> reflectedColors [[texture(1)]])
+                                texture2d<float, access::write> reflectedColors [[texture(1)]],
+                                texture2d<float, access::write> reflectedPositionsPdf [[texture(2)]])
 {
     uint width = reflectedPos.get_width();
     uint height = reflectedPos.get_height();
@@ -840,6 +864,8 @@ kernel void intersectionIndirectKernel(
             float3 albedo = interpolateVertexAttribute(colors, intersection);
             reflectedPos.write(float4(surfaceNormal, intersection.distance), tid);
             reflectedColors.write(float4(albedo, 1.0), tid);
+            float3 reflectedPosition = ray.direction * intersection.distance;
+            reflectedPositionsPdf.write(float4(reflectedPosition, ray.offset.x), tid);
         } else {
             reflectedPos.write(-1, tid);
         }

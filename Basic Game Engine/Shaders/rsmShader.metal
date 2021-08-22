@@ -167,7 +167,7 @@ fragment GbufferOut fragmentRSMData (VertexOut vOut [[ stage_in ]],
     float metallic = material.metallic;
     float2 uv = vOut.position.xy / screenSize;
     float4 reflectedNormalDepth = reflectedDepthMap.sample(s_, uv);
-    float3 reflectedDir = reflectedDirectionMap.sample(s_, uv).xyz;
+    float3 reflectedPos = reflectedDirectionMap.sample(s_, uv).xyz;
     float reflectedDepth = reflectedNormalDepth.a;
     float3 reflectedNormal = reflectedNormalDepth.xyz;
     
@@ -179,7 +179,7 @@ fragment GbufferOut fragmentRSMData (VertexOut vOut [[ stage_in ]],
 //    float4 ao = AO.sample(s, vOut.uv);
     float3 pos = vOut.worldPos;
 //    float3 v = normalize(vOut.eye - pos);
-    float4 reflectedPosition = float4(pos + reflectedDir * reflectedDepth, 1);
+    float4 reflectedPosition = float4(pos + reflectedPos, 1);
     reflectedPosition.xyz += 0.2 * reflectedNormal;
     float4 reflectedFragPos = shadowUniforms.P * shadowUniforms.V * reflectedPosition;
     float inShadowReflected = insideShadow_(reflectedFragPos, shadowMap, 0.008);

@@ -73,9 +73,11 @@ class Scene: NSObject {
     var computePipeline: MTLComputePipelineState!
     var reflectionComputePipeline: MTLComputePipelineState!
     var denoiseReflectionPipeline: MTLComputePipelineState!
+    var temporalDenoisePipeline: MTLComputePipelineState!
     var renderTarget: MTLTexture!
     var reflectionOutput: MTLTexture!
     var denoisedReflectionOutput: MTLTexture!
+    var temporalDenoisedOutput: MTLTexture!
     var noiseTexture: MTLTexture!
     var randomKernelAndNoise: [Float3] = []
     let randomKernelSize = 64 + 16
@@ -137,6 +139,7 @@ extension Scene: MTKViewDelegate {
         Constants.reflectedPositionsSize = reflectionSize
         reflectionOutput = Descriptor.build2DTextureForWrite(pixelFormat: .rgba16Float, size: reflectionSize, label: "Reflection output", mipmapped: false, shaderWrite: true)
         denoisedReflectionOutput = Descriptor.build2DTextureForWrite(pixelFormat: .rgba16Float, size: size, label: "Denoised reflection output", mipmapped: false, shaderWrite: true)
+        temporalDenoisedOutput = Descriptor.build2DTextureForWrite(pixelFormat: .rgba16Float, size: size, label: "Temporal denoised reflection output", mipmapped: false, shaderWrite: true)
         rayTracer?.mtkView(view, drawableSizeWillChange: CGSize(width: Constants.probeCount * Constants.probeReso, height: Constants.probeReso))
     }
 
@@ -205,6 +208,14 @@ extension Scene {
             computeDescriptor.computeFunction = Device.sharedDevice.library!.makeFunction(
                 name: "denoiseReflectionKernel")
             denoiseReflectionPipeline = try device!.makeComputePipelineState(
+                descriptor: computeDescriptor,
+                options: [],
+                reflection: nil
+            )
+            
+            computeDescriptor.computeFunction = Device.sharedDevice.library!.makeFunction(
+                name: "denoiseTemporalKernel")
+            temporalDenoisePipeline = try device!.makeComputePipelineState(
                 descriptor: computeDescriptor,
                 options: [],
                 reflection: nil
@@ -495,7 +506,7 @@ extension Scene {
 //        renderCommandEncoder?.setFragmentBytes(&lightProbeData, length: MemoryLayout<LightProbeData>.stride, index: 1)
 //        renderCommandEncoder?.setFragmentBytes(&fragmentUniform, length: MemoryLayout<FragmentUniforms>.stride, index: 2)
         renderCommandEncoder?.setFragmentTexture(renderTarget, index: 0)
-        renderCommandEncoder?.setFragmentTexture(denoisedReflectionOutput, index: 1)
+        renderCommandEncoder?.setFragmentTexture(temporalDenoisedOutput, index: 1)
         renderCommandEncoder?.setFragmentBytes(&fragmentUniform, length: MemoryLayout<FragmentUniforms>.stride, index: 0)
         renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6)
     }
@@ -611,6 +622,25 @@ extension Scene {
                                              threadsPerThreadgroup: threadsPerGroup)
         computeEncoder?.endEncoding()
         
+        // MARK: Temporal Denoise
+        computeEncoder = commandBuffer.makeComputeCommandEncoder()
+        computeEncoder?.label = "Temporal Denoise compute"
+        computeEncoder?.setTexture(gBufferData.worldPos, index: TextureIndex.worldPos.rawValue)
+        computeEncoder?.setTexture(gBufferData.normal, index: TextureIndex.normal.rawValue)
+        computeEncoder?.setTexture(gBufferData.depth, index: TextureIndex.depth.rawValue)
+        computeEncoder?.setTexture(rayTracer?.reflectedPositions!, index: 3)
+        computeEncoder?.setTexture(rayTracer?.reflectedColors!, index: 4)
+        computeEncoder?.setTexture(gBufferData.inShadowReflected, index: 5)
+        computeEncoder?.setTexture(reflectionOutput, index: 6)
+        computeEncoder?.setTexture(rayTracer?.reflectedDir, index: 7)
+        computeEncoder?.setTexture(denoisedReflectionOutput, index: 8)
+        computeEncoder?.setTexture(temporalDenoisedOutput, index: 9)
+        
+        computeEncoder?.setComputePipelineState(temporalDenoisePipeline)
+        computeEncoder?.dispatchThreadgroups(threadGroups,
+                                             threadsPerThreadgroup: threadsPerGroup)
+        computeEncoder?.endEncoding()
+        
     }
     
     func drawIrradianceMap(renderCommandEncoder: MTLRenderCommandEncoder?) {
@@ -625,7 +655,7 @@ extension Scene {
         //    for i in 0..<lightPolygon.count {
         //        lightPolygon[i] = lightPolygonInitial[i] + Float3(sin(GameTimer.sharedTimer.time) * 20, 0, 0)
         //    }
-        sunDirection.z = 15 * cos(GameTimer.sharedTimer.time / 12)
+    //    sunDirection.z = 15 * cos(GameTimer.sharedTimer.time / 12)
     //    sunDirection.x = -25
     //    sunDirection. = abs(40 * cos(GameTimer.sharedTimer.time / 10)) - 1
         shadowViewMatrix = Matrix4.viewMatrix(position: sunDirection, target: Float3(0, 0, 0), up: Camera.WorldUp)

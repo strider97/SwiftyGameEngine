@@ -385,11 +385,11 @@ fragment float4 lightProbeFragmentShader(VertexOut vOut [[stage_in]],
     }
     
     int radianceMapSize = 16;
-    uint2 texPos = indexToTexPos_(index, 12, 8);
+    uint2 texPos = indexToTexPos_(index, 12, 3);
     float2 encodedUV = octEncode__(normal);
     float minimumUV = 1.0/radianceMapSize;
     encodedUV = max(minimumUV, min(1-minimumUV, encodedUV));
-    float2 uv = (float2(texPos) + encodedUV)*float2(1.0/(12 * 8), 1.0/10);
+    float2 uv = (float2(texPos) + encodedUV)*float2(1.0/(6 * 4), 1.0/6);
     
     uint2 texPosOcta = texPos * radianceMapSize + uint2(encodedUV * float2(radianceMapSize));
  //   color = radianceMap.read(texPosOcta).rgb;

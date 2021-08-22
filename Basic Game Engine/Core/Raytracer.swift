@@ -473,6 +473,7 @@ extension Raytracer {
             computeEncoder?.setBuffer(vertexIndirectSceneColorBuffer, offset: 0, index: 3)
             computeEncoder?.setTexture(reflectedPositions, index: 0)
             computeEncoder?.setTexture(reflectedColors, index: 1)
+            computeEncoder?.setTexture(reflectedDir, index: 2)
             computeEncoder?.setComputePipelineState(indirectIntersectionsPipeline!)
             computeEncoder?.dispatchThreadgroups(
                 threadGroups,

@@ -561,6 +561,23 @@ float GeometrySmith_(float3 N, float3 V, float3 L, float roughness)
     return ggx1 * ggx2;
 }
 
+// GGX / Trowbridge-Reitz
+// [Walter et al. 2007, "Microfacet models for refraction through rough surfaces"]
+float D_GGX( float a, float NoH )
+{
+    float a2 = a * a;
+    float d = ( NoH * a2 - NoH ) * NoH + 1;    // 2 mad
+    return a2 / ( M_PI_F*d*d );                    // 4 mul, 1 rcp
+}
+
+float Vis_Smith( float a, float NoV, float NoL )
+{
+    float a2 = a * a;
+    float Vis_SmithV = NoV + sqrt( NoV * (NoV - NoV * a2) + a2 );
+    float Vis_SmithL = NoL + sqrt( NoL * (NoL - NoL * a2) + a2 );
+    return 1.0 / ( Vis_SmithV * Vis_SmithL );
+}
+
 float NormalDistributionGGX__(float NdotH, float roughness) {
     float a2        = roughness * roughness;
     float NdotH2    = NdotH * NdotH;
@@ -600,7 +617,7 @@ kernel void reflectionKernel(
     float3 smoothN = normalShadow.xyz;
     float4 reflectedDepthAndNormal = reflectedDepthMap.sample(s_, uv);
     float3 reflectedAlbedo = reflectedColors.sample(s_, uv).rgb;
-    float3 reflectedDir = reflectionDirectionMap.sample(s_, uv).xyz;
+    float3 reflectedPosition = pos + reflectionDirectionMap.sample(s_, uv).xyz;
     float4 reflectedShadowMetallic = reflectedInShadow.sample(s_, uv);
     float insideShadow = reflectedShadowMetallic.r;
     float metallic = reflectedShadowMetallic.a;
@@ -608,7 +625,7 @@ kernel void reflectionKernel(
     float reflectedDepth = reflectedDepthAndNormal.a;
     float3 albedo = albedoTex.sample(s, uv).rgb;
     
-    float3 ssrColor = 0;
+    float3 reflectionColor = 0;
     
     roughness = 0.1;
     float3 v = normalize(uniforms.eye - pos);
@@ -624,18 +641,41 @@ kernel void reflectionKernel(
 //    float denominator = 4.0 * saturate(dot(smoothN, v)) * saturate(dot(smoothN, reflectedDir));
     
     if (reflectedDepth < 0) {
-        ssrColor = uniforms.ks * float3(113, 164, 243)/255;
+        reflectionColor = uniforms.ks * 0.1 * float3(113, 164, 243)/255;
     } else {
-        float3 reflectedPosition = pos + reflectedDir * reflectedDepth;
         float3 l = shadowUniforms.sunDirection;
         float3 diffuse = insideShadow * reflectedAlbedo * saturate(dot(reflectedNormal, l));
         float3 ambient = 0;
         ambient = (getDDGI(reflectedPosition, reflectedNormal, 1.0, uniforms, probes, probe, octahedralMap, radianceMap, specularMap) + 0.0000);
-        ssrColor = uniforms.ks * (uniforms.kd * diffuse + ambient * reflectedAlbedo);
+        reflectionColor = uniforms.ks * (uniforms.kd * diffuse + ambient * reflectedAlbedo);
     }
 //    ssrColor *= numerator / max(denominator, 0.001);
-    ssrColor *= kS;
-    reflectionOutput.write(float4(ssrColor, 1), tid);
+    reflectionColor *= kS;
+    reflectionOutput.write(float4(reflectionColor, 1), tid);
+}
+
+float getBrdf(float3 v, float3 r, float3 normal, float3 h, float roughness, float metallic) {
+    float3 F0 = float3(0.04);
+    F0 = mix(F0, 0.8, metallic);
+    float NdotH = saturate(dot(normal, h));
+    float HdotV = saturate(dot(h, v));
+    float NdotV = max(0.001, dot(normal, v));
+    
+    float FG = fresnelSchlickRoughness(saturate(dot(h, v)), F0, roughness).r * GeometrySmith_(normal, v, r, roughness);
+    float D = NormalDistributionGGX__(NdotH, roughness);
+    float numerator = FG * D;
+    float denominator = 4.0 * max(0.001, NdotV);
+    float brdf = numerator / denominator;
+    return brdf;
+}
+
+float3 fastTonemap(float3 c){
+    return c * 1.0/(max3(c.r, c.g, c.b) + 1.0);
+}
+
+float3 invFastTonemap(float3 c)
+{
+    return c * 1.0/(1.0 - max3(c.r, c.g, c.b));
 }
 
 kernel void denoiseReflectionKernel(
@@ -655,13 +695,13 @@ kernel void denoiseReflectionKernel(
                     texture2d<float, access::sample> reflectedColors [[texture(4)]],
                     texture2d<float, access::sample> reflectedInShadow [[texture(5)]],
                     texture2d<float, access::sample> reflectionOutput [[texture(6)]],
-                    texture2d<float, access::sample> reflectionDirectionMap [[texture(7)]],
+                    texture2d<float, access::sample> reflectionPositionsPdfMap [[texture(7)]],
                     texture2d<float, access::read_write> denoisedReflectionOutput [[texture(8)]])
 {
     uint width = denoisedReflectionOutput.get_width();
     uint height = denoisedReflectionOutput.get_height();
     if (tid.x < width && tid.y < height) {
-        int kernelSize = 3;
+        int kernelSize = 5;
         uint2 startI = tid - kernelSize/2;
         uint2 endI = startI + kernelSize;
         uint n = kernelSize * kernelSize;
@@ -669,11 +709,13 @@ kernel void denoiseReflectionKernel(
         float4 posRoughness = worldPos.sample(s, uv);
         
         float3 pos = posRoughness.xyz;
+        float3 v = normalize(uniforms.eye - pos);
         float3 normal = worldNormal.sample(s, uv).xyz;
         float roughness = posRoughness.a;
-        float4 weightReflection = reflectionDirectionMap.sample(s, uv);
-        float3 v = normalize(uniforms.eye - pos);
-        float3 r = weightReflection.xyz;
+        float4 reflectedPosPdf = reflectionPositionsPdfMap.sample(s, uv);
+        float3 rayOriginRelativeHitPosition = reflectedPosPdf.xyz;
+        float reflectionLength = length(rayOriginRelativeHitPosition);
+        float3 r = rayOriginRelativeHitPosition / reflectionLength;
         float3 h = normalize(v + r);
         float metallic = reflectedInShadow.sample(s, uv).a;
         
@@ -682,7 +724,13 @@ kernel void denoiseReflectionKernel(
         
         float3 FG = fresnelSchlickRoughness(saturate(dot(h, v)), F0, roughness) * GeometrySmith_(normal, v, r, roughness);
         
-        float3 result = 0.0;
+        float hitLength = reflectedDepthMap.sample(s1, uv).a;
+        if (hitLength == -1) {
+            hitLength = 100;
+        }
+//        float3 hitPos = pos + r * hitLength;
+        
+        float3 reflectionColor = 0.0;
         float weightSum = 0.0;
         
 //        float posA = reflectedDepthMap.sample(s, uv).a;
@@ -690,26 +738,132 @@ kernel void denoiseReflectionKernel(
 //            denoisedReflectionOutput.write(0, tid);
 //            return;
 //        }
-//        float3 prevColor = denoisedReflectionOutput.read(tid).rgb;
+        float3 prevColor = denoisedReflectionOutput.read(tid).rgb;
+        float NdotV = max(0.0, dot(normal, v));
         
         for(uint i = startI.x; i<endI.x; i++) {
             for(uint j = startI.y; j<endI.y; j++) {
                 float2 uv = float2(i, j) / float2(width, height);
                 float3 color = reflectionOutput.sample(s, uv).rgb;
-                float weight = reflectionDirectionMap.sample(s, uv).a;
-                result += color * weight;
+                
+                //_____
+                float4 posReflectionPdf = reflectionPositionsPdfMap.sample(s, uv);
+                float3 rayOriginRelativeHitPosition = posReflectionPdf.xyz;
+                float pdf = max(0.0000001, posReflectionPdf.a);
+                float invPdf = 1.0 / pdf;
+                
+                float rayLength = length(rayOriginRelativeHitPosition);
+                float3 sampleL = rayOriginRelativeHitPosition / rayLength;
+                float3 sampleH = normalize(v + sampleL);
+                float sampleNoH = max(0.0, dot(normal, sampleH));
+                float sampleNoL = max(0.0, dot(normal, sampleL));
+                float localBrdf = D_GGX(roughness, sampleNoH) * Vis_Smith(roughness, NdotV, sampleNoL) * sampleNoL;
+            //    invPdf = mix(1e-5, invPdf, roughness);
+                float weight = localBrdf * invPdf;
                 weightSum += weight;
+                reflectionColor += fastTonemap(color) * weight;
+                
+                //_____
+                
+            //    float3 n = worldNormal.sample(s, uv).xyz;
+//                float4 posRoughness = worldPos.sample(s, uv);
+//                float4 weightReflection = reflectionPositionsPdfMap.sample(s, uv);
+//                float3 r_ = rayOriginRelativeHitPosition.xyz;
+//                float3 pos_ = posRoughness.xyz;
+//            //    float roughness = posRoughness.a;
+//                float hitLength = reflectedDepthMap.sample(s1, uv).a;
+//                if (hitLength == -1) {
+//                    hitLength = 100;
+//                }
+//                float3 hitPos = pos_ + r_ * hitLength;
+//                float3 r = normalize(hitPos - pos);
+//                float3 h = normalize(v + r);
+//            //    float metallic = reflectedInShadow.sample(s, uv).a;
+//                float brdf = getBrdf(v, r, normal, h, roughness, metallic);
+//                float pdf = weightReflection.a;
+//                float weight = brdf / pdf;
+//
+////                float weight = reflectionDirectionMap.sample(s, uv).a;
+//                reflectionColor += color * weight;
+//                weightSum += weight;
             }
         }
         
-        result /= weightSum;
-        result = max(0.0, min(result, 0.1));
-        result *= FG;
+        reflectionColor = invFastTonemap(reflectionColor / weightSum);
+//        reflectionColor *= FG;
+        
+//        float3 sum = 0;
+//        float3 sumSquared = 0;
+//        for(uint i = startI.x; i<endI.x; i++) {
+//            for(uint j = startI.y; j<endI.y; j++) {
+//                float3 prevColor = denoisedReflectionOutput.read(uint2(i, j)).rgb;
+//                sum += prevColor;
+//                sumSquared += prevColor * prevColor;
+//            }
+//        }
+//
+//        if (false) {
+//            sum += result;
+//            sumSquared += result * result;
+//            sum /= n+1;
+//            sumSquared /= n+1;
+//            float3 sigma = max(0, sqrt(sumSquared - sum * sum));
+//            result = max(sum - 0.75 * sigma, min (sum + 0.75 * sigma, result));
+//        } else {
+//            result = max(0.0, min(result, 0.03));
+//        }
+        reflectionColor = max(0.0, reflectionColor);
+   //     if(prevColor.r > 0 || prevColor.g > 0 || prevColor.b > 0)
+   //         result = lerp3(result, prevColor, 0.1);
+        
     //    result /= n;
 //        if (prevColor.x > 0 || prevColor.y > 0 || prevColor.z > 0) {
 //            result = (result + prevColor)/2.0;
 //        }
-        denoisedReflectionOutput.write(float4(result, 1), tid);
+        denoisedReflectionOutput.write(float4(reflectionColor, 1), tid);
+    }
+}
+
+kernel void denoiseTemporalKernel(uint2 tid [[thread_position_in_grid]],
+          texture2d<float, access::sample> worldPos [[texture(rsmPos)]],
+          texture2d<float, access::sample> worldNormal [[texture(rsmNormal)]],
+          depth2d<float, access::sample> depthTex [[texture(rsmDepth)]],
+          texture2d<float, access::sample> reflectedDepthMap [[texture(3)]],
+          texture2d<float, access::sample> reflectedColors [[texture(4)]],
+          texture2d<float, access::sample> reflectedInShadow [[texture(5)]],
+          texture2d<float, access::sample> reflectionOutput [[texture(6)]],
+          texture2d<float, access::sample> reflectionDirectionMap [[texture(7)]],
+          texture2d<float, access::read_write> denoisedReflectionOutput [[texture(8)]],
+          texture2d<float, access::read_write> temporalDenoisedOutput [[texture(9)]]
+                                  )
+{
+    uint width = denoisedReflectionOutput.get_width();
+    uint height = denoisedReflectionOutput.get_height();
+    if (tid.x < width && tid.y < height) {
+        int kernelSize = 4;
+        uint2 startI = tid - kernelSize/2;
+        uint2 endI = startI + kernelSize;
+        uint n = kernelSize * kernelSize;
+        float2 uv = float2(tid) / float2(width, height);
+        
+        float3 sum = 0;
+        float3 sumSquared = 0;
+        for(uint i = startI.x; i<endI.x; i++) {
+            for(uint j = startI.y; j<endI.y; j++) {
+                float3 color = denoisedReflectionOutput.read(uint2(i, j)).rgb;
+                sum += color;
+                sumSquared += color * color;
+            }
+        }
+        sum /= n;
+        sumSquared /= n;
+        float3 sigma = max(0, sqrt(abs(sumSquared - sum * sum)));
+        float3 color = denoisedReflectionOutput.read(tid).rgb;
+        float3 result = max(sum - 0.75 * sigma, min (sum + 0.75 * sigma, color));
+        float3 prevColor = temporalDenoisedOutput.read(tid).rgb;
+        if(prevColor.r > 0 || prevColor.g > 0 || prevColor.b > 0)
+            result = lerp3(result, prevColor, 0.05);
+        temporalDenoisedOutput.write(float4(result, 1.0), tid);
     }
 }
 
