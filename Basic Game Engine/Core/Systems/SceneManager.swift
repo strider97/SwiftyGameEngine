@@ -502,6 +502,7 @@ extension Scene {
             ka: uniformSliders[Constants.Labels.ka]!.floatValue,
             kd: uniformSliders[Constants.Labels.kd]!.floatValue,
             ks: uniformSliders[Constants.Labels.ks]!.floatValue,
+            roughness: uniformSliders[Constants.Labels.roughness]!.floatValue,
             width: UInt32(size.width),
             height: UInt32(size.height),
             frame: UInt32(frame),
@@ -545,6 +546,7 @@ extension Scene {
             ka: uniformSliders[Constants.Labels.ka]!.floatValue,
             kd: uniformSliders[Constants.Labels.kd]!.floatValue,
             ks: uniformSliders[Constants.Labels.ks]!.floatValue,
+            roughness: uniformSliders[Constants.Labels.roughness]!.floatValue,
             width: UInt32(size.width),
             height: UInt32(size.height),
             frame: UInt32(frame),
@@ -728,6 +730,7 @@ struct FragmentUniforms {
     var ka: Float
     var kd: Float
     var ks: Float
+    var roughness: Float
     var width: UInt32
     var height: UInt32
     var frame: UInt32

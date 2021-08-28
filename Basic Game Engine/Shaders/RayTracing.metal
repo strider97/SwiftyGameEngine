@@ -908,24 +908,24 @@ kernel void primaryRaysIndirectKernel(
         float2 Xi = Hammersley16_(0, 1, Random);
         
         float2 diskE = UniformSampleDisk(Xi);
-//        float4 ggx = ImportanceSampleVisibleGGX(diskE, roughness, tangentV);
-        float4 ggx = ImportanceSampleGGX_(Xi, roughness * roughness);
+        float4 ggx = ImportanceSampleVisibleGGX(diskE, roughness, tangentV);
+//        float4 ggx = ImportanceSampleGGX_(Xi, roughness * roughness);
         float3 H = ggx.xyz;
         H = tangentBasis * H;
         float3 r = reflect(-v, H);
         
-        float dotRN = dot(normal, r);
-        uint numCalcs = 1;
-        while (dotRN < 0 && numCalcs < 16) {
-            numCalcs += 1;
-            uint2 Random = Rand3DPCG16( int3( int2(tid), (uniforms.frameIndex + numCalcs) % 16 ) ).xy;
-            float2 Xi = Hammersley16_(0, 1, Random);
-            ggx = ImportanceSampleGGX_(Xi, roughness * roughness);
-            H = ggx.xyz;
-            H = tangentBasis * H;
-            r = reflect(v, H);
-            dotRN = dot(normal, r);
-        }
+//        float dotRN = dot(normal, r);
+//        uint numCalcs = 1;
+//        while (dotRN < 0 && numCalcs < 16) {
+//            numCalcs += 1;
+//            uint2 Random = Rand3DPCG16( int3( int2(tid), (uniforms.frameIndex + numCalcs) % 16 ) ).xy;
+//            float2 Xi = Hammersley16_(0, 1, Random);
+//            ggx = ImportanceSampleGGX_(Xi, roughness * roughness);
+//            H = ggx.xyz;
+//            H = tangentBasis * H;
+//            r = reflect(v, H);
+//            dotRN = dot(normal, r);
+//        }
         
         // F(ω̂ i,ω̂ m)G2(ω̂ i,ω̂ o,ω̂ m)|ω̂ o⋅ω̂ m| /
         //         |ω̂ o⋅ω̂ g||ω̂ m⋅ω̂ g|
