@@ -276,6 +276,59 @@ float2 IntegrateBRDF( float NdotV, float roughness ) {
     return float2(scale, bias) / kSampleCount;
 }
 
+/*
+ 1          3.59685     1.36772
+ 9.04401    16.3174     9.22949
+ 5.56589    19.7886     20.2123
+ */
+
+constant float2x2 m1 = {
+    {0.99044, 1.29678},
+    {-1.28514, -0.755907}
+};
+
+constant float3x3 m2 = {
+    {1.0, 20.3225, 121.563},
+    {2.92338, 27.0302, 626.13},
+    {59.4188, 222.592, 316.627}
+};
+
+constant float2x2 m3 = {
+    {0.0365463, 9.0632},
+    {3.32707, -9.04756}
+};
+
+constant float3x3 m4 = {
+    {1, 9.04401, 5.56589},
+    {3.59685, 16.3174, 19.7886},
+    {1.36772, 9.22949, 20.2123}
+};
+
+kernel void integrateBrdfKernel(uint2 tid [[thread_position_in_grid]], texture2d<float, access::write> brdfTexture) {
+    uint width = brdfTexture.get_width();
+    uint height = brdfTexture.get_height();
+    if (tid.x < width && tid.y < height) {
+        float alpha = max(0.00001, (float(tid.x) + 0.5) / (width));
+        float alpha3 = max(1.0 / MAXFLOAT, alpha * alpha * alpha);
+        float NoV = max(0.00001, (float(tid.y) + 0.5) / (height));
+        float NoV2 = max(1.0 / MAXFLOAT, NoV * NoV);
+        float NoV3 = max(1.0 / MAXFLOAT, NoV * NoV * NoV);
+        
+        float numerator0 = dot(float2(1.0, alpha), m1 * float2(1.0, NoV));
+        float denominator0 = dot(float3(1.0, alpha, alpha3),
+                                 m2 * float3(1, NoV, NoV3));
+        
+        float numerator1 = dot(float2(1.0, alpha), m3 * float2(1.0, NoV));
+        float denominator1 = dot(float3(1.0, alpha, alpha3),
+                                 m4 * float3(1, NoV2, NoV3));
+        
+        float val0 = numerator0 / denominator0;
+        float val1 = numerator1 / denominator1;
+        
+        brdfTexture.write(float4(val1, val0, 0, 1), tid);
+    }
+}
+
 vertex VertexOut DFGVertexShader (const SimpleVertex vIn [[ stage_in ]]) {
     VertexOut vOut;
     vOut.pos = (float2(vIn.position.x, vIn.position.y)+1.0)/2.0;

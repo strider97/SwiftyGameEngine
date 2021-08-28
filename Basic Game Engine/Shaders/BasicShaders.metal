@@ -107,6 +107,7 @@ struct FragmentUniform {
     float ks;
     uint width;
     uint height;
+    uint frame;
     float4x4 P;
     float4x4 V;
 };
@@ -271,6 +272,19 @@ float sq(float s) {
 float pow3(float s) { return s*s*s; }
 int signOf(float a) {
     return a >= 0 ? 1 : -1;
+}
+
+float2 Hammersley16( uint Index, uint NumSamples, uint2 Random ) {
+    float E1 = fract( (float)Index / NumSamples + float( Random.x ) * (1.0 / 65536.0) );
+    float E2 = float( ( reverse_bits(Index) >> 16 ) ^ Random.y ) * (1.0 / 65536.0);
+    return float2( E1, E2 );
+}
+
+float2 UniformSampleDisk_( float2 E )
+{
+    float Theta = 2 * M_PI_F * E.x;
+    float Radius = sqrt( E.y );
+    return Radius * float2( cos( Theta ), sin( Theta ) );
 }
 
 float3 getDDGI(float3 position,
@@ -561,6 +575,41 @@ float GeometrySmith_(float3 N, float3 V, float3 L, float roughness)
     return ggx1 * ggx2;
 }
 
+uint3 Rand3DPCG16_(int3 p)
+{
+    // taking a signed int then reinterpreting as unsigned gives good behavior for negatives
+    uint3 v = uint3(p);
+
+    // Linear congruential step. These LCG constants are from Numerical Recipies
+    // For additional #'s, PCG would do multiple LCG steps and scramble each on output
+    // So v here is the RNG state
+    v = v * 1664525u + 1013904223u;
+
+    // PCG uses xorshift for the final shuffle, but it is expensive (and cheap
+    // versions of xorshift have visible artifacts). Instead, use simple MAD Feistel steps
+    //
+    // Feistel ciphers divide the state into separate parts (usually by bits)
+    // then apply a series of permutation steps one part at a time. The permutations
+    // use a reversible operation (usually ^) to part being updated with the result of
+    // a permutation function on the other parts and the key.
+    //
+    // In this case, I'm using v.x, v.y and v.z as the parts, using + instead of ^ for
+    // the combination function, and just multiplying the other two parts (no key) for
+    // the permutation function.
+    //
+    // That gives a simple mad per round.
+    v.x += v.y*v.z;
+    v.y += v.z*v.x;
+    v.z += v.x*v.y;
+    v.x += v.y*v.z;
+    v.y += v.z*v.x;
+    v.z += v.x*v.y;
+
+    // only top 16 bits are well shuffled
+    return v >> 16u;
+}
+
+
 // GGX / Trowbridge-Reitz
 // [Walter et al. 2007, "Microfacet models for refraction through rough surfaces"]
 float D_GGX( float a, float NoH )
@@ -612,46 +661,33 @@ kernel void reflectionKernel(
     float2 uv = float2(tid)/float2(reflectionOutput.get_width(), reflectionOutput.get_height());
     float4 posRoughness = worldPos.sample(s, uv);
     float3 pos = posRoughness.xyz;
-    float roughness = posRoughness.a;
-    float4 normalShadow = worldNormal.sample(s, uv);
-    float3 smoothN = normalShadow.xyz;
+//    float roughness = posRoughness.a;
+//    float4 normalShadow = worldNormal.sample(s, uv);
+//    float3 smoothN = normalShadow.xyz;
     float4 reflectedDepthAndNormal = reflectedDepthMap.sample(s_, uv);
     float3 reflectedAlbedo = reflectedColors.sample(s_, uv).rgb;
     float3 reflectedPosition = pos + reflectionDirectionMap.sample(s_, uv).xyz;
     float4 reflectedShadowMetallic = reflectedInShadow.sample(s_, uv);
     float insideShadow = reflectedShadowMetallic.r;
-    float metallic = reflectedShadowMetallic.a;
     float3 reflectedNormal = reflectedDepthAndNormal.xyz;
     float reflectedDepth = reflectedDepthAndNormal.a;
-    float3 albedo = albedoTex.sample(s, uv).rgb;
+//    float3 albedo = albedoTex.sample(s, uv).rgb;
     
     float3 reflectionColor = 0;
     
-    roughness = 0.1;
     float3 v = normalize(uniforms.eye - pos);
-    float3 F0 = float3(0.04);
-    F0 = mix(F0, albedo, 1.0*metallic);
-    float3 F = fresnelSchlickRoughness(max(dot(smoothN, v), 0.0), F0, 0.001);
-    float3 kS = F;
-//    float3 H = normalize(reflectedDir + v);
-//    float NdotH = saturate(dot(smoothN, H));
-//    float NDF = NormalDistributionGGX__(NdotH, roughness);
-//    float G   = GeometrySmith_(smoothN, v, reflectedDir, roughness);
-//    float3 numerator    = NDF * G * F;
-//    float denominator = 4.0 * saturate(dot(smoothN, v)) * saturate(dot(smoothN, reflectedDir));
     
     if (reflectedDepth < 0) {
         reflectionColor = uniforms.ks * 0.1 * float3(113, 164, 243)/255;
     } else {
         float3 l = shadowUniforms.sunDirection;
-        float3 diffuse = insideShadow * reflectedAlbedo * saturate(dot(reflectedNormal, l));
+        float3 diffuse = saturate(insideShadow) * reflectedAlbedo * saturate(dot(reflectedNormal, l));
         float3 ambient = 0;
         ambient = (getDDGI(reflectedPosition, reflectedNormal, 1.0, uniforms, probes, probe, octahedralMap, radianceMap, specularMap) + 0.0000);
         reflectionColor = uniforms.ks * (uniforms.kd * diffuse + ambient * reflectedAlbedo);
     }
-//    ssrColor *= numerator / max(denominator, 0.001);
-    reflectionColor *= kS;
-    reflectionOutput.write(float4(reflectionColor, 1), tid);
+    
+    reflectionOutput.write(float4(max(0.0, reflectionColor), 1), tid);
 }
 
 float getBrdf(float3 v, float3 r, float3 normal, float3 h, float roughness, float metallic) {
@@ -687,6 +723,7 @@ kernel void denoiseReflectionKernel(
                     texture2d<float, access::sample> worldPos [[texture(rsmPos)]],
                     texture2d<float, access::sample> worldNormal [[texture(rsmNormal)]],
                     depth2d<float, access::sample> depthTex [[texture(rsmDepth)]],
+                                    texture2d<float, access::sample> albedoTex [[texture(rsmFlux)]],
                     texture2d<float, access::sample> outputTex [[texture(0)]],
                       texture2d<float, access::sample> octahedralMap[[texture(10)]],
                       texture2d<float, access::sample> radianceMap[[texture(1)]],
@@ -696,130 +733,81 @@ kernel void denoiseReflectionKernel(
                     texture2d<float, access::sample> reflectedInShadow [[texture(5)]],
                     texture2d<float, access::sample> reflectionOutput [[texture(6)]],
                     texture2d<float, access::sample> reflectionPositionsPdfMap [[texture(7)]],
-                    texture2d<float, access::read_write> denoisedReflectionOutput [[texture(8)]])
+                    texture2d<float, access::read_write> denoisedReflectionOutput [[texture(8)]],
+                    texture2d<float, access::sample> brdfIntegratedTexture [[texture(9)]])
 {
     uint width = denoisedReflectionOutput.get_width();
     uint height = denoisedReflectionOutput.get_height();
     if (tid.x < width && tid.y < height) {
-        int kernelSize = 5;
-        uint2 startI = tid - kernelSize/2;
-        uint2 endI = startI + kernelSize;
+        uint kernelSize = 6;
+    //    uint2 startI = tid - kernelSize/2;
+    //    uint2 endI = startI + kernelSize;
         uint n = kernelSize * kernelSize;
         float2 uv = float2(tid) / float2(width, height);
         float4 posRoughness = worldPos.sample(s, uv);
+        float3 albedo = albedoTex.sample(s, uv).rgb;
         
         float3 pos = posRoughness.xyz;
         float3 v = normalize(uniforms.eye - pos);
         float3 normal = worldNormal.sample(s, uv).xyz;
         float roughness = posRoughness.a;
-        float4 reflectedPosPdf = reflectionPositionsPdfMap.sample(s, uv);
-        float3 rayOriginRelativeHitPosition = reflectedPosPdf.xyz;
-        float reflectionLength = length(rayOriginRelativeHitPosition);
-        float3 r = rayOriginRelativeHitPosition / reflectionLength;
-        float3 h = normalize(v + r);
+   //     float4 reflectedPosPdf = reflectionPositionsPdfMap.sample(s, uv);
+   //     float3 rayOriginRelativeHitPosition = reflectedPosPdf.xyz;
+   //     float reflectionLength = length(rayOriginRelativeHitPosition);
+   //     float3 r = rayOriginRelativeHitPosition / reflectionLength;
+   //     float3 h = normalize(v + r);
         float metallic = reflectedInShadow.sample(s, uv).a;
         
         float3 F0 = float3(0.04);
-        F0 = mix(F0, 0.8, metallic);
-        
-        float3 FG = fresnelSchlickRoughness(saturate(dot(h, v)), F0, roughness) * GeometrySmith_(normal, v, r, roughness);
+        F0 = mix(F0, albedo, metallic);
+        float3 F = fresnelSchlickRoughness(max(dot(normal, v), 0.0), F0, 0.001);
+        float3 kS = F;
         
         float hitLength = reflectedDepthMap.sample(s1, uv).a;
         if (hitLength == -1) {
             hitLength = 100;
         }
-//        float3 hitPos = pos + r * hitLength;
         
         float3 reflectionColor = 0.0;
         float weightSum = 0.0;
-        
-//        float posA = reflectedDepthMap.sample(s, uv).a;
-//        if (posA == -1) {
-//            denoisedReflectionOutput.write(0, tid);
-//            return;
-//        }
-        float3 prevColor = denoisedReflectionOutput.read(tid).rgb;
         float NdotV = max(0.0, dot(normal, v));
         
-        for(uint i = startI.x; i<endI.x; i++) {
-            for(uint j = startI.y; j<endI.y; j++) {
-                float2 uv = float2(i, j) / float2(width, height);
-                float3 color = reflectionOutput.sample(s, uv).rgb;
-                
-                //_____
-                float4 posReflectionPdf = reflectionPositionsPdfMap.sample(s, uv);
-                float3 rayOriginRelativeHitPosition = posReflectionPdf.xyz;
-                float pdf = max(0.0000001, posReflectionPdf.a);
-                float invPdf = 1.0 / pdf;
-                
-                float rayLength = length(rayOriginRelativeHitPosition);
-                float3 sampleL = rayOriginRelativeHitPosition / rayLength;
-                float3 sampleH = normalize(v + sampleL);
-                float sampleNoH = max(0.0, dot(normal, sampleH));
-                float sampleNoL = max(0.0, dot(normal, sampleL));
-                float localBrdf = D_GGX(roughness, sampleNoH) * Vis_Smith(roughness, NdotV, sampleNoL) * sampleNoL;
-            //    invPdf = mix(1e-5, invPdf, roughness);
-                float weight = localBrdf * invPdf;
-                weightSum += weight;
-                reflectionColor += fastTonemap(color) * weight;
-                
-                //_____
-                
-            //    float3 n = worldNormal.sample(s, uv).xyz;
-//                float4 posRoughness = worldPos.sample(s, uv);
-//                float4 weightReflection = reflectionPositionsPdfMap.sample(s, uv);
-//                float3 r_ = rayOriginRelativeHitPosition.xyz;
-//                float3 pos_ = posRoughness.xyz;
-//            //    float roughness = posRoughness.a;
-//                float hitLength = reflectedDepthMap.sample(s1, uv).a;
-//                if (hitLength == -1) {
-//                    hitLength = 100;
-//                }
-//                float3 hitPos = pos_ + r_ * hitLength;
-//                float3 r = normalize(hitPos - pos);
-//                float3 h = normalize(v + r);
-//            //    float metallic = reflectedInShadow.sample(s, uv).a;
-//                float brdf = getBrdf(v, r, normal, h, roughness, metallic);
-//                float pdf = weightReflection.a;
-//                float weight = brdf / pdf;
-//
-////                float weight = reflectionDirectionMap.sample(s, uv).a;
-//                reflectionColor += color * weight;
-//                weightSum += weight;
-            }
+        float2 integratedBrdf = brdfIntegratedTexture.sample(s, float2(roughness, NdotV)).xy;
+        float3 FG = integratedBrdf.x * kS + integratedBrdf.y;
+        uint NUM_SAMPLES = n;
+        float2 FilterSize = mix(20.0, 1, roughness);
+        FilterSize = 20;
+        uint2 PixelRandomSeed = Rand3DPCG16_(int3(int2(tid), uniforms.frame % 8)).xy;
+        for(uint i = 0; i<NUM_SAMPLES; i++) {
+            float2 HammersleySample = Hammersley16(i, NUM_SAMPLES, PixelRandomSeed);
+            float2 DiskSample = UniformSampleDisk_(HammersleySample);
+            float2 SampleOffset = DiskSample * FilterSize;
+            float2 uvSampleOffset = SampleOffset / float2(width, height);
+            float sampleWeight = saturate(4 * (1.0 - dot(DiskSample, DiskSample)));
+            
+            float2 uv_ = saturate(uv + uvSampleOffset);
+            float3 color = reflectionOutput.sample(s, uv_).rgb;
+            
+            float4 posReflectionPdf = reflectionPositionsPdfMap.sample(s, uv_);
+            float3 rayOriginRelativeHitPosition = posReflectionPdf.xyz;
+            float pdf = max(0.0000001, posReflectionPdf.a);
+            float invPdf = 1.0 / pdf;
+            
+            float rayLength = length(rayOriginRelativeHitPosition);
+            float3 sampleL = rayOriginRelativeHitPosition / rayLength;
+            float3 sampleH = normalize(v + sampleL);
+            float sampleNoH = max(0.0, dot(normal, sampleH));
+            float sampleNoL = max(0.0, dot(normal, sampleL));
+            float localBrdf = D_GGX(roughness, sampleNoH) * Vis_Smith(roughness, NdotV, sampleNoL) * sampleNoL;
+            invPdf = mix(1e-5, invPdf, roughness);
+            float weight = sampleWeight * localBrdf * invPdf;
+            weightSum += weight;
+            reflectionColor += fastTonemap(color) * weight;
         }
         
         reflectionColor = invFastTonemap(reflectionColor / weightSum);
-//        reflectionColor *= FG;
-        
-//        float3 sum = 0;
-//        float3 sumSquared = 0;
-//        for(uint i = startI.x; i<endI.x; i++) {
-//            for(uint j = startI.y; j<endI.y; j++) {
-//                float3 prevColor = denoisedReflectionOutput.read(uint2(i, j)).rgb;
-//                sum += prevColor;
-//                sumSquared += prevColor * prevColor;
-//            }
-//        }
-//
-//        if (false) {
-//            sum += result;
-//            sumSquared += result * result;
-//            sum /= n+1;
-//            sumSquared /= n+1;
-//            float3 sigma = max(0, sqrt(sumSquared - sum * sum));
-//            result = max(sum - 0.75 * sigma, min (sum + 0.75 * sigma, result));
-//        } else {
-//            result = max(0.0, min(result, 0.03));
-//        }
+        reflectionColor *= FG;
         reflectionColor = max(0.0, reflectionColor);
-   //     if(prevColor.r > 0 || prevColor.g > 0 || prevColor.b > 0)
-   //         result = lerp3(result, prevColor, 0.1);
-        
-    //    result /= n;
-//        if (prevColor.x > 0 || prevColor.y > 0 || prevColor.z > 0) {
-//            result = (result + prevColor)/2.0;
-//        }
         denoisedReflectionOutput.write(float4(reflectionColor, 1), tid);
     }
 }
@@ -840,7 +828,7 @@ kernel void denoiseTemporalKernel(uint2 tid [[thread_position_in_grid]],
     uint width = denoisedReflectionOutput.get_width();
     uint height = denoisedReflectionOutput.get_height();
     if (tid.x < width && tid.y < height) {
-        int kernelSize = 4;
+        int kernelSize = 12;
         uint2 startI = tid - kernelSize/2;
         uint2 endI = startI + kernelSize;
         uint n = kernelSize * kernelSize;

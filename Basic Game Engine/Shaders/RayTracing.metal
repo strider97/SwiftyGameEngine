@@ -296,6 +296,12 @@ float signum__(float v) {
     return v > 0 ? 1.0 : 0.0;
 }
 
+float2 Hammersley16_( uint Index, uint NumSamples, uint2 Random ) {
+    float E1 = fract( (float)Index / NumSamples + float( Random.x ) * (1.0 / 65536.0) );
+    float E2 = float( ( reverse_bits(Index) >> 16 ) ^ Random.y ) * (1.0 / 65536.0);
+    return float2( E1, E2 );
+}
+
 void SHProjectLinear__(float3 dir, float coeff[9]) {
     float l0 = 0.282095;
     float l1 = 0.488603;
@@ -688,32 +694,123 @@ float2 halton (float2 s)
     return a.zw;
 }
 
-float4 ImportanceSampleGGX_(float2 Xi, float3 N, float roughness)
+uint3 Rand3DPCG16(int3 p)
 {
-    float a2 = roughness*roughness;
+    // taking a signed int then reinterpreting as unsigned gives good behavior for negatives
+    uint3 v = uint3(p);
+
+    // Linear congruential step. These LCG constants are from Numerical Recipies
+    // For additional #'s, PCG would do multiple LCG steps and scramble each on output
+    // So v here is the RNG state
+    v = v * 1664525u + 1013904223u;
+
+    // PCG uses xorshift for the final shuffle, but it is expensive (and cheap
+    // versions of xorshift have visible artifacts). Instead, use simple MAD Feistel steps
+    //
+    // Feistel ciphers divide the state into separate parts (usually by bits)
+    // then apply a series of permutation steps one part at a time. The permutations
+    // use a reversible operation (usually ^) to part being updated with the result of
+    // a permutation function on the other parts and the key.
+    //
+    // In this case, I'm using v.x, v.y and v.z as the parts, using + instead of ^ for
+    // the combination function, and just multiplying the other two parts (no key) for
+    // the permutation function.
+    //
+    // That gives a simple mad per round.
+    v.x += v.y*v.z;
+    v.y += v.z*v.x;
+    v.z += v.x*v.y;
+    v.x += v.y*v.z;
+    v.y += v.z*v.x;
+    v.z += v.x*v.y;
+
+    // only top 16 bits are well shuffled
+    return v >> 16u;
+}
+
+float2 UniformSampleDisk( float2 E )
+{
+    float Theta = 2 * PI * E.x;
+    float Radius = sqrt( E.y );
+    return Radius * float2( cos( Theta ), sin( Theta ) );
+}
+
+float Pow2(float x) {
+    return x*x;
+}
+
+float3x3 getTangentBasis( float3 TangentZ )
+{
+    const float Sign = TangentZ.z >= 0 ? 1 : -1;
+    const float a = -1.0/( Sign + TangentZ.z );
+    const float b = TangentZ.x * TangentZ.y * a;
     
-    float phi = 2 * PI * Xi.x;
-    float cosTheta = sqrt( (1 - Xi.y) / ( 1 + (a2 - 1) * Xi.y ) );
-    float sinTheta = sqrt( 1 - cosTheta * cosTheta );
-    
-    // from spherical coordinates to cartesian coordinates - halfway vector
+    float3 TangentX = { 1 + Sign * a * Pow2( TangentZ.x ), Sign * b, -Sign * TangentZ.x };
+    float3 TangentY = { b,  Sign + a * Pow2( TangentZ.y ), -TangentZ.y };
+
+    return float3x3( TangentX, TangentY, TangentZ );
+}
+
+float4 ImportanceSampleGGX_( float2 E, float a2 )
+{
+    float Phi = 2 * PI * E.x;
+    float CosTheta = sqrt( (1 - E.y) / ( 1 + (a2 - 1) * E.y ) );
+    float SinTheta = sqrt( 1 - CosTheta * CosTheta );
+
     float3 H;
-    H.x = cos(phi) * sinTheta;
-    H.y = sin(phi) * sinTheta;
-    H.z = cosTheta;
+    H.x = SinTheta * cos( Phi );
+    H.y = SinTheta * sin( Phi );
+    H.z = CosTheta;
     
-    // from tangent-space H vector to world-space sample vector
-    float3 up          = abs(N.z) < 0.999 ? float3(0.0, 0.0, 1.0) : float3(1.0, 0.0, 0.0);
-    float3 tangent   = normalize(cross(up, N));
-    float3 bitangent = cross(N, tangent);
-    
-    float3 sampleVec = tangent * H.x + bitangent * H.y + N * H.z;
-    
-    float d = ( cosTheta * a2 - cosTheta ) * cosTheta + 1;
+    float d = ( CosTheta * a2 - CosTheta ) * CosTheta + 1;
     float D = a2 / ( PI*d*d );
-    float PDF = D * cosTheta;
-    
-    return float4(normalize(sampleVec), PDF);
+    float PDF = D * CosTheta;
+
+    return float4( H, PDF );
+}
+
+// UE4 https://github.com/EpicGames/UnrealEngine
+
+float VisibleGGXPDF(float3 V, float3 H, float a2)
+{
+    float NoV = V.z;
+    float NoH = H.z;
+    float VoH = dot(V, H);
+
+    float d = (NoH * a2 - NoH) * NoH + 1;
+    float D = a2 / (PI*d*d);
+
+    float PDF = 2 * VoH * D / (NoV + sqrt(NoV * (NoV - NoV * a2) + a2));
+    return PDF;
+}
+
+float4 ImportanceSampleVisibleGGX(float2 DiskE, float a, float3 V)
+{
+    // NOTE: See below for anisotropic version that avoids this sqrt
+    float a2 = a*a;
+
+    // stretch
+    float3 Vh = normalize( float3( a * V.xy, V.z ) );
+
+    // Stable tangent basis based on V
+    // Tangent0 is orthogonal to N
+    float LenSq = Vh.x * Vh.x + Vh.y * Vh.y;
+    float3 Tangent0 = LenSq > 0 ? float3(-Vh.y, Vh.x, 0) * rsqrt(LenSq) : float3(1, 0, 0);
+    float3 Tangent1 = cross(Vh, Tangent0);
+
+    float2 p = DiskE;
+    float s = 0.5 + 0.5 * Vh.z;
+    p.y = (1 - s) * sqrt( 1 - p.x * p.x ) + s * p.y;
+
+    float3 H;
+    H  = p.x * Tangent0;
+    H += p.y * Tangent1;
+    H += sqrt( saturate( 1 - dot( p, p ) ) ) * Vh;
+
+    // unstretch
+    H = normalize( float3( a * H.xy, max(0.0, H.z) ) );
+
+    return float4(H, VisibleGGXPDF(V, H, a2));
 }
 
 float NormalDistributionGGX_(float NdotH, float roughness) {
@@ -782,7 +879,7 @@ kernel void primaryRaysIndirectKernel(
                                 texture2d<float, access::sample> normals [[texture(0)]],
                                 texture2d<float, access::sample> positions [[texture(1)]],
                                 texture2d<float, access::write> reflectedDir [[texture(2)]],
-                                depth2d<float, access::sample> noiseTex [[texture(3)]])
+                                texture2d<float, access::sample> noiseTex [[texture(3)]])
 {
     uint width = reflectedDir.get_width();
     uint height = reflectedDir.get_height();
@@ -802,23 +899,34 @@ kernel void primaryRaysIndirectKernel(
         normal = normalize(normal);
         float3 e = float3(eye->x, eye->y, eye->z);
         float3 v = normalize(e - pos);
-        float noise = noiseTex.sample(s__, uv);
+  //      float3 noise = noiseTex.sample(s__, uv).xyz;
         float roughness = max(0.00001, uniforms.roughness.x);
-   //     uint largeN = width * height * 100;]
-        float2 Xi = halton(uint(1.0/noise * (uniforms.frameIndex % 100000)) % 100000);
-   //     float2 Xi = halton(uint(1.0/noise * absSum(v) * 50 * max(1.0, roughness * 100)) % 100000);
-        float4 ggx = ImportanceSampleGGX_(Xi, normal, roughness);
+        float3x3 tangentBasis = getTangentBasis(normal);
+        float3 tangentV       = v * tangentBasis;
+        uint2 Random = Rand3DPCG16( int3( int2(tid), uniforms.frameIndex % 16 ) ).xy;
+  //      float2 Xi = halton(float2(uint2(noise.xy * (uniforms.frameIndex % 10000)) % 100000));
+        float2 Xi = Hammersley16_(0, 1, Random);
+        
+        float2 diskE = UniformSampleDisk(Xi);
+//        float4 ggx = ImportanceSampleVisibleGGX(diskE, roughness, tangentV);
+        float4 ggx = ImportanceSampleGGX_(Xi, roughness * roughness);
         float3 H = ggx.xyz;
+        H = tangentBasis * H;
         float3 r = reflect(-v, H);
-//        float dotRN = dot(normal, r);
-//        uint numCalcs = 1;
-//        while (dotRN < 0 && numCalcs < 1) {
-//            numCalcs += 1;
-//            Xi = Halton23((rayIdx+1)*numCalcs);
-//            H  = ImportanceSampleGGX_(Xi, normal, roughness);
-//            r = reflect(v, H);
-//            dotRN = dot(normal, r);
-//        }
+        
+        float dotRN = dot(normal, r);
+        uint numCalcs = 1;
+        while (dotRN < 0 && numCalcs < 16) {
+            numCalcs += 1;
+            uint2 Random = Rand3DPCG16( int3( int2(tid), (uniforms.frameIndex + numCalcs) % 16 ) ).xy;
+            float2 Xi = Hammersley16_(0, 1, Random);
+            ggx = ImportanceSampleGGX_(Xi, roughness * roughness);
+            H = ggx.xyz;
+            H = tangentBasis * H;
+            r = reflect(v, H);
+            dotRN = dot(normal, r);
+        }
+        
         // F(ω̂ i,ω̂ m)G2(ω̂ i,ω̂ o,ω̂ m)|ω̂ o⋅ω̂ m| /
         //         |ω̂ o⋅ω̂ g||ω̂ m⋅ω̂ g|
         // Wm = h,
@@ -826,13 +934,7 @@ kernel void primaryRaysIndirectKernel(
         // Wg = n,
         // Wi = l
         
-//        float NdotH = saturate(dot(normal, H));
-//        float HdotV = saturate(dot(H, v));
-//        float NdotV = max(0.001, dot(normal, v));
-//        float numerator = fresnelSchlickRoughness_(HdotV, 0.04, roughness) * GeometrySmith__(normal, v, r, roughness) * HdotV;
-//        float denominator = max(0.001, NdotV * NdotH);
         float rayPdf = ggx.a;
-        
         ray.origin = pos + eps * normal;
         ray.direction = r;
         ray.minDistance = 0.001;

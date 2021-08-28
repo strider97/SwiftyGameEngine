@@ -74,6 +74,7 @@ class Scene: NSObject {
     var reflectionComputePipeline: MTLComputePipelineState!
     var denoiseReflectionPipeline: MTLComputePipelineState!
     var temporalDenoisePipeline: MTLComputePipelineState!
+    var brdfComputePipeline: MTLComputePipelineState!
     var renderTarget: MTLTexture!
     var reflectionOutput: MTLTexture!
     var denoisedReflectionOutput: MTLTexture!
@@ -81,6 +82,7 @@ class Scene: NSObject {
     var noiseTexture: MTLTexture!
     var randomKernelAndNoise: [Float3] = []
     let randomKernelSize = 64 + 16
+    var brdfIntegratedTexture: MTLTexture!
 
     override init() {
         light = PolygonLight(vertices: lightPolygon)
@@ -133,13 +135,14 @@ extension Scene: MTKViewDelegate {
         renderTarget = device!.makeTexture(descriptor: renderTargetDescriptor)
         let textureLoader = MTKTextureLoader(device: device!)
         let options_: [MTKTextureLoader.Option : Any] = [.SRGB : false]
-        noiseTexture = try! textureLoader.newTexture(name: "noiseTex", scaleFactor: 1.0, bundle: nil, options: options_)
+        noiseTexture = try! textureLoader.newTexture(name: "blueNoise", scaleFactor: 1.0, bundle: nil, options: options_)
         //     rayTracer?.mtkView(view, drawableSizeWillChange: CGSize(width: Constants.probeReso * Constants.probeCount, height: Constants.probeReso * Constants.probeCount))
         let reflectionSize = CGSize(width: size.width/2, height: size.height/2)
         Constants.reflectedPositionsSize = reflectionSize
         reflectionOutput = Descriptor.build2DTextureForWrite(pixelFormat: .rgba16Float, size: reflectionSize, label: "Reflection output", mipmapped: false, shaderWrite: true)
         denoisedReflectionOutput = Descriptor.build2DTextureForWrite(pixelFormat: .rgba16Float, size: size, label: "Denoised reflection output", mipmapped: false, shaderWrite: true)
         temporalDenoisedOutput = Descriptor.build2DTextureForWrite(pixelFormat: .rgba16Float, size: size, label: "Temporal denoised reflection output", mipmapped: false, shaderWrite: true)
+        brdfIntegratedTexture = Descriptor.build2DTextureForWrite(pixelFormat: .rgba16Float, size: CGSize(width: 1024, height: 1024), label: "brdf integrated", mipmapped: false, shaderWrite: true)
         rayTracer?.mtkView(view, drawableSizeWillChange: CGSize(width: Constants.probeCount * Constants.probeReso, height: Constants.probeReso))
     }
 
@@ -216,6 +219,14 @@ extension Scene {
             computeDescriptor.computeFunction = Device.sharedDevice.library!.makeFunction(
                 name: "denoiseTemporalKernel")
             temporalDenoisePipeline = try device!.makeComputePipelineState(
+                descriptor: computeDescriptor,
+                options: [],
+                reflection: nil
+            )
+            
+            computeDescriptor.computeFunction = Device.sharedDevice.library!.makeFunction(
+                name: "integrateBrdfKernel")
+            brdfComputePipeline = try device!.makeComputePipelineState(
                 descriptor: computeDescriptor,
                 options: [],
                 reflection: nil
@@ -493,6 +504,7 @@ extension Scene {
             ks: uniformSliders[Constants.Labels.ks]!.floatValue,
             width: UInt32(size.width),
             height: UInt32(size.height),
+            frame: UInt32(frame),
             P: P,
             V: camera.lookAtMatrix
         )
@@ -535,6 +547,7 @@ extension Scene {
             ks: uniformSliders[Constants.Labels.ks]!.floatValue,
             width: UInt32(size.width),
             height: UInt32(size.height),
+            frame: UInt32(frame),
             P: P,
             V: camera.lookAtMatrix
         )
@@ -556,6 +569,24 @@ extension Scene {
         computeEncoder?.dispatchThreadgroups(threadGroups,
                                              threadsPerThreadgroup: threadsPerGroup)
         computeEncoder?.endEncoding()
+        
+        //Mark: Integrate brdf
+        if firstDraw {
+            width = brdfIntegratedTexture.width
+            height = brdfIntegratedTexture.height
+            threadsPerGroup = MTLSizeMake(16, 16, 1)
+            threadGroups = MTLSizeMake(
+            (width + threadsPerGroup.width - 1) / threadsPerGroup.width,
+            (height + threadsPerGroup.height - 1) / threadsPerGroup.height, 1
+            )
+            computeEncoder = commandBuffer.makeComputeCommandEncoder()
+            computeEncoder?.label = "Integrate BRDF"
+            computeEncoder?.setTexture(brdfIntegratedTexture, index: 0)
+            computeEncoder?.setComputePipelineState(brdfComputePipeline)
+            computeEncoder?.dispatchThreadgroups(threadGroups,
+                                                 threadsPerThreadgroup: threadsPerGroup)
+            computeEncoder?.endEncoding()
+        }
         
         //MARK: Reflection Compute
         width = Int(Constants.reflectedPositionsSize.width)
@@ -601,6 +632,7 @@ extension Scene {
         computeEncoder?.label = "Denoise Reflection compute"
         computeEncoder?.setTexture(gBufferData.worldPos, index: TextureIndex.worldPos.rawValue)
         computeEncoder?.setTexture(gBufferData.normal, index: TextureIndex.normal.rawValue)
+        computeEncoder?.setTexture(gBufferData.flux, index: TextureIndex.flux.rawValue)
         computeEncoder?.setTexture(gBufferData.depth, index: TextureIndex.depth.rawValue)
         computeEncoder?.setTexture(reflectionOutput, index: 6)
         computeEncoder?.setTexture(rayTracer?.reflectedDir, index: 7)
@@ -612,6 +644,7 @@ extension Scene {
         computeEncoder?.setTexture(irradianceField.depthMap!, index: 10)
         computeEncoder?.setTexture(irradianceField.radianceMap!, index: 1)
         computeEncoder?.setTexture(irradianceField.specularMap!, index: 2)
+        computeEncoder?.setTexture(brdfIntegratedTexture, index: 9)
         
         computeEncoder?.setBytes(&s, length: MemoryLayout<ShadowUniforms>.stride, index: 0)
         computeEncoder?.setBytes(&fragmentUniform, length: MemoryLayout<FragmentUniforms>.stride, index: 2)
@@ -640,7 +673,6 @@ extension Scene {
         computeEncoder?.dispatchThreadgroups(threadGroups,
                                              threadsPerThreadgroup: threadsPerGroup)
         computeEncoder?.endEncoding()
-        
     }
     
     func drawIrradianceMap(renderCommandEncoder: MTLRenderCommandEncoder?) {
@@ -698,6 +730,7 @@ struct FragmentUniforms {
     var ks: Float
     var width: UInt32
     var height: UInt32
+    var frame: UInt32
     var P: Matrix4
     var V: Matrix4
 };
