@@ -26,8 +26,8 @@ class Scene: NSObject {
     static let W: Float = 1280
     static let H: Float = 720
     final let P = Matrix4(projectionFov: MathConstants.PI.rawValue / 3, near: 0.01, far: 500, aspect: Scene.W / Scene.H)
-    var sunDirection = Float3(25, 8, 2)
-//    var sunDirection = Float3(5, 18, 4)
+//    var sunDirection = Float3(25, 8, 2)
+    var sunDirection = Float3(5, 18, 4)
     var orthoGraphicP = Matrix4(orthoLeft: -10, right: 10, bottom: -10, top: 10, near: 0.01, far: 100)
     lazy var shadowViewMatrix = Matrix4.viewMatrix(position: sunDirection, target: Float3(0, 0, 0), up: Camera.WorldUp)
     final let timer = GameTimer.sharedTimer
@@ -142,7 +142,9 @@ extension Scene: MTKViewDelegate {
         reflectionOutput = Descriptor.build2DTextureForWrite(pixelFormat: .rgba16Float, size: reflectionSize, label: "Reflection output", mipmapped: false, shaderWrite: true)
         denoisedReflectionOutput = Descriptor.build2DTextureForWrite(pixelFormat: .rgba16Float, size: size, label: "Denoised reflection output", mipmapped: false, shaderWrite: true)
         temporalDenoisedOutput = Descriptor.build2DTextureForWrite(pixelFormat: .rgba16Float, size: size, label: "Temporal denoised reflection output", mipmapped: false, shaderWrite: true)
-        brdfIntegratedTexture = Descriptor.build2DTextureForWrite(pixelFormat: .rgba16Float, size: CGSize(width: 1024, height: 1024), label: "brdf integrated", mipmapped: false, shaderWrite: true)
+        if firstDraw {
+            brdfIntegratedTexture = Descriptor.build2DTextureForWrite(pixelFormat: .rgba16Float, size: CGSize(width: 1024, height: 1024), label: "brdf integrated", mipmapped: false, shaderWrite: true)
+        }
         rayTracer?.mtkView(view, drawableSizeWillChange: CGSize(width: Constants.probeCount * Constants.probeReso, height: Constants.probeReso))
     }
 

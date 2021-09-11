@@ -679,7 +679,7 @@ kernel void reflectionKernel(
     float3 v = normalize(uniforms.eye - pos);
     
     if (reflectedDepth < 0) {
-        reflectionColor = uniforms.ks * 0.1 * float3(113, 164, 243)/255;
+        reflectionColor = uniforms.ks * 0.2 * float3(113, 164, 243)/255;
     } else {
         float3 l = shadowUniforms.sunDirection;
         float3 diffuse = saturate(insideShadow) * reflectedAlbedo * saturate(dot(reflectedNormal, l));
@@ -741,7 +741,7 @@ kernel void denoiseReflectionKernel(
     uint height = denoisedReflectionOutput.get_height();
     if (tid.x < width && tid.y < height) {
         
-        uint NUM_SAMPLES = 32;
+        uint NUM_SAMPLES = 16;
         float2 uv = float2(tid) / float2(width, height);
         float4 posRoughness = worldPos.sample(s, uv);
         float3 albedo = albedoTex.sample(s, uv).rgb;
@@ -768,7 +768,7 @@ kernel void denoiseReflectionKernel(
         
         float2 integratedBrdf = brdfIntegratedTexture.sample(s, float2(roughness, NdotV)).xy;
         float3 FG = integratedBrdf.x * kS + integratedBrdf.y;
-        float2 FilterSize = mix(0.0, 20.0, saturate(sqrt(roughness) * 4));
+        float2 FilterSize = mix(0.0, 20.0, saturate(roughness * 4));
     //    FilterSize = 20;
         uint2 PixelRandomSeed = Rand3DPCG16_(int3(int2(tid), uniforms.frame % 8)).xy;
         for(uint i = 0; i<NUM_SAMPLES; i++) {
@@ -843,7 +843,7 @@ kernel void denoiseTemporalKernel(uint2 tid [[thread_position_in_grid]],
         float3 result = max(sum - 0.65 * sigma, min (sum + 0.65 * sigma, color));
         float3 prevColor = temporalDenoisedOutput.read(tid).rgb;
         if(prevColor.r > 0 || prevColor.g > 0 || prevColor.b > 0)
-            result = lerp3(result, prevColor, 0.15);
+            result = lerp3(result, prevColor, 0.1);
         temporalDenoisedOutput.write(float4(result, 1.0), tid);
     }
 }
