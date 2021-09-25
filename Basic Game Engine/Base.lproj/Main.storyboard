@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="XfG-lQ-9wD">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="19162" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="XfG-lQ-9wD">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="18122"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19162"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -742,18 +742,18 @@
                                         </customSpacing>
                                     </stackView>
                                     <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="10" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="13V-SI-Jao">
-                                        <rect key="frame" x="16" y="127" width="215" height="23"/>
+                                        <rect key="frame" x="24" y="127" width="207" height="23"/>
                                         <subviews>
                                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="QgA-hf-sJz">
-                                                <rect key="frame" x="-2" y="4" width="69" height="16"/>
-                                                <textFieldCell key="cell" lineBreakMode="clipping" title="depth Bias" id="evf-Yi-toY">
+                                                <rect key="frame" x="-2" y="4" width="61" height="16"/>
+                                                <textFieldCell key="cell" lineBreakMode="clipping" title="view Bias" id="evf-Yi-toY">
                                                     <font key="font" metaFont="system"/>
                                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                 </textFieldCell>
                                             </textField>
                                             <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="iRe-FE-1oJ">
-                                                <rect key="frame" x="73" y="-4" width="144" height="28"/>
+                                                <rect key="frame" x="65" y="-4" width="144" height="28"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="140" id="V7Z-me-M46"/>
                                                 </constraints>

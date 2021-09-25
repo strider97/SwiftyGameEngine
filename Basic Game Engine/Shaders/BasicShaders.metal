@@ -335,7 +335,8 @@ float3 getDDGI(float3 position,
         ushort2(probeData.probeCount.x + 1, 1)
     };
     
-    float3 color = 0;
+    float3 irradiance = 0;
+    float accumulatedWeights = 0;
     float shCoeff[9];
     SHProjectLinear_(smoothNormal, shCoeff);
     float aCap[9] = {   3.141593,
@@ -348,70 +349,89 @@ float3 getDDGI(float3 position,
                     lightProbeTexCoeff[iCoeff][1] * probeData.probeGridWidth * probeData.probeGridHeight;
         device LightProbe &probe = probes[index];
         
-        float normalBias = uniforms.normalBias;
-        float depthBias = uniforms.depthBias;
-        float3 dirFromProbe = normalize(position - (probe.location + probe.offset));
-        float dotPN = dot(dirFromProbe, smoothNormal);
-    //    if (dotPN > 0)
-    //        continue;
-    //    int signDot = signOf(-dotPN);
-    //    normalBias *= signDot;
-    //    depthBias *= signDot;
-        float w = max(0.0001, signum_(-dotPN) * 1);
-        trilinearWeights[iCoeff] *= w*w + 0.2;
         float3 v = normalize(uniforms.eye - position);
-        float3 r = normalize(reflectedPosition - (probe.location + probe.offset));
-        float3 dirToProbe = -dirFromProbe;
-    //    if(dot(uniforms.eye, dirToProbe - dot(dirToProbe, smoothNormal)) < 0)
-    //        v = reflect(-v, smoothNormal);
-        float3 newPosition = position + (0.2 * smoothNormal + depthBias * v)
-        * (0.75 * 2) * normalBias;
-        dirFromProbe = normalize(newPosition - (probe.location + probe.offset));
-        float distToProbe = length(newPosition - (probe.location + probe.offset));
+        float normalBias = uniforms.normalBias;
+        float viewBias = uniforms.depthBias;
+        float3 worldPosition = position;
+        float3 surfaceBias = normalBias * smoothNormal + viewBias * v;
+        float3 biasedWorldPosition = (worldPosition + surfaceBias);
+        float3 adjacentProbeWorldPosition = probe.location + probe.offset;
+        float3 worldPosToAdjProbe = normalize(adjacentProbeWorldPosition - worldPosition);
+        float biasedPosToAdjProbeDist = length(adjacentProbeWorldPosition - biasedWorldPosition);
+        
+        float3 direction = smoothNormal;
+        float weight = 1.0;
+        float wrapShading = (dot(worldPosToAdjProbe, direction) + 1.f) * 0.5f;
+        weight *= (wrapShading * wrapShading) + 0.2f;
+        
+        float3 dirFromProbe = normalize(biasedWorldPosition - adjacentProbeWorldPosition);
         uint2 texPos = indexToTexPos___(index, probeData.probeGridWidth, probeData.probeGridHeight);
         int shadowProbeReso = 24;
         int3 probeCount = probeData.probeCount;
         
         float2 encodedUV = octEncode_(dirFromProbe);
         float2 encodedUV_ = octEncode_(smoothNormal);
-        float2 encodedUVSpecular = octEncode_(r);
         float minimumUV = 1.0/shadowProbeReso;
         encodedUV = max(minimumUV, min(1-minimumUV, encodedUV));
         int radianceMapSize = 16;
         minimumUV = 1.0/radianceMapSize;
         encodedUV_ = max(minimumUV, min(1-minimumUV, encodedUV_));
-        encodedUVSpecular = max(minimumUV, min(1-minimumUV, encodedUVSpecular));
         
         float2 uv = (float2(texPos) + encodedUV)*float2(1.0/(probeCount.x * probeCount.y), 1.0/probeCount.z);
         float2 uv_ = (float2(texPos) + encodedUV_)*float2(1.0/(probeCount.x * probeCount.y), 1.0/probeCount.z);
     //    float2 uvSpecular = (float2(texPos) + encodedUVSpecular)*float2(1.0/(probeCount.x * probeCount.y), 1.0/probeCount.z);
         
         float4 d = octahedralMap.sample(s, uv);
-        color_ = uniforms.ka * radianceMap.sample(s, uv_).rgb;
+        float3 probeIrradiance = uniforms.ka * radianceMap.sample(s, uv_).rgb;
     //    color_ += uniforms.ks * specularMap.sample(s, uvSpecular).rgb;
         
-        float2 temp = d.rg;
-        float mean = temp.x;
-        float variance = abs(sq(temp.x) - temp.y);
+        float2 filteredDistance = d.rg;
+        float meanDistanceToSurface = filteredDistance.x;
+        float variance = abs((filteredDistance.x * filteredDistance.x) - filteredDistance.y);
 
         /// http://www.punkuser.net/vsm/vsm_paper.pdf; equation 5
         /// Need the max in the denominator because biasing can cause a negative displacement
-        float chebyshevWeight = variance / (variance + sq(max(distToProbe - mean, 0.0)));
-            
-        /// Increase contrast in the weight
-        chebyshevWeight = max(pow3(chebyshevWeight), 0.0);
+        float chebyshevWeight = 1.f;
+        if (biasedPosToAdjProbeDist > meanDistanceToSurface) // In "shadow"
+        {
+            // v must be greater than 0, which is guaranteed by the if condition above.
+            float v = biasedPosToAdjProbeDist - meanDistanceToSurface;
+            chebyshevWeight = variance / (variance + (v * v));
 
-        float finalShadowingWeight = (distToProbe <= mean + 0.01 || d.a == 0.0 ) ? 1.0 : chebyshevWeight;
+            // Increase the contrast in the weight
+            chebyshevWeight = max((chebyshevWeight * chebyshevWeight * chebyshevWeight), 0.f);
+        }
+        
+        weight *= max(0.05f, chebyshevWeight);
+
+        // Avoid a weight of zero
+        weight = max(0.000001f, weight);
+
+        // A small amount of light is visible due to logarithmic perception, so
+        // crush tiny weights but keep the curve continuous
+        const float crushThreshold = 0.2f;
+        if (weight < crushThreshold)
+        {
+            weight *= (weight * weight) * (1.f / (crushThreshold * crushThreshold));
+        }
+
+        // Apply the trilinear weights
+        weight *= trilinearWeights[iCoeff];
         
 //        for (int i = 0; i<9; i++) {
 //            color_.r += max(0.0, aCap[i] * probe.shCoeffR[i] * shCoeff[i]);
 //            color_.g += max(0.0, aCap[i] * probe.shCoeffG[i] * shCoeff[i]);
 //            color_.b += max(0.0, aCap[i] * probe.shCoeffB[i] * shCoeff[i]);
 //        }
-        color += color_ * trilinearWeights[iCoeff] * finalShadowingWeight;
-    //    color += color_ * (1.0/8);
+        irradiance += (weight * probeIrradiance);
+        accumulatedWeights += weight;
     }
-  return color;
+    if (accumulatedWeights == 0.f) return float3(0.f, 0.f, 0.f);
+
+    irradiance *= (1.f / accumulatedWeights);   // Normalize by the accumulated weights
+    irradiance *= irradiance;                   // Go back to linear irradiance
+    irradiance *= 2 * M_PI_F;
+    return irradiance;
 }
 
 float getSSAO(float3 origin, float3 normal, float3 noise, float4x4 P, constant float3* uSampleKernel, depth2d<float, access::sample> depthTex) {
