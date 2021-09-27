@@ -1,0 +1,16 @@
+# Blender MTL File: 'GothicCabinet_01_2k.blend'
+# Material Count: 1
+
+newmtl GothicCabinet_01
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump /Users/ravikhannawalia/Downloads/GothicCabinet_01_2k.blend/textures/GothicCabinet_01_nor_gl_2k.exr
+map_Kd /Users/ravikhannawalia/Downloads/GothicCabinet_01_2k.blend/textures/GothicCabinet_01_diff_2k.jpg
+map_Ns /Users/ravikhannawalia/Downloads/GothicCabinet_01_2k.blend/textures/GothicCabinet_01_roughness_2k.jpg
+refl /Users/ravikhannawalia/Downloads/GothicCabinet_01_2k.blend/textures/GothicCabinet_01_metallic_2k.exr

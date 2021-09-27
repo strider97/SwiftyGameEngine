@@ -4,9 +4,14 @@
 newmtl wire_088144225
 Ns 31.999996
 Ka 1.000000 1.000000 1.000000
-Kd 0.345100 0.564700 0.882400
+Kd 0.800000 0.800000 0.800000
 Ks 0.350000 0.350000 0.350000
 Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
+map_Kd uh1lafuv_2K_Albedo.jpg
+map_roughness uh1lafuv_2K_Roughness.jpg
+map_metallic uh1lafuv_2K_Metalness.jpg
+map_tangentSpaceNormal uh1lafuv_2K_Normal.jpg
+map_ao uh1lafuv_2K_AO.jpg

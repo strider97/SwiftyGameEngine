@@ -1,0 +1,47 @@
+# Blender MTL File: 'None'
+# Material Count: 3
+
+newmtl Monkey1
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd vcwlfcgv_4K_Albedo.jpg
+map_roughness vcwlfcgv_4K_Roughness.jpg
+map_metallic vcwlfcgv_4K_Metalness.jpg
+map_tangentSpaceNormal vcwlfcgv_4K_Normal.jpg
+map_ao vcwlfcgv_4K_AO.jpg
+
+newmtl Monkey2
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd fabric_0017_base_color_4k.jpg
+map_roughness fabric_0017_roughness_4k.jpg
+map_metallic fabric_0017_metallic_4k.jpg
+map_tangentSpaceNormal fabric_0017_normal_4k.jpg
+map_ao fabric_0017_ao_4k.jpg
+
+newmtl Monkey3
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd schvfgwp_4K_Albedo.jpg
+map_roughness schvfgwp_4K_Roughness.jpg
+map_metallic schvfgwp_4K_Metalness.jpg
+map_tangentSpaceNormal schvfgwp_4K_Normal.jpg
+map_ao schvfgwp_4K_AO.jpg

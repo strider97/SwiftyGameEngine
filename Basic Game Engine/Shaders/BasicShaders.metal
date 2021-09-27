@@ -100,6 +100,12 @@ float3 approximateSpecularIBL( float3 SpecularColor , float Roughness, int mipma
     return PrefilteredColor * ( SpecularColor * EnvBRDF.x + EnvBRDF.y );
 }
 
+float3 directLightSpecular( float3 SpecularColor , float Roughness, float3 L, float3 N, float3 V, texture2d<float, access::sample> DFGlut [[texture(1)]]) {
+    float NoV = saturate( dot( N, V ) );
+    float2 integralBRDF = DFGlut.sample(s, float2(NoV, Roughness)).rg;
+    return L * ( SpecularColor * integralBRDF.x + integralBRDF.y );
+}
+
 float3 fresnelSchlick(float3 F0, float cosTheta)
 {
     return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
@@ -292,9 +298,9 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     
     float3 albedo = material.baseColor;
     albedo *= pow(baseColor.sample(s, vOut.texCoords).rgb, 3.0);
-    float metallic = material.metallic;
+    float metallic = 1;//material.metallic;
     metallic *= metallicMap.sample(s, vOut.texCoords).b;
-    float roughness = material.roughness;
+    float roughness = 1;//material.roughness;
     roughness *= roughnessMap.sample(s, vOut.texCoords).g;
     float3 eyeDir = normalize(vOut.eye - vOut.position);
     
@@ -319,7 +325,7 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     float3 color =  kD * diffuse + specular;
     
     // calculate for area light
-    float intensity = 14.0;
+    float intensity = 30.0;
     float3 lightColor = float3(1, 1, 1);
     float theta = acos(dot(N, V));
     float2 uv = float2(roughness, theta/(0.5*pi));
@@ -333,7 +339,7 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     float3 spec = LTC_Evaluate(N, V, vOut.position, Minv, lightPolygon, true);
     spec *= ltc_mag.sample(s, uv).w;
     float3 diff = LTC_Evaluate(N, V, vOut.position, float3x3(1), lightPolygon, true);
-    float3 colorAL = kD * albedo * abs(diff) + F * spec;
+    float3 colorAL = kD * albedo * abs(diff) + directLightSpecular(F, roughness, spec, N, V, DFGlut);
     colorAL *= lightColor * intensity / (2.0 * pi);
     color *= 0.0;
     color += max(0, colorAL);

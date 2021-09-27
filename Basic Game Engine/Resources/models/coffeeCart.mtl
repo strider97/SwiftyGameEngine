@@ -1,0 +1,40 @@
+# Blender MTL File: 'CoffeeCart_01_2k.blend'
+# Material Count: 3
+
+newmtl CoffeeCart_01_cart
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_tangentSpaceNormal CoffeeCart_01_cart_nor_gl_2k.png
+map_Kd CoffeeCart_01_cart_diff_2k.png
+map_roughness CoffeeCart_01_cart_roughness_2k.png
+map_metallic CoffeeCart_01_cart_metallic_2k.png
+
+newmtl CoffeeCart_01_mugs
+Ns 643.314047
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl CoffeeCart_01_props
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_tangentSpaceNormal CoffeeCart_01_props_nor_gl_2k.png
+map_Kd CoffeeCart_01_props_diff_2k.png
+map_roughness CoffeeCart_01_props_roughness_2k.png
+map_metallic CoffeeCart_01_props_metallic_2k.png

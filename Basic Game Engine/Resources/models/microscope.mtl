@@ -23,9 +23,9 @@ Kd 0.8 0.8 0.8
 Ks 0.8 0.8 0.8
 d 1
 illum 2
-map_Kd ukmmbb3fw_4K_Albedo.jpg
-map_roughness ukmmbb3fw_4K_Roughness.jpg
-map_metallic ukmmbb3fw_4K_Metalness_2k.jpg
-map_tangentSpaceNormal ukmmbb3fw_4K_Normal.jpg
-map_ao ukmmbb3fw_4K_AO.jpg
+map_Kd schvfgwp_4K_Albedo.jpg
+map_roughness schvfgwp_4K_Roughness.jpg
+map_metallic schvfgwp_4K_Metalness.jpg
+map_tangentSpaceNormal schvfgwp_4K_Normal.jpg
+map_ao schvfgwp_4K_AO.jpg
 

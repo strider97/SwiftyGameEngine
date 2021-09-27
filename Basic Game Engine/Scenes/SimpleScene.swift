@@ -12,15 +12,18 @@ class SimpleScene: Scene {
     var blades: GameObject!
     var model: GameObject!
     var model2: GameObject!
+    var model3: GameObject!
     
     override func getGameObjects() -> [GameObject] {
         model = GameObject(modelName: "plane")
-        model2 = GameObject(modelName: "cylinder")
+        model2 = GameObject(modelName: "coffeeCart")
+    //    model3 = GameObject(modelName: "microscope")
         
-        model.transform.translate(Float3(0, -2, 0))
+   //     model.transform.translate(Float3(0, -2, 0))
+   //     model3.transform.translate(Float3(0, 5, 0))
    //     model2.transform.translate(Float3(0, 100, 0))
         model.transform.scale(Float3(repeating: 3))
-        model2.transform.scale(Float3(repeating: 3))
+        model2.transform.scale(Float3(repeating: 2))
    //     model2.transform.rotate(angle: -MathConstants.PI.rawValue/2, axis: Float3(1, 0, 0))
    //     model2.transform.scale(Float3(repeating: 0.8))
    //     model2.transform.translate(Float3(0, -15, 0))

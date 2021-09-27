@@ -10,8 +10,8 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd uk0ocizfw_4K_Albedo.jpg
-map_roughness uk0ocizfw_4K_Roughness2.jpg
-map_metallic uk0ocizfw_4K_Metalness.jpg
-map_tangentSpaceNormal uk0ocizfw_4K_Normal.jpg
-map_ao uk0ocizfw_4K_AO.jpg
+map_Kd tiles_0015_basecolor_4k.jpg
+map_roughness tiles_0015_roughness_4k.jpg
+map_metallic none.jpg
+map_tangentSpaceNormal tiles_0015_normal_4k.jpg
+map_ao tiles_0015_ao_4k.jpg

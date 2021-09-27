@@ -1,0 +1,58 @@
+# Blender MTL File: 'None'
+# Material Count: 5
+
+newmtl Mat.1
+Ns 2.036466
+Ka 1.000000 1.000000 1.000000
+Kd 0.213280 0.310000 0.189100
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl Mat.2
+Ns 2.036466
+Ka 1.000000 1.000000 1.000000
+Kd 0.510000 0.485860 0.147900
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl defaultMat
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_tangentSpaceNormal defaultMat.1_normal.jpeg
+map_Kd defaultMat.1_baseColor.jpeg
+map_Ke defaultMat_emissive.jpeg
+
+newmtl defaultMat.1
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_tangentSpaceNormal defaultMat.1_normal.jpeg
+
+newmtl material
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.144307 0.021116 0.021116
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_tangentSpaceNormal defaultMat.1_normal.jpeg
+

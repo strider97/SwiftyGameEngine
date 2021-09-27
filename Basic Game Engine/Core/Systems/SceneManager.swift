@@ -49,18 +49,27 @@ class Scene: NSObject {
         Float3(0, 10, 20)
     ]
     
-    var lightPolygonInitial: [Float3] = [
-        Float3(-6, -1.9, 20),
-        Float3(0, 3, 20),
-        Float3(6, -1.9, 20),
-        Float3(0, 10, 20)
-    ]
+    lazy var lightPolygonInitial: [Float3] = getLightPolygon(size: 1, z: 16, scale: Float2(16, 16))
     
-    var light: PolygonLight
+    func getLightPolygon(size: Float, z: Float, scale: Float2 = Float2(repeating: 1.0)) -> [Float3] {
+        let size_ = size/2
+        return [
+            Float3(-size_ * scale.x, 0, z),
+            Float3(-size_ * scale.x, 2 * size_ * scale.y, z),
+            Float3(size_ * scale.x, 2 * size_ * scale.y, z),
+            Float3(size_ * scale.x, 0, z)
+        ]
+    }
+    
+    var lightMovementTime: Float {
+        GameTimer.sharedTimer.time/2.5
+    }
+    
+    var light: PolygonLight!
     
     override init() {
-        light = PolygonLight(vertices: lightPolygon)
         super.init()
+        light = PolygonLight(vertices: lightPolygonInitial)
         camera = getCamera()
         skybox = getSkybox()
         timer.startTime = Float(CACurrentMediaTime())
@@ -112,7 +121,7 @@ extension Scene {
     
     func getLightUniformData() -> Uniforms {
         var M = Matrix4(1)
-        M[3][0] = Float(sin(GameTimer.sharedTimer.time) * 20)
+        M[3][0] = Float(sin(lightMovementTime) * 20)
         return Uniforms(M: M, V: camera.lookAtMatrix, P: P, eye: camera.position, exposure: exposure)
     }
     
@@ -292,7 +301,7 @@ extension Scene {
     
     func updateSceneData() {
         for i in 0..<lightPolygon.count {
-            lightPolygon[i] = lightPolygonInitial[i] + Float3(sin(GameTimer.sharedTimer.time) * 20, 0, 0)
+            lightPolygon[i] = lightPolygonInitial[i] + Float3(sin(lightMovementTime) * 20, 0, 0)
         }
     }
     
