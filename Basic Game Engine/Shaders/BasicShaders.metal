@@ -325,7 +325,7 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     float3 color =  kD * diffuse + specular;
     
     // calculate for area light
-    float intensity = 30.0;
+    float intensity = 28.0;
     float3 lightColor = float3(1, 1, 1);
     float theta = acos(dot(N, V));
     float2 uv = float2(roughness, theta/(0.5*pi));
@@ -341,7 +341,7 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     float3 diff = LTC_Evaluate(N, V, vOut.position, float3x3(1), lightPolygon, true);
     float3 colorAL = kD * albedo * abs(diff) + directLightSpecular(F, roughness, spec, N, V, DFGlut);
     colorAL *= lightColor * intensity / (2.0 * pi);
-    color *= 0.0;
+//    color *= 0.0;
     color += max(0, colorAL);
     color *= ao;
     float exposure = max(0.01, vOut.exposure);

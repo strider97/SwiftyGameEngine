@@ -1,0 +1,27 @@
+# Blender MTL File: 'brass_vase_01_2k.blend'
+# Material Count: 2
+
+newmtl sofa_03
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump /Users/ravikhannawalia/Downloads/sofa_03_2k.gltf/textures/sofa_03_nor_gl_2k.jpg
+map_Kd /Users/ravikhannawalia/Downloads/sofa_03_2k.gltf/textures/sofa_03_diff_2k.jpg
+
+newmtl sofa_03_fringe
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump /Users/ravikhannawalia/Downloads/sofa_03_2k.gltf/textures/sofa_03_nor_gl_2k.jpg
+map_Kd /Users/ravikhannawalia/Downloads/sofa_03_2k.gltf/textures/sofa_03_diff_2k.jpg
+map_d /Users/ravikhannawalia/Downloads/sofa_03_2k.gltf/textures/sofa_03_diff_2k.jpg

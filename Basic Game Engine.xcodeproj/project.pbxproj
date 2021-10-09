@@ -258,6 +258,20 @@
 		728A631C27014922007EDB6D /* CoffeeCart_01_props_metallic_2k.png in Resources */ = {isa = PBXBuildFile; fileRef = 728A631427014922007EDB6D /* CoffeeCart_01_props_metallic_2k.png */; };
 		728A631D27014922007EDB6D /* CoffeeCart_01_cart_roughness_2k.png in Resources */ = {isa = PBXBuildFile; fileRef = 728A631527014922007EDB6D /* CoffeeCart_01_cart_roughness_2k.png */; };
 		728A631E27014922007EDB6D /* CoffeeCart_01_props_nor_gl_2k.png in Resources */ = {isa = PBXBuildFile; fileRef = 728A631627014922007EDB6D /* CoffeeCart_01_props_nor_gl_2k.png */; };
+		728A632127020807007EDB6D /* vase.obj in Resources */ = {isa = PBXBuildFile; fileRef = 728A631F27020807007EDB6D /* vase.obj */; };
+		728A632227020807007EDB6D /* vase.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 728A632027020807007EDB6D /* vase.mtl */; };
+		728A633627020B54007EDB6D /* brass_vase_01_diff_2k.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 728A633227020B53007EDB6D /* brass_vase_01_diff_2k.jpg */; };
+		728A633727020B54007EDB6D /* brass_vase_01_nor_gl_2k.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 728A633327020B53007EDB6D /* brass_vase_01_nor_gl_2k.jpg */; };
+		728A633827020B54007EDB6D /* brass_vase_01_rough_2k.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 728A633427020B53007EDB6D /* brass_vase_01_rough_2k.jpg */; };
+		728A633927020B54007EDB6D /* brass_vase_01_metal_2k.exr in Resources */ = {isa = PBXBuildFile; fileRef = 728A633527020B53007EDB6D /* brass_vase_01_metal_2k.exr */; };
+		728A633D27020CD0007EDB6D /* Barrel_02_nor_gl_2k.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 728A633B27020CD0007EDB6D /* Barrel_02_nor_gl_2k.jpg */; };
+		728A633E27020CD0007EDB6D /* Barrel_02_diff_2k.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 728A633C27020CD0007EDB6D /* Barrel_02_diff_2k.jpg */; };
+		728A634127020D23007EDB6D /* Barrel_02_metallic_2k.exr in Resources */ = {isa = PBXBuildFile; fileRef = 728A633F27020D23007EDB6D /* Barrel_02_metallic_2k.exr */; };
+		728A634227020D23007EDB6D /* Barrel_02_roughness_2k.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 728A634027020D23007EDB6D /* Barrel_02_roughness_2k.jpg */; };
+		728A634727020D4E007EDB6D /* barrel.obj in Resources */ = {isa = PBXBuildFile; fileRef = 728A634327020D4D007EDB6D /* barrel.obj */; };
+		728A634827020D4E007EDB6D /* cabinet.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 728A634427020D4D007EDB6D /* cabinet.mtl */; };
+		728A634927020D4E007EDB6D /* barrel.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 728A634527020D4D007EDB6D /* barrel.mtl */; };
+		728A634A27020D4E007EDB6D /* cabinet.obj in Resources */ = {isa = PBXBuildFile; fileRef = 728A634627020D4E007EDB6D /* cabinet.obj */; };
 		729B14D125D8841A00129165 /* park.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 729B14D025D8841A00129165 /* park.jpg */; };
 		729B14DE25D8941600129165 /* ground.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 729B14DD25D8941600129165 /* ground.hdr */; };
 		729B14E325D8966000129165 /* room.hdr in Resources */ = {isa = PBXBuildFile; fileRef = 729B14E225D8966000129165 /* room.hdr */; };
@@ -582,6 +596,20 @@
 		728A631427014922007EDB6D /* CoffeeCart_01_props_metallic_2k.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CoffeeCart_01_props_metallic_2k.png; path = ../../../../../Downloads/CoffeeCart_01_2k.blend/textures/CoffeeCart_01_props_metallic_2k.png; sourceTree = "<group>"; };
 		728A631527014922007EDB6D /* CoffeeCart_01_cart_roughness_2k.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CoffeeCart_01_cart_roughness_2k.png; path = ../../../../../Downloads/CoffeeCart_01_2k.blend/textures/CoffeeCart_01_cart_roughness_2k.png; sourceTree = "<group>"; };
 		728A631627014922007EDB6D /* CoffeeCart_01_props_nor_gl_2k.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CoffeeCart_01_props_nor_gl_2k.png; path = ../../../../../Downloads/CoffeeCart_01_2k.blend/textures/CoffeeCart_01_props_nor_gl_2k.png; sourceTree = "<group>"; };
+		728A631F27020807007EDB6D /* vase.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = vase.obj; sourceTree = "<group>"; };
+		728A632027020807007EDB6D /* vase.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = vase.mtl; sourceTree = "<group>"; };
+		728A633227020B53007EDB6D /* brass_vase_01_diff_2k.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = brass_vase_01_diff_2k.jpg; path = ../../../../../Downloads/brass_vase_01_2k.blend/textures/brass_vase_01_diff_2k.jpg; sourceTree = "<group>"; };
+		728A633327020B53007EDB6D /* brass_vase_01_nor_gl_2k.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = brass_vase_01_nor_gl_2k.jpg; path = ../../../../../Downloads/brass_vase_01_2k.blend/textures/brass_vase_01_nor_gl_2k.jpg; sourceTree = "<group>"; };
+		728A633427020B53007EDB6D /* brass_vase_01_rough_2k.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = brass_vase_01_rough_2k.jpg; path = ../../../../../Downloads/brass_vase_01_2k.blend/textures/brass_vase_01_rough_2k.jpg; sourceTree = "<group>"; };
+		728A633527020B53007EDB6D /* brass_vase_01_metal_2k.exr */ = {isa = PBXFileReference; lastKnownFileType = file; name = brass_vase_01_metal_2k.exr; path = ../../../../../Downloads/brass_vase_01_2k.blend/textures/brass_vase_01_metal_2k.exr; sourceTree = "<group>"; };
+		728A633B27020CD0007EDB6D /* Barrel_02_nor_gl_2k.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Barrel_02_nor_gl_2k.jpg; path = ../../../../../Downloads/Barrel_02_2k.gltf/textures/Barrel_02_nor_gl_2k.jpg; sourceTree = "<group>"; };
+		728A633C27020CD0007EDB6D /* Barrel_02_diff_2k.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Barrel_02_diff_2k.jpg; path = ../../../../../Downloads/Barrel_02_2k.gltf/textures/Barrel_02_diff_2k.jpg; sourceTree = "<group>"; };
+		728A633F27020D23007EDB6D /* Barrel_02_metallic_2k.exr */ = {isa = PBXFileReference; lastKnownFileType = file; name = Barrel_02_metallic_2k.exr; path = ../../../../../Downloads/Barrel_02_2k.blend/textures/Barrel_02_metallic_2k.exr; sourceTree = "<group>"; };
+		728A634027020D23007EDB6D /* Barrel_02_roughness_2k.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Barrel_02_roughness_2k.jpg; path = ../../../../../Downloads/Barrel_02_2k.blend/textures/Barrel_02_roughness_2k.jpg; sourceTree = "<group>"; };
+		728A634327020D4D007EDB6D /* barrel.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = barrel.obj; sourceTree = "<group>"; };
+		728A634427020D4D007EDB6D /* cabinet.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cabinet.mtl; sourceTree = "<group>"; };
+		728A634527020D4D007EDB6D /* barrel.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = barrel.mtl; sourceTree = "<group>"; };
+		728A634627020D4E007EDB6D /* cabinet.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cabinet.obj; sourceTree = "<group>"; };
 		729B14D025D8841A00129165 /* park.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = park.jpg; path = "Basic Game Engine/HDRI/park.jpg"; sourceTree = SOURCE_ROOT; };
 		729B14DD25D8941600129165 /* ground.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = ground.hdr; path = "Basic Game Engine/HDRI/ground.hdr"; sourceTree = SOURCE_ROOT; };
 		729B14E225D8966000129165 /* room.hdr */ = {isa = PBXFileReference; lastKnownFileType = file; name = room.hdr; path = "Basic Game Engine/HDRI/room.hdr"; sourceTree = SOURCE_ROOT; };
@@ -720,6 +748,8 @@
 		7216504725EAE35500511342 /* Textures */ = {
 			isa = PBXGroup;
 			children = (
+				728A633A27020CB4007EDB6D /* Barrel */,
+				728A632D27020B15007EDB6D /* Vase */,
 				728A630E2701490F007EDB6D /* coffeeCart */,
 				728A63012700DD5A007EDB6D /* Robot */,
 				72E3503925FC013B0012E6D1 /* marbleWhite */,
@@ -1122,6 +1152,28 @@
 			path = coffeeCart;
 			sourceTree = "<group>";
 		};
+		728A632D27020B15007EDB6D /* Vase */ = {
+			isa = PBXGroup;
+			children = (
+				728A633227020B53007EDB6D /* brass_vase_01_diff_2k.jpg */,
+				728A633527020B53007EDB6D /* brass_vase_01_metal_2k.exr */,
+				728A633327020B53007EDB6D /* brass_vase_01_nor_gl_2k.jpg */,
+				728A633427020B53007EDB6D /* brass_vase_01_rough_2k.jpg */,
+			);
+			path = Vase;
+			sourceTree = "<group>";
+		};
+		728A633A27020CB4007EDB6D /* Barrel */ = {
+			isa = PBXGroup;
+			children = (
+				728A633F27020D23007EDB6D /* Barrel_02_metallic_2k.exr */,
+				728A634027020D23007EDB6D /* Barrel_02_roughness_2k.jpg */,
+				728A633C27020CD0007EDB6D /* Barrel_02_diff_2k.jpg */,
+				728A633B27020CD0007EDB6D /* Barrel_02_nor_gl_2k.jpg */,
+			);
+			path = Barrel;
+			sourceTree = "<group>";
+		};
 		72D1451325F6BFB20047A93D /* ltc */ = {
 			isa = PBXGroup;
 			children = (
@@ -1289,6 +1341,12 @@
 		72E3999925BF0C8300927B17 /* models */ = {
 			isa = PBXGroup;
 			children = (
+				728A634527020D4D007EDB6D /* barrel.mtl */,
+				728A634327020D4D007EDB6D /* barrel.obj */,
+				728A634427020D4D007EDB6D /* cabinet.mtl */,
+				728A634627020D4E007EDB6D /* cabinet.obj */,
+				728A632027020807007EDB6D /* vase.mtl */,
+				728A631F27020807007EDB6D /* vase.obj */,
 				728A630B270148F2007EDB6D /* coffeeCart.mtl */,
 				728A630A270148F2007EDB6D /* coffeeCart.obj */,
 				728A62FD2700DCFC007EDB6D /* robot.mtl */,
@@ -1495,6 +1553,7 @@
 				7216523125ED63B000511342 /* Bot_Normal.png in Resources */,
 				7216517425EBAA2600511342 /* tiles_0015_basecolor_4k.jpg in Resources */,
 				72E3998D25BEF35100927B17 /* Face_04.png in Resources */,
+				728A633627020B54007EDB6D /* brass_vase_01_diff_2k.jpg in Resources */,
 				728A63072700DD7B007EDB6D /* defaultMat.1_metallicRoughness.png in Resources */,
 				72164FBD25E859C700511342 /* studio.hdr in Resources */,
 				7216523025ED63B000511342 /* Bot_Gloss.png in Resources */,
@@ -1519,13 +1578,16 @@
 				72164FCD25E99CCE00511342 /* f1.mtl in Resources */,
 				728A631B27014922007EDB6D /* CoffeeCart_01_props_diff_2k.png in Resources */,
 				729B14E825D896EC00129165 /* kiara.hdr in Resources */,
+				728A634727020D4E007EDB6D /* barrel.obj in Resources */,
 				7274A99C25F91FED00F716AF /* ubkncbzew_2K_Roughness2.jpg in Resources */,
 				7216509725EAE9A900511342 /* floor_tiles_06_disp_2k.png in Resources */,
 				721650C425EAF31600511342 /* schvfgwp_4K_Roughness.jpg in Resources */,
+				728A634127020D23007EDB6D /* Barrel_02_metallic_2k.exr in Resources */,
 				72E0477325E5A71200E48A54 /* robotArm.usd in Resources */,
 				7216503325EA877300511342 /* kouzi_normal.jpeg in Resources */,
 				728A63062700DD7B007EDB6D /* defaultMat.1_baseColor.jpeg in Resources */,
 				7216507E25EAE81200511342 /* denim_fabric_disp_2k.png in Resources */,
+				728A634227020D23007EDB6D /* Barrel_02_roughness_2k.jpg in Resources */,
 				7216512D25EB083700511342 /* tkdicbgew_4K_Roughness.jpg in Resources */,
 				7216504F25EAE3C300511342 /* old_planks_02_rough_2k.png in Resources */,
 				72164FFE25EA561000511342 /* Cerberus_M.tga in Resources */,
@@ -1567,10 +1629,13 @@
 				7216508325EAE81200511342 /* denim_fabric_diff_2k.png in Resources */,
 				728A631727014922007EDB6D /* CoffeeCart_01_cart_metallic_2k.png in Resources */,
 				721650C225EAF31600511342 /* schvfgwp_4K_Metalness.jpg in Resources */,
+				728A633E27020CD0007EDB6D /* Barrel_02_diff_2k.jpg in Resources */,
 				7216505B25EAE45D00511342 /* cylinder.mtl in Resources */,
+				728A633827020B54007EDB6D /* brass_vase_01_rough_2k.jpg in Resources */,
 				7216503225EA877300511342 /* daizi_baseColor.jpeg in Resources */,
 				7216502D25EA877300511342 /* kouzi_baseColor.jpeg in Resources */,
 				721651F025ED571E00511342 /* Luggage_Roughness.jpeg in Resources */,
+				728A634927020D4E007EDB6D /* barrel.mtl in Resources */,
 				7216511F25EB043B00511342 /* ukmmbb3fw_4K_Normal.jpg in Resources */,
 				72164FD525EA21B600511342 /* formula1_DefaultMaterial_Diffuse.png in Resources */,
 				7216520025ED571E00511342 /* Accessoires_Normal.jpeg in Resources */,
@@ -1591,6 +1656,7 @@
 				721651A325EBB37F00511342 /* 01-Default_roughness.jpg in Resources */,
 				728A631927014922007EDB6D /* CoffeeCart_01_cart_diff_2k.png in Resources */,
 				7216521D25ED571E00511342 /* Chest_Roughness.jpeg in Resources */,
+				728A634827020D4E007EDB6D /* cabinet.mtl in Resources */,
 				72164FE425EA45ED00511342 /* helmet_baseColor.png in Resources */,
 				720EC2FF25D8816B00A83F1A /* park.hdr in Resources */,
 				7216509B25EAE9A900511342 /* floor_tiles_06_rough_2k.png in Resources */,
@@ -1608,7 +1674,9 @@
 				7216503425EA877300511342 /* kouzi_metallicRoughness.png in Resources */,
 				721650FE25EAFD8400511342 /* uk0ocizfw_4K_AO.jpg in Resources */,
 				721651A525EBB37F00511342 /* 01-Default_metallic.jpg in Resources */,
+				728A633D27020CD0007EDB6D /* Barrel_02_nor_gl_2k.jpg in Resources */,
 				72DAC96025DDD87500DB3C50 /* plane.usd in Resources */,
+				728A633727020B54007EDB6D /* brass_vase_01_nor_gl_2k.jpg in Resources */,
 				721650A525EAEBA300511342 /* vbikfjt_2K_Roughness.jpg in Resources */,
 				721651FA25ED571E00511342 /* Trousers_skirt_Metallic.jpeg in Resources */,
 				7216509825EAE9A900511342 /* floor_tiles_06_spec_2k.png in Resources */,
@@ -1643,11 +1711,13 @@
 				7216501C25EA859A00511342 /* backpack.obj in Resources */,
 				7216518025EBAC5B00511342 /* Tiles_Moroccan_001_basecolor.jpg in Resources */,
 				7216512225EB043B00511342 /* ukmmbb3fw_4K_Roughness.jpg in Resources */,
+				728A632127020807007EDB6D /* vase.obj in Resources */,
 				7216503825EA877300511342 /* material_normal.png in Resources */,
 				7216521F25ED571E00511342 /* Luggage_Normal.jpeg in Resources */,
 				7274A98F25F91A9400F716AF /* uk0ocizfw_4K_Roughness2.jpg in Resources */,
 				721650B925EAF25600511342 /* vbikfjt_2K_AO.jpg in Resources */,
 				7216524725ED653600511342 /* Low_Mech2_BaseColor.png in Resources */,
+				728A634A27020D4E007EDB6D /* cabinet.obj in Resources */,
 				7216512125EB043B00511342 /* ukmmbb3fw_4K_Albedo.jpg in Resources */,
 				7216520325ED571E00511342 /* Coat_BaseColor.jpeg in Resources */,
 				7216524E25ED655000511342 /* Low.obj in Resources */,
@@ -1666,6 +1736,7 @@
 				721650D125EAF75C00511342 /* ub1gfbwew_2K_Normal.jpg in Resources */,
 				7216516425EBA8B900511342 /* fabric_0017_metallic_4k.jpg in Resources */,
 				72E0476E25E59B1200E48A54 /* mug.usd in Resources */,
+				728A632227020807007EDB6D /* vase.mtl in Resources */,
 				7216518B25EBAF5C00511342 /* sefmegyc_4K_Metalness.jpg in Resources */,
 				7216502E25EA877300511342 /* material_3_normal.png in Resources */,
 				7216517E25EBAC5B00511342 /* Tiles_Moroccan_001_normal.jpg in Resources */,
@@ -1706,6 +1777,7 @@
 				72E3998B25BEF35100927B17 /* legoMan.mtl in Resources */,
 				7216520425ED571E00511342 /* Hair_Opacity.png in Resources */,
 				7216512025EB043B00511342 /* ukmmbb3fw_4K_AO.jpg in Resources */,
+				728A633927020B54007EDB6D /* brass_vase_01_metal_2k.exr in Resources */,
 				721650AD25EAEE7500511342 /* uh1lafuv_2K_Albedo.jpg in Resources */,
 				728A62FC2700C7F5007EDB6D /* monkeys3.obj in Resources */,
 				7216516725EBA8B900511342 /* fabric_0017_ao_4k.jpg in Resources */,
