@@ -29,6 +29,14 @@ enum {
     ltc_mag
 };
 
+struct Textures {
+    texture2d<float> baseColorTexture;
+    texture2d<float> normal;
+    texture2d<float> roughness;
+    texture2d<float> metallic;
+    texture2d<float> ao;
+};
+
 constant float2 invPi = float2(0.15915, 0.31831);
 constant float pi = 3.1415926;
 
@@ -294,18 +302,18 @@ vertex VertexOut basicVertexShader(const VertexIn vIn [[ stage_in ]], constant U
     return vOut;
 }
 
-fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], constant float3 *lightPolygon[[buffer(1)]], texture2d<float, access::sample> preFilterEnvMap [[texture(textureIndexPreFilterEnvMap)]], texture2d<float, access::sample> DFGlut [[texture(textureIndexDFGlut)]], texture2d<float, access::sample> irradianceMap [[texture(textureIndexirradianceMap)]], texture2d<float, access::sample> baseColor [[texture(textureIndexBaseColor)]], texture2d<float, access::sample> roughnessMap [[texture(textureIndexRoughness)]], texture2d<float, access::sample> metallicMap [[texture(textureIndexMetallic)]], texture2d<float, access::sample> normalMap [[texture(normalMap)]], texture2d<float, access::sample> aoTexture [[texture(ao)]], texture2d<float, access::sample> ltc_mat [[texture(ltc_mat)]], texture2d<float, access::sample> ltc_mag [[texture(ltc_mag)]]){
+fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Material &material[[buffer(0)]], constant float3 *lightPolygon[[buffer(1)]], texture2d<float, access::sample> preFilterEnvMap [[texture(textureIndexPreFilterEnvMap)]], texture2d<float, access::sample> DFGlut [[texture(textureIndexDFGlut)]], texture2d<float, access::sample> irradianceMap [[texture(textureIndexirradianceMap)]], constant Textures &textures [[buffer(15)]], texture2d<float, access::sample> ltc_mat [[texture(ltc_mat)]], texture2d<float, access::sample> ltc_mag [[texture(ltc_mag)]]){
     
     float3 albedo = material.baseColor;
-    albedo *= pow(baseColor.sample(s, vOut.texCoords).rgb, 3.0);
+    albedo *= pow(textures.baseColorTexture.sample(s, vOut.texCoords).rgb, 3.0);
     float metallic = 1;//material.metallic;
-    metallic *= metallicMap.sample(s, vOut.texCoords).b;
+    metallic *= textures.metallic.sample(s, vOut.texCoords).b;
     float roughness = 1;//material.roughness;
-    roughness *= roughnessMap.sample(s, vOut.texCoords).g;
+    roughness *= textures.roughness.sample(s, vOut.texCoords).g;
     float3 eyeDir = normalize(vOut.eye - vOut.position);
     
     float3 smoothN = vOut.smoothNormal;
-    float3 tangentNormal = normalMap.sample(s, vOut.texCoords).xyz * 2.0 - 1.0;
+    float3 tangentNormal = textures.normal.sample(s, vOut.texCoords).xyz * 2.0 - 1.0;
     float3 N = getNormalFromMap(vOut.position, smoothN, vOut.texCoords, tangentNormal);
 //    float3 N = smoothN;
     float3 V = eyeDir;
@@ -318,7 +326,7 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     float3 R = N;
     R.x = -R.x;
     R.z = -R.z;
-    float ao = aoTexture.sample(s, vOut.texCoords).r;
+    float ao = textures.ao.sample(s, vOut.texCoords).r;
     float3 irradiance = irradianceMap.sample(s, sampleSphericalMap_(R)).rgb;
     float3 diffuse = irradiance * albedo;
     float3 specular = approximateSpecularIBL(F, roughness, material.mipmapCount, N, V, preFilterEnvMap, DFGlut);
@@ -342,7 +350,7 @@ fragment float4 basicFragmentShader(VertexOut vOut [[ stage_in ]], constant Mate
     float3 colorAL = kD * albedo * abs(diff) + directLightSpecular(F, roughness, spec, N, V, DFGlut);
     colorAL *= lightColor * intensity / (2.0 * pi);
 //    color *= 0.0;
-    color += max(0, colorAL);
+    color = max(0, colorAL);
     color *= ao;
     float exposure = max(0.01, vOut.exposure);
   //  color = color / (color + float3(1.0));

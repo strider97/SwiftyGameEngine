@@ -41,6 +41,7 @@ class Scene: NSObject {
     private var exposure: Float = 0.5
     var ltcMat: MTLTexture!
     var ltcMag: MTLTexture!
+    var indirectCB: MTLIndirectCommandBuffer!
     
     var lightPolygon: [Float3] = [
         Float3(-6, -1.9, 20),
@@ -69,12 +70,21 @@ class Scene: NSObject {
     
     override init() {
         super.init()
+   //     initializeCommands()
         light = PolygonLight(vertices: lightPolygonInitial)
         camera = getCamera()
         skybox = getSkybox()
         timer.startTime = Float(CACurrentMediaTime())
         depthStencilState = buildDepthStencilState(device: device!)
         gameObjects = getGameObjects()
+        Material.heap = Material.buildHeap()
+        gameObjects.forEach {
+            $0.getComponent(Mesh.self)!.meshNodes.forEach {
+                $0.1.forEach {
+                    $0.material.initializeTextures()
+                }
+            }
+        }
         addPhysics()
         addBehaviour()
         createShadowTexture()
@@ -189,6 +199,7 @@ extension Scene {
         renderCommandEncoder?.setFragmentTexture(ltcMat, index: TextureIndex.ltc_mat.rawValue)
         renderCommandEncoder?.setFragmentTexture(ltcMag, index: TextureIndex.ltc_mag.rawValue)
         renderCommandEncoder?.setCullMode(.none)
+        renderCommandEncoder?.useHeap(Material.heap)
         drawGameObjects(renderCommandEncoder: renderCommandEncoder)
         drawLight(renderCommandEncoder: renderCommandEncoder)
         drawSkybox(renderCommandEncoder: renderCommandEncoder)
@@ -240,11 +251,7 @@ extension Scene {
                         var material = ShaderMaterial(baseColor: mat.baseColor, roughness: mat.roughness, metallic: mat.metallic, mipmapCount: preFilterEnvMap.mipMapCount)
                         renderCommandEncoder?.setFragmentBytes(&material, length: MemoryLayout<ShaderMaterial>.size, index: 0)
                         renderCommandEncoder?.setFragmentBytes(&lightPolygon, length: MemoryLayout<Float3>.size * 4, index: 1)
-                        renderCommandEncoder?.setFragmentTexture(mat.textureSet.baseColor, index: TextureIndex.baseColor.rawValue)
-                        renderCommandEncoder?.setFragmentTexture(mat.textureSet.roughness, index: TextureIndex.roughness.rawValue)
-                        renderCommandEncoder?.setFragmentTexture(mat.textureSet.metallic, index: TextureIndex.metallic.rawValue)
-                        renderCommandEncoder?.setFragmentTexture(mat.textureSet.normalMap, index: TextureIndex.normalMap.rawValue)
-                        renderCommandEncoder?.setFragmentTexture(mat.textureSet.ao, index: TextureIndex.ao.rawValue)
+                        renderCommandEncoder?.setFragmentBuffer(mat.texturesBuffer, offset: 0, index: 15)
                         let submesh = meshNode.mesh
                         renderCommandEncoder?.drawIndexedPrimitives(type:submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: submesh.indexBuffer.offset)
                     }
@@ -297,6 +304,58 @@ extension Scene {
         renderCommandEncoder?.setFragmentTexture(skybox.texture, index: 3)
         renderCommandEncoder?.setFragmentSamplerState(skybox.samplerState, index: 0)
         renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: irradianceMap.vertices.count)
+    }
+    
+    func initializeCommands() {
+        let icbDescriptor = MTLIndirectCommandBufferDescriptor()
+        icbDescriptor.commandTypes = [.drawIndexed]
+        icbDescriptor.inheritBuffers = false
+        icbDescriptor.maxVertexBufferBindCount = 25
+        icbDescriptor.maxFragmentBufferBindCount = 25
+        icbDescriptor.inheritPipelineState = false
+        guard let indirectCB = device!.makeIndirectCommandBuffer(
+            descriptor: icbDescriptor,
+            maxCommandCount: gameObjects.reduce(0) {
+                $0 + ($1.getComponent(Mesh.self)?.meshNodes.count ?? 0)
+            },
+            options: [])
+            else { fatalError() }
+        self.indirectCB = indirectCB
+        
+        for (index, gameObject) in gameObjects.enumerated() {
+            if let renderPipelineStatus = gameObject.renderPipelineState, let mesh_ = gameObject.getComponent(Mesh.self) {
+                let icbCommand = indirectCB.indirectRenderCommandAt(index)
+                icbCommand.setRenderPipelineState(renderPipelineStatus)
+                
+                var u =  getUniformData(gameObject.transform.modelMatrix)
+           //     icbCommand.setVertexBuffer(&u, length: MemoryLayout<Uniforms>.stride, index: 1)
+                
+       //         print(mesh_.meshes.map{$0.name}, mesh_.mdlMeshes.map{$0.name})
+                for (mesh, meshNodes) in mesh_.meshNodes {
+                    for (bufferIndex, vertexBuffer) in mesh.vertexBuffers.enumerated() {
+                        icbCommand.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, at: bufferIndex)
+                    }
+                    for meshNode in meshNodes {
+                        // add material through uniforms
+                        let mat = meshNode.material
+                        var material = ShaderMaterial(baseColor: mat.baseColor, roughness: mat.roughness, metallic: mat.metallic, mipmapCount: preFilterEnvMap.mipMapCount)
+                    //    renderCommandEncoder?.setFragmentBytes(&material, length: MemoryLayout<ShaderMaterial>.size, index: 0)
+                    //    renderCommandEncoder?.setFragmentBytes(&lightPolygon, length: MemoryLayout<Float3>.size * 4, index: 1)
+                        icbCommand.setFragmentBuffer(mat.texturesBuffer, offset: 0, at: 15)
+                        let submesh = meshNode.mesh
+                        icbCommand.drawIndexedPrimitives(submesh.primitiveType,
+                            indexCount: submesh.indexCount,
+                            indexType: submesh.indexType,
+                            indexBuffer: submesh.indexBuffer.buffer,
+                            indexBufferOffset: submesh.indexBuffer.offset,
+                            instanceCount: 1,
+                            baseVertex: 0,
+                            baseInstance: index
+                        )
+                    }
+                }
+            }
+        }
     }
     
     func updateSceneData() {

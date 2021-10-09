@@ -37,6 +37,15 @@ class Material {
         }
     }
     var textureSet: TextureSet!
+    var texturesBuffer: MTLBuffer!
+    static var textures: [MTLTexture] = []
+    static var heap: MTLHeap!
+    
+    var baseColorTex: Int = 0
+    var metallicTex: Int = 0
+    var roughnessTex: Int = 0
+    var normalMapTex: Int = 0
+    var aoTex: Int = 0
     
     private let library = Device.sharedDevice.library
     var fragmentShaderFunction: MTLFunction?
@@ -57,6 +66,71 @@ class Material {
             metallic = material.property(with: .emission)?.floatValue ?? Float(0.8)
             textureSet = TextureSet(material: material, textureLoader: textureLoader)
         }
+        baseColorTex = Self.textures.count
+        Self.textures.append(textureSet.baseColor)
+        normalMapTex = Self.textures.count
+        Self.textures.append(textureSet.normalMap)
+        roughnessTex = Self.textures.count
+        Self.textures.append(textureSet.roughness)
+        metallicTex = Self.textures.count
+        Self.textures.append(textureSet.metallic)
+        aoTex = Self.textures.count
+        Self.textures.append(textureSet.ao)
+    }
+    
+    func initializeTextures() {
+        let device = Device.sharedDevice.device!
+        let textureEncoder = fragmentShaderFunction!.makeArgumentEncoder(
+        bufferIndex: 15)
+        // 2
+         texturesBuffer =
+        device.makeBuffer(
+         length: textureEncoder.encodedLength,
+         options: [])!
+        texturesBuffer.label = "Textures"
+        //3
+        
+        textureEncoder.setArgumentBuffer(texturesBuffer, offset: 0)
+        textureEncoder.setTexture(Self.textures[baseColorTex], index: 0)
+        textureEncoder.setTexture(Self.textures[normalMapTex], index: 1)
+        textureEncoder.setTexture(Self.textures[roughnessTex], index: 2)
+        textureEncoder.setTexture(Self.textures[metallicTex], index: 3)
+        textureEncoder.setTexture(Self.textures[aoTex], index: 4)
+    }
+    
+    static func buildHeap() -> MTLHeap? {
+        let device = Device.sharedDevice.device!
+        let heapDescriptor = MTLHeapDescriptor()
+        let descriptors = textures.map { texture in
+            return MTLTextureDescriptor.texture2DDescriptor(pixelFormat: texture.pixelFormat, width: texture.width, height: texture.height, mipmapped: false)
+        }
+        let sizeAndAligns = descriptors.map {
+            device.heapTextureSizeAndAlign(descriptor: $0)
+        }
+        heapDescriptor.size = sizeAndAligns.reduce(0) {
+            $0 + $1.size - ($1.size & ($1.align - 1)) + $1.align
+        }
+        if heapDescriptor.size == 0 {
+            return nil
+        }
+        guard let heap = device.makeHeap(descriptor: heapDescriptor)
+        else { fatalError() }
+        
+        let heapTextures = descriptors.map { descriptor -> MTLTexture in
+            descriptor.storageMode = heapDescriptor.storageMode
+            return heap.makeTexture(descriptor: descriptor)!
+        }
+        guard let commandBuffer = Device.sharedDevice.commandQueue?.makeCommandBuffer(), let blitEncoder = commandBuffer.makeBlitCommandEncoder()
+        else { fatalError() }
+        zip(textures, heapTextures).forEach { (texture, heapTexture) in
+            var region = MTLRegionMake2D(0, 0, texture.width,
+            texture.height)
+            blitEncoder.copy(from: texture, to: heapTexture)
+        }
+        blitEncoder.endEncoding()
+        commandBuffer.commit()
+        textures = heapTextures
+        return heap
     }
 }
 
@@ -75,17 +149,6 @@ class TextureSet {
     
     func texture(for semantic: MDLMaterialSemantic, in material: MDLMaterial, textureLoader: MTKTextureLoader) -> MTLTexture? {
         guard let materialProperty = material.property(with: semantic) else { return nil }
-        /*
-        print(material.name)
-        print(material.property(with: .baseColor)?.float3Value)
-        print(material.property(with: .emission)?.float3Value)
-        print(material.property(with: .specular)?.float3Value)
-        print(material.property(with: .metallic)?.float3Value)
-        print(material.property(with: .roughness)?.float3Value)
-        print(material.property(with: .specular)?.float3Value)
-        print(material.property(with: .materialIndexOfRefraction)?.float3Value)
-        print(material.property(with: .userDefined)?.float3Value)
-         */
         guard let sourceTexture = materialProperty.textureSamplerValue?.texture else { return nil }
     //    let wantMips = materialProperty.semantic != .tangentSpaceNormal
         var options: [MTKTextureLoader.Option : Any] = [:]
