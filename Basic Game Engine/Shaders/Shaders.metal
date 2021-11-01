@@ -372,24 +372,24 @@ fragment float4 lightProbeFragmentShader(VertexOut vOut [[stage_in]],
     int index = gridPosToIndex(vOut.position - vOut.probeOffset, probe.gridEdge, probe.gridOrigin, probe.probeGridWidth, probe.probeGridHeight);
     LightProbe lightProbe = probes[index];
     float3 color = 0;
-    float shCoeff[9];
-    float aCap[9] = {   3.141593,
-                        2.094395, 2.094395, 2.094395,
-                        0.785398, 0.785398, 0.785398, 0.785398, 0.785398, };
+//    float shCoeff[9];
+//    float aCap[9] = {   3.141593,
+//                        2.094395, 2.094395, 2.094395,
+//                        0.785398, 0.785398, 0.785398, 0.785398, 0.785398, };
     float3 normal = normalize(vOut.position - (lightProbe.location + lightProbe.offset));
-    SHProjectLinear(normal, shCoeff);
-    for (int i = 0; i<9; i++) {
-        color.r += max(0.0, aCap[i] * lightProbe.shCoeffR[i] * shCoeff[i]);
-        color.g += max(0.0, aCap[i] * lightProbe.shCoeffG[i] * shCoeff[i]);
-        color.b += max(0.0, aCap[i] * lightProbe.shCoeffB[i] * shCoeff[i]);
-    }
+//    SHProjectLinear(normal, shCoeff);
+//    for (int i = 0; i<9; i++) {
+//        color.r += max(0.0, aCap[i] * lightProbe.shCoeffR[i] * shCoeff[i]);
+//        color.g += max(0.0, aCap[i] * lightProbe.shCoeffG[i] * shCoeff[i]);
+//        color.b += max(0.0, aCap[i] * lightProbe.shCoeffB[i] * shCoeff[i]);
+//    }
     
     int radianceMapSize = 16;
-    uint2 texPos = indexToTexPos_(index, 12, 3);
+    uint2 texPos = indexToTexPos_(index, 10, 8);
     float2 encodedUV = octEncode__(normal);
     float minimumUV = 1.0/radianceMapSize;
     encodedUV = max(minimumUV, min(1-minimumUV, encodedUV));
-    float2 uv = (float2(texPos) + encodedUV)*float2(1.0/(6 * 4), 1.0/6);
+    float2 uv = (float2(texPos) + encodedUV)*float2(1.0/(10 * 8), 1.0/8);
     
     uint2 texPosOcta = texPos * radianceMapSize + uint2(encodedUV * float2(radianceMapSize));
  //   color = radianceMap.read(texPosOcta).rgb;
