@@ -22,6 +22,7 @@ struct Uniforms {
     var P: Matrix4
     var eye: Float3
     var exposure: Float = 0.5
+    var size: Float2 = Float2(1000, 1000)
 }
 
 extension Float3 {

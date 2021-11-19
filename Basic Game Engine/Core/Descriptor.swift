@@ -97,6 +97,7 @@ extension Descriptor {
         descriptor.vertexFunction = Device.sharedDevice.library?.makeFunction(name: "shadowVertexShader")
         descriptor.fragmentFunction = nil
         descriptor.vertexDescriptor = MeshManager.getVertexDescriptor()
+        descriptor.supportIndirectCommandBuffers = true
         do {
             return try Device.sharedDevice.device!.makeRenderPipelineState(descriptor: descriptor)
         } catch {

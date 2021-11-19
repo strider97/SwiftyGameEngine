@@ -61,9 +61,12 @@ class GBufferData {
         descriptor.vertexFunction = Device.sharedDevice.library!.makeFunction(name: "vertexRSM")
         descriptor.fragmentFunction = Device.sharedDevice.library!.makeFunction(name: fragmentFunction)
         descriptor.vertexDescriptor = MeshManager.meshManager.vertexDescriptor
+        descriptor.supportIndirectCommandBuffers = true
+        
         do {
             renderPipelineState = try Device.sharedDevice.device!.makeRenderPipelineState(descriptor: descriptor)
         } catch {
+            print(error, "couldn't create pipelinestate")
             fatalError(error.localizedDescription)
         }
     }

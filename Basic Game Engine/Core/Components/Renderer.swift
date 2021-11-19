@@ -47,6 +47,7 @@ class Material {
 
     var textureSet: TextureSet!
     var texturesBuffer: MTLBuffer!
+    var shaderMaterialBuffer: MTLBuffer!
     static var textures: [MTLTexture] = []
     static var heap: MTLHeap!
 
@@ -91,58 +92,62 @@ class Material {
     }
     
     func initializeTextures() {
-            let device = Device.sharedDevice.device!
-            let textureEncoder = fragmentShaderFunction!.makeArgumentEncoder(
-            bufferIndex: 15)
-            // 2
-             texturesBuffer =
-            device.makeBuffer(
-             length: textureEncoder.encodedLength,
-             options: [])!
-            texturesBuffer.label = "Textures"
-            //3
-            
-            textureEncoder.setArgumentBuffer(texturesBuffer, offset: 0)
-            textureEncoder.setTexture(Self.textures[baseColorTex], index: 0)
-            textureEncoder.setTexture(Self.textures[normalMapTex], index: 1)
-            textureEncoder.setTexture(Self.textures[roughnessTex], index: 2)
-            textureEncoder.setTexture(Self.textures[metallicTex], index: 3)
-            textureEncoder.setTexture(Self.textures[aoTex], index: 4)
-        }
+        let device = Device.sharedDevice.device!
+        let textureEncoder = fragmentShaderFunction!.makeArgumentEncoder(
+        bufferIndex: 15)
+        // 2
+        texturesBuffer =
+        device.makeBuffer(
+         length: textureEncoder.encodedLength,
+         options: [])!
+        texturesBuffer.label = "Textures"
+        //3
+        
+        textureEncoder.setArgumentBuffer(texturesBuffer, offset: 0)
+        textureEncoder.setTexture(Self.textures[baseColorTex], index: 0)
+        textureEncoder.setTexture(Self.textures[normalMapTex], index: 1)
+        textureEncoder.setTexture(Self.textures[roughnessTex], index: 2)
+        textureEncoder.setTexture(Self.textures[metallicTex], index: 3)
+        textureEncoder.setTexture(Self.textures[aoTex], index: 4)
+        
+        var s = ShaderMaterial(baseColor: baseColor, roughness: roughness, metallic: metallic)
+        shaderMaterialBuffer = device.makeBuffer(length: MemoryLayout<ShaderMaterial>.stride, options: [])
+        shaderMaterialBuffer.contents().copyMemory(from: &s, byteCount: MemoryLayout<ShaderMaterial>.stride)
+    }
 
-        static func buildHeap() -> MTLHeap? {
-            let device = Device.sharedDevice.device!
-            let heapDescriptor = MTLHeapDescriptor()
-            let descriptors = textures.map { texture in
-                return MTLTextureDescriptor.texture2DDescriptor(pixelFormat: texture.pixelFormat, width: texture.width, height: texture.height, mipmapped: false)
-            }
-            let sizeAndAligns = descriptors.map {
-                device.heapTextureSizeAndAlign(descriptor: $0)
-            }
-            heapDescriptor.size = sizeAndAligns.reduce(0) {
-                $0 + $1.size - ($1.size & ($1.align - 1)) + $1.align
-            }
-            if heapDescriptor.size == 0 {
-                return nil
-            }
-            guard let heap = device.makeHeap(descriptor: heapDescriptor)
-            else { fatalError() }
-
-            let heapTextures = descriptors.map { descriptor -> MTLTexture in
-                descriptor.storageMode = heapDescriptor.storageMode
-                return heap.makeTexture(descriptor: descriptor)!
-            }
-            guard let commandBuffer = Device.sharedDevice.commandQueue?.makeCommandBuffer(), let blitEncoder = commandBuffer.makeBlitCommandEncoder()
-            else { fatalError() }
-            zip(textures, heapTextures).forEach { (texture, heapTexture) in
-            //    var region = MTLRegionMake2D(0, 0, texture.width, texture.height)
-                blitEncoder.copy(from: texture, to: heapTexture)
-            }
-            blitEncoder.endEncoding()
-            commandBuffer.commit()
-            textures = heapTextures
-            return heap
+    static func buildHeap() -> MTLHeap? {
+        let device = Device.sharedDevice.device!
+        let heapDescriptor = MTLHeapDescriptor()
+        let descriptors = textures.map { texture in
+            return MTLTextureDescriptor.texture2DDescriptor(pixelFormat: texture.pixelFormat, width: texture.width, height: texture.height, mipmapped: false)
         }
+        let sizeAndAligns = descriptors.map {
+            device.heapTextureSizeAndAlign(descriptor: $0)
+        }
+        heapDescriptor.size = sizeAndAligns.reduce(0) {
+            $0 + $1.size - ($1.size & ($1.align - 1)) + $1.align
+        }
+        if heapDescriptor.size == 0 {
+            return nil
+        }
+        guard let heap = device.makeHeap(descriptor: heapDescriptor)
+        else { fatalError() }
+
+        let heapTextures = descriptors.map { descriptor -> MTLTexture in
+            descriptor.storageMode = heapDescriptor.storageMode
+            return heap.makeTexture(descriptor: descriptor)!
+        }
+        guard let commandBuffer = Device.sharedDevice.commandQueue?.makeCommandBuffer(), let blitEncoder = commandBuffer.makeBlitCommandEncoder()
+        else { fatalError() }
+        zip(textures, heapTextures).forEach { (texture, heapTexture) in
+        //    var region = MTLRegionMake2D(0, 0, texture.width, texture.height)
+            blitEncoder.copy(from: texture, to: heapTexture)
+        }
+        blitEncoder.endEncoding()
+        commandBuffer.commit()
+        textures = heapTextures
+        return heap
+    }
 }
 
 class TextureSet {

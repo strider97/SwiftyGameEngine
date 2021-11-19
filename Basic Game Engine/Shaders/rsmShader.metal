@@ -25,6 +25,7 @@ struct VertexOut {
     float3 tangent;
     float3 biTangent;
     float3 eye;
+    float2 screenSize;
 };
 
 enum {
@@ -52,6 +53,7 @@ struct Uniforms {
     float4x4 P;
     float3 eye;
     float exposure;
+    float2 size;
 };
 
 struct ShadowUniforms {
@@ -150,13 +152,13 @@ vertex VertexOut vertexRSM(const VertexIn vIn [[ stage_in ]], constant Uniforms 
     vOut.tangent = vIn.tangent;
     vOut.biTangent = -cross(vIn.tangent, N);
     vOut.eye = uniforms.eye;
+    vOut.screenSize = uniforms.size;
     return vOut;
 }
 
 fragment GbufferOut fragmentRSMData (VertexOut vOut [[ stage_in ]],
                                      constant Material &material[[buffer(0)]],
                                      constant ShadowUniforms &shadowUniforms [[buffer(2)]],
-                                     constant float2 &screenSize [[buffer(3)]],
                                      constant Textures &textures [[buffer(15)]],
                                      texture2d<float, access::sample> shadowMap [[texture(0)]],
                                      texture2d<float, access::sample> reflectedDepthMap [[texture(1)]],
@@ -171,7 +173,7 @@ fragment GbufferOut fragmentRSMData (VertexOut vOut [[ stage_in ]],
 //    float metallic = metallicTexture.sample(s, vOut.uv).r;
     float roughness = material.roughness;
     float metallic = material.metallic;
-    float2 uv = vOut.position.xy / screenSize;
+    float2 uv = vOut.position.xy/vOut.screenSize;
     float4 reflectedNormalDepth = reflectedDepthMap.sample(s_, uv);
     float3 reflectedPos = reflectedDirectionMap.sample(s_, uv).xyz;
     float reflectedDepth = reflectedNormalDepth.a;

@@ -48,7 +48,7 @@ class Scene: NSObject {
     private var exposure: Float = 0.5
     var ltcMat: MTLTexture!
     var ltcMag: MTLTexture!
-    var gBufferData = GBufferData(size: CGSize(width: 1920, height: 1080))
+    var gBufferData: GBufferData!
     var lightPolygon: [Float3] = [
         Float3(-6, -1.9, 20),
         Float3(0, 3, 20),
@@ -85,6 +85,8 @@ class Scene: NSObject {
     var brdfIntegratedTexture: MTLTexture!
     
     var indirectCB: MTLIndirectCommandBuffer!
+    var uniformsBuffer: MTLBuffer!
+    var shadowUniformsBuffer: MTLBuffer! 
 
     override init() {
         light = PolygonLight(vertices: lightPolygon)
@@ -102,6 +104,7 @@ class Scene: NSObject {
                 }
             }
         }
+        initializeUniforms()
         addPhysics()
         addBehaviour()
         createShadowTexture()
@@ -142,6 +145,7 @@ extension Scene: MTKViewDelegate {
         renderTargetDescriptor.storageMode = .private
         renderTargetDescriptor.usage = [.shaderRead, .shaderWrite]
         gBufferData = GBufferData(size: size)
+        initializeCommands(false)
         renderTarget = device!.makeTexture(descriptor: renderTargetDescriptor)
         let textureLoader = MTKTextureLoader(device: device!)
         let options_: [MTKTextureLoader.Option : Any] = [.SRGB : false]
@@ -179,7 +183,7 @@ extension Scene: MTKViewDelegate {
 
 extension Scene {
     func getUniformData(_ M: Matrix4 = Matrix4(1.0)) -> Uniforms {
-        return Uniforms(M: M, V: camera.lookAtMatrix, P: P, eye: camera.position, exposure: exposure)
+        return Uniforms(M: M, V: camera.lookAtMatrix, P: P, eye: camera.position, exposure: exposure, size: Float2(Float(size.width), Float(size.height)))
     }
 
     func getLightUniformData() -> Uniforms {
@@ -328,6 +332,8 @@ extension Scene {
         drawGameObjects(renderCommandEncoder: shadowCommandEncoder, renderPassType: .shadow)
         shadowCommandEncoder?.endEncoding()
         rayTracer?.updateShadowMap(shadowMap: shadowTexture, newShadowMap: varianceShadowMap, commandBuffer: commandBuffer)
+        
+        updateUniforms(.gBuffer)
         let gBufferCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: gBufferData.gBufferRenderPassDescriptor)
         gBufferCommandEncoder?.setCullMode(.front)
         gBufferCommandEncoder?.useHeap(Material.heap)
@@ -335,8 +341,13 @@ extension Scene {
         gBufferCommandEncoder?.setFragmentTexture(varianceShadowMap, index: 0)
         gBufferCommandEncoder?.setFragmentTexture(rayTracer?.reflectedPositions, index: 1)
         gBufferCommandEncoder?.setFragmentTexture(rayTracer?.reflectedDir, index: 2)
-        drawGameObjects(renderCommandEncoder: gBufferCommandEncoder, renderPassType: .gBuffer)
+    //    drawGameObjects(renderCommandEncoder: gBufferCommandEncoder, renderPassType: .gBuffer)
+        gBufferCommandEncoder?.useResource(uniformsBuffer, usage: .read)
+        gBufferCommandEncoder?.useResource(shadowUniformsBuffer, usage: .read)
+        let icbRange = numDrawCommands(renderCommandEncoder: gBufferCommandEncoder)
+        gBufferCommandEncoder?.executeCommandsInBuffer(indirectCB, range: 0..<icbRange)
         gBufferCommandEncoder?.endEncoding()
+        
         rayTracer?.drawIndirectRays(normals: gBufferData.normal, positions: gBufferData.worldPos, commandBuffer: commandBuffer)
    //     renderCommandEncoder?.setDepthStoreAction(.dontCare)
    //     renderCommandEncoder?.setDepthStencilState(depthStencilState)
@@ -394,26 +405,19 @@ extension Scene {
     }
 
     func drawGameObjects(renderCommandEncoder: MTLRenderCommandEncoder?, renderPassType: RenderPassType = .shading) {
-        for (i, gameObject) in gameObjects.enumerated() {
+        for gameObject in gameObjects {
             if let renderPipelineStatus = renderPassType == .shadow ? shadowPipelineState : (renderPassType == .shading ? gameObject.renderPipelineState : gBufferData.renderPipelineState), let mesh_ = gameObject.getComponent(Mesh.self) {
                 renderCommandEncoder?.setRenderPipelineState(renderPipelineStatus)
 
                 var u = (renderPassType == .shading || renderPassType == .gBuffer) ? getUniformData(gameObject.transform.modelMatrix) : getFarShadowUniformData(gameObject.transform.modelMatrix)
-                if renderPassType == .shading || renderPassType == .gBuffer {
+                if renderPassType == .gBuffer {
                     var s = ShadowUniforms(P: orthoGraphicP, V: shadowViewMatrix, sunDirection: sunDirection.normalized)
                     renderCommandEncoder?.setVertexBytes(&s, length: MemoryLayout<ShadowUniforms>.stride, index: 2)
-                    if renderPassType == .gBuffer {
-                        renderCommandEncoder?.setFragmentBytes(&s, length: MemoryLayout<ShadowUniforms>.stride, index: 2)
-                        var size = Float2(Float(size.width), Float(size.height))
-                        renderCommandEncoder?.setFragmentBytes(&size, length: MemoryLayout<Float2>.stride, index: 3)
-                    }
-                //    let irradianceField = rayTracer!.irradianceField!
-                //    var lightProbeData = LightProbeData(gridEdge: irradianceField.gridEdge, gridOrigin: irradianceField.origin, probeGridWidth: irradianceField.width, probeGridHeight: irradianceField.height, probeGridCount: Int3(Constants.probeGrid.0, Constants.probeGrid.1, Constants.probeGrid.2))
-                //    renderCommandEncoder?.setFragmentBytes(&lightProbeData, length: MemoryLayout<LightProbeData>.stride, index: 2)
+                    renderCommandEncoder?.setFragmentBytes(&s, length: MemoryLayout<ShadowUniforms>.stride, index: 2)
                 }
+                
                 renderCommandEncoder?.setVertexBytes(&u, length: MemoryLayout<Uniforms>.stride, index: 1)
 
-                //         print(mesh_.meshes.map{$0.name}, mesh_.mdlMeshes.map{$0.name})
                 for (mesh, meshNodes) in mesh_.meshNodes {
                     for (bufferIndex, vertexBuffer) in mesh.vertexBuffers.enumerated() {
                         renderCommandEncoder?.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: bufferIndex)
@@ -435,6 +439,23 @@ extension Scene {
                 }
             }
         }
+    }
+    
+    func numDrawCommands(renderCommandEncoder: MTLRenderCommandEncoder?) -> Int {
+        var count = 0
+        for gameObject in gameObjects {
+            let mesh_ = gameObject.getComponent(Mesh.self)!
+            for (mesh, meshNodes) in mesh_.meshNodes {
+                for (_, vertexBuffer) in mesh.vertexBuffers.enumerated() {
+                    renderCommandEncoder?.useResource(vertexBuffer.buffer, usage: .read)
+                }
+                for meshNode in meshNodes {
+                    renderCommandEncoder?.useResource(meshNode.mesh.indexBuffer.buffer, usage: .read)
+                }
+                count += meshNodes.count
+            }
+        }
+        return count
     }
 
     func drawSkybox(renderCommandEncoder: MTLRenderCommandEncoder?) {
@@ -691,57 +712,78 @@ extension Scene {
         renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: irradianceMap.vertices.count)
     }
     
-    func initializeCommands() {
-            let icbDescriptor = MTLIndirectCommandBufferDescriptor()
-            icbDescriptor.commandTypes = [.drawIndexed]
-            icbDescriptor.inheritBuffers = false
-            icbDescriptor.maxVertexBufferBindCount = 25
-            icbDescriptor.maxFragmentBufferBindCount = 25
-            icbDescriptor.inheritPipelineState = false
-            guard let indirectCB = device!.makeIndirectCommandBuffer(
-                descriptor: icbDescriptor,
-                maxCommandCount: gameObjects.reduce(0) {
-                    $0 + ($1.getComponent(Mesh.self)?.meshNodes.count ?? 0)
-                },
-                options: [])
-                else { fatalError() }
-            self.indirectCB = indirectCB
+    func initializeUniforms() {
+        var bufferLength = MemoryLayout<Uniforms>.stride
+        uniformsBuffer =
+        device!.makeBuffer(length: bufferLength, options: [])
+        uniformsBuffer.label = "Uniforms"
+        bufferLength = MemoryLayout<FragmentUniforms>.stride
+        shadowUniformsBuffer = device!.makeBuffer(length: bufferLength, options: [])
+        shadowUniformsBuffer.label = "Shadow Uniforms"
+    }
+    
+    func updateUniforms(_ renderPass: RenderPassType) {
+        if renderPass == .shadow {
+            var u = getFarShadowUniformData()
+            uniformsBuffer.contents().copyMemory(from: &u, byteCount: MemoryLayout<Uniforms>.stride)
+        }
+        else {
+            var u = getUniformData()
+            var s = ShadowUniforms(P: orthoGraphicP, V: shadowViewMatrix, sunDirection: sunDirection.normalized)
+            uniformsBuffer.contents().copyMemory(from: &u, byteCount: MemoryLayout<Uniforms>.stride)
+            shadowUniformsBuffer.contents().copyMemory(from: &s, byteCount: MemoryLayout<ShadowUniforms>.stride)
+        }
+    }
+    
+    func initializeCommands(_ isGBufferDraw: Bool) {
+        let icbDescriptor = MTLIndirectCommandBufferDescriptor()
+        icbDescriptor.commandTypes = [.drawIndexed]
+        icbDescriptor.inheritBuffers = false
+        icbDescriptor.maxVertexBufferBindCount = 25
+        icbDescriptor.maxFragmentBufferBindCount = 25
+        icbDescriptor.inheritPipelineState = false
+        
+        let commandCount = numDrawCommands(renderCommandEncoder: nil)
+        guard let indirectCB = device!.makeIndirectCommandBuffer(
+            descriptor: icbDescriptor,
+            maxCommandCount: commandCount,
+            options: [])
+            else { fatalError() }
+        self.indirectCB = indirectCB
 
-            for (index, gameObject) in gameObjects.enumerated() {
-                if let renderPipelineStatus = gameObject.renderPipelineState, let mesh_ = gameObject.getComponent(Mesh.self) {
-                    let icbCommand = indirectCB.indirectRenderCommandAt(index)
-                    icbCommand.setRenderPipelineState(renderPipelineStatus)
-
-                    var u =  getUniformData(gameObject.transform.modelMatrix)
-               //     icbCommand.setVertexBuffer(&u, length: MemoryLayout<Uniforms>.stride, index: 1)
-                    
-           //         print(mesh_.meshes.map{$0.name}, mesh_.mdlMeshes.map{$0.name})
-                    for (mesh, meshNodes) in mesh_.meshNodes {
-                        for (bufferIndex, vertexBuffer) in mesh.vertexBuffers.enumerated() {
-                            icbCommand.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, at: bufferIndex)
-                        }
-                        for meshNode in meshNodes {
-                            // add material through uniforms
+        for (index, gameObject) in gameObjects.enumerated() {
+            if let renderPipelineStatus = gBufferData.renderPipelineState, let mesh_ = gameObject.getComponent(Mesh.self) {
+                let icbCommand = indirectCB.indirectRenderCommandAt(index)
+                icbCommand.setRenderPipelineState(renderPipelineStatus)
+                icbCommand.setVertexBuffer(uniformsBuffer, offset: 0, at: 1)
+                icbCommand.setVertexBuffer(shadowUniformsBuffer, offset: 0, at: 2)
+                icbCommand.setFragmentBuffer(shadowUniformsBuffer, offset: 0, at: 2)
+                for (mesh, meshNodes) in mesh_.meshNodes {
+                    for (bufferIndex, vertexBuffer) in mesh.vertexBuffers.enumerated() {
+                        icbCommand.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, at: bufferIndex)
+                    }
+                    for meshNode in meshNodes {
+                        // add material through uniforms
+                        if isGBufferDraw {
                             let mat = meshNode.material
-                            var material = ShaderMaterial(baseColor: mat.baseColor, roughness: mat.roughness, metallic: mat.metallic, mipmapCount: preFilterEnvMap.mipMapCount)
-                        //    renderCommandEncoder?.setFragmentBytes(&material, length: MemoryLayout<ShaderMaterial>.size, index: 0)
-                        //    renderCommandEncoder?.setFragmentBytes(&lightPolygon, length: MemoryLayout<Float3>.size * 4, index: 1)
                             icbCommand.setFragmentBuffer(mat.texturesBuffer, offset: 0, at: 15)
-                            let submesh = meshNode.mesh
-                            icbCommand.drawIndexedPrimitives(submesh.primitiveType,
-                                indexCount: submesh.indexCount,
-                                indexType: submesh.indexType,
-                                indexBuffer: submesh.indexBuffer.buffer,
-                                indexBufferOffset: submesh.indexBuffer.offset,
-                                instanceCount: 1,
-                                baseVertex: 0,
-                                baseInstance: index
-                            )
+                            icbCommand.setFragmentBuffer(mat.shaderMaterialBuffer, offset: 0, at: 0)
                         }
+                        let submesh = meshNode.mesh
+                        icbCommand.drawIndexedPrimitives(submesh.primitiveType,
+                            indexCount: submesh.indexCount,
+                            indexType: submesh.indexType,
+                            indexBuffer: submesh.indexBuffer.buffer,
+                            indexBufferOffset: submesh.indexBuffer.offset,
+                            instanceCount: 1,
+                            baseVertex: 0,
+                            baseInstance: index
+                        )
                     }
                 }
             }
         }
+    }
 
     func updateSceneData() {
         //    for i in 0..<lightPolygon.count {

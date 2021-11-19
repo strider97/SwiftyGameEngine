@@ -15,6 +15,7 @@ struct Uniforms {
     float4x4 P;
     float3 eye;
     float exposure;
+    float2 size;
 };
 
 struct ShadowUniforms {
@@ -80,6 +81,7 @@ struct VertexOut {
     float3 tangent;
     float4 lightFragPosition;
     float3 sunDirection;
+    float2 screenSize;
 };
 
 struct Material {
